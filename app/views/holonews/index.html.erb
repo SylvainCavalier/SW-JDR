@@ -1,0 +1,24 @@
+<div class="frame-container" style="position: relative; width: 100%; height: 100vh;">
+  <!-- Username -->
+  <p class="username-display mt-1 text-primary fw-bold">
+    <%= current_user.username %>
+  </p>
+  <!-- Cadre principal SVG -->
+  <img src="<%= asset_path('cadre2.svg') %>" alt="Cadre" class="ui-frame">
+  <!-- Cadre central avec l'écran de transfert' -->
+  <div class="container mt-4">
+    <div class="holonews-list-container" style="overflow-y: scroll; height: 100vh;">
+      <% @holonews.each do |holonew| %>
+        <div class="holonew-item p-1 mb-1 bg-light rounded">
+          <h3><%= holonew.title %></h3>
+          <p><%= holonew.content %></p>
+        </div>
+      <% end %>
+    </div>
+  </div>
+
+  <%= link_to "Retour", root_path, class: "btn btn-outline-success go-back" %>
+  <% if current_user.group.name.in?(['MJ', 'PNJ']) %>
+    <%= link_to "Créer", new_holonew_path, class: "btn btn-outline-success go-create" %>
+  <% end %>
+</div>

@@ -1,0 +1,40 @@
+<div class="frame-container" style="position: relative; width: 100%; height: 100vh;">
+  <!-- Username -->
+  <p class="username-display mt-1 text-primary fw-bold">
+    <%= current_user.username %>
+  </p>
+  <!-- Cadre principal SVG -->
+  <img src="<%= asset_path('cadre2.svg') %>" alt="Cadre" class="ui-frame">
+  <!-- Formulaire -->
+  <div class="custom-form">
+    <%= simple_form_for @holonew do |f| %>
+      <div class="form-group">
+        <%= f.input :title, label: "Titre", input_html: { class: 'form-control' } %>
+      </div>
+
+      <div class="form-group">
+        <%= f.input :content, label: "Contenu", input_html: { class: 'form-control' } %>
+      </div>
+
+      <div class="form-group">
+        <label>Envoyer à des utilisateurs :</label>
+        <%= select_tag 'target_user', options_from_collection_for_select(@users, 'id', 'username'), prompt: "Sélectionner un utilisateur", class: "form-control" %>
+      </div>
+
+      <div class="form-group">
+        <label>Envoyer à des groupes :</label>
+        <%= select_tag 'target_group', options_from_collection_for_select(@groups, 'id', 'name'), prompt: "Sélectionner un groupe", class: "form-control" %>
+      </div>
+
+      <div class="form-check">
+        <%= check_box_tag 'send_to_all', '1', false, class: 'form-check-input' %>
+        <label class="form-check-label">Envoyer à tous</label>
+      </div>
+
+      <div class="form-group mt-4">
+        <%= link_to "Annuler", holonews_path, class: "btn btn-outline-success" %>
+        <%= f.submit "Envoyer", class: "btn btn-outline-success" %>
+      </div>
+    <% end %>
+  </div>
+</div>

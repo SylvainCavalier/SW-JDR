@@ -6,7 +6,247 @@
 // External libraries
 @import "bootstrap";
 @import "font-awesome";
+@import url('https://fonts.googleapis.com/css2?family=Audiowide&display=swap');
 
 // Your CSS partials
 @import "components/index";
 @import "pages/index";
+
+h1 {
+  color: $success;
+}
+
+p {
+  color: $success;
+}
+
+.audiowide-regular {
+  font-family: "Audiowide", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+}
+
+#background {
+  background-image: url(asset-path('background.png'));
+  background-size: cover;
+  background-position: center;
+  width: 100vw;
+  height: 100vh;
+  z-index: 1;
+}
+
+.frame-container {
+  position: relative;
+  width: 100vw;  /* 100% de la largeur de l'écran */
+  height: 100vh; /* 100% de la hauteur de l'écran */
+  overflow: hidden;
+}
+
+/* Cadre en SVG comme élément <img> */
+.ui-frame {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: fill;  /* Maintient le ratio de l'image tout en remplissant l'espace */
+  z-index: 1;         /* Le cadre est en arrière-plan */
+}
+
+/* Centrer horizontalement et verticalement la div credits-container */
+.credits-container {
+  position: absolute;
+  top: 50%;   /* Centre verticalement par rapport au cadre */
+  left: 50%;  /* Centre horizontalement par rapport au cadre */
+  transform: translate(-50%, -50%); /* Corrige le positionnement pour un vrai centrage */
+  z-index: 2;
+  text-align: center; /* Centre le texte horizontalement à l'intérieur du container */
+}
+
+/* Le screen (image de fond des crédits) */
+.screen-background {
+  width: 90%; /* S'adapte à la taille de credits-container */
+  height: auto; /* Conserve le ratio de l'image */
+  max-width: 300px; /* Optionnel : limite la taille maximale du screen */
+  z-index: 1;
+}
+
+/* Centrer le texte des crédits dans le screen */
+.credits-text {
+  position: absolute;
+  top: 50%;   /* Centre verticalement par rapport au screen */
+  left: 50%;  /* Centre horizontalement par rapport au screen */
+  transform: translate(-50%, -50%); /* Centre exactement au milieu du screen */
+  z-index: 2;
+  font-size: 1.2rem; /* Ajuste la taille selon tes besoins */
+  color: #00ffcc; /* Ajuste la couleur */
+}
+
+/* Élément à gauche du screen (function.svg) */
+.ui-function {
+  position: absolute;
+  top: 50%;
+  left: 15%;
+  transform: translateY(-50%);
+  width: 80px;
+  z-index: 2;
+}
+
+/* Élément à droite du screen (target.svg) */
+.ui-target {
+  position: absolute;
+  top: 50%;
+  right: 15%;
+  transform: translateY(-50%);
+  width: 80px;
+  z-index: 2;
+}
+
+/* Barre en haut à droite (top-bar.svg) */
+.ui-top-bar {
+  position: absolute;
+  top: 14%;
+  right: 10%;
+  width: 300px;
+  z-index: 2;
+}
+
+/* Barre en bas à gauche (bottom-bar.svg) */
+.ui-bottom-bar {
+  position: absolute;
+  bottom: 15%;
+  left: 10%;
+  width: 300px;
+  z-index: 2;
+}
+
+.transfer-btn {
+  top: 75%;
+  left: 58%;
+  position: absolute;
+  width: 30vw;
+  font-size: smaller;
+  z-index: 3;
+}
+
+.message-btn {
+  top: 15%;
+  left: 12%;
+  position: absolute;
+  width: 30vw;
+  font-size: smaller;
+  z-index: 3;
+}
+
+.username-display {
+  position: absolute;
+  top: 0%; /* Ajuste cette valeur pour le placer légèrement en bas du haut de l'écran */
+  left: 50%; /* Place au milieu horizontalement */
+  transform: translateX(-50%); /* Centre le texte horizontalement */
+  font-size: 1.5rem; /* Ajuste la taille selon tes besoins */
+  font-weight: bold;
+  color: #00ffcc; /* Ajuste la couleur */
+  z-index: 3; /* Assure que le texte est au-dessus du cadre */
+}
+
+.go-back {
+  position: absolute;
+  top: 15%;
+  left: 10%;
+  z-index: 3;
+}
+
+.go-create {
+  position: absolute;
+  top: 15%;
+  left: 80%;
+  z-index: 3;
+}
+
+.select-destinataire {
+  font-size: 1.2rem;    /* Agrandir la police */
+  padding: 10px;        /* Ajouter du padding pour améliorer l'affichage */
+  z-index: 5;           /* Assurer que le menu déroulant est bien visible */
+  position: relative;   /* S'assurer qu'il n'est pas affecté par le positionnement absolu des autres éléments */
+}
+
+.select-destinataire option {
+  font-size: 1.2rem;
+  color: #00ffcc;
+  background-color: #1a1a1a;
+}
+
+.form-group {
+  margin-bottom: 1rem;
+}
+
+input[type="submit"] {
+  font-size: 1.2rem;
+  padding: 10px 20px;
+  border-radius: 5px;
+}
+
+.form-group, select, input {
+  z-index: 4;
+}
+
+.custom-form {
+  position: relative;
+  margin: 10%;
+  width: 90%;
+  max-height: 60vh;
+  max-width: 80vw;
+  overflow-y: auto;
+  padding: 20px;
+  background-color: #000;
+  border: 2px solid $success;
+  border-radius: 8px;
+  z-index: 3;
+}
+
+.custom-form input, .custom-form select {
+  background-color: #1a1a1a;
+  border: 1px solid $success;
+  color: #00ffcc;
+}
+
+.custom-form label {
+  color: $success;
+}
+
+.custom-form input, .custom-form textarea {
+  background-color: #1a1a1a;
+  border: 1px solid $success;
+  color: #00ffcc;
+}
+
+.custom-form textarea {
+  height: 100px;
+}
+
+.custom-form select {
+  background-color: #1a1a1a !important;
+  border: 1px solid $success;
+  color: #00ffcc;
+}
+
+.custom-form select option {
+  background-color: #1a1a1a;
+  color: #00ffcc;
+}
+
+.form-control {
+  color: #00ff00;
+  background-color: #1a1a1a;
+}
+
+.holonew-item {
+  position: relative;
+  background-color: #1a1a1a !important;
+  border: 1px solid $success;
+  color: #00ffcc;
+}
+
+.holonews-list-container {
+  margin-top: 19%;
+}

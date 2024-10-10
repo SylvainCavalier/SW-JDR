@@ -3,14 +3,21 @@
   <head>
     <title>SwCrediter</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="screen-orientation" content="landscape">
+    <meta name="orientation" content="landscape">
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
 
     <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Audiowide&display=swap" rel="stylesheet">
   </head>
 
   <body>
-    <%= yield %>
+    <div id="background" class="container-fluid justify-content-center align-items-center p-0">
+      <%= yield %>
+    </div>
   </body>
 </html>

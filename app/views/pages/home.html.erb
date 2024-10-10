@@ -1,2 +1,30 @@
-<h1>Pages#home</h1>
-<p>Find me in app/views/pages/home.html.erb</p>
+<div class="frame-container" style="position: relative; width: 100%; height: 100vh;">
+  <!-- Username -->
+  <p class="username-display mt-1 text-primary fw-bold">
+    <%= current_user.username %>
+  </p>
+  <!-- Cadre principal SVG -->
+  <img src="<%= asset_path('cadre2.svg') %>" alt="Cadre" class="ui-frame">
+
+  <!-- Barre du haut à droite -->
+  <img src="<%= asset_path('top-bar.svg') %>" alt="Top Bar" class="ui-top-bar">
+
+  <!-- Barre du bas à gauche -->
+  <img src="<%= asset_path('bottom-bar.svg') %>" alt="Bottom Bar" class="ui-bottom-bar">
+
+  <!-- Élément à gauche du screen -->
+  <img src="<%= asset_path('function.svg') %>" alt="Function UI" class="ui-function">
+
+  <!-- Élément à droite du screen -->
+  <img src="<%= asset_path('target.svg') %>" alt="Target UI" class="ui-target">
+
+  <!-- Conteneur principal des crédits -->
+  <div class="credits-container">
+    <img src="<%= asset_path('screen.svg') %>" alt="Screen Background" class="screen-background">
+    <p class="credits-text">Crédits : <%= current_user.credits %></p>
+  </div>
+
+  <!-- Boutons d'action -->
+  <%= link_to "Transférer des crédits", new_transaction_path, class: "btn btn-outline-success transfer-btn" %>
+  <%= link_to "Holonews", holonews_path, class: "btn btn-outline-success message-btn" %>
+</div>
