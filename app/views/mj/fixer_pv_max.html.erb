@@ -1,0 +1,21 @@
+<div class="frame-container" style="position: relative; width: 100%; height: 100vh;">
+  <!-- Username -->
+  <p class="username-display mt-1 text-primary fw-bold">
+    <%= current_user.username %>
+  </p>
+  <!-- Cadre principal SVG -->
+  <img src="<%= asset_path('cadre2.svg') %>" alt="Cadre" class="ui-frame">
+
+  <!-- Form pour fixer PV max -->
+  <%= form_with url: fixer_pv_max_path, method: :post do %>
+    <% @players.each do |player| %>
+      <div class="player-pv">
+        <p><%= player.username %> - PV Max actuels : <%= player.hp_max %></p>
+        <%= number_field_tag "pv_max[#{player.id}]", player.hp_max, class: "form-control", min: 1 %>
+      </div>
+    <% end %>
+    <%= submit_tag "Go", class: "btn btn-success" %>
+  <% end %>
+
+  <%= link_to "Retour", current_user.group.name == "MJ" ? mj_dashboard_path : root_path, class: "btn btn-outline-success go-back" %>
+</div>

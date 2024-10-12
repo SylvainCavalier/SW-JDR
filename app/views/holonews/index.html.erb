@@ -17,7 +17,7 @@
     </div>
   </div>
 
-  <%= link_to "Retour", root_path, class: "btn btn-outline-success go-back" %>
+  <%= link_to "Retour", current_user.group.name == "MJ" ? mj_dashboard_path : root_path, class: "btn btn-outline-success go-back" %>
   <% if current_user.group.name.in?(['MJ', 'PNJ']) %>
     <%= link_to "Créer", new_holonew_path, class: "btn btn-outline-success go-create" %>
   <% end %>

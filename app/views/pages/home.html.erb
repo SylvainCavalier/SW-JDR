@@ -3,8 +3,13 @@
   <p class="username-display mt-1 text-primary fw-bold">
     <%= current_user.username %>
   </p>
+
   <!-- Cadre principal SVG -->
   <img src="<%= asset_path('cadre2.svg') %>" alt="Cadre" class="ui-frame">
+
+  <!-- Infos Race/Classe -->
+  <p><%= current_user.race %></p>
+  <p><%= current_user.class_name %></p>
 
   <!-- Barre du haut à droite -->
   <img src="<%= asset_path('top-bar.svg') %>" alt="Top Bar" class="ui-top-bar">
@@ -16,12 +21,21 @@
   <img src="<%= asset_path('function.svg') %>" alt="Function UI" class="ui-function">
 
   <!-- Élément à droite du screen -->
-  <img src="<%= asset_path('target.svg') %>" alt="Target UI" class="ui-target">
+  <div class="shield-icon"
+     data-controller="shield"
+     data-action="click->shield#toggle"
+     data-user-id="<%= current_user.id %>"
+     data-shield-state="<%= current_user.shield_state %>">
+    <i class="fa-solid fa-shield" data-shield-target="icon"></i>
+    <p class="mt-1">Bouclier <%= current_user.shield_current %> / <%= current_user.shield_max %></p>
+    <audio id="shield-sound" src="<%= asset_path('shield.mp3') %>" preload="auto"></audio>
+  </div>
 
   <!-- Conteneur principal des crédits -->
   <div class="credits-container">
     <img src="<%= asset_path('screen.svg') %>" alt="Screen Background" class="screen-background">
     <p class="credits-text">Crédits : <%= current_user.credits %></p>
+    <p class="pv-text"> PV : <%= current_user.hp_current %> / <%= current_user.hp_max %></p>
   </div>
 
   <!-- Boutons d'action -->

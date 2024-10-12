@@ -60,11 +60,11 @@ p {
   left: 50%;  /* Centre horizontalement par rapport au cadre */
   transform: translate(-50%, -50%); /* Corrige le positionnement pour un vrai centrage */
   z-index: 2;
-  text-align: center; /* Centre le texte horizontalement à l'intérieur du container */
 }
 
 /* Le screen (image de fond des crédits) */
 .screen-background {
+  position: relative;
   width: 90%; /* S'adapte à la taille de credits-container */
   height: auto; /* Conserve le ratio de l'image */
   max-width: 300px; /* Optionnel : limite la taille maximale du screen */
@@ -74,11 +74,21 @@ p {
 /* Centrer le texte des crédits dans le screen */
 .credits-text {
   position: absolute;
-  top: 50%;   /* Centre verticalement par rapport au screen */
+  top: 30%;   /* Centre verticalement par rapport au screen */
   left: 50%;  /* Centre horizontalement par rapport au screen */
-  transform: translate(-50%, -50%); /* Centre exactement au milieu du screen */
+  transform: translateX(-50%);
   z-index: 2;
-  font-size: 1.2rem; /* Ajuste la taille selon tes besoins */
+  font-size: 1.1rem; /* Ajuste la taille selon tes besoins */
+  color: #00ffcc; /* Ajuste la couleur */
+}
+
+.pv-text {
+  position: absolute;
+  top: 50%; /* Ajuste cette valeur pour qu'il soit plus bas que les crédits */
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 2;
+  font-size: 1.1rem; /* Ajuste la taille selon tes besoins */
   color: #00ffcc; /* Ajuste la couleur */
 }
 
@@ -93,13 +103,35 @@ p {
 }
 
 /* Élément à droite du screen (target.svg) */
-.ui-target {
+/* .ui-target {
   position: absolute;
   top: 50%;
   right: 15%;
   transform: translateY(-50%);
   width: 80px;
   z-index: 2;
+} */
+
+.shield-icon {
+  position: absolute;
+  top: 50%;
+  right: 15%;
+  transform: translateY(-50%);
+  width: 80px;
+  z-index: 3;
+}
+
+/* Style pour le bouclier inactif */
+.shield-icon i {
+  color: #00008B; /* Bleu foncé pour inactif */
+  font-size: 3rem;
+  transition: all 0.3s ease;
+}
+
+/* Style pour le bouclier actif */
+.fa-shield.active {
+  color: #00BFFF !important; /* Couleur bleu clair pétant pour actif */
+  text-shadow: 0px 0px 15px #00BFFF !important; /* Effet de flou */
 }
 
 /* Barre en haut à droite (top-bar.svg) */
@@ -249,4 +281,51 @@ input[type="submit"] {
 
 .holonews-list-container {
   margin-top: 19%;
+}
+
+.mj-actions {
+  position: absolute;
+  top: 50%;   /* Centre verticalement */
+  left: 50%;  /* Centre horizontalement */
+  transform: translate(-50%, -50%); /* Corrige le positionnement pour un vrai centrage */
+  z-index: 3; /* Assure que les boutons sont au-dessus du cadre */
+  display: flex;
+  flex-direction: column; /* Aligne les boutons en colonne */
+  align-items: center; /* Centre les boutons horizontalement */
+}
+
+.mj-actions .btn {
+  width: 200px; /* Ajuste la largeur des boutons */
+  margin-bottom: 15px; /* Espace entre les boutons */
+}
+
+.player-damage {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 80%;
+}
+
+.player-damage p {
+  font-size: 1.0rem;
+  color: #00ffcc; /* Ajuste la couleur pour correspondre au thème */
+  flex-grow: 1; /* Le nom du joueur prendra la place restante */
+}
+
+.custom-input-group {
+  max-width: 150px; /* Limite la taille du groupe d'inputs */
+  display: flex; /* Assure que les boutons et l'input soient alignés horizontalement */
+}
+
+.custom-damage-input {
+  text-align: center;
+  width: 60px; /* Ajuste la largeur du champ d'input */
+  padding: 0.2rem; /* Réduit la taille de l'input sans affecter le style Bootstrap */
+}
+
+#container-damage {
+  position: absolute;
+  top: 50%;
+  left: 60%;
+  transform: translate(-50%, -50%);
 }
