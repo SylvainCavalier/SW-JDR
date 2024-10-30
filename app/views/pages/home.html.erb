@@ -1,15 +1,16 @@
 <div class="frame-container" style="position: relative; width: 100%; height: 100vh;">
   <!-- Username -->
   <p class="username-display mt-1 text-primary fw-bold">
-    <%= current_user.username %>
+    <%= current_user.username.capitalize %>
   </p>
 
   <!-- Cadre principal SVG -->
   <img src="<%= asset_path('cadre2.svg') %>" alt="Cadre" class="ui-frame">
 
   <!-- Infos Race/Classe -->
-  <p><%= current_user.race %></p>
-  <p><%= current_user.class_name %></p>
+  <div class= "race-classe">
+    <p><%= current_user.race %> <%= current_user.class_name %></p>
+  </div>
 
   <!-- Barre du haut à droite -->
   <img src="<%= asset_path('top-bar.svg') %>" alt="Top Bar" class="ui-top-bar">
@@ -32,10 +33,15 @@
   </div>
 
   <!-- Conteneur principal des crédits -->
-  <div class="credits-container">
+  <div class="credits-container mt-1">
     <img src="<%= asset_path('screen.svg') %>" alt="Screen Background" class="screen-background">
     <p class="credits-text">Crédits : <%= current_user.credits %></p>
     <p class="pv-text"> PV : <%= current_user.hp_current %> / <%= current_user.hp_max %></p>
+    <!-- Buttons for increment and decrement
+    <div class="input-group custom-input-group" data-controller="hp" data-user-id="<%= current_user.id %>" data-max-hp="<%= current_user.hp_max %>">
+      <%= button_tag "-", class: "btn btn-outline-secondary", data: { action: "click->hp#decrement" } %>
+      <%= button_tag "+", class: "btn btn-outline-secondary", data: { action: "click->hp#increment" } %>
+    </div> -->
   </div>
 
   <!-- Boutons d'action -->

@@ -4,6 +4,7 @@ Rails.application.routes.draw do
   resources :users, only: [] do
     member do
       post :toggle_shield
+      post :update_hp
     end
   end
 
