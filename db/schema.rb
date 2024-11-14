@@ -10,9 +10,16 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_10_10_133310) do
+ActiveRecord::Schema[7.1].define(version: 2024_11_12_141124) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "classe_persos", force: :cascade do |t|
+    t.string "name"
+    t.text "description"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
 
   create_table "groups", force: :cascade do |t|
     t.string "name"
@@ -32,12 +39,49 @@ ActiveRecord::Schema[7.1].define(version: 2024_10_10_133310) do
     t.index ["user_id"], name: "index_holonews_on_user_id"
   end
 
+  create_table "inventory_objects", force: :cascade do |t|
+    t.string "name"
+    t.string "category"
+    t.text "description"
+    t.integer "price"
+    t.string "rarity"
+    t.bigint "user_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_inventory_objects_on_user_id"
+  end
+
+  create_table "races", force: :cascade do |t|
+    t.string "name"
+    t.text "description"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "skills", force: :cascade do |t|
+    t.string "name"
+    t.text "description"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "transactions", force: :cascade do |t|
     t.integer "sender_id"
     t.integer "receiver_id"
     t.integer "amount"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "user_skills", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.bigint "skill_id", null: false
+    t.integer "mastery"
+    t.integer "bonus"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["skill_id"], name: "index_user_skills_on_skill_id"
+    t.index ["user_id"], name: "index_user_skills_on_user_id"
   end
 
   create_table "users", force: :cascade do |t|
@@ -51,18 +95,28 @@ ActiveRecord::Schema[7.1].define(version: 2024_10_10_133310) do
     t.integer "credits", default: 0
     t.string "username"
     t.bigint "group_id", null: false
-    t.string "race"
-    t.string "class_name"
     t.integer "hp_max"
     t.integer "hp_current"
     t.boolean "shield_state"
     t.integer "shield_max"
     t.integer "shield_current"
+    t.bigint "race_id"
+    t.bigint "classe_perso_id"
+    t.integer "xp", default: 0
+    t.integer "total_xp", default: 0
+    t.boolean "robustesse", default: false
+    t.index ["classe_perso_id"], name: "index_users_on_classe_perso_id"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["group_id"], name: "index_users_on_group_id"
+    t.index ["race_id"], name: "index_users_on_race_id"
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
   add_foreign_key "holonews", "users"
+  add_foreign_key "inventory_objects", "users"
+  add_foreign_key "user_skills", "skills"
+  add_foreign_key "user_skills", "users"
+  add_foreign_key "users", "classe_persos"
   add_foreign_key "users", "groups"
+  add_foreign_key "users", "races"
 end

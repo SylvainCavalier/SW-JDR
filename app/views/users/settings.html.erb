@@ -1,0 +1,47 @@
+<div class="frame-container" style="position: relative; width: 100%; height: 100vh;">
+  <!-- Username -->
+  <p class="username-display mt-1 text-primary fw-bold">
+    <%= current_user.username.capitalize %>
+  </p>
+  <!-- Cadre principal SVG -->
+  <img src="<%= asset_path('cadre2.svg') %>" alt="Cadre" class="ui-frame">
+  
+  <!-- Cadre central avec l'écran de réglages -->
+  <div class="settings-container">
+    <h1 class="text-center">Réglages</h1>
+
+    <%= form_with(model: current_user, url: update_settings_user_path(current_user), method: :patch, local: true) do |f| %>
+      <% if ["Mercenaire", "Sénateur", "Autodidacte"].include?(current_user.classe_perso&.name) %>
+        <div class="input-group custom-input-group">
+          <%= f.check_box :robustesse, class: "form-check-input", id: "robustesse-checkbox" %>
+          <%= f.label :robustesse, "Robustesse", class: "form-check-label ms-1" %>
+        </div>
+      <% end %>
+
+      <!-- Réglage de compétence : Médecine -->
+      <div class="skill-section mt-2">
+        <div class="d-flex align-items-center flex-wrap mb-2">
+          <!-- Input pour le nombre de D -->
+          <p class="me-2 mt-3">Jet de médecine</p>
+          <div class="input-group custom-input-group me-2" style="width: auto;" data-controller="increment">
+            <%= button_tag "-", type: "button", class: "btn btn-outline-secondary btn-sm", data: { action: "click->increment#decrement" } %>
+            <%= f.number_field :medicine_mastery, value: @medicine_skill&.mastery || 0, min: 0, class: "form-control form-control-sm text-center", style: "width: 45px;", data: { "increment-target" => "input" } %>
+            <%= button_tag "+", type: "button", class: "btn btn-outline-secondary btn-sm", data: { action: "click->increment#increment" } %>
+          </div>
+          <span class="mx-1">D +</span>
+          <!-- Input pour le bonus -->
+          <div class="input-group custom-input-group ms-2" style="width: auto;" data-controller="increment">
+            <%= button_tag "-", type: "button", class: "btn btn-outline-secondary btn-sm", data: { action: "click->increment#decrement" } %>
+            <%= f.number_field :medicine_bonus, value: @medicine_skill&.bonus || 0, min: 0, class: "form-control form-control-sm text-center", style: "width: 45px;", data: { "increment-target" => "input" } %>
+            <%= button_tag "+", type: "button", class: "btn btn-outline-secondary btn-sm", data: { action: "click->increment#increment" } %>
+          </div>
+          <p class="ms-2 mt-3">Actuel : <%= @medicine_skill&.mastery || 0 %>D + <%= @medicine_skill&.bonus || 0 %></p>
+        </div>
+      </div>
+
+      <%= f.submit "Enregistrer", class: "btn btn-outline-primary btn-sm ms-1 p-1" %>
+    <% end %>
+  </div>
+
+  <%= link_to "Retour", current_user.group.name == "MJ" ? mj_dashboard_path : root_path, class: "btn btn-outline-success go-back" %>
+</div>

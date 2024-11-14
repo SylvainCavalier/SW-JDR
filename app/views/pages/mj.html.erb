@@ -7,10 +7,16 @@
   <!-- Cadre principal SVG -->
   <img src="<%= asset_path('cadre2.svg') %>" alt="Cadre" class="ui-frame">
 
-  <div class="mj-actions">
-    <%= link_to "Transférer crédits", new_transaction_path, class: "btn btn-outline-success mb-3" %>
-    <%= link_to "Infliger dégâts", infliger_degats_path, class: "btn btn-outline-success mb-3" %>
-    <%= link_to "Lancer les dés", fixer_pv_max_path, class: "btn btn-outline-success mb-3" %>
-    <%= link_to "Fixer PV Max", fixer_pv_max_path, class: "btn btn-outline-success mb-3" %>
+  <div class="mj-container d-flex">
+    <div class="mj-actions m-1">
+      <%= link_to "Transférer crédits", new_transaction_path, class: "btn btn-outline-success mb-3" %>
+      <%= link_to "Infliger dégâts", infliger_degats_path, class: "btn btn-outline-success mb-3" %>
+      <%= link_to "Lancer les dés", new_transaction_path, class: "btn btn-outline-success mb-3" %>
+      <%= link_to "Fixer PV/Bouclier", fixer_pv_max_path, class: "btn btn-outline-success mb-3" %>
+    </div>
+    <div class="mj-actions m-1">
+      <%= link_to "Donner XP", mj_donner_xp_path, class: "btn btn-outline-success mb-3" %>
+      <%= link_to "Assistant Combat", mj_donner_xp_path, class: "btn btn-outline-success mb-3" %>
+    </div>
   </div>
 </div>

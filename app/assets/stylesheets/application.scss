@@ -20,6 +20,10 @@ p {
   color: $success;
 }
 
+span {
+  color: white;
+}
+
 .audiowide-regular {
   font-family: "Audiowide", sans-serif;
   font-weight: 400;
@@ -42,36 +46,42 @@ p {
   overflow: hidden;
 }
 
-/* Cadre en SVG comme élément <img> */
+/* ------------- HOME -------------- */
+
 .ui-frame {
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  object-fit: fill;  /* Maintient le ratio de l'image tout en remplissant l'espace */
-  z-index: 0;         /* Le cadre est en arrière-plan */
+  object-fit: fill;
+  z-index: 0;
 }
 
-.race-classe {
+.race {
   position: absolute;
-  top: 24%;
-  left: 50%;
-  transform: translateX(-50%);
+  top: 91%;
+  left: 20%;
   z-index: 2;
   padding: 1;
 }
 
-/* Centrer horizontalement et verticalement la div credits-container */
+.classe {
+  position: absolute;
+  top: 91%;
+  left: 65%;
+  z-index: 2;
+  padding: 1;
+}
+
 .credits-container {
   position: absolute;
   top: 50%;   /* Centre verticalement par rapport au cadre */
   left: 50%;  /* Centre horizontalement par rapport au cadre */
-  transform: translate(-50%, -50%); /* Corrige le positionnement pour un vrai centrage */
+  transform: translate(-60%, -50%); /* Corrige le positionnement pour un vrai centrage */
   z-index: 2;
 }
 
-/* Le screen (image de fond des crédits) */
 .screen-background {
   position: relative;
   width: 90%; /* S'adapte à la taille de credits-container */
@@ -80,7 +90,6 @@ p {
   z-index: 1;
 }
 
-/* Centrer le texte des crédits dans le screen */
 .credits-text {
   position: absolute;
   top: 30%;   /* Centre verticalement par rapport au screen */
@@ -91,14 +100,11 @@ p {
   color: #00ffcc; /* Ajuste la couleur */
 }
 
-.pv-text {
+.xp-container {
   position: absolute;
-  top: 50%; /* Ajuste cette valeur pour qu'il soit plus bas que les crédits */
+  top: 60%;   /* Centre verticalement par rapport au screen */
   left: 50%;
-  transform: translateX(-50%);
   z-index: 2;
-  font-size: 1.1rem; /* Ajuste la taille selon tes besoins */
-  color: #00ffcc; /* Ajuste la couleur */
 }
 
 /* Élément à gauche du screen (function.svg) */
@@ -121,13 +127,16 @@ p {
   z-index: 2;
 } */
 
-.shield-icon {
+.shield {
   position: absolute;
   top: 50%;
-  right: 15%;
+  right: 25%;
   transform: translateY(-50%);
-  width: 80px;
   z-index: 3;
+}
+
+.shield-icon {
+  width: 80px;
 }
 
 /* Style pour le bouclier inactif */
@@ -143,6 +152,31 @@ p {
   text-shadow: 0px 0px 15px #00BFFF !important; /* Effet de flou */
 }
 
+.echani-shield {
+  position: absolute;
+  top: 50%;
+  right: 10%;
+  transform: translateY(-50%);
+  z-index: 3;
+}
+
+.echani-shield-icon {
+  width: 80px;
+}
+
+/* Style pour le bouclier inactif */
+.echani-shield-icon i {
+  color: #815f03; /* Bleu foncé pour inactif */
+  font-size: 3rem;
+  transition: all 0.3s ease;
+}
+
+/* Style pour le bouclier actif */
+.echani-shield .fa-shield.active {
+  color: #d9aa01 !important; /* Couleur bleu clair pétant pour actif */
+  text-shadow: 0px 0px 15px #d9aa01 !important; /* Effet de flou */
+}
+
 /* Barre en haut à droite (top-bar.svg) */
 .ui-top-bar {
   position: absolute;
@@ -152,13 +186,65 @@ p {
   z-index: 2;
 }
 
-/* Barre en bas à gauche (bottom-bar.svg) */
+/* Barre en bas à gauche (bottom-bar.svg) 
 .ui-bottom-bar {
   position: absolute;
   bottom: 15%;
   left: 10%;
   width: 300px;
   z-index: 2;
+} */
+
+.hp-bar-container {
+  position: absolute;
+  bottom: 25%;
+  left: 10%;
+  width: 300px;
+  height: auto;
+  z-index: 2;
+}
+
+.hp-bar-background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: auto;
+  z-index: 2;
+}
+
+.hp-bar-svg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: auto;
+  z-index: 3;
+}
+
+.hp-fill {
+  transition: width 0.3s ease;
+  width: 0%;
+}
+
+.hp-text-container {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 3;
+}
+
+.hp-text {
+  position: absolute;
+  top: 10px;
+  left: 50px;
+  font-size: 15px;
+  color: white;
+  font-weight: bold;
+  pointer-events: none;
 }
 
 .transfer-btn {
@@ -189,6 +275,22 @@ p {
   color: #00ffcc; /* Ajuste la couleur */
   z-index: 3; /* Assure que le texte est au-dessus du cadre */
 }
+
+.xp-notification {
+  background-color: #4caf50;
+  color: white;
+  padding: 10px;
+  margin-top: 10px;
+  border-radius: 5px;
+  animation: fadeOut 3s ease forwards;
+}
+
+@keyframes fadeOut {
+  0% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+/* ------------- Autres pages -------------- */
 
 .go-back {
   position: absolute;
@@ -281,6 +383,10 @@ input[type="submit"] {
   background-color: #1a1a1a;
 }
 
+.form-check-label {
+  color: $success;
+}
+
 .holonew-item {
   position: relative;
   background-color: #1a1a1a !important;
@@ -292,20 +398,23 @@ input[type="submit"] {
   margin-top: 19%;
 }
 
-.mj-actions {
+.mj-container {
   position: absolute;
   top: 50%;   /* Centre verticalement */
   left: 50%;  /* Centre horizontalement */
   transform: translate(-50%, -50%); /* Corrige le positionnement pour un vrai centrage */
-  z-index: 3; /* Assure que les boutons sont au-dessus du cadre */
+  z-index: 3;
+}
+
+.mj-actions {
   display: flex;
-  flex-direction: column; /* Aligne les boutons en colonne */
-  align-items: center; /* Centre les boutons horizontalement */
+  flex-direction: column;
+  align-items: center;
 }
 
 .mj-actions .btn {
-  width: 200px; /* Ajuste la largeur des boutons */
-  margin-bottom: 15px; /* Espace entre les boutons */
+  width: 200px; 
+  margin-bottom: 15px;
 }
 
 .player-damage {
@@ -317,19 +426,19 @@ input[type="submit"] {
 
 .player-damage p {
   font-size: 1.0rem;
-  color: #00ffcc; /* Ajuste la couleur pour correspondre au thème */
-  flex-grow: 1; /* Le nom du joueur prendra la place restante */
+  color: #00ffcc;
+  flex-grow: 1;
 }
 
 .custom-input-group {
-  max-width: 150px; /* Limite la taille du groupe d'inputs */
-  display: flex; /* Assure que les boutons et l'input soient alignés horizontalement */
+  max-width: 150px;
+  display: flex;
 }
 
 .custom-damage-input {
   text-align: center;
-  width: 60px; /* Ajuste la largeur du champ d'input */
-  padding: 0.2rem; /* Réduit la taille de l'input sans affecter le style Bootstrap */
+  width: 60px;
+  padding: 0.2rem;
 }
 
 #container-damage {
@@ -337,4 +446,120 @@ input[type="submit"] {
   top: 50%;
   left: 60%;
   transform: translate(-50%, -50%);
+}
+
+.popup {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  padding: 20px;
+  background-color: #fff;
+  border: 2px solid #ccc;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+  z-index: 10;
+}
+
+/* Page de gestion des PV */
+
+.health-management-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+}
+
+.large-hp-bar-container {
+  position: absolute;
+  top: 20%;
+  width: 500px;
+  height: auto;
+  z-index: 2;
+  margin-bottom: 20px;
+}
+
+.large-hp-bar-background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: auto;
+  z-index: 1;
+}
+
+.hp-bar-fill {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 2;
+}
+
+.large-hp-bar-svg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: auto;
+  z-index: 3;
+}
+
+.large-hp-text {
+  position: absolute;
+  top: 20px;
+  left: 15%;
+  font-size: 22px;
+  color: white;
+  font-weight: bold;
+  pointer-events: none;
+  z-index: 3;
+}
+
+.hp-adjustment-section {
+  display: flex;
+  align-items: center;
+  width: 50vw;
+  margin-top: 35vh;
+  text-align: center;
+}
+
+.hp-adjustment-section p {
+  margin-right: 10px;
+  font-size: 1.2rem;
+  margin-top: 12px;
+}
+
+.buy-hp-section {
+  align-items: center;
+  width: 80vw;
+  text-align: center;
+  z-index: 3;
+}
+
+.buy-hp-section p {
+  margin-top: 10px;
+  margin-right: 10px;;
+}
+
+#xp-cost {
+  font-weight: bold;
+  color: #ff0000;
+}
+
+.current-xp {
+  font-weight: bold;
+  color: #00ffcc;
+}
+
+.settings-container {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  top: 17%;
+  left: 10%;
+  width: 600px;
+  height: auto;
+  z-index: 2;
 }

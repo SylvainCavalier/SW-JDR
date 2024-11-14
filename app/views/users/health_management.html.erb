@@ -1,0 +1,54 @@
+<div class="frame-container" style="position: relative; width: 100%; height: 100vh;">
+  <!-- Username -->
+  <p class="username-display mt-1 text-primary fw-bold">
+    <%= current_user.username.capitalize %>
+  </p>
+
+  <!-- Cadre principal SVG -->
+  <img src="<%= asset_path('cadre2.svg') %>" alt="Cadre" class="ui-frame">
+
+  <div class="health-management-container" 
+        data-controller="hp" 
+        data-user-id="<%= current_user.id %>" 
+        data-max-hp="<%= current_user.hp_max %>" 
+        data-current-hp="<%= current_user.hp_current %>"
+        data-robustesse="<%= current_user.robustesse %>">
+    <!-- GROSSE BARRE DE PV CENTRALE -->
+    <div class="large-hp-bar-container">
+      <img src="<%= asset_path('bottom-bar.svg') %>" alt="Fond de la barre de vie" class="large-hp-bar-background">
+      <!-- Barre de vie rouge superposée, dont la largeur est ajustée pour simuler les PV -->
+      <div class="hp-bar-fill" data-hp-target="hpBarFill">
+        <img src="<%= asset_path('red-bar.svg') %>" alt="Barre de vie rouge" class="large-hp-bar-svg">
+      </div>
+      <div class="large-hp-text" data-hp-target="hpText">
+        <p>PV : <span><%= current_user.hp_current %></span> / <%= current_user.hp_max %></p>
+      </div>
+    </div>
+
+    <!-- Réglage des PV -->
+    <div class="hp-adjustment-section d-flex">
+      <p>Modifier les PV:</p>
+      <div class="input-group custom-input-group m-1 p-1">
+        <%= button_tag "-", class: "btn btn-outline-success btn-sm", data: { action: "click->hp#decrement" } %>
+        <%= button_tag "+", class: "btn btn-outline-success btn-sm", data: { action: "click->hp#increment" } %>
+      </div>
+      <!-- Utiliser un Medipack -->
+      <i class="fa-duotone fa-solid fa-kit-medical" style ="z-index: 3; font-size: 40px; color: white;"></i>
+      <%= button_tag "Medipack", class: "btn btn-outline-primary ms-2" %>
+    </div>
+
+    <!-- Acheter des PV max -->
+    <div class="buy-hp-section d-flex m-2 p-2">
+      <p>Acheter PV max:</p>
+      <div class="input-group custom-input-group me-2" data-controller="increment">
+        <%= button_tag "-", type: "button", class: "btn btn-outline-secondary", data: { action: "click->increment#decrement click->hp#updateXpCost" } %>
+        <%= text_field_tag :buy_hp, 1, min: 1, class: "form-control pv-max-input", data: { "increment-target" => "input", "hp-target" => "buyHpInput" } %>
+        <%= button_tag "+", type: "button", class: "btn btn-outline-secondary", data: { action: "click->increment#increment click->hp#updateXpCost" } %>
+      </div>
+      <p>Coût XP: <span id="xp-cost" data-hp-target="xpCost">0</span></p>
+      <p>XP actuels: <span class="current-xp" data-hp-target="currentXp"><%= current_user.xp %></span></p>
+      <%= button_tag "Acheter", class: "btn btn-outline-primary ms-2", data: { action: "hp#purchaseMaxHp" } %>
+    </div>
+  </div>
+  <%= link_to "Retour", current_user.group.name == "MJ" ? mj_dashboard_path : root_path, class: "btn btn-outline-success go-back" %>
+</div>

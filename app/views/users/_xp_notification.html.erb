@@ -1,0 +1,11 @@
+<!-- app/views/users/_xp_notification.html.erb -->
+<div class="xp-notification">
+  <%= message %>
+</div>
+
+<script>
+  // Effet de disparition automatique après quelques secondes
+  setTimeout(() => {
+    document.querySelector(".xp-notification").remove();
+  }, 3000); // Disparait après 3 secondes
+</script>

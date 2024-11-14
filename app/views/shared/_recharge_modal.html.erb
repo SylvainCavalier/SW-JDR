@@ -1,0 +1,18 @@
+<!-- Pop-up de confirmation de recharge -->
+<div class="modal fade" id="rechargeModal" tabindex="-1" aria-labelledby="rechargeModalLabel" aria-hidden="true" data-controller="shieldRecharge">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="rechargeModalLabel">Confirmation de recharge</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <p data-shield-recharge-target="popupMessage">Recharger pour 0 Crédits ?</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Non</button>
+        <button type="button" class="btn btn-primary" data-action="click->shieldRecharge#confirmRecharge" data-bs-dismiss="modal">Oui</button>
+      </div>
+    </div>
+  </div>
+</div>
