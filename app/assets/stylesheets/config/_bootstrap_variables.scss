@@ -26,3 +26,5 @@ $border-radius-xl:            .5rem;
 $border-radius-xxl:           1rem;
 
 // Override other variables below!
+$backdrop-zindex: 1040; // Définition d'une variable pour Bootstrap
+$modal-backdrop-zindex: auto;

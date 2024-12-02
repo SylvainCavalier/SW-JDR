@@ -23,7 +23,11 @@ class TransactionsController < ApplicationController
         @transaction.receiver.update!(credits: @transaction.receiver.credits + @transaction.amount)
         @transaction.save!
       end
-      redirect_to root_path, notice: 'Transfert réussi'
+      if current_user.group.name == "MJ"
+        redirect_to mj_dashboard_path, notice: 'Transfert réussi'
+      else
+        redirect_to root_path, notice: 'Transfert réussi'
+      end
     else
       redirect_to new_transaction_path, alert: 'Transfert échoué, crédits insuffisants'
     end

@@ -155,7 +155,7 @@ span {
 .echani-shield {
   position: absolute;
   top: 50%;
-  right: 10%;
+  right: 12%;
   transform: translateY(-50%);
   z-index: 3;
 }
@@ -194,6 +194,15 @@ span {
   width: 300px;
   z-index: 2;
 } */
+
+.status-container {
+  position: absolute;
+  bottom: 20%;
+  left: 13%;
+  width: 300px;
+  height: auto;
+  z-index: 3;
+}
 
 .hp-bar-container {
   position: absolute;
@@ -256,7 +265,7 @@ span {
   z-index: 3;
 }
 
-.message-btn {
+.holonews-btn {
   top: 15%;
   left: 12%;
   position: absolute;
@@ -562,4 +571,45 @@ input[type="submit"] {
   width: 600px;
   height: auto;
   z-index: 2;
+}
+
+#fixer-statuts-container .fixer-statuts-select {
+  width: 120px;
+  display: inline-block;
+}
+
+#fixer-statuts-container .fixer-statuts-select:focus {
+  outline: none;
+  box-shadow: none;
+}
+
+#fixer-statuts-container .fixer-statuts-select option {
+  background-color: #1a1a1a;
+  color: #00FF00;
+  font-size: 1.5rem;
+}
+
+.heal-container {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  top: 17%;
+  left: 10%;
+  width: 600px;
+  height: auto;
+  z-index: 2;
+}
+
+#healModal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+}
+.modal-backdrop {
+  z-index: auto !important; /* Remplace la valeur par défaut de Bootstrap */
 }

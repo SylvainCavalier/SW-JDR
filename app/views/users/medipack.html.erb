@@ -1,0 +1,65 @@
+<div class="frame-container" style="position: relative; width: 100%; height: 100vh;">
+  <!-- Username -->
+  <p class="username-display mt-1 text-primary fw-bold">
+    <%= current_user.username.capitalize %>
+  </p>
+
+  <!-- Cadre principal SVG -->
+  <img src="<%= asset_path('cadre2.svg') %>" alt="Cadre" class="ui-frame">
+
+  <div class="heal-container text-center">
+    <h1>Soins</h1>
+    <%= link_to "Liste des objets de soins", healobjects_user_path(current_user), class: "btn btn-outline-primary mt-3" %>
+
+    <!-- Bouton Soigner -->
+    <button class="btn btn-outline-success mt-3" data-bs-toggle="modal" data-bs-target="#healModal">
+      Soigner
+    </button>
+
+    <!-- Modal -->
+    <div class="modal fade" id="healModal" tabindex="-1" aria-labelledby="healModalLabel" aria-hidden="true" data-controller="heal" data-heal-current-user-id-value="<%= current_user.id %>">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="healModalLabel">Soigner un joueur</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <div class="player-list" style="max-height: 60vh; overflow-y: auto;">
+              <% User.where(group: Group.find_by(name: "PJ")).each do |user| %>
+                <div class="player-box border rounded p-3 mb-3">
+                  <p><strong>Nom : </strong><%= user.username.capitalize %></p>
+                  <p><strong>PV : </strong><%= user.hp_current %> / <%= user.hp_max %></p>
+                  <p><strong>Statut : </strong><%= user.current_status&.name || "Statut inconnu" %></p>
+                  <div class="form-group">
+                    <label for="heal-item-<%= user.id %>">Objet de soin</label>
+                    <select 
+                      class="form-select heal-item" 
+                      id="heal-item-<%= user.id %>" 
+                      data-heal-target="healItem" 
+                      data-user-id="<%= user.id %>">
+                      <% current_user.user_inventory_objects.each do |uio| %>
+                        <% if uio.quantity > 0 && uio.inventory_object.category == "soins" %>
+                          <option value="<%= uio.inventory_object.id %>">
+                            <%= uio.inventory_object.name %> (x<%= uio.quantity %>)
+                          </option>
+                        <% end %>
+                      <% end %>
+                    </select>
+                  </div>
+                  <button 
+                    class="btn btn-outline-primary use-heal-btn mt-2"
+                    data-action="click->heal#useHeal"
+                    data-user-id="<%= user.id %>">
+                    Utiliser
+                  </button>
+                </div>
+              <% end %>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <%= link_to "Retour", health_management_user_path(current_user), class: "btn btn-outline-secondary mt-3 go-back" %>
+</div>

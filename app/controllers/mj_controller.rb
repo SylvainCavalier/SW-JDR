@@ -58,13 +58,35 @@ class MjController < ApplicationController
       user.apply_xp_bonus(xp_to_add)
       xp_updates << { id: user.id, xp: user.xp }
     end
+
+    xp_updates.each do |update|
+      user = User.find(update[:id])
+      user.broadcast_replace_to(
+        "xp_updates_#{user.id}",
+        target: "user_#{user.id}_xp_frame",
+        partial: "pages/xp_update",
+        locals: { user: user }
+      )
+    end
   
     respond_to do |format|
-      format.turbo_stream do
-        render partial: "pages/attribution_xp", locals: { xp_updates: xp_updates }
-      end
+      format.turbo_stream { head :ok }
       format.html { redirect_to donner_xp_path, notice: "XP mis à jour !" }
     end
+  end
+
+  def fixer_statut
+    @users = User.where(group: Group.find_by(name: "PJ"))
+    @statuses = Status.all
+  end
+
+  def update_statut
+    params[:status].each do |user_id, status_id|
+      user = User.find(user_id)
+      status = Status.find(status_id)
+      user.statuses = [status]
+    end
+    redirect_to fixer_statut_path, notice: "Statuts mis à jour avec succès."
   end
   
   private

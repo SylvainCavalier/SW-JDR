@@ -1,9 +1,0 @@
-<% xp_updates.each do |update| %>
-  <turbo-stream target="user_<%= update[:id] %>_xp_frame" action="replace">
-    <template>
-      <p class="xp-text" id="user_<%= update[:id] %>_xp">
-        XP : <%= update[:xp] %>
-      </p>
-    </template>
-  </turbo-stream>
-<% end %>

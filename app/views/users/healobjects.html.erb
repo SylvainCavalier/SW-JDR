@@ -1,0 +1,35 @@
+<div class="container mt-4">
+  <h1 class="text-center">Liste des objets de soins</h1>
+  <table class="table mt-4">
+    <thead>
+      <tr>
+        <th>Nom</th>
+        <th>Description</th>
+        <th>Rareté</th>
+        <th>Quantité</th>
+        <th>Prix</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @heal_objects.each do |object| %>
+        <tr id="object-<%= object.id %>" 
+            data-controller="healobject" 
+            data-healobject-object-id-value="<%= object.id %>" 
+            data-healobject-user-id-value="<%= current_user.id %>">
+          <td><%= object.name %></td>
+          <td><%= object.description %></td>
+          <td><%= object.rarity %></td>
+          <td class="quantity" data-healobject-target="quantity">
+            <%= current_user.user_inventory_objects.find_by(inventory_object: object)&.quantity || 0 %>
+          </td>
+          <td><%= object.price %></td>
+          <td>
+            <%= button_tag "Acheter", class: "btn btn-outline-success btn-sm", data: { action: "click->healobject#buy" } %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+  <%= link_to "Retour", medipack_user_path(current_user), class: "btn btn-outline-secondary mt-3" %>
+</div>

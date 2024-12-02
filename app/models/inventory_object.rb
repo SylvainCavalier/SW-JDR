@@ -1,3 +1,4 @@
 class InventoryObject < ApplicationRecord
-  belongs_to :user
+  has_many :user_inventory_objects
+  has_many :users, through: :user_inventory_objects
 end

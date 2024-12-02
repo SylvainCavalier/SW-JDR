@@ -1,3 +1,8 @@
+<% if user_signed_in? %>
+  <%= turbo_stream_from "xp_updates_#{current_user.id}" %>
+  <%= turbo_stream_from "xp_notifications_#{current_user.id}" %>
+<% end %>
+
 <div class="frame-container" style="position: relative; width: 100%; height: 100vh;">
   <!-- Username -->
   <p class="username-display mt-1 text-primary fw-bold">
@@ -85,17 +90,23 @@
       <p class="credits-text" data-credits-target="amount">Crédits : <%= current_user.credits %></p>
       <!-- XP Container -->
       <div class="xp-container d-flex" data-controller="xp-spend" data-user-id="<%= current_user.id %>">
-        <%= turbo_frame_tag "user_#{current_user.id}_xp_frame" do %>
+        <turbo-frame id="user_<%= current_user.id %>_xp_frame">
           <p class="xp-text" id="user_<%= current_user.id %>_xp" data-xp-spend-target="xp">
             XP : <%= current_user.xp %>
           </p>
-        <% end %>
+        </turbo-frame>
         <%#= button_tag "Dépenser 1 XP", class: "btn btn-outline-primary btn-sm", data: { action: "xp-spend#decrement" } %>
         <div id="xp_notifications"></div>
       </div>
     </div>
   <% end %>
 
+  <!-- Statut -->
+  <div class="status-container">
+    <% current_user.statuses.each do |status| %>
+      <p style="color: <%= status.color %>;"><%= status.name %></p>
+    <% end %>
+  </div>
   <!-- Barre de vie -->
   <%= link_to health_management_user_path(current_user) do %>
     <div class="hp-bar-container" data-controller="hp-bar" data-max-hp="<%= current_user.hp_max %>" data-current-hp="<%= current_user.hp_current %>">
@@ -127,7 +138,7 @@
 
   <!-- Boutons d'action -->
   <%= link_to "Réglages", settings_user_path(current_user), class: "btn btn-outline-success transfer-btn" %>
-  <%= link_to "Holonews", holonews_path, class: "btn btn-outline-success message-btn" %>
+  <%= link_to "Holonews", holonews_path, class: "btn btn-outline-success holonews-btn" %>
   <%= button_to "✖", destroy_user_session_path, method: :delete, data: { turbo: false, confirm: "Se déconnecter ?" },
     style: "position: absolute; top: 10px; right: 70px; color: #333; font-size: 10px; text-decoration: none; z-index: 3;",
     onmouseover: "this.style.color='#ff0000'", onmouseout: "this.style.color='#333'" %>

@@ -1,5 +1,6 @@
 class UsersController < ApplicationController
   before_action :authenticate_user!
+  before_action :set_user, only: [:medipack, :healobjects, :buy_inventory_object]
 
   def toggle_shield
     new_state = params[:shield_state] == "true"
@@ -78,6 +79,59 @@ class UsersController < ApplicationController
     else
       render :settings, alert: "Erreur lors de la mise à jour des réglages."
     end
+  end
+
+  def medipack
+    render :medipack
+  end
+
+  def healobjects
+    @heal_objects = InventoryObject.where(category: 'soins').where(rarity: ['Commun', 'Unco'])
+  end
+
+  def buy_inventory_object
+    inventory_object = InventoryObject.find(params[:inventory_object_id])
+    user_inventory_object = @user.user_inventory_objects.find_or_initialize_by(inventory_object: inventory_object)
+  
+    if @user.credits >= inventory_object.price
+      @user.credits -= inventory_object.price
+      user_inventory_object.quantity ||= 0
+      user_inventory_object.quantity += 1
+  
+      ActiveRecord::Base.transaction do
+        @user.save!
+        user_inventory_object.save!
+      end
+  
+      render json: { new_quantity: user_inventory_object.quantity }, status: :ok
+    else
+      render json: { error: "Crédits insuffisants" }, status: :unprocessable_entity
+    end
+  rescue ActiveRecord::RecordNotFound
+    render json: { error: "Utilisateur ou objet introuvable" }, status: :not_found
+  end
+
+  def heal_player
+    player = User.find(params[:player_id])
+    inventory_object = current_user.user_inventory_objects.find_by(inventory_object_id: params[:item_id])
+  
+    if inventory_object.nil? || inventory_object.quantity <= 0
+      render json: { error: "Objet de soin invalide ou quantité insuffisante." }, status: :unprocessable_entity
+      return
+    end
+  
+    dice_roll = (1..current_user.medicine_mastery).map { rand(1..6) }.sum + current_user.medicine_bonus
+    heal_amount = (dice_roll / 2.0).ceil
+  
+    new_hp = [player.hp_current + heal_amount, player.hp_max].min
+    inventory_object.quantity -= 1
+  
+    ActiveRecord::Base.transaction do
+      inventory_object.save!
+      player.update!(hp_current: new_hp)
+    end
+  
+    render json: { player_id: player.id, new_hp: new_hp, item_quantity: inventory_object.quantity }
   end
 
   private

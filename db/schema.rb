@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_11_12_141124) do
+ActiveRecord::Schema[7.1].define(version: 2024_11_14_153357) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -45,10 +45,8 @@ ActiveRecord::Schema[7.1].define(version: 2024_11_12_141124) do
     t.text "description"
     t.integer "price"
     t.string "rarity"
-    t.bigint "user_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["user_id"], name: "index_inventory_objects_on_user_id"
   end
 
   create_table "races", force: :cascade do |t|
@@ -65,12 +63,30 @@ ActiveRecord::Schema[7.1].define(version: 2024_11_12_141124) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "statuses", force: :cascade do |t|
+    t.string "name"
+    t.text "description"
+    t.string "color"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "transactions", force: :cascade do |t|
     t.integer "sender_id"
     t.integer "receiver_id"
     t.integer "amount"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "user_inventory_objects", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.bigint "inventory_object_id", null: false
+    t.integer "quantity"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["inventory_object_id"], name: "index_user_inventory_objects_on_inventory_object_id"
+    t.index ["user_id"], name: "index_user_inventory_objects_on_user_id"
   end
 
   create_table "user_skills", force: :cascade do |t|
@@ -82,6 +98,15 @@ ActiveRecord::Schema[7.1].define(version: 2024_11_12_141124) do
     t.datetime "updated_at", null: false
     t.index ["skill_id"], name: "index_user_skills_on_skill_id"
     t.index ["user_id"], name: "index_user_skills_on_user_id"
+  end
+
+  create_table "user_statuses", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.bigint "status_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["status_id"], name: "index_user_statuses_on_status_id"
+    t.index ["user_id"], name: "index_user_statuses_on_user_id"
   end
 
   create_table "users", force: :cascade do |t|
@@ -113,9 +138,12 @@ ActiveRecord::Schema[7.1].define(version: 2024_11_12_141124) do
   end
 
   add_foreign_key "holonews", "users"
-  add_foreign_key "inventory_objects", "users"
+  add_foreign_key "user_inventory_objects", "inventory_objects"
+  add_foreign_key "user_inventory_objects", "users"
   add_foreign_key "user_skills", "skills"
   add_foreign_key "user_skills", "users"
+  add_foreign_key "user_statuses", "statuses"
+  add_foreign_key "user_statuses", "users"
   add_foreign_key "users", "classe_persos"
   add_foreign_key "users", "groups"
   add_foreign_key "users", "races"

@@ -3,6 +3,7 @@ Rails.application.routes.draw do
 
   resources :users, only: [] do
     resources :inventory_objects, only: [:index, :create, :destroy]
+    
     member do
       post :toggle_shield
       post :update_hp
@@ -12,6 +13,10 @@ Rails.application.routes.draw do
       post :purchase_hp
       get :settings
       patch :update_settings
+      get :medipack
+      get :healobjects
+      post :buy_inventory_object
+      post :heal_player
     end
   end
 
@@ -31,6 +36,9 @@ Rails.application.routes.draw do
   post 'mj/donner_xp', to: 'mj#attribution_xp', defaults: { format: :turbo_stream }
 
   get 'mj/test_turbo', to: 'mj#test_turbo', defaults: { format: :turbo_stream }
+
+  get 'mj/fixer_statut', to: 'mj#fixer_statut', as: 'fixer_statut'
+  post 'mj/fixer_statut', to: 'mj#update_statut'
 
   root 'pages#home'
 end

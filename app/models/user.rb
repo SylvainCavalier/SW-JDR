@@ -7,9 +7,12 @@ class User < ApplicationRecord
   belongs_to :group
   belongs_to :race, optional: true
   belongs_to :classe_perso, class_name: "ClassePerso", foreign_key: "classe_perso_id", optional: true
-  has_many :inventory_objects, dependent: :destroy
+  has_many :user_inventory_objects
+  has_many :inventory_objects, through: :user_inventory_objects
   has_many :user_skills
   has_many :skills, through: :user_skills
+  has_many :user_statuses, dependent: :destroy
+  has_many :statuses, through: :user_statuses
 
   validates :username, presence: true, uniqueness: true
 
@@ -27,6 +30,20 @@ class User < ApplicationRecord
     end
   end
 
+  def current_status
+    user_statuses.order(created_at: :desc).first&.status
+  end
+
+  def broadcast_xp_update
+    Rails.logger.debug "Broadcasting XP update for user ##{id}"
+    broadcast_replace_to(
+      "xp_updates_#{id}",
+      target: "user_#{id}_xp_frame",
+      partial: "pages/xp_update",
+      locals: { user: self }
+    )
+  end
+
   private
 
   def human_race?
@@ -38,12 +55,5 @@ class User < ApplicationRecord
                         target: "xp_notifications",
                         partial: "users/xp_notification",
                         locals: { message: "+1 XP racial ! 🎉" }
-  end
-
-  def broadcast_xp_update
-    broadcast_replace_to "xp_updates_#{id}", 
-                         target: "user_xp_frame", 
-                         partial: "pages/user_xp", 
-                         locals: { xp: self.xp }
   end
 end
