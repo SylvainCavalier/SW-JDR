@@ -1,6 +1,7 @@
 <% if user_signed_in? %>
   <%= turbo_stream_from "xp_updates_#{current_user.id}" %>
   <%= turbo_stream_from "xp_notifications_#{current_user.id}" %>
+  <%= turbo_stream_from "credits_updates_#{current_user.id}" %>
 <% end %>
 
 <div class="frame-container" style="position: relative; width: 100%; height: 100vh;">
@@ -87,7 +88,9 @@
     <div class="credits-container mt-1" data-controller="credits" data-user-id="<%= current_user.id %>" data-max-hp="<%= current_user.hp_max %>">
       <img src="<%= asset_path('screen.svg') %>" alt="Screen Background" class="screen-background">
       <!-- Credits -->
-      <p class="credits-text" data-credits-target="amount">Crédits : <%= current_user.credits %></p>
+      <turbo-frame id="user_<%= current_user.id %>_credits_frame">
+        <%= render partial: "pages/credits", locals: { user: current_user } %>
+      </turbo-frame>
       <!-- XP Container -->
       <div class="xp-container d-flex" data-controller="xp-spend" data-user-id="<%= current_user.id %>">
         <turbo-frame id="user_<%= current_user.id %>_xp_frame">

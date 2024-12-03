@@ -44,6 +44,16 @@ class User < ApplicationRecord
     )
   end
 
+  def broadcast_credits_update
+    Rails.logger.debug "Broadcasting credits update for user ##{id} on credits_updates_#{id}"
+    broadcast_replace_to(
+      "credits_updates_#{id}",
+      target: "user_#{id}_credits_frame",
+      partial: "pages/credits",
+      locals: { user: self }
+    )
+  end
+
   private
 
   def human_race?

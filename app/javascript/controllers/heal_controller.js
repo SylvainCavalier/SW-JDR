@@ -2,37 +2,33 @@ import { Controller } from "@hotwired/stimulus";
 
 export default class extends Controller {
   static targets = ["healItem", "useHealBtn"];
-  static values = { currentUserId: Number }; // Définit une valeur connectée au HTML
+  static values = { currentUserId: Number };
 
   connect() {
-    console.log("Controller connected");
-    console.log("healItemTargets on connect:", this.healItemTargets);
-    console.log("currentUserId value:", this.currentUserIdValue);
+    console.log("✅ Heal Controller connecté");
+    console.log("🔄 Heal Item Targets:", this.healItemTargets);
+    console.log("🆔 ID utilisateur actuel:", this.currentUserIdValue);
   }
 
   async useHeal(event) {
     const button = event.currentTarget;
+    const userId = button.dataset.userId;
 
-    console.log("Button clicked:", button);
-
-    const userId = button.dataset.userId; // ID du joueur à soigner
-    console.log("User ID from button dataset:", userId);
-
-    console.log("healItemTargets:", this.healItemTargets);
-
-    const itemElement = this.healItemTargets.find(item => item.dataset.userId === String(userId));
-    console.log("Found itemElement for userId:", itemElement);
+    const itemElement = this.healItemTargets.find(
+      (item) => item.dataset.userId === String(userId)
+    );
 
     if (!itemElement) {
-      console.error("No item found for userId:", userId);
-      alert("Aucun objet de soin trouvé pour cet utilisateur !");
+      alert("Veuillez sélectionner un objet de soin !");
       return;
     }
 
-    const itemId = itemElement.value; // ID de l'objet de soin sélectionné
-    console.log("Selected item ID:", itemId);
+    const itemId = itemElement.value;
 
     try {
+      button.disabled = true;
+      button.textContent = "Chargement...";
+
       const response = await fetch(`/users/${this.currentUserIdValue}/heal_player`, {
         method: "POST",
         headers: {
@@ -42,29 +38,51 @@ export default class extends Controller {
         body: JSON.stringify({ player_id: userId, item_id: itemId }),
       });
 
-      console.log("Fetch response:", response);
+      button.textContent = "Utiliser";
+      button.disabled = false;
 
       if (response.ok) {
         const data = await response.json();
-        console.log("Heal successful, response data:", data);
-        alert(`Le joueur ${userId} a été soigné avec succès. PV : ${data.new_hp}`);
-        this.updatePlayerHp(userId, data.new_hp);
+        this.updatePlayerHp(userId, data.new_hp, data.item_quantity, itemId);
+        alert(`🎉 ${data.player_name} a été soigné. PV repris : ${data.healed_points}`);
       } else {
         const error = await response.json();
-        console.error("Error response from server:", error);
         alert(error.error || "Une erreur s'est produite.");
       }
     } catch (error) {
-      console.error("Network or server error:", error);
-      alert("Impossible de soigner le joueur, problème réseau ou serveur.");
+      button.textContent = "Utiliser";
+      button.disabled = false;
+      alert("Une erreur inattendue s'est produite. Veuillez réessayer.");
     }
   }
 
-  updatePlayerHp(userId, newHp) {
-    const playerBox = document.querySelector(`.player-box [data-user-id="${userId}"]`);
+  updatePlayerHp(userId, newHp, itemQuantity, itemId) {
+    const playerBox = this.element.querySelector(`[data-user-id="${userId}"]`);
+    if (!playerBox) return;
+
     const hpElement = playerBox.querySelector(".player-hp");
     if (hpElement) {
-      hpElement.textContent = `PV : ${newHp}`;
+      const maxHp = hpElement.dataset.hpMax;
+    hpElement.textContent = `PV : ${newHp} / ${maxHp}`;
+    }
+
+    const healItemSelect = playerBox.querySelector(`[data-heal-target="healItem"]`);
+    if (healItemSelect) {
+      const optionToUpdate = healItemSelect.querySelector(`option[value="${itemId}"]`);
+      if (optionToUpdate) {
+        if (itemQuantity > 0) {
+          optionToUpdate.textContent = `${optionToUpdate.textContent.split(" (")[0]} (x${itemQuantity})`;
+        } else {
+          optionToUpdate.remove();
+        }
+
+        if (!healItemSelect.querySelector('option[disabled]') && healItemSelect.options.length === 0) {
+          const emptyOption = document.createElement("option");
+          emptyOption.textContent = "Aucun objet disponible";
+          emptyOption.disabled = true;
+          healItemSelect.appendChild(emptyOption);
+        }
+      }
     }
   }
 }

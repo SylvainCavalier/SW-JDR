@@ -46,6 +46,10 @@ span {
   overflow: hidden;
 }
 
+.form-control::placeholder {
+  color: white;
+}
+
 /* ------------- HOME -------------- */
 
 .ui-frame {

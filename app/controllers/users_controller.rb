@@ -111,27 +111,70 @@ class UsersController < ApplicationController
     render json: { error: "Utilisateur ou objet introuvable" }, status: :not_found
   end
 
+  def medipack
+    @users = User.joins(:group).where(groups: { name: "PJ" })
+    @user_inventory_objects = current_user.user_inventory_objects.includes(:inventory_object)
+  end
+
   def heal_player
-    player = User.find(params[:player_id])
-    inventory_object = current_user.user_inventory_objects.find_by(inventory_object_id: params[:item_id])
+    Rails.logger.debug "➡️ Début de l'action heal_player"
   
-    if inventory_object.nil? || inventory_object.quantity <= 0
-      render json: { error: "Objet de soin invalide ou quantité insuffisante." }, status: :unprocessable_entity
-      return
+    begin
+      Rails.logger.debug "Params reçus: #{params.inspect}"
+  
+      player = User.find(params[:player_id])
+      Rails.logger.debug "👤 Joueur chargé: #{player.inspect}"
+  
+      heal_item = current_user.user_inventory_objects.find_by(inventory_object_id: params[:item_id])
+      Rails.logger.debug "🩹 Objet de soin chargé: #{heal_item.inspect}"
+  
+      if heal_item.nil? || heal_item.quantity <= 0
+        Rails.logger.debug "❌ Objet de soin invalide ou quantité insuffisante."
+        render json: { error: "Objet de soin invalide ou quantité insuffisante." }, status: :unprocessable_entity
+        return
+      end
+  
+      medicine_skill = current_user.user_skills.joins(:skill).find_by(skills: { name: 'Médecine' })
+      medicine_mastery = medicine_skill&.mastery || 0
+      medicine_bonus = medicine_skill&.bonus || 0
+
+      Rails.logger.debug "🎲 Compétence Médecine - Mastery: #{medicine_mastery}, Bonus: #{medicine_bonus}"
+      Rails.logger.debug "🎲 Début du calcul des dés"
+
+      dice_roll = (1..medicine_mastery).map { rand(1..6) }.sum + medicine_bonus
+      heal_amount = (dice_roll / 2.0).ceil
+
+      Rails.logger.debug "🎲 Résultat du lancer de dés : #{dice_roll}, Points de soin : #{heal_amount}"
+
+      new_hp = [player.hp_current + heal_amount, player.hp_max].min
+      heal_item.quantity -= 1
+      Rails.logger.debug "🩹 Quantité mise à jour pour l'objet de soin: #{heal_item.quantity}"
+  
+      ActiveRecord::Base.transaction do
+        Rails.logger.debug "🔄 Début de la transaction"
+        heal_item.save! if heal_item.changed?
+        Rails.logger.debug "🩹 Objet de soin sauvegardé"
+        player.update!(hp_current: new_hp) if player.hp_current != new_hp
+        Rails.logger.debug "👤 PV du joueur mis à jour"
+      end
+      Rails.logger.debug "✅ Transaction effectuée avec succès"
+  
+      render json: {
+        player_id: player.id,
+        new_hp: new_hp,
+        item_quantity: heal_item.quantity,
+        healed_points: heal_amount,
+        player_name: player.username
+      }
+      Rails.logger.debug "📤 JSON rendu avec succès"
+  
+    rescue ActiveRecord::RecordInvalid => e
+      Rails.logger.error "⚠️ Erreur lors de la transaction : #{e.message}"
+      render json: { error: "Une erreur s'est produite lors de la mise à jour des données." }, status: :unprocessable_entity
+    rescue => e
+      Rails.logger.error "⚠️ Erreur inattendue : #{e.message}"
+      render json: { error: "Une erreur inattendue s'est produite." }, status: :internal_server_error
     end
-  
-    dice_roll = (1..current_user.medicine_mastery).map { rand(1..6) }.sum + current_user.medicine_bonus
-    heal_amount = (dice_roll / 2.0).ceil
-  
-    new_hp = [player.hp_current + heal_amount, player.hp_max].min
-    inventory_object.quantity -= 1
-  
-    ActiveRecord::Base.transaction do
-      inventory_object.save!
-      player.update!(hp_current: new_hp)
-    end
-  
-    render json: { player_id: player.id, new_hp: new_hp, item_quantity: inventory_object.quantity }
   end
 
   private

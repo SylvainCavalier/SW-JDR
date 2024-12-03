@@ -26,10 +26,10 @@
           </div>
           <div class="modal-body">
             <div class="player-list" style="max-height: 60vh; overflow-y: auto;">
-              <% User.where(group: Group.find_by(name: "PJ")).each do |user| %>
-                <div class="player-box border rounded p-3 mb-3">
+              <% @users.each do |user| %>
+                <div class="player-box border rounded p-3 mb-3" data-user-id="<%= user.id %>">
                   <p><strong>Nom : </strong><%= user.username.capitalize %></p>
-                  <p><strong>PV : </strong><%= user.hp_current %> / <%= user.hp_max %></p>
+                  <p class="player-hp" data-hp-max="<%= user.hp_max %>"><strong>PV : </strong><%= user.hp_current %> / <%= user.hp_max %></p>
                   <p><strong>Statut : </strong><%= user.current_status&.name || "Statut inconnu" %></p>
                   <div class="form-group">
                     <label for="heal-item-<%= user.id %>">Objet de soin</label>
@@ -38,7 +38,7 @@
                       id="heal-item-<%= user.id %>" 
                       data-heal-target="healItem" 
                       data-user-id="<%= user.id %>">
-                      <% current_user.user_inventory_objects.each do |uio| %>
+                      <% @user_inventory_objects.each do |uio| %>
                         <% if uio.quantity > 0 && uio.inventory_object.category == "soins" %>
                           <option value="<%= uio.inventory_object.id %>">
                             <%= uio.inventory_object.name %> (x<%= uio.quantity %>)
