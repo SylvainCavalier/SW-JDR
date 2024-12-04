@@ -67,6 +67,21 @@ class UsersController < ApplicationController
     
     @user.medicine_mastery = params[:user][:medicine_mastery].to_i
     @user.medicine_bonus = params[:user][:medicine_bonus].to_i
+
+    # Gestion du don "Homéopathie"
+    homeopathie_item = InventoryObject.find_by(name: "Homéopathie")
+    if params[:user][:homeopathie] == "1"
+      user_inventory_object = @user.user_inventory_objects.find_or_initialize_by(inventory_object: homeopathie_item)
+      user_inventory_object.quantity = 1
+      user_inventory_object.save!
+      Rails.logger.debug "✅ 'Homéopathie' ajoutée à l'utilisateur #{@user.username}."
+    else
+      user_inventory_object = @user.user_inventory_objects.find_by(inventory_object: homeopathie_item)
+      if user_inventory_object
+        user_inventory_object.update(quantity: 0)
+        Rails.logger.debug "❌ 'Homéopathie' retirée de l'utilisateur #{@user.username}."
+      end
+    end
   
     if @user.update(user_params)
       medicine_skill = @user.user_skills.find_or_initialize_by(skill: Skill.find_by(name: "Médecine"))
@@ -122,49 +137,85 @@ class UsersController < ApplicationController
     begin
       Rails.logger.debug "Params reçus: #{params.inspect}"
   
-      player = User.find(params[:player_id])
-      Rails.logger.debug "👤 Joueur chargé: #{player.inspect}"
+      # Chargement de l'utilisateur cible
+      user = User.find(params[:player_id])
+      Rails.logger.debug "👤 Joueur chargé: #{user.inspect}"
   
+      # Chargement de l'objet de soin
       heal_item = current_user.user_inventory_objects.find_by(inventory_object_id: params[:item_id])
-      Rails.logger.debug "🩹 Objet de soin chargé: #{heal_item.inspect}"
+      inventory_object = heal_item&.inventory_object || InventoryObject.find_by(id: params[:item_id])
+      Rails.logger.debug "📦 Objet d'inventaire : #{inventory_object.inspect}"
   
-      if heal_item.nil? || heal_item.quantity <= 0
+      if inventory_object.nil?
+        Rails.logger.debug "❌ Objet de soin introuvable."
+        render json: { error: "Objet de soin introuvable." }, status: :unprocessable_entity
+        return
+      end
+  
+      # Gestion spécifique pour "Homéopathie"
+      if inventory_object.name == "Homéopathie"
+        Rails.logger.debug "💊 Homéopathie détectée. Ignorer les vérifications de quantité."
+  
+        if user.hp_current < user.hp_max - 5
+          render json: { error_message: "Homéopathie ne peut être utilisée que si le personnage a perdu 5 PV ou moins." }, status: :unprocessable_entity
+          return
+        end
+      elsif heal_item.nil? || heal_item.quantity <= 0
         Rails.logger.debug "❌ Objet de soin invalide ou quantité insuffisante."
         render json: { error: "Objet de soin invalide ou quantité insuffisante." }, status: :unprocessable_entity
         return
       end
   
-      medicine_skill = current_user.user_skills.joins(:skill).find_by(skills: { name: 'Médecine' })
-      medicine_mastery = medicine_skill&.mastery || 0
-      medicine_bonus = medicine_skill&.bonus || 0
-
-      Rails.logger.debug "🎲 Compétence Médecine - Mastery: #{medicine_mastery}, Bonus: #{medicine_bonus}"
-      Rails.logger.debug "🎲 Début du calcul des dés"
-
-      dice_roll = (1..medicine_mastery).map { rand(1..6) }.sum + medicine_bonus
-      heal_amount = (dice_roll / 2.0).ceil
-
-      Rails.logger.debug "🎲 Résultat du lancer de dés : #{dice_roll}, Points de soin : #{heal_amount}"
-
-      new_hp = [player.hp_current + heal_amount, player.hp_max].min
-      heal_item.quantity -= 1
-      Rails.logger.debug "🩹 Quantité mise à jour pour l'objet de soin: #{heal_item.quantity}"
+      # Vérification des PV actuels
+      if user.hp_current >= user.hp_max
+        render json: { error_message: "Les PV de ce personnage sont déjà au maximum !" }, status: :unprocessable_entity
+        return
+      end
   
+      # Application des effets
+      healed_points, new_status = inventory_object.apply_effects(user, current_user)
+      Rails.logger.debug "❤️ Points de soin : #{healed_points}, Nouveau statut : #{new_status.inspect}"
+  
+      if healed_points <= 0 && new_status.nil?
+        render json: { error_message: "Cet objet ne peut pas être utilisé dans ce contexte." }, status: :unprocessable_entity
+        return
+      end
+  
+      new_hp = [user.hp_current + healed_points, user.hp_max].min
+      Rails.logger.debug "🔄 Nouveau PV : #{new_hp}"
+  
+      # Transaction
       ActiveRecord::Base.transaction do
         Rails.logger.debug "🔄 Début de la transaction"
-        heal_item.save! if heal_item.changed?
-        Rails.logger.debug "🩹 Objet de soin sauvegardé"
-        player.update!(hp_current: new_hp) if player.hp_current != new_hp
-        Rails.logger.debug "👤 PV du joueur mis à jour"
+  
+        # Mise à jour de la quantité sauf pour "Homéopathie"
+        if inventory_object.name != "Homéopathie" && healed_points > 0
+          heal_item.quantity -= 1
+          heal_item.save!
+          Rails.logger.debug "🩹 Quantité mise à jour : #{heal_item.quantity}"
+        end
+  
+        # Mise à jour des PV
+        user.update!(hp_current: new_hp)
+        Rails.logger.debug "👤 PV mis à jour"
+  
+        # Mise à jour du statut si nécessaire
+        if new_status
+          user.set_status(new_status)
+          Rails.logger.debug "🔄 Statut mis à jour : #{new_status}"
+        end
       end
+  
       Rails.logger.debug "✅ Transaction effectuée avec succès"
   
+      # Réponse JSON
       render json: {
-        player_id: player.id,
+        user_id: user.id,
         new_hp: new_hp,
-        item_quantity: heal_item.quantity,
-        healed_points: heal_amount,
-        player_name: player.username
+        item_quantity: heal_item&.quantity || "illimité",
+        healed_points: healed_points,
+        player_name: user.username,
+        new_status: new_status
       }
       Rails.logger.debug "📤 JSON rendu avec succès"
   
@@ -180,7 +231,7 @@ class UsersController < ApplicationController
   private
 
   def user_params
-    params.require(:user).permit(:robustesse, :medicine_mastery, :medicine_bonus)
+    params.require(:user).permit(:robustesse, :homeopathie, :medicine_mastery, :medicine_bonus)
   end
   
   def set_user

@@ -30,7 +30,7 @@
                 <div class="player-box border rounded p-3 mb-3" data-user-id="<%= user.id %>">
                   <p><strong>Nom : </strong><%= user.username.capitalize %></p>
                   <p class="player-hp" data-hp-max="<%= user.hp_max %>"><strong>PV : </strong><%= user.hp_current %> / <%= user.hp_max %></p>
-                  <p><strong>Statut : </strong><%= user.current_status&.name || "Statut inconnu" %></p>
+                  <p class="player-status"><strong>Statut : </strong><%= user.current_status&.name || "Statut inconnu" %></p>
                   <div class="form-group">
                     <label for="heal-item-<%= user.id %>">Objet de soin</label>
                     <select 
@@ -39,7 +39,11 @@
                       data-heal-target="healItem" 
                       data-user-id="<%= user.id %>">
                       <% @user_inventory_objects.each do |uio| %>
-                        <% if uio.quantity > 0 && uio.inventory_object.category == "soins" %>
+                        <% if current_user.homeopathie && uio.inventory_object.name == "Homéopathie" %>
+                          <option value="<%= uio.inventory_object.id %>">
+                            <%= uio.inventory_object.name %>
+                          </option>
+                        <% elsif uio.quantity > 0 && uio.inventory_object.category == "soins" %>
                           <option value="<%= uio.inventory_object.id %>">
                             <%= uio.inventory_object.name %> (x<%= uio.quantity %>)
                           </option>

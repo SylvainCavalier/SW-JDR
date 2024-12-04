@@ -17,6 +17,12 @@
           <%= f.label :robustesse, "Robustesse", class: "form-check-label ms-1" %>
         </div>
       <% end %>
+      <% if ["Bio-savant", "Autodidacte"].include?(current_user.classe_perso&.name) %>
+        <div class="input-group custom-input-group">
+          <%= f.check_box :homeopathie, class: "form-check-input", id: "homeopathie-checkbox" %>
+          <%= f.label :homeopathie, "Homéopathie", class: "form-check-label ms-1" %>
+        </div>
+      <% end %>
 
       <!-- Réglage de compétence : Médecine -->
       <div class="skill-section mt-2">

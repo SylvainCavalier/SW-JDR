@@ -20,6 +20,46 @@ class User < ApplicationRecord
 
   attr_accessor :medicine_mastery, :medicine_bonus
 
+  def set_status(status_name = nil)
+    if status_name.blank?
+      case hp_current
+      when 1..Float::INFINITY
+        status_name = "En forme"
+      when 0
+        status_name = "Inconscient"
+      when -9..-1
+        status_name = "Agonisant"
+      else
+        status_name = "Mort"
+      end
+      Rails.logger.debug "🔄 Statut automatiquement déterminé : #{status_name} pour #{self.username} (HP : #{hp_current})."
+    end
+  
+    status = Status.find_by(name: status_name)
+  
+    if status
+      self.user_statuses.destroy_all
+      self.user_statuses.create!(status: status)
+      Rails.logger.debug "✅ Statut défini sur '#{status_name}' pour #{self.username}."
+    else
+      Rails.logger.warn "⚠️ Aucun statut trouvé avec le nom : #{status_name}."
+    end
+  end
+
+  def medicine_roll
+    medicine_skill = user_skills.includes(:skill).find_by(skills: { name: "Médecine" })
+    if medicine_skill.nil?
+      Rails.logger.warn "⚠️ Aucun skill de Médecine trouvé pour l'utilisateur #{id}."
+      return 0
+    end
+
+    mastery = medicine_skill.mastery || 0
+    bonus = medicine_skill.bonus || 0
+    Rails.logger.debug "🎲 Compétence Médecine - Mastery: #{mastery}, Bonus: #{bonus}"
+
+    (1..mastery).map { rand(1..6) }.sum + bonus
+  end
+
   def apply_xp_bonus(xp_to_add)
     increment!(:total_xp, xp_to_add)
     increment!(:xp, xp_to_add)

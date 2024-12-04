@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_11_14_153357) do
+ActiveRecord::Schema[7.1].define(version: 2024_12_03_183123) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -130,6 +130,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_11_14_153357) do
     t.integer "xp", default: 0
     t.integer "total_xp", default: 0
     t.boolean "robustesse", default: false
+    t.boolean "homeopathie"
     t.index ["classe_perso_id"], name: "index_users_on_classe_perso_id"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["group_id"], name: "index_users_on_group_id"

@@ -43,11 +43,27 @@ export default class extends Controller {
 
       if (response.ok) {
         const data = await response.json();
+
+        if (data.error_message) {
+          alert(data.error_message);
+          return;
+        }
+
         this.updatePlayerHp(userId, data.new_hp, data.item_quantity, itemId);
         alert(`🎉 ${data.player_name} a été soigné. PV repris : ${data.healed_points}`);
+
+        const playerBox = this.element.querySelector(`[data-user-id="${userId}"]`);
+        if (playerBox && data.new_status !== null) {
+          const statusElement = playerBox.querySelector(".player-status");
+          if (statusElement) {
+            statusElement.textContent = `Statut : ${data.new_status}`;
+            console.log(`🔄 Statut mis à jour pour ${data.player_name}: ${data.new_status}`);
+          }
+        }
+
       } else {
         const error = await response.json();
-        alert(error.error || "Une erreur s'est produite.");
+        alert(error.error || "Cet objet de soin ne peut pas être utilisé.");
       }
     } catch (error) {
       button.textContent = "Utiliser";
@@ -63,7 +79,7 @@ export default class extends Controller {
     const hpElement = playerBox.querySelector(".player-hp");
     if (hpElement) {
       const maxHp = hpElement.dataset.hpMax;
-    hpElement.textContent = `PV : ${newHp} / ${maxHp}`;
+      hpElement.textContent = `PV : ${newHp} / ${maxHp}`;
     }
 
     const healItemSelect = playerBox.querySelector(`[data-heal-target="healItem"]`);
@@ -76,7 +92,7 @@ export default class extends Controller {
           optionToUpdate.remove();
         }
 
-        if (!healItemSelect.querySelector('option[disabled]') && healItemSelect.options.length === 0) {
+        if (!healItemSelect.querySelector("option[disabled]") && healItemSelect.options.length === 0) {
           const emptyOption = document.createElement("option");
           emptyOption.textContent = "Aucun objet disponible";
           emptyOption.disabled = true;
