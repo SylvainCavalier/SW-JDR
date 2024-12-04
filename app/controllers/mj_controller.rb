@@ -85,6 +85,7 @@ class MjController < ApplicationController
       user = User.find(user_id)
       status = Status.find(status_id)
       user.statuses = [status]
+      user.broadcast_status_update
     end
     redirect_to fixer_statut_path, notice: "Statuts mis à jour avec succès."
   end

@@ -21,6 +21,7 @@ class User < ApplicationRecord
   attr_accessor :medicine_mastery, :medicine_bonus
 
   def set_status(status_name = nil)
+    # Détermine automatiquement le statut en fonction des PV si aucun statut explicite n'est donné
     if status_name.blank?
       case hp_current
       when 1..Float::INFINITY
@@ -35,12 +36,16 @@ class User < ApplicationRecord
       Rails.logger.debug "🔄 Statut automatiquement déterminé : #{status_name} pour #{self.username} (HP : #{hp_current})."
     end
   
+    # Trouve ou crée le statut correspondant
     status = Status.find_by(name: status_name)
   
     if status
       self.user_statuses.destroy_all
       self.user_statuses.create!(status: status)
       Rails.logger.debug "✅ Statut défini sur '#{status_name}' pour #{self.username}."
+  
+      # Diffusion dynamique via Turbo Stream
+      broadcast_status_update
     else
       Rails.logger.warn "⚠️ Aucun statut trouvé avec le nom : #{status_name}."
     end
@@ -90,6 +95,26 @@ class User < ApplicationRecord
       "credits_updates_#{id}",
       target: "user_#{id}_credits_frame",
       partial: "pages/credits",
+      locals: { user: self }
+    )
+  end
+
+  def broadcast_status_update
+    Rails.logger.debug "Broadcasting status update for user ##{id} on status_updates_#{id}"
+    broadcast_replace_to(
+      "status_updates_#{id}",
+      target: "user_#{id}_status_frame",
+      partial: "pages/status",
+      locals: { user: self }
+    )
+  end
+
+  def broadcast_hp_update
+    Rails.logger.debug "Broadcasting HP update for user ##{id} on hp_updates_#{id}"
+    broadcast_replace_to(
+      "hp_updates_#{id}",
+      target: "user_#{id}_hp_frame",
+      partial: "pages/hp_bar",
       locals: { user: self }
     )
   end

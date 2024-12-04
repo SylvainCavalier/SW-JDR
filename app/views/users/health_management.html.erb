@@ -50,5 +50,5 @@
       <%= button_tag "Acheter", class: "btn btn-outline-primary ms-2", data: { action: "hp#purchaseMaxHp" } %>
     </div>
   </div>
-  <%= link_to "Retour", current_user.group.name == "MJ" ? mj_dashboard_path : root_path, class: "btn btn-outline-success go-back" %>
+  <%= link_to "Retour", current_user.group.name == "MJ" ? mj_dashboard_path : root_path, class: "btn btn-outline-secondary go-back" %>
 </div>

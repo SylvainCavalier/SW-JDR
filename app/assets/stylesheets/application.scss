@@ -12,6 +12,10 @@
 @import "components/index";
 @import "pages/index";
 
+body {
+  background-color: #02121c;
+}
+
 h1 {
   color: $success;
 }
@@ -34,6 +38,8 @@ span {
   background-image: url(asset-path('background.png'));
   background-size: cover;
   background-position: center;
+  background-color: #02121c; /* Noir exact de l'image */
+  background-repeat: no-repeat; /* Évite la répétition de l'image */
   width: 100vw;
   height: 100vh;
   z-index: -1;

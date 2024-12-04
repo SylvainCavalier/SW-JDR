@@ -197,11 +197,13 @@ class UsersController < ApplicationController
   
         # Mise à jour des PV
         user.update!(hp_current: new_hp)
+        user.broadcast_hp_update
         Rails.logger.debug "👤 PV mis à jour"
   
         # Mise à jour du statut si nécessaire
         if new_status
           user.set_status(new_status)
+          user.broadcast_status_update
           Rails.logger.debug "🔄 Statut mis à jour : #{new_status}"
         end
       end

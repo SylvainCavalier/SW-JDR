@@ -1,0 +1,7 @@
+<turbo-frame id="user_<%= user.id %>_status_frame">
+  <div class="status-container">
+    <% user.statuses.each do |status| %>
+      <p style="color: <%= status.color %>;"><%= status.name %></p>
+    <% end %>
+  </div>
+</turbo-frame>

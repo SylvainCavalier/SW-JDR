@@ -20,7 +20,7 @@ class InventoryObject < ApplicationRecord
         Rails.logger.info "❌ Homéopathie ne peut être utilisée sur #{user.username} car ses PV manquants sont > 5."
         heal_points = 0
       end
-      
+
     when "Medipack"
       heal_points = (healer.medicine_roll / 2.0).ceil
   
@@ -49,6 +49,7 @@ class InventoryObject < ApplicationRecord
       if ["Malade", "Gravement Malade"].include?(new_status)
         if new_status == "Gravement Malade" && healer.classe_perso&.name != "Bio-savant"
           Rails.logger.info "❌ Sérum de Thyffera inefficace sur #{user.username} (#{new_status}) sans Bio-savant comme soigneur."
+          return [0, nil] # Aucune guérison, aucun changement de statut
         else
           new_status = "En forme" # Rétablit le statut par défaut
           heal_points = rand(1..6) # Ajoute 1D
@@ -56,6 +57,7 @@ class InventoryObject < ApplicationRecord
         end
       else
         Rails.logger.info "⚠️ Sérum de Thyffera sans effet sur #{user.username}, statut actuel : #{new_status || 'Aucun'}."
+        return [0, nil] # Aucune guérison, aucun changement de statut
       end
   
     when "Rétroviral kallidahin"
