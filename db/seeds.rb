@@ -67,6 +67,26 @@ inventory_objects.each do |item|
   InventoryObject.create!(item)
 end
 
+patches = [
+  { name: "Poisipatch", description: "Quand le porteur est empoisonné, le patch libère un antidote", price: 50, category: "patch" },
+  { name: "Traumapatch", description: "Quand le porteur est blessé, le patch libère 1D PV de bacta", price: 50, category: "patch" },
+  { name: "Stimpatch", description: "Quand le porteur est sonné, le stimpatch le stimule", price: 50, category: "patch" },
+  { name: "Fibripatch", description: "Quand le porteur tombe agonisant, le patch le stabilise", price: 80, category: "patch" },
+  { name: "Vigpatch", description: "Le porteur a +1DD à son prochain jet de dégâts Mains nues/AB", price: 100, category: "patch" },
+  { name: "Focuspatch", description: "Quand le porteur fait moins de la moitié du max d'un jet de précision, +1D préci", price: 100, category: "patch" },
+  { name: "Répercupatch", description: "Quand le porteur reçoit des dégâts, il gagne 1 action immédiate", price: 200, category: "patch" },
+  { name: "Vitapatch", description: "Quand le porteur tombe agonisant, le patch le remet à 0 PV", price: 300, category: "patch" }
+]
+
+patches.each do |patch|
+  InventoryObject.find_or_create_by!(name: patch[:name], category: patch[:category]) do |p|
+    p.description = patch[:description]
+    p.price = patch[:price]
+  end
+end
+
+puts "✅ Les patchs ont été ajoutés à la base de données."
+
 puts "Creating statuses..."
 statuses = [
   { name: "En forme", description: "En pleine santé", color: "#00FF00" }, # Vert clair

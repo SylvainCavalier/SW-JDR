@@ -119,6 +119,18 @@ class User < ApplicationRecord
     )
   end
 
+  def equip_patch(patch_id)
+    update(patch: patch_id)
+  end
+
+  def unequip_patch
+    update(patch: nil)
+  end
+
+  def equipped_patch
+    InventoryObject.find_by(id: patch)
+  end
+
   private
 
   def human_race?

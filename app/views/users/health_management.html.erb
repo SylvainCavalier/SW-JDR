@@ -32,13 +32,19 @@
         <%= button_tag "-", class: "btn btn-outline-success btn-sm", data: { action: "click->hp#decrement" } %>
         <%= button_tag "+", class: "btn btn-outline-success btn-sm", data: { action: "click->hp#increment" } %>
       </div>
-      <!-- Utiliser un Medipack -->
+    </div>
+
+    <!-- Utiliser un Medipack -->
+    <div class="d-flex mt-1">
       <i class="fa-duotone fa-solid fa-kit-medical" style ="z-index: 3; font-size: 40px; color: white;"></i>
       <%= link_to "Medipack", medipack_user_path, class: "btn btn-outline-primary ms-2", style: "z-index: 3;" %>
+      <!-- Bouton pour les patchs -->
+      <i class="fa-regular fa-circle-down ms-2" style="z-index: 3; font-size: 40px; color: white;"></i>
+      <%= link_to "Patch", patch_user_path(current_user), class: "btn btn-outline-primary ms-2", style: "z-index: 3;" %>
     </div>
 
     <!-- Acheter des PV max -->
-    <div class="buy-hp-section d-flex m-2 p-2">
+    <div class="buy-hp-section d-flex m-1 p-2">
       <p>Acheter PV max:</p>
       <div class="input-group custom-input-group me-2" data-controller="increment">
         <%= button_tag "-", type: "button", class: "btn btn-outline-secondary", data: { action: "click->increment#decrement click->hp#updateXpCost" } %>

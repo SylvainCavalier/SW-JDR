@@ -83,11 +83,50 @@ class MjController < ApplicationController
   def update_statut
     params[:status].each do |user_id, status_id|
       user = User.find(user_id)
-      status = Status.find(status_id)
-      user.statuses = [status]
+      new_status = Status.find(status_id)
+  
+      # Gestion des patchs automatiques
+      if user.patch.present?
+        equipped_patch = user.equipped_patch
+  
+        if equipped_patch.name == "Stimpatch" && new_status.name == "Sonné"
+          use_patch_automatically(user, "Sonné")
+          next
+        elsif equipped_patch.name == "Poisipatch" && new_status.name == "Empoisonné"
+          use_patch_automatically(user, "Empoisonné")
+          next
+        end
+      end
+  
+      # Appliquer le statut normalement
+      user.statuses = [new_status]
       user.broadcast_status_update
     end
+  
     redirect_to fixer_statut_path, notice: "Statuts mis à jour avec succès."
+  end
+
+  def donner_objet
+    @users = User.joins(:group).where(groups: { name: "PJ" })
+    @objects = InventoryObject.order(:name)
+  end
+
+  def update_objet
+    params[:object].each do |user_id, object_id|
+      user = User.find(user_id)
+      object = InventoryObject.find(object_id)
+
+      user_inventory_object = user.user_inventory_objects.find_or_initialize_by(inventory_object_id: object.id)
+      user_inventory_object.quantity ||= 0
+      user_inventory_object.quantity += 1
+      user_inventory_object.save!
+
+      Rails.logger.info "✅ Objet #{object.name} donné à #{user.username}."
+    end
+
+    redirect_to donner_objet_path, notice: "Objets donnés avec succès."
+  rescue ActiveRecord::RecordNotFound => e
+    redirect_to donner_objet_path, alert: "Erreur : #{e.message}"
   end
   
   private
@@ -108,5 +147,29 @@ class MjController < ApplicationController
 
   def pv_max_params
     params.require(:pv_max).permit!
+  end
+
+  def use_patch_automatically(user, status_name)
+    equipped_patch = user.equipped_patch
+    inventory_object = user.user_inventory_objects.find_by(inventory_object_id: equipped_patch.id)
+  
+    ActiveRecord::Base.transaction do
+      # Réduire la quantité du patch et déséquiper
+      inventory_object.decrement!(:quantity) if inventory_object.present?
+      user.update!(patch: nil)
+  
+      # Remettre le statut à "En forme"
+      user.set_status("En forme")
+    end
+  
+    # Notification Turbo Streams
+    user.broadcast_replace_to(
+      "notifications_#{user.id}",
+      target: "notification_frame",
+      partial: "pages/notification",
+      locals: { message: "PATCH UTILISÉ : #{equipped_patch.name} activé automatiquement !" }
+    )
+  
+    Rails.logger.info "✔️ Patch automatique activé : #{equipped_patch.name} pour #{user.username}, statut '#{status_name}' annulé."
   end
 end

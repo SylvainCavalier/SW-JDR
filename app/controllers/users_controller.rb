@@ -230,6 +230,69 @@ class UsersController < ApplicationController
     end
   end
 
+  def patch
+    @user_inventory_objects = current_user.user_inventory_objects
+                                          .includes(:inventory_object)
+                                          .where("quantity > 0")
+                                          .where(inventory_objects: { category: "patch" })
+  end
+
+  def equip_patch
+    patch_id = params[:patch_id]
+  
+    if current_user.user_inventory_objects.exists?(inventory_object_id: patch_id)
+      current_user.equip_patch(patch_id)
+      redirect_to patch_user_path(current_user), notice: "Patch équipé avec succès."
+    else
+      redirect_to patch_user_path(current_user), alert: "Patch non disponible."
+    end
+  end
+
+  def use_patch
+    if current_user.patch.present?
+      equipped_patch = current_user.equipped_patch
+      inventory_object = current_user.user_inventory_objects.find_by(inventory_object_id: equipped_patch.id)
+  
+      ActiveRecord::Base.transaction do
+        if equipped_patch.name == "Poisipatch"
+          if current_user.statuses.exists?(name: "Empoisonné")
+            current_user.set_status("En forme")
+            Rails.logger.info "✔️ Poisipatch activé : statut Empoisonné guéri."
+          else
+            redirect_to patch_user_path(current_user), alert: "Le Poisipatch ne peut être utilisé que si vous êtes empoisonné."
+            return
+          end
+        elsif equipped_patch.name == "Traumapatch"
+          healed_points = rand(1..6)
+          new_hp = [current_user.hp_current + healed_points, current_user.hp_max].min
+          current_user.update!(hp_current: new_hp)
+          Rails.logger.info "✔️ Traumapatch activé : +#{healed_points} PV récupérés."
+        elsif equipped_patch.name == "Stimpatch"
+          if current_user.statuses.exists?(name: "Sonné")
+            current_user.set_status("En forme")
+            Rails.logger.info "✔️ Stimpatch activé : statut Sonné guéri."
+          else
+            redirect_to patch_user_path(current_user), alert: "Le Stimpatch ne peut être utilisé que si vous êtes sonné."
+            return
+          end
+        end
+  
+        # Gestion de la quantité et déséquipement du patch
+        if inventory_object.present? && inventory_object.quantity > 0
+          inventory_object.decrement!(:quantity)
+        end
+        current_user.update!(patch: nil)
+      end
+  
+      redirect_to patch_user_path(current_user), notice: "Patch « #{equipped_patch.name} » utilisé avec succès."
+    else
+      redirect_to patch_user_path(current_user), alert: "Aucun patch actuellement équipé."
+    end
+  rescue => e
+    Rails.logger.error "Erreur lors de l'utilisation du patch : #{e.message}"
+    redirect_to patch_user_path(current_user), alert: "Une erreur est survenue lors de l'utilisation du patch."
+  end
+
   private
 
   def user_params

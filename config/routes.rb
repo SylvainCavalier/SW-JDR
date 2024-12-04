@@ -17,6 +17,9 @@ Rails.application.routes.draw do
       get :healobjects
       post :buy_inventory_object
       post :heal_player
+      get :patch
+      post :equip_patch
+      post :use_patch
     end
   end
 
@@ -39,6 +42,9 @@ Rails.application.routes.draw do
 
   get 'mj/fixer_statut', to: 'mj#fixer_statut', as: 'fixer_statut'
   post 'mj/fixer_statut', to: 'mj#update_statut'
+
+  get 'donner_objet', to: 'mj#donner_objet'
+  post 'update_objet', to: 'mj#update_objet'
 
   root 'pages#home'
 end

@@ -1,0 +1,9 @@
+<div class="alert alert-success text-center" style="position: fixed; top: 20%; left: 50%; transform: translate(-50%, -50%); z-index: 1050; background-color: #000; color: #fff; padding: 20px; border-radius: 10px;">
+  <h3><%= message %></h3>
+</div>
+<script>
+  setTimeout(() => {
+    const notification = document.querySelector('.alert');
+    if (notification) notification.remove();
+  }, 3000); // Supprime la notification après 3 secondes
+</script>

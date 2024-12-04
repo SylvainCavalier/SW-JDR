@@ -1,0 +1,81 @@
+<div class="frame-container" style="position: relative; width: 100%; height: 100vh;">
+  <!-- Username -->
+  <p class="username-display mt-1 text-primary fw-bold">
+    <%= current_user.username.capitalize %>
+  </p>
+
+  <!-- Cadre principal SVG -->
+  <img src="<%= asset_path('cadre2.svg') %>" alt="Cadre" class="ui-frame">
+
+  <div class="heal-container text-center">
+    <h1 class="text-center">Gestion des Patchs</h1>
+
+    <!-- Patch équipé -->
+    <div class="equipped-patch d-flex">
+      <i class="fa-regular fa-circle-down me-2" style="z-index: 3; font-size: 30px; color: white;"></i>
+      <p class="mt-1">Patch équipé : <%= current_user.equipped_patch&.name || "Aucun" %></p>
+    </div>
+
+    <!-- Utiliser le patch équipé -->
+    <% if current_user.patch.present? %>
+      <div class="use-patch-section mt-3">
+        <%= form_with url: use_patch_user_path(current_user), method: :post, local: true do |f| %>
+          <p>Description : <%= current_user.equipped_patch&.description || "Aucun patch équipé" %></p>
+          <%= f.submit "Utiliser Patch Équipé", class: "btn btn-outline-primary p-0", data: { controller: "confirm-use-patch", 
+                      action: "click->confirm-use-patch#confirm", 
+                      "confirm-use-patch-patch-name-value": current_user.equipped_patch&.name || "",
+                      "confirm-use-patch-patch-description-value": current_user.equipped_patch&.description || "" } %>
+        <% end %>
+      </div>
+    <% else %>
+      <p>Aucun patch actuellement équipé.</p>
+    <% end %>
+
+    <!-- Bouton pour ouvrir la modale -->
+    <button type="button" class="btn btn-outline-success mt-3" data-bs-toggle="modal" data-bs-target="#equipPatchModal">
+      Équiper un patch
+    </button>
+
+    <!-- Modale pour équiper un patch -->
+    <div class="modal fade" id="equipPatchModal" tabindex="-1" aria-labelledby="equipPatchModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="equipPatchModalLabel">Équiper un Patch</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <table class="table table-hover">
+              <thead>
+                <tr>
+                  <th>Nom</th>
+                  <th>Description</th>
+                  <th>Quantité</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% @user_inventory_objects.each do |uio| %>
+                  <tr>
+                    <td><%= uio.inventory_object.name %></td>
+                    <td><%= uio.quantity %></td>
+                    <td><%= uio.inventory_object.description %></td>
+                    <td>
+                      <% if current_user.patch == uio.inventory_object.id %>
+                        <span>Équipé</span>
+                      <% else %>
+                        <%= button_to "Équiper", equip_patch_user_path(current_user), method: :post, class: "btn btn-outline-primary btn-sm", 
+                                    params: { patch_id: uio.inventory_object.id } %>
+                      <% end %>
+                    </td>
+                  </tr>
+                <% end %>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <%= link_to "Retour", health_management_user_path(current_user), class: "btn btn-outline-secondary mt-3 go-back" %>
+</div>

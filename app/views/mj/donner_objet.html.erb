@@ -1,0 +1,24 @@
+<div id="donner-objet-container" class="frame-container" style="position: relative; width: 100%; height: 100vh;">
+  <div class="container mt-4" style="max-width: 600px;">
+    <h2 class="text-center" style="color: white;">Donner Objet aux Joueurs</h2>
+
+    <% @users.each do |user| %>
+      <div class="d-flex align-items-center justify-content-between mb-2" style="line-height: 1;">
+        <p class="mb-0" style="font-size: 0.9rem;"><%= user.username %></p>
+
+        <%= form_with url: update_objet_path, method: :post, local: true do |form| %>
+          <div class="d-flex align-items-center" style="position: relative;">
+            <!-- Conteneur pour le menu déroulant -->
+            <div class="select-container">
+              <%= select_tag "object[#{user.id}]", options_for_select(@objects.map { |object| [object.name, object.id] }), class: "donner-objet-select form-select form-select-sm me-2", style: "width: 200px;" %>
+            </div>
+            <%= submit_tag "Go", name: "submit_#{user.id}", class: "btn btn-outline-success btn-sm ms-1 p-0", data: { confirm: "Êtes-vous sûr de vouloir donner cet objet ?" } %>
+          </div>
+        <% end %>
+      </div>
+    <% end %>
+    <div class="text-center mt-4">
+      <%= link_to "Retour", current_user.group.name == "MJ" ? mj_dashboard_path : root_path, class: "btn btn-outline-success" %>
+    </div>
+  </div>
+</div>

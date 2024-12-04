@@ -13,7 +13,10 @@
 
     <div class="player-select-row">
       <%= f.label :user_id, "Choisissez un joueur" %>
-      <%= f.collection_select :user_id, User.where(group: Group.find_by(name: "PJ")), :id, :username, prompt: "Sélectionner un joueur", class: "form-select" %>
+      <div class="d-flex align-items-center select-wrapper">
+        <%= select_tag "object[#{user.id}]", options_for_select(@objects.map { |object| [object.name, object.id] }), class: "donner-objet-select form-select form-select-sm me-2", style: "width: 200px;" %>
+        <%= submit_tag "Go", name: "submit_#{user.id}", class: "btn btn-outline-success btn-sm ms-1 p-0", data: { confirm: "Êtes-vous sûr de vouloir donner cet objet ?" } %>
+      </div>
     </div>
 
     <div class="custom-form">

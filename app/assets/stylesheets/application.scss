@@ -571,6 +571,8 @@ input[type="submit"] {
   color: #00ffcc;
 }
 
+/* Page de Settings */
+
 .settings-container {
   position: absolute;
   display: flex;
@@ -582,6 +584,8 @@ input[type="submit"] {
   height: auto;
   z-index: 2;
 }
+
+/* Page Fixer Statut */
 
 #fixer-statuts-container .fixer-statuts-select {
   width: 120px;
@@ -598,6 +602,8 @@ input[type="submit"] {
   color: #00FF00;
   font-size: 1.5rem;
 }
+
+/* Page Medipack */
 
 .heal-container {
   position: absolute;
@@ -620,6 +626,10 @@ input[type="submit"] {
   padding: 20px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
 }
+
 .modal-backdrop {
-  z-index: auto !important; /* Remplace la valeur par défaut de Bootstrap */
+  z-index: auto !important; 
 }
+
+/* Page Donner Objet */
+

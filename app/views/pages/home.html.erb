@@ -7,6 +7,7 @@
 <% end %>
 
 <div class="frame-container" style="position: relative; width: 100%; height: 100vh;">
+
   <!-- Username -->
   <p class="username-display mt-1 text-primary fw-bold">
     <%= current_user.username.capitalize %>
@@ -88,6 +89,8 @@
   <!-- CENTRAL CONTAINER -->
   <%= link_to new_transaction_path do %>
     <div class="credits-container mt-1" data-controller="credits" data-user-id="<%= current_user.id %>" data-max-hp="<%= current_user.hp_max %>">
+      <%= turbo_stream_from "notifications_#{current_user.id}" %>
+      <turbo-frame id="notification_frame"></turbo-frame>
       <img src="<%= asset_path('screen.svg') %>" alt="Screen Background" class="screen-background">
       <!-- Credits -->
       <turbo-frame id="user_<%= current_user.id %>_credits_frame">
