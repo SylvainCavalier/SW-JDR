@@ -37,7 +37,7 @@ cyber_engineer = ClassePerso.create!(name: "Cyber-ing√©nieur", description: "Sp√
 smuggler = ClassePerso.create!(name: "Contrebandier", description: "Expert dans l'art de la contrebande.")
 
 puts "Creating the users and assigning them to the corresponding groups, races, and classes..."
-User.create!(username: "MJ", email: "mj@rpg.com", password: "motdepasse", hp_max: 1000, hp_current: 1000, credits: 100000, group: group1)
+User.create!(username: "MJ", email: "mj@rpg.com", password: "adminsw", hp_max: 1000, hp_current: 1000, credits: 100000, group: group1)
 
 players = [
   { username: "Jarluc de Macharlon", email: "jarluc@rpg.com", race: human, classe_perso: senator, hp_max: 30, hp_current: 30, shield_max: 0, shield_current: 0, echani_shield_max: 0, echani_shield_current: 0, credits: 1000 },
