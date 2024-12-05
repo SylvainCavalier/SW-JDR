@@ -19,6 +19,7 @@ class User < ApplicationRecord
   after_update_commit :broadcast_xp_update, if: :saved_change_to_xp?
 
   attr_accessor :medicine_mastery, :medicine_bonus
+  attr_accessor :res_corp_mastery, :res_corp_bonus
 
   def set_status(status_name = nil)
     # Détermine automatiquement le statut en fonction des PV si aucun statut explicite n'est donné
@@ -131,7 +132,72 @@ class User < ApplicationRecord
     InventoryObject.find_by(id: patch)
   end
 
+  def activate_energy_shield
+    transaction do
+      update!(
+        shield_state: true,
+        echani_shield_state: false
+      )
+      schedule_shield_deactivation
+    end
+  end
+  
+  def activate_echani_shield
+    transaction do
+      update!(
+        echani_shield_state: true,
+        shield_state: false
+      )
+      schedule_shield_deactivation
+    end
+  end
+  
+  def deactivate_all_shields
+    update!(
+      shield_state: false,
+      echani_shield_state: false
+    )
+  end
+
+  def can_activate_energy_shield?
+    shield_current.positive? && !shield_state
+  end
+
+  def can_activate_echani_shield?
+    echani_shield_current.positive? && !echani_shield_state
+  end
+
+  def broadcast_energy_shield_update
+    Rails.logger.debug "Broadcasting energy shield update for user ##{id}"
+    broadcast_replace_to(
+      "shields_updates_#{id}",
+      target: "user_#{id}_energy_shield_frame",
+      partial: "pages/energy_shield_update",
+      locals: { user: self }
+    )
+  end
+  
+  def broadcast_echani_shield_update
+    Rails.logger.debug "Broadcasting echani shield update for user ##{id}"
+    broadcast_replace_to(
+      "shields_updates_#{id}",
+      target: "user_#{id}_echani_shield_frame",
+      partial: "pages/echani_shield_update",
+      locals: { user: self }
+    )
+  end
+
   private
+
+  def schedule_shield_deactivation
+    unless shield_state || echani_shield_state
+      Rails.logger.info "Aucun bouclier actif, pas besoin de planifier une désactivation."
+      return
+    end
+  
+    DeactivateShieldsJob.set(wait: 30.minutes).perform_later(id)
+    Rails.logger.info "Job de désactivation des boucliers planifié pour l'utilisateur #{username}."
+  end
 
   def human_race?
     race&.name == "Humain"

@@ -30,12 +30,37 @@ class MjController < ApplicationController
   end
 
   def update_pv_max
-    pv_max_params.each do |user_id, hp_max_value|
-      user = User.find(user_id)
-      user.update(hp_max: hp_max_value.to_i)
+    user_ids = (update_params[:pv_max]&.keys || []) +
+               (update_params[:shield_max]&.keys || []) +
+               (update_params[:echani_shield_max]&.keys || [])
+    users = User.where(id: user_ids.uniq)
+    users_by_id = users.index_by(&:id)
+  
+    update_params[:pv_max]&.each do |user_id, hp_max_value|
+      user = users_by_id[user_id.to_i]
+      if user&.update(hp_max: hp_max_value.to_i)
+        user.broadcast_hp_update
+        Rails.logger.debug "Updated HP Max for user ##{user.id} to #{user.hp_max}"
+      end
     end
   
-    redirect_to fixer_pv_max_path, notice: "PV Max mis à jour"
+    update_params[:shield_max]&.each do |user_id, shield_max_value|
+      user = users_by_id[user_id.to_i]
+      if user&.update(shield_max: shield_max_value.to_i)
+        user.broadcast_energy_shield_update
+        Rails.logger.debug "Updated Shield Max for user ##{user.id} to #{user.shield_max}"
+      end
+    end
+  
+    update_params[:echani_shield_max]&.each do |user_id, echani_shield_max_value|
+      user = users_by_id[user_id.to_i]
+      if user&.update(echani_shield_max: echani_shield_max_value.to_i)
+        user.broadcast_echani_shield_update
+        Rails.logger.debug "Updated Echani Shield Max for user ##{user.id} to #{user.echani_shield_max}"
+      end
+    end
+  
+    redirect_to fixer_pv_max_path, notice: "PV Max et Boucliers mis à jour dynamiquement"
   end
 
   def donner_xp
@@ -145,8 +170,12 @@ class MjController < ApplicationController
     params.permit(:user_id, :damage, :authenticity_token)
   end
 
-  def pv_max_params
-    params.require(:pv_max).permit!
+  def update_params
+    params.except(:authenticity_token, :commit).permit(
+      pv_max: {},
+      shield_max: {},
+      echani_shield_max: {}
+    ).to_h
   end
 
   def use_patch_automatically(user, status_name)

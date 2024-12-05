@@ -40,12 +40,12 @@ puts "Creating the users and assigning them to the corresponding groups, races, 
 User.create!(username: "MJ", email: "mj@rpg.com", password: "motdepasse", hp_max: 1000, hp_current: 1000, credits: 100000, group: group1)
 
 players = [
-  { username: "Jarluc de Macharlon", email: "jarluc@rpg.com", race: human, classe_perso: senator, hp_max: 30, hp_current: 30, shield_max: 30, shield_current: 30, credits: 1000 },
-  { username: "Kay Noah", email: "kay@rpg.com", race: kaminoan, classe_perso: bio_savant, hp_max: 30, hp_current: 30, shield_max: 30, shield_current: 30, credits: 1000 },
-  { username: "Nuok", email: "nuok@rpg.com", race: codruji, classe_perso: autodidact, hp_max: 30, hp_current: 30, shield_max: 30, shield_current: 30, credits: 1000 },
-  { username: "Pluto", email: "pluto@rpg.com", race: human, classe_perso: mercenary, hp_max: 30, hp_current: 30, shield_max: 30, shield_current: 30, credits: 1000 },
-  { username: "Viggo", email: "viggo@rpg.com", race: toydarian, classe_perso: cyber_engineer, hp_max: 30, hp_current: 30, shield_max: 30, credits: 1000 },
-  { username: "Mas Tandor", email: "mas@rpg.com", race: clawdite, classe_perso: smuggler, hp_max: 30, hp_current: 30, shield_max: 30, credits: 1000 }
+  { username: "Jarluc de Macharlon", email: "jarluc@rpg.com", race: human, classe_perso: senator, hp_max: 30, hp_current: 30, shield_max: 0, shield_current: 0, echani_shield_max: 0, echani_shield_current: 0, credits: 1000 },
+  { username: "Kay Noah", email: "kay@rpg.com", race: kaminoan, classe_perso: bio_savant, hp_max: 30, hp_current: 30, shield_max: 0, shield_current: 0, echani_shield_max: 0, echani_shield_current: 0, credits: 1000 },
+  { username: "Nuok", email: "nuok@rpg.com", race: codruji, classe_perso: autodidact, hp_max: 30, hp_current: 30, shield_max: 0, shield_current: 0, echani_shield_max: 0, echani_shield_current: 0, credits: 1000 },
+  { username: "Pluto", email: "pluto@rpg.com", race: human, classe_perso: mercenary, hp_max: 30, hp_current: 30, shield_max: 0, shield_current: 0, echani_shield_max: 0, echani_shield_current: 0, credits: 1000 },
+  { username: "Viggo", email: "viggo@rpg.com", race: toydarian, classe_perso: cyber_engineer, hp_max: 30, hp_current: 30, shield_max: 0, echani_shield_max: 0, echani_shield_current: 0, credits: 1000 },
+  { username: "Mas Tandor", email: "mas@rpg.com", race: clawdite, classe_perso: smuggler, hp_max: 30, hp_current: 30, shield_max: 0, echani_shield_max: 0, echani_shield_current: 0, credits: 1000 }
 ]
 
 puts "Creating healing inventory objects..."
@@ -53,8 +53,8 @@ inventory_objects = [
   { name: "Medipack", category: "soins", price: 50, description: "Redonne en PV le jet de médecine du soigneur divisé par deux.", rarity: "Commun" },
   { name: "Medipack +", category: "soins", price: 200, description: "Redonne en PV le jet de médecine du soigneur divisé par deux +1D", rarity: "Unco" },
   { name: "Medipack Deluxe", category: "soins", price: 500, description: "Redonne en PV le plein jet de médecine du soigneur", rarity: "Rare" },
-  { name: "Antidote", category: "soins", price: 200, description: "Soigne le statut « empoisonné », +1D PV", rarity: "Unco" },
-  { name: "Extrait de Nysillin", category: "soins", price: 150, description: "Plante soignante de Félucia : +2D PV immédiat en action de soutien", rarity: "Unco" },
+  { name: "Antidote", category: "soins", price: 200, description: "Soigne le statut empoisonné, +1D PV", rarity: "Unco" },
+  { name: "Extrait de Nysillin", category: "soins", price: 150, description: "Plante soignante de Félucia: +2D PV immédiat en action de soutien", rarity: "Unco" },
   { name: "Baume de Kolto", category: "soins", price: 800, description: "Baume miraculeux disparu de Manaan. +4D PV immédiat action soutien", rarity: "Très rare" },
   { name: "Sérum de Thyffera", category: "soins", price: 300, description: "Guérit les maladies communes", rarity: "Commun" },
   { name: "Rétroviral kallidahin", category: "soins", price: 500, description: "Guérit les maladies virales communes", rarity: "Commun" },
@@ -114,7 +114,15 @@ players.each do |player|
 end
 
 puts "Creating skills..."
-Skill.create!(name: "Médecine", description: "Soigne les blessures.")
-Skill.create!(name: "Res Corp", description: "Pour résister aux dégâts")
+skills = [
+  { name: "Médecine", description: "Compétence pour soigner les autres." },
+  { name: "Résistance Corporelle", description: "Réduit les dégâts subis en fonction du jet de résistance corporelle." }
+]
+
+skills.each do |skill|
+  Skill.find_or_create_by!(name: skill[:name]) do |s|
+    s.description = skill[:description]
+  end
+end
 
 puts "Task completed!"

@@ -176,14 +176,14 @@ span {
 
 /* Style pour le bouclier inactif */
 .echani-shield-icon i {
-  color: #815f03; /* Bleu foncé pour inactif */
+  color: #815f03;
   font-size: 3rem;
   transition: all 0.3s ease;
 }
 
 /* Style pour le bouclier actif */
 .echani-shield .fa-shield.active {
-  color: #d9aa01 !important; /* Couleur bleu clair pétant pour actif */
+  color: #d9aa01 !important;
   text-shadow: 0px 0px 15px #d9aa01 !important; /* Effet de flou */
 }
 

@@ -6,17 +6,55 @@ export default class extends Controller {
   connect() {
     console.log("Contrôleur Shield connecté");
     this.active = this.element.dataset.shieldState === "true";
+    this.shieldType = this.element.dataset.shieldType;
     this.updateIcon();
   }
 
   toggle() {
-    this.active = !this.active;
-    this.updateIcon();
-    this.updateServer();
+    if (this.locked) {
+      console.log("Action en attente...");
+      return;
+    }
 
-    if (this.active) {
-      console.log("Bouclier activé");
-      this.playSound();
+    this.locked = true;
+    setTimeout(() => {
+      this.locked = false;
+    }, 3000);
+
+    // Vérification si le bouclier peut être activé
+    if (parseInt(this.element.dataset.shieldMax) === 0) {
+      alert(
+        `Bouclier ${
+          this.shieldType === "energy" ? "d'énergie" : "Échani"
+        } non disponible. Consultez le MJ pour en activer un.`
+      );
+      return;
+    }
+
+    this.updateServer(this.shieldType)
+      .then(data => {
+        this.active = this.shieldType === "energy" ? data.shield_state : data.echani_shield_state;
+
+        // Mise à jour des icônes des boucliers
+        this.updateIcon();
+        this.toggleOtherShield(this.shieldType === "energy" ? "echani" : "energy", false);
+
+        if (this.active) {
+          this.playSound();
+        }
+      })
+      .catch(error => {
+        console.error("Erreur lors de la mise à jour du bouclier :", error);
+      });
+  }
+
+  toggleOtherShield(shieldType, shouldDeactivate) {
+    const otherShieldElement = document.querySelector(`[data-shield-type="${shieldType}"]`);
+    if (otherShieldElement) {
+      const icon = otherShieldElement.querySelector(".fa-shield");
+      if (icon) {
+        icon.classList.toggle("active", !shouldDeactivate);
+      }
     }
   }
 
@@ -25,26 +63,25 @@ export default class extends Controller {
   }
 
   playSound() {
-    const audio = document.getElementById('shield-sound');
+    const audio = document.getElementById("shield-sound");
     audio.currentTime = 0;
     audio.play();
   }
 
-  updateServer() {
-    fetch(`/users/${this.element.dataset.userId}/toggle_shield`, {
+  async updateServer(shieldType) {
+    const response = await fetch(`/users/${this.element.dataset.userId}/toggle_shield`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
         "X-CSRF-Token": document.querySelector("[name=csrf-token]").content,
       },
-      body: JSON.stringify({ shield_state: this.active }),
-    })
-      .then(response => response.json())
-      .then(data => {
-        if (data.shield_state !== this.active) {
-          this.active = data.shield_state;
-          this.updateIcon();
-        }
-      });
+      body: JSON.stringify({ shield_type: shieldType }),
+    });
+
+    if (!response.ok) {
+      throw new Error("Erreur lors de la requête au serveur");
+    }
+
+    return response.json();
   }
 }

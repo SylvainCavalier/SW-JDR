@@ -4,6 +4,9 @@
   <%= turbo_stream_from "credits_updates_#{current_user.id}" %>
   <%= turbo_stream_from "hp_updates_#{current_user.id}" %>
   <%= turbo_stream_from "status_updates_#{current_user.id}" %>
+  <%= turbo_stream_from "shields_updates_#{current_user.id}" %>
+  <%= turbo_stream_from "energy_shields_updates_#{current_user.id}" %>
+  <%= turbo_stream_from "echani_shields_updates_#{current_user.id}" %>
 <% end %>
 
 <div class="frame-container" style="position: relative; width: 100%; height: 100vh;">
@@ -36,31 +39,45 @@
       data-shield-max="<%= current_user.shield_max %>"
       data-shield-current="<%= current_user.shield_current %>"
       data-credits="<%= current_user.credits %>">
-    
+
+    <!-- Bouclier d'énergie -->
     <div class="shield">
       <div class="shield-icon"
           data-controller="shield"
           data-action="click->shield#toggle"
+          data-user-id="<%= current_user.id %>"
+          data-shield-type="energy"
           data-shield-state="<%= current_user.shield_state %>">
         <i class="fa-solid fa-shield" data-shield-target="icon"></i>
-        <p class="mt-1 mb-0" data-shield-target="shieldCurrent">Bouclier d'énergie <%= current_user.shield_current %> / <%= current_user.shield_max %></p>
+        <turbo-frame id="user_<%= current_user.id %>_energy_shield_frame">
+          <p class="mt-1 mb-0" data-shield-target="shieldCurrent">
+            Bouclier d'énergie <%= current_user.shield_current %> / <%= current_user.shield_max %>
+          </p>
+        </turbo-frame>
         <audio id="shield-sound" src="<%= asset_path('shield.mp3') %>" preload="auto"></audio>
       </div>
-      
+
       <!-- Bouton de recharge -->
       <button class="btn btn-outline-primary btn-sm" data-action="click->shield-recharge#openRechargePopup">Rech.</button>
     </div>
 
+    <!-- Bouclier echani -->
     <div class="echani-shield">
       <div class="echani-shield-icon"
           data-controller="shield"
           data-action="click->shield#toggle"
-          data-shield-state="<%= current_user.shield_state %>">
+          data-user-id="<%= current_user.id %>"
+          data-shield-type="echani"
+          data-shield-state="<%= current_user.echani_shield_state %>">
         <i class="fa-solid fa-shield" data-shield-target="icon"></i>
-        <p class="mt-1 mb-0" data-shield-target="shieldCurrent">Bouclier echani <%= current_user.shield_current %> / <%= current_user.shield_max %></p>
+        <turbo-frame id="user_<%= current_user.id %>_echani_shield_frame">
+          <p class="mt-1 mb-0" data-shield-target="shieldCurrent">
+            Bouclier echani <%= current_user.echani_shield_current %> / <%= current_user.echani_shield_max %>
+          </p>
+        </turbo-frame>
         <audio id="shield-sound" src="<%= asset_path('shield.mp3') %>" preload="auto"></audio>
       </div>
-      
+
       <!-- Bouton de recharge -->
       <button class="btn btn-outline-primary btn-sm" data-action="click->shield-recharge#openRechargePopup">Rech.</button>
     </div>

@@ -3,10 +3,74 @@ class UsersController < ApplicationController
   before_action :set_user, only: [:medipack, :healobjects, :buy_inventory_object]
 
   def toggle_shield
-    new_state = params[:shield_state] == "true"
-    current_user.update(shield_state: new_state)
-    respond_to do |format|
-      format.json { render json: { shield_state: current_user.shield_state } }
+    shield_type = params[:shield_type] # "energy" ou "echani"
+    user = current_user
+  
+    if shield_type == "energy"
+      if user.shield_state
+        user.deactivate_all_shields
+      elsif user.can_activate_energy_shield?
+        user.activate_energy_shield
+      else
+        render json: { success: false, message: "Recharge nécessaire pour activer le bouclier d'énergie." }, status: :unprocessable_entity and return
+      end
+    elsif shield_type == "echani"
+      if user.echani_shield_state
+        user.deactivate_all_shields
+      elsif user.can_activate_echani_shield?
+        user.activate_echani_shield
+      else
+        render json: { success: false, message: "Recharge nécessaire pour activer le bouclier Échani." }, status: :unprocessable_entity and return
+      end
+    end
+  
+    render json: {
+      shield_state: user.shield_state,
+      echani_shield_state: user.echani_shield_state
+    }
+  end
+
+  def recharger_bouclier
+    @user = current_user
+    recharge_cost = (@user.shield_max - @user.shield_current) * 10
+  
+    if @user.credits >= recharge_cost
+      @user.transaction do
+        @user.update!(
+          credits: @user.credits - recharge_cost,
+          shield_current: @user.shield_max
+        )
+        @user.broadcast_credits_update
+        @user.broadcast_energy_shield_update
+      end
+  
+      respond_to do |format|
+        format.turbo_stream
+      end
+    else
+      render json: { success: false, message: "Crédits insuffisants" }, status: :unprocessable_entity
+    end
+  end
+  
+  def recharger_echani_shield
+    @user = current_user
+    recharge_cost = (@user.echani_shield_max - @user.echani_shield_current) * 10
+  
+    if @user.credits >= recharge_cost
+      @user.transaction do
+        @user.update!(
+          echani_shield_current: @user.echani_shield_max,
+          credits: @user.credits - recharge_cost
+        )
+        @user.broadcast_credits_update
+        @user.broadcast_echani_shield_update
+      end
+  
+      respond_to do |format|
+        format.turbo_stream
+      end
+    else
+      render json: { success: false, message: "Crédits insuffisants" }, status: :unprocessable_entity
     end
   end
 
@@ -34,18 +98,6 @@ class UsersController < ApplicationController
     end
   end
 
-  def recharger_bouclier
-    user = User.find(params[:id])
-    recharge_cost = (user.shield_max - user.shield_current) * 10
-
-    if user.credits >= recharge_cost
-      user.update(shield_current: user.shield_max, credits: user.credits - recharge_cost)
-      render json: { success: true, shield_current: user.shield_current, credits: user.credits }
-    else
-      render json: { success: false, message: "Crédits insuffisants" }, status: :unprocessable_entity
-    end
-  end
-
   def spend_xp
     user = User.find(params[:id])
   
@@ -60,6 +112,7 @@ class UsersController < ApplicationController
   def settings
     @user = current_user
     @medicine_skill = @user.user_skills.find_or_initialize_by(skill: Skill.find_by(name: "Médecine"))
+    @res_corp_skill = @user.user_skills.find_or_initialize_by(skill: Skill.find_by(name: "Résistance Corporelle"))
   end
   
   def update_settings
@@ -67,6 +120,8 @@ class UsersController < ApplicationController
     
     @user.medicine_mastery = params[:user][:medicine_mastery].to_i
     @user.medicine_bonus = params[:user][:medicine_bonus].to_i
+    @user.res_corp_mastery = params[:user][:res_corp_mastery].to_i
+    @user.res_corp_bonus = params[:user][:res_corp_bonus].to_i
 
     # Gestion du don "Homéopathie"
     homeopathie_item = InventoryObject.find_by(name: "Homéopathie")
@@ -88,6 +143,11 @@ class UsersController < ApplicationController
       medicine_skill.update(
         mastery: @user.medicine_mastery,
         bonus: @user.medicine_bonus
+      )
+      res_corp_skill = @user.user_skills.find_or_initialize_by(skill: Skill.find_by(name: "Résistance Corporelle"))
+      res_corp_skill.update(
+        mastery: @user.res_corp_mastery,
+        bonus: @user.res_corp_bonus
       )
       
       redirect_to settings_user_path(@user), notice: "Réglages mis à jour avec succès."
@@ -296,7 +356,14 @@ class UsersController < ApplicationController
   private
 
   def user_params
-    params.require(:user).permit(:robustesse, :homeopathie, :medicine_mastery, :medicine_bonus)
+    params.require(:user).permit(
+      :robustesse,
+      :homeopathie,
+      :medicine_mastery,
+      :medicine_bonus,
+      :res_corp_mastery,
+      :res_corp_bonus
+    )
   end
   
   def set_user
