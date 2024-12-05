@@ -37,7 +37,7 @@ body {
   background-color: #02121c;
 }
 
-h1 {
+h1, h2 {
   color: $success;
 }
 
@@ -47,6 +47,10 @@ p {
 
 span {
   color: white;
+}
+
+.form-label {
+  color: $success;
 }
 
 .audiowide-regular {
@@ -382,6 +386,7 @@ input[type="submit"] {
   font-size: 1.2rem;
   padding: 10px 20px;
   border-radius: 5px;
+  color: $success;
 }
 
 .form-group, select, input {

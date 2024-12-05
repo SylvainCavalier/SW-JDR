@@ -1,6 +1,8 @@
 Rails.application.routes.draw do
   devise_for :users
 
+  get "/service-worker.js", to: proc { [200, { "Content-Type" => "application/javascript" }, [Rails.application.assets.find_asset("service-worker.js").source]] }
+
   resources :users, only: [] do
     resources :inventory_objects, only: [:index, :create, :destroy]
     
