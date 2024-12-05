@@ -34,16 +34,16 @@ span {
   font-style: normal;
 }
 
-#background {
-  background-image: url(asset-path('background.png'));
-  background-size: cover;
-  background-position: center;
-  background-color: #02121c; /* Noir exact de l'image */
-  background-repeat: no-repeat; /* Évite la répétition de l'image */
-  width: 100vw;
-  height: 100vh;
-  z-index: -1;
-}
+// #background {
+//   background-image: url(asset-path('background.png'));
+//   background-size: cover;
+//   background-position: center;
+//   background-color: #02121c; /* Noir exact de l'image */
+//   background-repeat: no-repeat; /* Évite la répétition de l'image */
+//   width: 100vw;
+//   height: 100vh;
+//   z-index: -1;
+// }
 
 .frame-container {
   position: relative;
@@ -65,7 +65,7 @@ span {
   width: 100%;
   height: 100%;
   object-fit: fill;
-  z-index: 0;
+  z-index: -1;
 }
 
 .race {
@@ -123,8 +123,18 @@ span {
   top: 50%;
   left: 15%;
   transform: translateY(-50%);
-  width: 80px;
+  width: 11vw;
   z-index: 2;
+}
+
+/* Dé en bas de l'écran */
+.dice-home {
+  position: absolute;
+  top: 80%;
+  left: 47%;
+  transform: translateY(-50%);
+  width: 11vw;
+  z-index: 5;
 }
 
 /* Élément à droite du screen (target.svg) */
@@ -454,8 +464,11 @@ input[type="submit"] {
   flex-grow: 1;
 }
 
+.input-group {
+  width: fit-content;
+}
+
 .custom-input-group {
-  max-width: 150px;
   display: flex;
 }
 
@@ -589,6 +602,10 @@ input[type="submit"] {
   color: #00ffcc;
 }
 
+input#buy_hp.form-control.pv-max-input {
+  max-width: 40px;
+}
+
 /* Page de Settings */
 
 .settings-container {
@@ -649,5 +666,99 @@ input[type="submit"] {
   z-index: auto !important; 
 }
 
-/* Page Donner Objet */
+/* Page LANCER DE DES */
 
+.dice-page {
+  text-align: center;
+  margin-top: 12vh;
+  margin-bottom: 12vh;
+  margin-left: 12vw;
+  margin-right: 12vw;
+}
+
+.dice-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+  width: 80%; /* Largeur relative à la taille de l'écran */
+}
+
+.dice {
+  width: 15vw; /* Taille relative à la largeur de l'écran */
+  max-width: 150px; /* Taille maximale pour éviter des dés trop gros */
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.dice:hover {
+  transform: scale(1.1);
+}
+
+.dice-result {
+  width: 15vw; /* Largeur relative */
+  max-width: 100px; /* Limite la taille du champ */
+  text-align: center;
+  font-size: 1rem;
+  padding: 5px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.increment-buttons {
+  display: flex;
+  align-items: center;
+  margin-top: 10px;
+  justify-content: center;
+}
+
+.increment-buttons .btn {
+  padding: 5px 10px;
+  font-size: 0.9rem;
+}
+
+.dice-controls {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+input.dice-count-input {
+  max-width: 40px;
+}
+
+/* Jet de chance de groupe */
+
+.popup-container {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: #222;
+  color: white;
+  padding: 20px;
+  border-radius: 8px;
+  z-index: 1000;
+  width: 90%;
+  max-width: 400px;
+  text-align: center;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+}
+
+.popup-container ul {
+  list-style: none;
+  padding: 0;
+}
+
+.popup-container .status {
+  font-weight: bold;
+  color: yellow;
+}
+
+.popup-container button {
+  margin-top: 20px;
+}
+
+.hidden-popup {
+  display: none;
+}

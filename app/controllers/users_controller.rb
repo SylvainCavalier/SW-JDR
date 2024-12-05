@@ -115,25 +115,36 @@ class UsersController < ApplicationController
   
   def update_settings
     @user = current_user
-    
+  
     @user.medicine_mastery = params[:user][:medicine_mastery].to_i
     @user.medicine_bonus = params[:user][:medicine_bonus].to_i
     @user.res_corp_mastery = params[:user][:res_corp_mastery].to_i
     @user.res_corp_bonus = params[:user][:res_corp_bonus].to_i
-
+  
     # Gestion du don "Homéopathie"
-    homeopathie_item = InventoryObject.find_by(name: "Homéopathie")
-    if params[:user][:homeopathie] == "1"
-      user_inventory_object = @user.user_inventory_objects.find_or_initialize_by(inventory_object: homeopathie_item)
-      user_inventory_object.quantity = 1
-      user_inventory_object.save!
-      Rails.logger.debug "✅ 'Homéopathie' ajoutée à l'utilisateur #{@user.username}."
-    else
-      user_inventory_object = @user.user_inventory_objects.find_by(inventory_object: homeopathie_item)
-      if user_inventory_object
-        user_inventory_object.update(quantity: 0)
-        Rails.logger.debug "❌ 'Homéopathie' retirée de l'utilisateur #{@user.username}."
+    if params[:user].key?(:homeopathie)
+      homeopathie_item = InventoryObject.find_by(name: "Homéopathie")
+      if params[:user][:homeopathie] == "1"
+        user_inventory_object = @user.user_inventory_objects.find_or_initialize_by(inventory_object: homeopathie_item)
+        user_inventory_object.quantity = 1
+        user_inventory_object.save!
+        Rails.logger.debug "✅ 'Homéopathie' ajoutée à l'utilisateur #{@user.username}."
+      else
+        user_inventory_object = @user.user_inventory_objects.find_by(inventory_object: homeopathie_item)
+        if user_inventory_object
+          user_inventory_object.update(quantity: 0)
+          Rails.logger.debug "❌ 'Homéopathie' retirée de l'utilisateur #{@user.username}."
+        end
       end
+    end
+  
+    # Gestion de la "Chance du Contrebandier"
+    if params[:user][:luck] == "1"
+      @user.luck = true
+      Rails.logger.debug "✅ 'Chance du Contrebandier' activée pour #{@user.username}."
+    else
+      @user.luck = false
+      Rails.logger.debug "❌ 'Chance du Contrebandier' désactivée pour #{@user.username}."
     end
   
     if @user.update(user_params)
@@ -351,12 +362,47 @@ class UsersController < ApplicationController
     redirect_to patch_user_path(current_user), alert: "Une erreur est survenue lors de l'utilisation du patch."
   end
 
+  def dice
+    # Pas de logique particulière ici, on affiche simplement la vue
+  end
+
+  def group_luck_roll
+    @users = User.all
+    results = @users.map do |user|
+      { username: user.username, score: rand(1..12) }
+    end
+
+    # Identifier le gagnant et le perdant
+    highest = results.max_by { |r| r[:score] }
+    lowest = results.min_by { |r| r[:score] }
+
+    # Ajouter les annotations "Wow!" et "Looser!"
+    results.each do |result|
+      result[:status] = if result == highest
+                          "Wow!"
+                        elsif result == lowest
+                          "Looser!"
+                        end
+    end
+
+    # Diffuser les résultats via Turbo Stream
+    Turbo::StreamsChannel.broadcast_replace_to(
+      "global_notifications",
+      target: "group-luck-popup",
+      partial: "dice/group_luck_popup",
+      locals: { results: results }
+    )
+
+    render json: { success: true, message: "Jet de groupe lancé avec succès !" }
+  end
+
   private
 
   def user_params
     params.require(:user).permit(
       :robustesse,
       :homeopathie,
+      :luck,
       :medicine_mastery,
       :medicine_bonus,
       :res_corp_mastery,

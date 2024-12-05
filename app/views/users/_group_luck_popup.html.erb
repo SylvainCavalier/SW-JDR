@@ -1,0 +1,15 @@
+<div id="group-luck-popup" class="popup-container">
+  <h2>Résultats du Jet de Groupe</h2>
+  <ul>
+    <% results.each do |result| %>
+      <li>
+        <strong><%= result[:username].capitalize %></strong> : 
+        <%= result[:score] %> 
+        <% if result[:status].present? %>
+          <span class="status"><%= result[:status] %></span>
+        <% end %>
+      </li>
+    <% end %>
+  </ul>
+  <button class="btn btn-outline-secondary" data-action="click->popup#close">Fermer</button>
+</div>

@@ -1,0 +1,44 @@
+<div class="frame-container" style="position: relative; width: 100%; height: 100vh;">
+  <!-- Username -->
+  <p class="username-display mt-1 text-primary fw-bold">
+    <%= current_user.username.capitalize %>
+  </p>
+  <!-- Cadre principal SVG -->
+  <img src="<%= asset_path('cadre2.svg') %>" alt="Cadre" class="ui-frame">
+  
+  <div class="dice-page" data-controller="dice" data-luck="<%= current_user.luck %>">
+    <h1>Lancez vos dés</h1>
+    
+    <div class="dice-container">
+      <!-- Dé à 6 faces -->
+      <img src="<%= asset_path('de6.png') %>" alt="Dé à 6 faces" class="dice" data-dice-target="d6" data-action="click->dice#rollD6">
+
+      <!-- Résultat et contrôles -->
+      <div class="dice-controls">
+        <input type="text" readonly placeholder="Résultat" class="dice-result" data-dice-target="resultD6">
+        <div class="increment-buttons" data-controller="increment">
+          <button class="btn btn-outline-secondary btn-sm" data-action="click->increment#decrement">-</button>
+          <input type="number" value="1" min="1" class="dice-count-input" data-dice-target="diceCount" data-increment-target="input" readonly>
+          <button class="btn btn-outline-secondary btn-sm" data-action="click->increment#increment">+</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="dice-container">
+      <!-- Dé à 12 faces -->
+      <img src="<%= asset_path('de12.png') %>" alt="Dé à 12 faces" class="dice" data-dice-target="d12" data-action="click->dice#rollD12">
+
+      <!-- Résultat uniquement -->
+      <div class="dice-controls">
+        <input type="text" readonly placeholder="Résultat" class="dice-result" data-dice-target="resultD12">
+        <!--<div class="group-luck-container" data-controller="popup">
+          <button class="btn btn-primary btn-sm mt-2" data-action="click->popup#disableButton" data-popup-target="button">
+            Jet Groupe
+          </button>
+        </div>-->
+      </div>
+    </div>
+  </div>
+
+  <%= link_to "Retour", current_user.group.name == "MJ" ? mj_dashboard_path : root_path, class: "btn btn-outline-secondary go-back" %>
+</div>

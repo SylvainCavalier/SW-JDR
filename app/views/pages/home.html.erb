@@ -33,6 +33,11 @@
   <!-- Élément à gauche du screen -->
   <img src="<%= asset_path('function.svg') %>" alt="Function UI" class="ui-function">
 
+  <!-- Dé en bas de l'écran du screen -->
+  <%= link_to dice_users_path do %>
+  <img src="<%= asset_path('de6.png') %>" alt="Dé à 6 faces" class="dice-home">
+  <% end %>
+
   <!-- Bouclier d'énergie -->
   <div class="d-flex" data-controller="shield-recharge" 
       data-user-id="<%= current_user.id %>"

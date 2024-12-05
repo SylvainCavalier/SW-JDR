@@ -21,6 +21,11 @@ Rails.application.routes.draw do
       post :equip_patch
       post :use_patch
     end
+
+    collection do
+      get :dice
+      post :group_luck_roll
+    end
   end
 
   resources :transactions, only: [:new, :create]

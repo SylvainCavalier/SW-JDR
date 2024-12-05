@@ -23,6 +23,12 @@
           <%= f.label :homeopathie, "Homéopathie", class: "form-check-label ms-1" %>
         </div>
       <% end %>
+      <% if ["Contrebandier", "Autodidacte"].include?(current_user.classe_perso&.name) %>
+        <div class="input-group custom-input-group">
+          <%= f.check_box :luck, class: "form-check-input", id: "luck-checkbox" %>
+          <%= f.label :luck, "Chance du Contrebandier", class: "form-check-label ms-1" %>
+        </div>
+      <% end %>
 
       <!-- Réglage de compétence : Médecine -->
       <div class="skill-section mt-2">
