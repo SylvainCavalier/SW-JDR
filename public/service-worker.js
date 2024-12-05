@@ -8,15 +8,6 @@ self.addEventListener("install", (event) => {
         "/assets/icon-512x512.png", // Icône 512x512
         "/assets/application.css", // CSS compilé
         "/assets/application.js", // JS compilé
-        "/assets/bottom-bar.svg", // Autres fichiers
-        "/assets/cadre2.svg",
-        "/assets/function.svg",
-        "/assets/de6.png",
-        "/assets/de12.png",
-        "/assets/screen.svg",
-        "/assets/top-bar.svg",
-        "/assets/red-bar.svg",
-        "/assets/shield.mp3", // Son
       ]);
     })
   );
@@ -29,3 +20,13 @@ self.addEventListener("fetch", (event) => {
     })
   );
 });
+
+/* "/assets/bottom-bar.svg", // Autres fichiers
+"/assets/cadre2.svg",
+"/assets/function.svg",
+"/assets/de6.png",
+"/assets/de12.png",
+"/assets/screen.svg",
+"/assets/top-bar.svg",
+"/assets/red-bar.svg",
+"/assets/shield.mp3", */
