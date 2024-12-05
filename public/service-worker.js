@@ -2,12 +2,12 @@ self.addEventListener("install", (event) => {
   event.waitUntil(
     caches.open("sw-jdr-cache").then((cache) => {
       return cache.addAll([
-        "/", // Page d'accueil
-        "/manifest.json", // Manifest PWA
-        "/assets/icon-192x192.png", // Icône 192x192
-        "/assets/icon-512x512.png", // Icône 512x512
-        "/assets/application.css", // CSS compilé
-        "/assets/application.js", // JS compilé
+        "<%= root_path %>", // Page d'accueil
+        "<%= asset_path('manifest.json') %>", // Manifest PWA
+        "<%= asset_path('icon-192x192.png') %>", // Icône 192x192
+        "<%= asset_path('icon-512x512.png') %>", // Icône 512x512
+        "<%= asset_path('application.css') %>", // CSS compilé
+        "<%= asset_path('application.js') %>", // JS compilé
       ]);
     })
   );
