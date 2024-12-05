@@ -36,8 +36,6 @@
   <!-- Bouclier d'énergie -->
   <div class="d-flex" data-controller="shield-recharge" 
       data-user-id="<%= current_user.id %>"
-      data-shield-max="<%= current_user.shield_max %>"
-      data-shield-current="<%= current_user.shield_current %>"
       data-credits="<%= current_user.credits %>">
 
     <!-- Bouclier d'énergie -->
@@ -47,6 +45,8 @@
           data-action="click->shield#toggle"
           data-user-id="<%= current_user.id %>"
           data-shield-type="energy"
+          data-shield-max="<%= current_user.shield_max || 0 %>"
+          data-shield-current="<%= current_user.shield_current || 0 %>"
           data-shield-state="<%= current_user.shield_state %>">
         <i class="fa-solid fa-shield" data-shield-target="icon"></i>
         <turbo-frame id="user_<%= current_user.id %>_energy_shield_frame">
@@ -58,7 +58,13 @@
       </div>
 
       <!-- Bouton de recharge -->
-      <button class="btn btn-outline-primary btn-sm" data-action="click->shield-recharge#openRechargePopup">Rech.</button>
+      <button class="btn btn-outline-primary btn-sm" 
+              data-action="click->shield-recharge#openRechargePopup" 
+              data-shield-type="energy"
+              data-shield-max="<%= current_user.shield_max || 0 %>"
+              data-shield-current="<%= current_user.shield_current || 0 %>">
+        Rech.
+      </button>
     </div>
 
     <!-- Bouclier echani -->
@@ -68,6 +74,8 @@
           data-action="click->shield#toggle"
           data-user-id="<%= current_user.id %>"
           data-shield-type="echani"
+          data-shield-max="<%= current_user.echani_shield_max || 0 %>"
+          data-shield-current="<%= current_user.echani_shield_current || 0 %>"
           data-shield-state="<%= current_user.echani_shield_state %>">
         <i class="fa-solid fa-shield" data-shield-target="icon"></i>
         <turbo-frame id="user_<%= current_user.id %>_echani_shield_frame">
@@ -79,7 +87,13 @@
       </div>
 
       <!-- Bouton de recharge -->
-      <button class="btn btn-outline-primary btn-sm" data-action="click->shield-recharge#openRechargePopup">Rech.</button>
+      <button class="btn btn-outline-primary btn-sm" 
+              data-action="click->shield-recharge#openRechargePopup" 
+              data-shield-type="echani"
+              data-shield-max="<%= current_user.echani_shield_max || 0 %>"
+              data-shield-current="<%= current_user.echani_shield_current || 0 %>">
+        Rech.
+      </button>
     </div>
 
     <!-- Pop-up de confirmation de recharge -->
@@ -87,15 +101,15 @@
       <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" id="rechargeModalLabel">Confirmation de recharge</h5>
+            <h5 class="modal-title" id="rechargeModalLabel">Recharge de bouclier</h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body">
-            <p data-shield-recharge-target="popupMessage">Recharger pour 0 Crédits ?</p>
+            <p data-shield-recharge-target="popupMessage">Message par défaut</p>
           </div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Non</button>
-            <button type="button" class="btn btn-primary" data-action="click->shield-recharge#confirmRecharge" data-bs-dismiss="modal">Oui</button>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+            <button type="button" class="btn btn-primary" data-action="click->shield-recharge#confirmRecharge" data-bs-dismiss="modal">Confirmer</button>
           </div>
         </div>
       </div>
@@ -136,33 +150,7 @@
   </turbo-frame>
   <!-- Barre de vie -->
   <turbo-frame id="user_<%= current_user.id %>_hp_frame">
-    <%= link_to health_management_user_path(current_user), data: { turbo_frame: "_top" } do %>
-      <div class="hp-bar-container" data-controller="hp-bar" data-max-hp="<%= current_user.hp_max %>" data-current-hp="<%= current_user.hp_current %>">
-        <!-- Image de fond SVG externe -->
-        <img src="<%= asset_path('bottom-bar.svg') %>" alt="Fond de la barre de vie" class="hp-bar-background">
-        <!-- Barre de vie rouge en SVG brut -->
-        <svg class="hp-bar-svg" viewBox="0 0 1001.46 140.26">
-          <defs>
-            <clipPath id="hp-clip">
-              <rect x="0" y="0" data-hp-bar-target="hpFill" width="<%= (1001.46 * (current_user.hp_current.to_f / current_user.hp_max)).round %>" height="140.26" />
-            </clipPath>
-          </defs>
-          <g id="hp-bar-layer" clip-path="url(#hp-clip)">
-            <path 
-              class="hp-fill" 
-              d="M955.63,43.09l-10.4,7.77c-3.19,2.38-7.42,3.69-11.93,3.69h-161.43c-6.85,0-12.96-3.05-15.58-7.78-.29-.53-.52-1.06-.72-1.6l-7.61,5.69c-3.19,2.38-7.42,3.69-11.93,3.69h-161.43c-6.85,0-12.97-3.05-15.59-7.78-.2-.36-.36-.72-.52-1.08l-6.92,5.17c-3.19,2.38-7.42,3.69-11.93,3.69h-81.14c-6.85,0-12.97-3.05-15.59-7.78-.98-1.76-1.39-3.62-1.27-5.44-1.96-.58-3.77-1.44-5.34-2.55l-33.66-23.79h-207.95l-73.2,54.7c-7.9,5.9-18.4,9.15-29.58,9.15h-9.04l17.28,12.91c5.48,4.1,7.11,10.21,4.14,15.56-2.53,4.57-7.95,7.76-14.31,8.6l12.5,9.34h100.91l4.99-3.73c6.74-5.04,15.71-7.82,25.25-7.82h71.14c2.35,0,4.66-.71,6.32-1.96l13.03-9.74c6.75-5.04,15.71-7.81,25.25-7.81h321.46c1.21-.05,2.32-.08,3.36-.08h272.44c19.16,0,34.74-11.65,34.74-25.96,0-12-10.95-22.11-25.77-25.08l.03.02Z" 
-              fill="#dd2f2f"
-            />
-          </g>
-        </svg>
-        <!-- Texte des PV par-dessus la barre -->
-        <div class="hp-text-container">
-          <div class="hp-text" data-hp-bar-target="hpText">
-            PV : <span id="hp-value"><%= current_user.hp_current %></span> / <%= current_user.hp_max %>
-          </div>
-        </div>
-      </div>
-    <% end %>
+    <%= render partial: "hp_bar", locals: { user: current_user } %>
   </turbo-frame>
 
   <!-- Boutons d'action -->

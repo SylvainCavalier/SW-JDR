@@ -6,7 +6,8 @@ class UsersController < ApplicationController
     shield_type = params[:shield_type] # "energy" ou "echani"
     user = current_user
   
-    if shield_type == "energy"
+    case shield_type
+    when "energy"
       if user.shield_state
         user.deactivate_all_shields
       elsif user.can_activate_energy_shield?
@@ -14,7 +15,7 @@ class UsersController < ApplicationController
       else
         render json: { success: false, message: "Recharge nécessaire pour activer le bouclier d'énergie." }, status: :unprocessable_entity and return
       end
-    elsif shield_type == "echani"
+    when "echani"
       if user.echani_shield_state
         user.deactivate_all_shields
       elsif user.can_activate_echani_shield?
@@ -22,55 +23,52 @@ class UsersController < ApplicationController
       else
         render json: { success: false, message: "Recharge nécessaire pour activer le bouclier Échani." }, status: :unprocessable_entity and return
       end
+    else
+      render json: { success: false, message: "Type de bouclier invalide." }, status: :unprocessable_entity and return
     end
   
+    # Diffusion des mises à jour
+    user.broadcast_energy_shield_update if shield_type == "energy"
+    user.broadcast_echani_shield_update if shield_type == "echani"
+  
     render json: {
+      success: true,
       shield_state: user.shield_state,
       echani_shield_state: user.echani_shield_state
     }
   end
 
   def recharger_bouclier
-    @user = current_user
-    recharge_cost = (@user.shield_max - @user.shield_current) * 10
+    shield_type = params[:shield_type]
+    recharge_cost = if shield_type == "energy"
+                      ((current_user.shield_max || 0) - (current_user.shield_current || 0)) * 10
+                    elsif shield_type == "echani"
+                      ((current_user.echani_shield_max || 0) - (current_user.echani_shield_current || 0)) * 10
+                    end
   
-    if @user.credits >= recharge_cost
-      @user.transaction do
-        @user.update!(
-          credits: @user.credits - recharge_cost,
-          shield_current: @user.shield_max
-        )
-        @user.broadcast_credits_update
-        @user.broadcast_energy_shield_update
+    if current_user.credits >= recharge_cost
+      current_user.transaction do
+        if shield_type == "energy"
+          current_user.update!(
+            shield_current: current_user.shield_max,
+            shield_state: true, # Active le bouclier
+            credits: current_user.credits - recharge_cost
+          )
+          current_user.broadcast_energy_shield_update
+        elsif shield_type == "echani"
+          current_user.update!(
+            echani_shield_current: current_user.echani_shield_max,
+            echani_shield_state: true, # Active le bouclier
+            credits: current_user.credits - recharge_cost
+          )
+          current_user.broadcast_echani_shield_update
+        end
+        current_user.broadcast_credits_update
       end
   
-      respond_to do |format|
-        format.turbo_stream
-      end
+      render json: { success: true, credits: current_user.credits }
     else
-      render json: { success: false, message: "Crédits insuffisants" }, status: :unprocessable_entity
-    end
-  end
-  
-  def recharger_echani_shield
-    @user = current_user
-    recharge_cost = (@user.echani_shield_max - @user.echani_shield_current) * 10
-  
-    if @user.credits >= recharge_cost
-      @user.transaction do
-        @user.update!(
-          echani_shield_current: @user.echani_shield_max,
-          credits: @user.credits - recharge_cost
-        )
-        @user.broadcast_credits_update
-        @user.broadcast_echani_shield_update
-      end
-  
-      respond_to do |format|
-        format.turbo_stream
-      end
-    else
-      render json: { success: false, message: "Crédits insuffisants" }, status: :unprocessable_entity
+      render json: { success: false, message: "Crédits insuffisants. (Sale pauvre)" }, status: :unprocessable_entity
     end
   end
 

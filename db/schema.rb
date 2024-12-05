@@ -92,8 +92,8 @@ ActiveRecord::Schema[7.1].define(version: 2024_12_04_204529) do
   create_table "user_skills", force: :cascade do |t|
     t.bigint "user_id", null: false
     t.bigint "skill_id", null: false
-    t.integer "mastery"
-    t.integer "bonus"
+    t.integer "mastery", default: 0, null: false
+    t.integer "bonus", default: 0, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["skill_id"], name: "index_user_skills_on_skill_id"

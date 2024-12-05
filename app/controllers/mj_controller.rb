@@ -2,27 +2,149 @@ class MjController < ApplicationController
   before_action :authenticate_user!
   before_action :authorize_mj
 
+  def roll_dice(number_of_dice, sides = 6)
+    results = Array.new(number_of_dice) { rand(1..sides) }
+    Rails.logger.debug "Jet : #{results.inspect}"
+    results.sum
+  end
+
   def infliger_degats
     @users = User.where(group_id: Group.find_by(name: "PJ").id)
   end
 
   def apply_damage
+    Rails.logger.debug "Paramètres reçus : #{params.inspect}"
     user = User.find(damage_params[:user_id])
     damage = damage_params[:damage].to_i
-
-    if user.shield_state && user.shield_current > 0
-      new_shield_value = [user.shield_current - damage, 0].max
-      user.update(shield_current: new_shield_value)
-      message = "Bouclier a pris #{damage} dégâts."
-    else
-      new_hp_value = [user.hp_current - damage, 0].max
+    attack_type = damage_params[:attack_type] # "energy", "physical", "ignore_defense"
+    Rails.logger.debug "Type d'attaque : #{attack_type}"
+  
+    # Récupération de la compétence "Résistance corporelle"
+    resistance_skill = user.user_skills.joins(:skill).find_by(skills: { name: "Résistance Corporelle" })
+    resistance_bonus = if resistance_skill.nil?
+                        Rails.logger.warn "⚠️ Compétence 'Résistance corporelle' introuvable pour l'utilisateur #{user.id}."
+                        0
+                      else
+                        resistance_mastery = resistance_skill.mastery || 0
+                        roll_dice(resistance_mastery, 6) + (resistance_skill.bonus || 0)
+                      end
+    Rails.logger.debug "🎲 Bonus total de résistance corporelle : #{resistance_bonus}"
+  
+    message = ""
+  
+    case attack_type
+    when "energy"
+      if user.shield_state && user.shield_current > 0
+        # Dégâts au bouclier énergétique
+        new_shield_value = [user.shield_current - damage, 0].max
+        user.update(shield_current: new_shield_value)
+        user.broadcast_energy_shield_update
+        message = "Bouclier d'énergie a pris #{damage} dégâts."
+      else
+        # Calcul des dégâts résiduels pour les PV
+        actual_damage = calculate_damage(damage, resistance_bonus)
+        new_hp_value = user.hp_current - actual_damage
+        new_hp_value = [new_hp_value, -10].max
+        user.update(hp_current: new_hp_value)
+        user.broadcast_hp_update
+        message = "Le joueur a pris #{actual_damage} dégâts après résistance corporelle."
+      end
+  
+      # Appel à la gestion des patchs après application des dégâts
+      patch_message = handle_patch_activation(user, damage)
+      message += " #{patch_message}" if patch_message
+  
+    when "physical"
+      if user.echani_shield_state && user.echani_shield_current > 0
+        # Dégâts au bouclier Échani
+        new_shield_value = [user.echani_shield_current - damage, 0].max
+        user.update(echani_shield_current: new_shield_value)
+        user.broadcast_echani_shield_update
+        message = "Bouclier Échani a pris #{damage} dégâts."
+      else
+        # Calcul des dégâts résiduels pour les PV
+        actual_damage = calculate_damage(damage, resistance_bonus)
+        new_hp_value = user.hp_current - actual_damage
+        new_hp_value = [new_hp_value, -10].max
+        user.update(hp_current: new_hp_value)
+        user.broadcast_hp_update
+        message = "Le joueur a pris #{actual_damage} dégâts après résistance corporelle."
+      end
+  
+      # Appel à la gestion des patchs après application des dégâts
+      patch_message = handle_patch_activation(user, damage)
+      message += " #{patch_message}" if patch_message
+  
+    when "ignore_defense"
+      # Dégâts directs aux PV sans réduction
+      new_hp_value = user.hp_current - damage
+      new_hp_value = [new_hp_value, -10].max
       user.update(hp_current: new_hp_value)
-      message = "Le joueur a pris #{damage} dégâts."
+      user.broadcast_hp_update
+      message = "Le joueur a pris #{damage} dégâts directs, ignorants boucliers et résistance."
+    
+      # Appel à la gestion des patchs après application des dégâts
+      patch_message = handle_patch_activation(user, damage)
+      message += " #{patch_message}" if patch_message
+  
+    else
+      # Type d'attaque non valide
+      render json: { success: false, message: "Type d'attaque invalide." }, status: :unprocessable_entity
+      return
     end
+  
+    # Retourner les résultats
+    render json: { success: true, hp_current: user.hp_current, shield_current: user.shield_current, echani_shield_current: user.echani_shield_current, message: message }
+  end
 
-    respond_to do |format|
-      format.json { render json: { success: true, hp_current: user.hp_current, shield_current: user.shield_current, message: message } }
+  def handle_patch_activation(user, damage)
+    return nil unless user.patch.present?
+  
+    equipped_patch = user.equipped_patch
+  
+    case equipped_patch.name
+    when "Vitapatch"
+      # Activation si les PV passent sous 0
+      if user.hp_current < 0
+        ActiveRecord::Base.transaction do
+          user.update!(hp_current: 0, patch: nil)
+          inventory_object = user.user_inventory_objects.find_by(inventory_object_id: equipped_patch.id)
+          inventory_object.decrement!(:quantity) if inventory_object.present?
+        end
+  
+        user.broadcast_hp_update
+        user.broadcast_replace_to(
+          "notifications_#{user.id}",
+          target: "notification_frame",
+          partial: "pages/notification",
+          locals: { message: "PATCH UTILISÉ : #{equipped_patch.name} activé automatiquement !" }
+        )
+        return "Vitapatch activé automatiquement ! Le joueur revient à 0 PV."
+      end
+  
+    when "Traumapatch"
+      # Activation si des dégâts > 1 ont été infligés
+      if damage > 1
+        healing = rand(1..6) # Jet de dés pour soins
+        ActiveRecord::Base.transaction do
+          new_hp_value = [user.hp_current + healing, user.hp_max].min
+          user.update!(hp_current: new_hp_value, patch: nil)
+          inventory_object = user.user_inventory_objects.find_by(inventory_object_id: equipped_patch.id)
+          inventory_object.decrement!(:quantity) if inventory_object.present?
+        end
+  
+        user.broadcast_hp_update
+        user.broadcast_replace_to(
+          "notifications_#{user.id}",
+          target: "notification_frame",
+          partial: "pages/notification",
+          locals: { message: "PATCH UTILISÉ : #{equipped_patch.name} activé automatiquement !" }
+        )
+        return "Traumapatch activé automatiquement ! Le joueur regagne #{healing} PV."
+      end
     end
+  
+    nil
   end
 
   def fixer_pv_max
@@ -156,6 +278,19 @@ class MjController < ApplicationController
   
   private
   
+  def calculate_damage(damage, resistance_bonus)
+    if resistance_bonus >= damage * 2
+      Rails.logger.debug "🎯 Résistance corporelle annule complètement les dégâts."
+      0
+    elsif resistance_bonus >= damage
+      Rails.logger.debug "⚡ Résistance corporelle réduit les dégâts à un minimum de 1 PV."
+      1
+    else
+      Rails.logger.debug "🔥 Dégâts normaux après résistance corporelle."
+      damage - resistance_bonus
+    end
+  end
+  
   def xp_params
     params.require(:xp).permit(:xp, :user_id, :give_to_all)
   end
@@ -167,7 +302,7 @@ class MjController < ApplicationController
   end
 
   def damage_params
-    params.permit(:user_id, :damage, :authenticity_token)
+    params.permit(:user_id, :damage, :attack_type, :authenticity_token)
   end
 
   def update_params

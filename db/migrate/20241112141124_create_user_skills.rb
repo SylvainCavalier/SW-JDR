@@ -3,8 +3,8 @@ class CreateUserSkills < ActiveRecord::Migration[7.1]
     create_table :user_skills do |t|
       t.references :user, null: false, foreign_key: true
       t.references :skill, null: false, foreign_key: true
-      t.integer :mastery
-      t.integer :bonus
+      t.integer :mastery, default: 0, null: false
+      t.integer :bonus, default: 0, null: false
 
       t.timestamps
     end

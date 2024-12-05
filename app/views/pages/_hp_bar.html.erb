@@ -1,24 +1,26 @@
 <turbo-frame id="user_<%= user.id %>_hp_frame">
-  <div class="hp-bar-container" data-max-hp="<%= user.hp_max %>" data-current-hp="<%= user.hp_current %>">
-    <img src="<%= asset_path('bottom-bar.svg') %>" alt="Fond de la barre de vie" class="hp-bar-background">
-    <svg class="hp-bar-svg" viewBox="0 0 1001.46 140.26">
-      <defs>
-        <clipPath id="hp-clip-<%= user.id %>">
-          <rect x="0" y="0" width="<%= (1001.46 * (user.hp_current.to_f / user.hp_max)).round %>" height="140.26" />
-        </clipPath>
-      </defs>
-      <g id="hp-bar-layer" clip-path="url(#hp-clip-<%= user.id %>)">
-        <path 
-          class="hp-fill" 
-          d="M955.63,43.09l-10.4,7.77c-3.19,2.38-7.42,3.69-11.93,3.69h-161.43c-6.85,0-12.96-3.05-15.58-7.78-.29-.53-.52-1.06-.72-1.6l-7.61,5.69c-3.19,2.38-7.42,3.69-11.93,3.69h-161.43c-6.85,0-12.97-3.05-15.59-7.78-.2-.36-.36-.72-.52-1.08l-6.92,5.17c-3.19,2.38-7.42,3.69-11.93,3.69h-81.14c-6.85,0-12.97-3.05-15.59-7.78-.98-1.76-1.39-3.62-1.27-5.44-1.96-.58-3.77-1.44-5.34-2.55l-33.66-23.79h-207.95l-73.2,54.7c-7.9,5.9-18.4,9.15-29.58,9.15h-9.04l17.28,12.91c5.48,4.1,7.11,10.21,4.14,15.56-2.53,4.57-7.95,7.76-14.31,8.6l12.5,9.34h100.91l4.99-3.73c6.74-5.04,15.71-7.82,25.25-7.82h71.14c2.35,0,4.66-.71,6.32-1.96l13.03-9.74c6.75-5.04,15.71-7.81,25.25-7.81h321.46c1.21-.05,2.32-.08,3.36-.08h272.44c19.16,0,34.74-11.65,34.74-25.96,0-12-10.95-22.11-25.77-25.08l.03.02Z" 
-          fill="#dd2f2f"
-        />
-      </g>
-    </svg>
-    <div class="hp-text-container">
-      <div class="hp-text">
-        PV : <%= user.hp_current %> / <%= user.hp_max %>
+  <%= link_to health_management_user_path(user), data: { turbo_frame: "_top" } do %>
+    <div class="hp-bar-container" data-controller="hp-bar" data-max-hp="<%= user.hp_max %>" data-current-hp="<%= user.hp_current %>">
+      <img src="<%= asset_path('bottom-bar.svg') %>" alt="Fond de la barre de vie" class="hp-bar-background">
+      <svg class="hp-bar-svg" viewBox="0 0 1001.46 140.26">
+        <defs>
+          <clipPath id="hp-clip">
+            <rect x="0" y="0" data-hp-bar-target="hpFill" width="<%= (1001.46 * [(user.hp_current.to_f / user.hp_max), 0].max).round %>" height="140.26" />
+          </clipPath>
+        </defs>
+        <g id="hp-bar-layer" clip-path="url(#hp-clip)">
+          <path 
+            class="hp-fill" 
+            d="M955.63,43.09l-10.4,7.77c-3.19,2.38-7.42,3.69-11.93,3.69h-161.43c-6.85,0-12.96-3.05-15.58-7.78-.29-.53-.52-1.06-.72-1.6l-7.61,5.69c-3.19,2.38-7.42,3.69-11.93,3.69h-161.43c-6.85,0-12.97-3.05-15.59-7.78-.2-.36-.36-.72-.52-1.08l-6.92,5.17c-3.19,2.38-7.42,3.69-11.93,3.69h-81.14c-6.85,0-12.97-3.05-15.59-7.78-.98-1.76-1.39-3.62-1.27-5.44-1.96-.58-3.77-1.44-5.34-2.55l-33.66-23.79h-207.95l-73.2,54.7c-7.9,5.9-18.4,9.15-29.58,9.15h-9.04l17.28,12.91c5.48,4.1,7.11,10.21,4.14,15.56-2.53,4.57-7.95,7.76-14.31,8.6l12.5,9.34h100.91l4.99-3.73c6.74-5.04,15.71-7.82,25.25-7.82h71.14c2.35,0,4.66-.71,6.32-1.96l13.03-9.74c6.75-5.04,15.71-7.81,25.25-7.81h321.46c1.21-.05,2.32-.08,3.36-.08h272.44c19.16,0,34.74-11.65,34.74-25.96,0-12-10.95-22.11-25.77-25.08l.03.02Z" 
+            fill="#dd2f2f"
+          />
+        </g>
+      </svg>
+      <div class="hp-text-container">
+        <div class="hp-text" data-hp-bar-target="hpText">
+          PV : <span id="hp-value" class="<%= 'negative-hp' if user.hp_current < 0 %>"><%= user.hp_current %></span> / <%= user.hp_max %>
+        </div>
       </div>
     </div>
-  </div>
+  <% end %>
 </turbo-frame>

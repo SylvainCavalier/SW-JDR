@@ -15,40 +15,32 @@ class User < ApplicationRecord
   has_many :statuses, through: :user_statuses
 
   validates :username, presence: true, uniqueness: true
+  validates :hp_current, numericality: { greater_than_or_equal_to: -20 }
+  validate :shield_current_values_valid
 
   after_update_commit :broadcast_xp_update, if: :saved_change_to_xp?
+  after_update :update_status_based_on_hp
 
   attr_accessor :medicine_mastery, :medicine_bonus
   attr_accessor :res_corp_mastery, :res_corp_bonus
 
   def set_status(status_name = nil)
-    # Détermine automatiquement le statut en fonction des PV si aucun statut explicite n'est donné
     if status_name.blank?
-      case hp_current
-      when 1..Float::INFINITY
-        status_name = "En forme"
-      when 0
-        status_name = "Inconscient"
-      when -9..-1
-        status_name = "Agonisant"
-      else
-        status_name = "Mort"
-      end
-      Rails.logger.debug "🔄 Statut automatiquement déterminé : #{status_name} pour #{self.username} (HP : #{hp_current})."
+      status_name = case hp_current
+                    when 1..Float::INFINITY then "En forme"
+                    when 0 then "Inconscient"
+                    when -9..-1 then "Agonisant"
+                    else "Mort"
+                    end
     end
   
-    # Trouve ou crée le statut correspondant
     status = Status.find_by(name: status_name)
-  
     if status
-      self.user_statuses.destroy_all
-      self.user_statuses.create!(status: status)
-      Rails.logger.debug "✅ Statut défini sur '#{status_name}' pour #{self.username}."
-  
-      # Diffusion dynamique via Turbo Stream
+      user_statuses.destroy_all
+      user_statuses.create!(status: status)
       broadcast_status_update
     else
-      Rails.logger.warn "⚠️ Aucun statut trouvé avec le nom : #{status_name}."
+      Rails.logger.warn "⚠️ Aucun statut trouvé pour '#{status_name}'."
     end
   end
 
@@ -133,6 +125,8 @@ class User < ApplicationRecord
   end
 
   def activate_energy_shield
+    return unless can_activate_energy_shield?
+
     transaction do
       update!(
         shield_state: true,
@@ -141,8 +135,10 @@ class User < ApplicationRecord
       schedule_shield_deactivation
     end
   end
-  
+
   def activate_echani_shield
+    return unless can_activate_echani_shield?
+
     transaction do
       update!(
         echani_shield_state: true,
@@ -151,7 +147,7 @@ class User < ApplicationRecord
       schedule_shield_deactivation
     end
   end
-  
+
   def deactivate_all_shields
     update!(
       shield_state: false,
@@ -189,14 +185,30 @@ class User < ApplicationRecord
 
   private
 
+  def update_status_based_on_hp
+    if saved_change_to_hp_current?
+      set_status
+    end
+  end
+
+  def shield_current_values_valid
+    if shield_current.present? && shield_current.negative?
+      errors.add(:shield_current, "ne peut pas être négatif")
+    end
+  
+    if echani_shield_current.present? && echani_shield_current.negative?
+      errors.add(:echani_shield_current, "ne peut pas être négatif")
+    end
+  end
+
   def schedule_shield_deactivation
     unless shield_state || echani_shield_state
       Rails.logger.info "Aucun bouclier actif, pas besoin de planifier une désactivation."
       return
     end
   
-    DeactivateShieldsJob.set(wait: 30.minutes).perform_later(id)
-    Rails.logger.info "Job de désactivation des boucliers planifié pour l'utilisateur #{username}."
+    Rails.logger.info "Désactivation des boucliers temporairement désactivée."
+    # DeactivateShieldsJob.set(wait: 30.minutes).perform_later(id)
   end
 
   def human_race?

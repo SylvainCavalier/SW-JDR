@@ -309,6 +309,11 @@ span {
   100% { opacity: 0; }
 }
 
+.negative-hp {
+  color: #b22222; /* Rouge foncé */
+  font-weight: bold;
+}
+
 /* ------------- Autres pages -------------- */
 
 .go-back {
@@ -440,7 +445,7 @@ input[type="submit"] {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  width: 80%;
+  width: 110%;
 }
 
 .player-damage p {
@@ -463,7 +468,7 @@ input[type="submit"] {
 #container-damage {
   position: absolute;
   top: 50%;
-  left: 60%;
+  left: 48%;
   transform: translate(-50%, -50%);
 }
 
@@ -477,6 +482,19 @@ input[type="submit"] {
   border: 2px solid #ccc;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
   z-index: 10;
+}
+
+.icon-group .icon {
+  font-size: 1.5rem;
+  color: gray;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.icon-group .icon.active {
+  color: white;
+  text-shadow: 0 0 5px rgba(255, 255, 255, 0.8);
+  transform: scale(1.1);
 }
 
 /* Page de gestion des PV */
