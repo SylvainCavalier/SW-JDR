@@ -12,6 +12,27 @@
 @import "components/index";
 @import "pages/index";
 
+@media screen and (orientation: portrait) {
+  body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-color: #000;
+    color: #fff;
+    text-align: center;
+    font-family: Arial, sans-serif;
+  }
+
+  body::before {
+    content: "Veuillez tourner votre appareil en mode paysage pour utiliser l'application.";
+  }
+
+  .content {
+    display: none; /* Masquer tout sauf le message d'orientation */
+  }
+}
+
 body {
   background-color: #02121c;
 }

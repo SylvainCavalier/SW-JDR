@@ -14,7 +14,21 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Audiowide&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.1.2/css/all.css">
+    <link rel="manifest" href="/manifest.json">
+
     <script>
+      if ("serviceWorker" in navigator) {
+        navigator.serviceWorker.register("/service-worker.js").then(() => {
+          console.log("Service Worker enregistré !");
+        });
+      }
+      document.addEventListener("DOMContentLoaded", () => {
+        if (screen.orientation && screen.orientation.lock) {
+          screen.orientation.lock("landscape").catch((error) => {
+            console.warn("Verrouillage de l'orientation échoué ou non supporté :", error);
+          });
+        }
+      });
       document.addEventListener("turbo:load", () => console.log("Turbo Streams loaded"));
     </script>
   </head>
