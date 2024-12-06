@@ -815,3 +815,27 @@ input.dice-count-input {
 .hidden-popup {
   display: none;
 }
+
+/* Page de gestion de la science */
+
+.science-container {
+  width: 100%;
+  max-width: 800px;
+  margin: auto;
+  padding: 20px;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+.science-buttons .btn {
+  width: 100%;
+  text-align: left;
+  font-size: 18px;
+}
+
+.science-buttons .btn i {
+  font-size: 24px;
+  color: $success;
+}

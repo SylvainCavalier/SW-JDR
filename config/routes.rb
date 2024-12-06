@@ -40,6 +40,15 @@ Rails.application.routes.draw do
     post :dissociate, on: :member
   end
 
+  get 'science', to: 'science#science', as: 'science'
+
+  resources :science, only: [] do
+    collection do
+      get :list
+      post :buy_inventory_object
+    end
+  end
+
   get 'manage_pet', to: 'pets#manage_pet', as: :manage_pet
 
   get 'mj', to: 'pages#mj', as: 'mj_dashboard'

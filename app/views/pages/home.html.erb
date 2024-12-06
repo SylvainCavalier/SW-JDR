@@ -31,7 +31,11 @@
   <img src="<%= asset_path('top-bar.svg') %>" alt="Top Bar" class="ui-top-bar">
 
   <!-- Élément à gauche du screen -->
-  <img src="<%= asset_path('function.svg') %>" alt="Function UI" class="ui-function">
+  <% if current_user.classe_perso.name == "Bio-savant" %>
+    <%= link_to science_path do %>
+      <img src="<%= asset_path('function.svg') %>" alt="Function UI" class="ui-function">
+    <% end %>
+  <% end %>
 
   <!-- Dé en bas de l'écran du screen -->
   <%= link_to dice_users_path do %>
@@ -39,7 +43,7 @@
   <% end %>
 
   <!-- Gestion des Pets -->
-  <%= link_to manage_pet_path, class: "btn btn-outline-primary pets-home" do %>
+  <%= link_to manage_pet_path, class: "btn btn-outline-success pets-home" do %>
     <i class="fa-solid fa-paw"></i>
   <% end %>
 

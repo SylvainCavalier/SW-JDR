@@ -1,0 +1,35 @@
+<div class="container mt-4">
+  <h1 class="text-center">Liste des ingrédients disponibles</h1>
+  <table class="table mt-4">
+    <thead>
+      <tr>
+        <th>Nom</th>
+        <th>Description</th>
+        <th>Rareté</th>
+        <th>Quantité</th>
+        <th>Prix</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @ingredients.each do |ingredient| %>
+        <tr id="ingredient-<%= ingredient.id %>" 
+            data-controller="ingredient" 
+            data-ingredient-object-id-value="<%= ingredient.id %>" 
+            data-ingredient-user-id-value="<%= current_user.id %>">
+          <td><%= ingredient.name %></td>
+          <td><%= ingredient.description %></td>
+          <td><%= ingredient.rarity %></td>
+          <td class="quantity" data-ingredient-target="quantity">
+            <%= current_user.user_inventory_objects.find_by(inventory_object: ingredient)&.quantity || 0 %>
+          </td>
+          <td><%= ingredient.price %></td>
+          <td>
+            <%= button_tag "Acheter", class: "btn btn-outline-success btn-sm", data: { action: "click->ingredient#buy" } %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+  <%= link_to "Retour", science_path, class: "btn btn-outline-secondary mt-3" %>
+</div>

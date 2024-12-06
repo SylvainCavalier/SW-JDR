@@ -1,0 +1,35 @@
+<div class="content-container d-flex flex-column align-items-center">
+  <h1 class="text-success">Science</h1>
+
+  <div class="row science-buttons mt-3">
+    <div class="col-6 d-flex flex-column align-items-start">
+      <%= link_to list_science_index_path, class: "btn btn-outline-primary my-2 d-flex align-items-center" do %>
+        <i class="fa-solid fa-calendar-days me-2"></i> Ingrédients
+      <% end %>
+
+      <%= link_to '#', class: "btn btn-outline-primary my-2 d-flex align-items-center" do %>
+        <i class="fa-solid fa-wrench me-2"></i> Crafter
+      <% end %>
+
+      <%= link_to '#', class: "btn btn-outline-primary my-2 d-flex align-items-center" do %>
+        <i class="fa-solid fa-dna me-2"></i> Génétique
+      <% end %>
+    </div>
+
+    <div class="col-6 d-flex flex-column align-items-start">
+      <%= link_to '#', class: "btn btn-outline-primary my-2 d-flex align-items-center" do %>
+        <i class="fa-solid fa-paw me-2"></i> Bestiaire
+      <% end %>
+
+      <%= link_to '#', class: "btn btn-outline-primary my-2 d-flex align-items-center" do %>
+        <i class="fa-solid fa-flask-vial me-2"></i> Maladies
+      <% end %>
+
+      <%= link_to '#', class: "btn btn-outline-primary my-2 d-flex align-items-center" do %>
+        <i class="fa-solid fa-gear me-2"></i> Réglages
+      <% end %>
+    </div>
+  </div>
+
+  <%= link_to "Retour", root_path, class: "btn btn-outline-secondary mt-4" %>
+</div>
