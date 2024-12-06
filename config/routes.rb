@@ -1,8 +1,8 @@
 Rails.application.routes.draw do
   devise_for :users
 
-  get "/service-worker.js" => "service_worker#service_worker"
-  get "/manifest.json" => "service_worker#manifest"
+  get "/service-worker.js" => "service_worker#service_worker", defaults: { format: :js }
+  get "/manifest.json" => "service_worker#manifest", defaults: { format: :json }
 
   resources :users, only: [] do
     resources :inventory_objects, only: [:index, :create, :destroy]
