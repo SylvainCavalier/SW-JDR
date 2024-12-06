@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_12_05_173030) do
+ActiveRecord::Schema[7.1].define(version: 2024_12_06_113826) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -45,6 +45,33 @@ ActiveRecord::Schema[7.1].define(version: 2024_12_05_173030) do
     t.text "description"
     t.integer "price"
     t.string "rarity"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "pet_inventory_objects", force: :cascade do |t|
+    t.bigint "pet_id", null: false
+    t.bigint "inventory_object_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["inventory_object_id"], name: "index_pet_inventory_objects_on_inventory_object_id"
+    t.index ["pet_id"], name: "index_pet_inventory_objects_on_pet_id"
+  end
+
+  create_table "pets", force: :cascade do |t|
+    t.string "name"
+    t.string "race"
+    t.integer "hp_current"
+    t.integer "hp_max"
+    t.integer "res_corp"
+    t.integer "res_corp_bonus"
+    t.float "speed"
+    t.string "damage_1"
+    t.string "damage_2"
+    t.float "accuracy"
+    t.float "dodge"
+    t.string "weapon_1"
+    t.string "weapon_2"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
@@ -136,14 +163,18 @@ ActiveRecord::Schema[7.1].define(version: 2024_12_05_173030) do
     t.integer "echani_shield_current"
     t.integer "echani_shield_max"
     t.boolean "luck", default: false
+    t.bigint "pet_id"
     t.index ["classe_perso_id"], name: "index_users_on_classe_perso_id"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["group_id"], name: "index_users_on_group_id"
+    t.index ["pet_id"], name: "index_users_on_pet_id"
     t.index ["race_id"], name: "index_users_on_race_id"
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
   add_foreign_key "holonews", "users"
+  add_foreign_key "pet_inventory_objects", "inventory_objects"
+  add_foreign_key "pet_inventory_objects", "pets"
   add_foreign_key "user_inventory_objects", "inventory_objects"
   add_foreign_key "user_inventory_objects", "users"
   add_foreign_key "user_skills", "skills"
@@ -152,5 +183,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_12_05_173030) do
   add_foreign_key "user_statuses", "users"
   add_foreign_key "users", "classe_persos"
   add_foreign_key "users", "groups"
+  add_foreign_key "users", "pets"
   add_foreign_key "users", "races"
 end

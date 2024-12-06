@@ -38,6 +38,16 @@
   <img src="<%= asset_path('de6.png') %>" alt="Dé à 6 faces" class="dice-home">
   <% end %>
 
+  <!-- Gestion des Pets -->
+  <%= link_to manage_pet_path, class: "btn btn-outline-primary pets-home" do %>
+    <i class="fa-solid fa-paw"></i>
+  <% end %>
+
+  <!-- Gestion des Réglages -->
+  <%= link_to settings_user_path(current_user), class: "btn btn-outline-success settings-home" do %>
+    <i class="fa-solid fa-gears"></i>
+  <% end %>
+
   <!-- Bouclier d'énergie -->
   <div class="d-flex" data-controller="shield-recharge" 
       data-user-id="<%= current_user.id %>"
@@ -159,7 +169,6 @@
   </turbo-frame>
 
   <!-- Boutons d'action -->
-  <%= link_to "Réglages", settings_user_path(current_user), class: "btn btn-outline-success transfer-btn" %>
   <%= link_to "Holonews", holonews_path, class: "btn btn-outline-success holonews-btn" %>
   <%= button_to "✖", destroy_user_session_path, method: :delete, data: { turbo: false, confirm: "Se déconnecter ?" },
     style: "position: absolute; top: 10px; right: 70px; color: #333; font-size: 10px; text-decoration: none; z-index: 3;",
