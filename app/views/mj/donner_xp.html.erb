@@ -11,24 +11,22 @@
       </div>
     </div>
 
+    <!-- Sélection de joueur -->
     <div class="player-select-row">
       <%= f.label :user_id, "Choisissez un joueur" %>
-      <div class="d-flex align-items-center select-wrapper">
-        <%= select_tag "object[#{user.id}]", options_for_select(@objects.map { |object| [object.name, object.id] }), class: "donner-objet-select form-select form-select-sm me-2", style: "width: 200px;" %>
-        <%= submit_tag "Go", name: "submit_#{user.id}", class: "btn btn-outline-success btn-sm ms-1 p-0", data: { confirm: "Êtes-vous sûr de vouloir donner cet objet ?" } %>
-      </div>
+      <%= f.collection_select :user_id, User.where(group: Group.find_by(name: "PJ")), :id, :username, prompt: "Sélectionner un joueur", class: "form-select" %>
     </div>
 
+    <!-- Case à cocher pour donner à tous les joueurs -->
     <div class="custom-form">
-      <%= f.check_box :give_to_all, { checked: true, class: "form-check-input" }, "true", "false" %>
+      <%= f.check_box :give_to_all, { checked: true, class: "form-check-input", data: { xp_form_target: "giveToAllCheckbox" } }, "true", "false" %>
       <%= f.label :give_to_all, "Donner à tous" %>
     </div>
 
+    <!-- Bouton de validation -->
     <div>
       <%= f.submit "Donner", class: "btn btn-success" %>
-      <div id="flashMessageContainer" data-xp-form-target="flashMessageContainer"></div>
     </div>
-<% end %>
-
+  <% end %>
   <%= link_to "Retour", current_user.group.name == "MJ" ? mj_dashboard_path : root_path, class: "btn btn-outline-success go-back" %>
 </div>

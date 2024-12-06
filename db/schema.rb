@@ -130,7 +130,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_12_05_173030) do
     t.integer "xp", default: 0
     t.integer "total_xp", default: 0
     t.boolean "robustesse", default: false
-    t.boolean "homeopathie"
+    t.boolean "homeopathie", default: false
     t.integer "patch"
     t.boolean "echani_shield_state"
     t.integer "echani_shield_current"
