@@ -18,7 +18,13 @@
         <%= f.input :hp_max, label: "Points de Vie Maximum" %>
       </div>
       <div class="mb-3">
+        <%= f.input :hp_current, label: "Points de Vie Actuels", input_html: { value: @pet.hp_max || '' } %>
+      </div>
+      <div class="mb-3">
         <%= f.input :res_corp, label: "Résistance Corporelle" %>
+      </div>
+      <div class="mb-3">
+        <%= f.input :res_corp_bonus, label: "Bonus de Résistance Corporelle" %>
       </div>
       <div class="mb-3">
         <%= f.input :speed, label: "Vitesse" %>
@@ -47,5 +53,5 @@
     <% end %>
   </div>
 
-  <%= link_to "Retour", pets_path, class: "btn btn-outline-secondary go-back" %>
+  <%= link_to "Retour", pets_path, class: "btn btn-outline-success go-back" %>
 </div>
