@@ -13,15 +13,15 @@
     <ul class="list-group mt-4">
       <li class="list-group-item"><strong>Nom :</strong> <%= @pet.name %></li>
       <li class="list-group-item"><strong>Race :</strong> <%= @pet.race %></li>
-      <li class="list-group-item"><strong>Points de Vie :</strong> <%= "#{@pet.hp_current} / #{@pet.hp_max}" %></li>
-      <li class="list-group-item"><strong>Résistance Corporelle :</strong> <%= @pet.res_corp %></li>
-      <li class="list-group-item"><strong>Vitesse :</strong> <%= @pet.speed %></li>
-      <li class="list-group-item"><strong>Dégâts 1 :</strong> <%= @pet.damage_1 %></li>
-      <li class="list-group-item"><strong>Dégâts 2 :</strong> <%= @pet.damage_2 %></li>
-      <li class="list-group-item"><strong>Précision :</strong> <%= @pet.accuracy %></li>
-      <li class="list-group-item"><strong>Esquive :</strong> <%= @pet.dodge %></li>
+      <li class="list-group-item"><strong>PV :</strong> <%= "#{@pet.hp_current} / #{@pet.hp_max}" %></li>
+      <li class="list-group-item"><strong>Résistance Corporelle :</strong> <%= @pet.res_corp.to_i %>D + <%= @pet.res_corp_bonus.to_i %></li>
+      <li class="list-group-item"><strong>Vitesse :</strong> <%= @pet.speed.to_i %>D</li>
+      <li class="list-group-item"><strong>Esquive :</strong> <%= @pet.dodge.to_i %>D</li>
+      <li class="list-group-item"><strong>Précision :</strong> <%= @pet.accuracy.to_i %>D</li>
       <li class="list-group-item"><strong>Arme 1 :</strong> <%= @pet.weapon_1 %></li>
       <li class="list-group-item"><strong>Arme 2 :</strong> <%= @pet.weapon_2 %></li>
+      <li class="list-group-item"><strong>Dégâts 1 :</strong> <%= @pet.damage_1.to_i %>DD</li>
+      <li class="list-group-item"><strong>Dégâts 2 :</strong> <%= @pet.damage_2.to_i %>DD</li>
     </ul>
     <div class="mt-3">
       <% if current_user.pet_id == @pet.id %>
