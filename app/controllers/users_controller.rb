@@ -51,14 +51,12 @@ class UsersController < ApplicationController
         if shield_type == "energy"
           current_user.update!(
             shield_current: current_user.shield_max,
-            shield_state: true, # Active le bouclier
             credits: current_user.credits - recharge_cost
           )
           current_user.broadcast_energy_shield_update
         elsif shield_type == "echani"
           current_user.update!(
             echani_shield_current: current_user.echani_shield_max,
-            echani_shield_state: true, # Active le bouclier
             credits: current_user.credits - recharge_cost
           )
           current_user.broadcast_echani_shield_update
@@ -66,9 +64,9 @@ class UsersController < ApplicationController
         current_user.broadcast_credits_update
       end
   
-      render json: { success: true, credits: current_user.credits }
+      redirect_to root_path, notice: "Bouclier rechargé avec succès."
     else
-      render json: { success: false, message: "Crédits insuffisants. (Sale pauvre)" }, status: :unprocessable_entity
+      redirect_to root_path, alert: "Crédits insuffisants. (Sale pauvre)"
     end
   end
 
@@ -196,7 +194,9 @@ class UsersController < ApplicationController
   end
 
   def medipack
-    @users = User.joins(:group).where(groups: { name: "PJ" })
+    @users = User.joins(:group).where(groups: { name: "PJ" }).order(:username).to_a
+    @users.delete(current_user) # Retire le current_user de la liste triée
+    @users.unshift(current_user) # Ajoute le current_user au début
     @user_inventory_objects = current_user.user_inventory_objects.includes(:inventory_object)
   end
 

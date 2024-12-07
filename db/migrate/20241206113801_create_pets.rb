@@ -8,8 +8,8 @@ class CreatePets < ActiveRecord::Migration[7.1]
       t.integer :res_corp
       t.integer :res_corp_bonus
       t.float :speed
-      t.string :damage_1
-      t.string :damage_2
+      t.integer :damage_1
+      t.integer :damage_2
       t.float :accuracy
       t.float :dodge
       t.string :weapon_1

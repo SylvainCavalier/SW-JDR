@@ -5,12 +5,12 @@
   </p>
   <!-- Cadre principal SVG -->
   <img src="<%= asset_path('cadre2.svg') %>" alt="Cadre" class="ui-frame">
-  <!-- Cadre central avec l'écran de transfert' -->
+  <!-- Cadre central avec l'écran de transfert -->
   <div class="credits-container m-2">
-    <p>Transférer des crédits</h1>
+    <p>Transférer des crédits</p>
     <%= simple_form_for @transaction do |f| %>
       <div class="form-group text-success">
-        <%= f.input :receiver_username, label: "Destinataire", input_html: { class: 'form-control', placeholder: 'Entrez le pseudo' } %>
+        <%= f.input :receiver_username, label: "Destinataire", as: :select, collection: User.where.not(id: current_user.id).order(:username).pluck(:username), include_blank: "Sélectionnez un joueur", input_html: { class: 'form-control' } %>
       </div>
       <div class="form-group text-success">
         <%= f.input :amount, label: "Montant", input_html: { class: 'form-control' } %>

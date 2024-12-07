@@ -15,6 +15,11 @@
         data-robustesse="<%= current_user.robustesse %>">
     <!-- GROSSE BARRE DE PV CENTRALE -->
     <div class="large-hp-bar-container">
+      <div class="status-container m-0">
+        <% current_user.statuses.each do |status| %>
+          <p style="color: <%= status.color %>;"><%= status.name %></p>
+        <% end %>
+      </div>
       <img src="<%= asset_path('bottom-bar.svg') %>" alt="Fond de la barre de vie" class="large-hp-bar-background">
       <!-- Barre de vie rouge superposée, dont la largeur est ajustée pour simuler les PV -->
       <div class="hp-bar-fill" data-hp-target="hpBarFill">
@@ -45,7 +50,7 @@
 
     <!-- Acheter des PV max -->
     <div class="buy-hp-section d-flex m-1 p-2">
-      <p>Acheter PV max:</p>
+      <p>PV max:</p>
       <div class="input-group custom-input-group me-2" data-controller="increment">
         <%= button_tag "-", type: "button", class: "btn btn-outline-secondary", data: { action: "click->increment#decrement click->hp#updateXpCost" } %>
         <%= text_field_tag :buy_hp, 1, min: 1, class: "form-control pv-max-input", data: { "increment-target" => "input", "hp-target" => "buyHpInput" } %>

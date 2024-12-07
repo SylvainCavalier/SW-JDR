@@ -125,7 +125,8 @@ span {
   position: absolute;
   top: 50%;   /* Centre verticalement par rapport au cadre */
   left: 50%;  /* Centre horizontalement par rapport au cadre */
-  transform: translate(-60%, -50%); /* Corrige le positionnement pour un vrai centrage */
+  width: 40vw;
+  transform: translate(-55%, -50%); /* Corrige le positionnement pour un vrai centrage */
   z-index: 2;
 }
 
@@ -143,7 +144,7 @@ span {
   left: 50%;  /* Centre horizontalement par rapport au screen */
   transform: translateX(-50%);
   z-index: 2;
-  font-size: 1.1rem; /* Ajuste la taille selon tes besoins */
+  font-size: 1.0rem; /* Ajuste la taille selon tes besoins */
   color: #00ffcc; /* Ajuste la couleur */
 }
 
@@ -168,7 +169,7 @@ span {
 .dice-home {
   position: absolute;
   top: 80%;
-  left: 45%;
+  left: 50%;
   transform: translateY(-50%);
   width: 11vw;
   z-index: 5;
@@ -178,7 +179,7 @@ span {
 .pets-home {
   position: absolute;
   top: 80%;
-  left: 60%;
+  left: 62%;
   transform: translateY(-50%);
   width: 11vw;
   z-index: 5;
@@ -253,13 +254,28 @@ span {
   text-shadow: 0px 0px 15px #d9aa01 !important; /* Effet de flou */
 }
 
-/* Barre en haut à droite (top-bar.svg) */
-.ui-top-bar {
+/* Conteneur principal pour la barre en haut à droite et l'icône patch */
+.top-bar-container {
   position: absolute;
   top: 14%;
   right: 10%;
   width: 300px;
   z-index: 2;
+}
+
+.ui-top-bar {
+  width: 100%; /* Utilise toute la largeur du conteneur */
+  position: relative;
+}
+
+.patch-icon {
+  position: absolute;
+  top: 40%;
+  left: 40%;
+  transform: translate(-40%, -40%);
+  font-size: 1.3em;
+  color: white;
+  z-index: 3;
 }
 
 /* Barre en bas à gauche (bottom-bar.svg) 
@@ -280,11 +296,16 @@ span {
   z-index: 3;
 }
 
+.status-container p {
+  margin: 0;
+  font-size: 1.2em;
+}
+
 .hp-bar-container {
   position: absolute;
   bottom: 25%;
   left: 10%;
-  width: 300px;
+  width: 40vw;
   height: auto;
   z-index: 2;
 }
@@ -324,9 +345,9 @@ span {
 
 .hp-text {
   position: absolute;
-  top: 10px;
-  left: 50px;
-  font-size: 15px;
+  top: 11px;
+  left: 15%;
+  font-size: 0.9em;
   color: white;
   font-weight: bold;
   pointer-events: none;
@@ -358,7 +379,7 @@ span {
   font-size: 1.5rem; /* Ajuste la taille selon tes besoins */
   font-weight: bold;
   color: #00ffcc; /* Ajuste la couleur */
-  z-index: 3; /* Assure que le texte est au-dessus du cadre */
+  z-index: 1; /* Assure que le texte est au-dessus du cadre */
 }
 
 .xp-notification {
@@ -386,7 +407,7 @@ span {
   position: absolute;
   top: 15%;
   left: 10%;
-  z-index: 3;
+  z-index: 1;
 }
 
 .go-create {
@@ -414,10 +435,10 @@ span {
 }
 
 input[type="submit"] {
-  font-size: 1.2rem;
-  padding: 10px 20px;
+  font-size: 1.1rem;
+  padding: 5px 10px;
   border-radius: 5px;
-  color: white;
+  color: $success;
 }
 
 .form-group, select, input {
@@ -531,7 +552,7 @@ input[type="submit"] {
 
 .custom-damage-input {
   text-align: center;
-  width: 60px;
+  max-width: 50px;
   padding: 0.2rem;
 }
 
@@ -573,16 +594,17 @@ input[type="submit"] {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 20px;
+  padding: 5px;
 }
 
 .large-hp-bar-container {
   position: absolute;
   top: 20%;
-  width: 500px;
+  width: 50vw;
   height: auto;
   z-index: 2;
   margin-bottom: 20px;
+  margin-top: 1vh;
 }
 
 .large-hp-bar-background {
@@ -614,9 +636,9 @@ input[type="submit"] {
 
 .large-hp-text {
   position: absolute;
-  top: 20px;
+  top: 15px;
   left: 15%;
-  font-size: 22px;
+  font-size: 1.3em;
   color: white;
   font-weight: bold;
   pointer-events: none;

@@ -6,17 +6,48 @@
       <div class="d-flex align-items-center justify-content-between mb-2" style="line-height: 1;">
         <p class="mb-0" style="font-size: 0.9rem;"><%= user.username %></p>
 
-        <%= form_with url: update_objet_path, method: :post, local: true do |form| %>
-          <div class="d-flex align-items-center" style="position: relative;">
-            <!-- Conteneur pour le menu déroulant -->
-            <div class="select-container">
-              <%= select_tag "object[#{user.id}]", options_for_select(@objects.map { |object| [object.name, object.id] }), class: "donner-objet-select form-select form-select-sm me-2", style: "width: 200px;" %>
+        <%= form_with url: update_objet_path, method: :post, local: true, class: "donner-objet-form" do %>
+          <div 
+            class="d-flex align-items-center" 
+            style="position: relative;" 
+            data-controller="give-item" 
+            data-give-item-user-id-value="<%= user.id %>" 
+            data-give-item-objects-value="<%= @objects.to_json %>">
+            
+            <!-- Filtre des catégories -->
+            <div class="select-container me-2">
+              <%= select_tag "category[#{user.id}]", 
+                options_for_select(["Toutes les catégories"] + @categories), 
+                class: "form-select form-select-sm donner-categorie", 
+                data: { action: "change->give-item#filterObjects", giveItemTarget: "categorySelect" } %>
             </div>
-            <%= submit_tag "Go", name: "submit_#{user.id}", class: "btn btn-outline-success btn-sm ms-1 p-0", data: { confirm: "Êtes-vous sûr de vouloir donner cet objet ?" } %>
+
+            <!-- Filtre des objets -->
+            <div class="select-container me-2">
+              <%= select_tag "object[#{user.id}]", 
+                options_for_select(@objects.map { |object| [object[:name], object[:id]] }), 
+                class: "form-select form-select-sm donner-objet", 
+                data: { giveItemTarget: "objectSelect" } %>
+            </div>
+
+            <!-- Champ pour la quantité -->
+            <div class="me-2">
+              <%= number_field_tag "quantity[#{user.id}]", 1, 
+                class: "form-control form-control-sm donner-quantite", 
+                min: 1, 
+                style: "width: 70px;" %>
+            </div>
+
+            <!-- Bouton de validation -->
+            <%= submit_tag "Go", 
+              name: "submit_#{user.id}", 
+              class: "btn btn-outline-success btn-sm p-0", 
+              data: { confirm: "Êtes-vous sûr de vouloir donner cet objet ?" } %>
           </div>
         <% end %>
       </div>
     <% end %>
+
     <div class="text-center mt-4">
       <%= link_to "Retour", current_user.group.name == "MJ" ? mj_dashboard_path : root_path, class: "btn btn-outline-success" %>
     </div>

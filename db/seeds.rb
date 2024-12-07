@@ -40,12 +40,12 @@ puts "Creating the users and assigning them to the corresponding groups, races, 
 User.create!(username: "MJ", email: "mj@rpg.com", password: "adminsw", hp_max: 1000, hp_current: 1000, credits: 100000, group: group1)
 
 players = [
-  { username: "Jarluc de Macharlon", email: "jarluc@rpg.com", race: human, classe_perso: senator, hp_max: 30, hp_current: 30, shield_max: 0, shield_current: 0, echani_shield_max: 0, echani_shield_current: 0, credits: 1000 },
-  { username: "Kay Noah", email: "kay@rpg.com", race: kaminoan, classe_perso: bio_savant, hp_max: 30, hp_current: 30, shield_max: 0, shield_current: 0, echani_shield_max: 0, echani_shield_current: 0, credits: 1000 },
-  { username: "Nuok", email: "nuok@rpg.com", race: codruji, classe_perso: autodidact, hp_max: 30, hp_current: 30, shield_max: 0, shield_current: 0, echani_shield_max: 0, echani_shield_current: 0, credits: 1000 },
-  { username: "Pluto", email: "pluto@rpg.com", race: human, classe_perso: mercenary, hp_max: 30, hp_current: 30, shield_max: 0, shield_current: 0, echani_shield_max: 0, echani_shield_current: 0, credits: 1000 },
-  { username: "Viggo", email: "viggo@rpg.com", race: toydarian, classe_perso: cyber_engineer, hp_max: 30, hp_current: 30, shield_max: 0, echani_shield_max: 0, echani_shield_current: 0, credits: 1000 },
-  { username: "Mas Tandor", email: "mas@rpg.com", race: clawdite, classe_perso: smuggler, hp_max: 30, hp_current: 30, shield_max: 0, echani_shield_max: 0, echani_shield_current: 0, credits: 1000 }
+  { username: "Jarluc", email: "jarluc@rpg.com", race: human, classe_perso: senator, hp_max: 33, hp_current: 33, shield_max: 0, shield_current: 0, echani_shield_max: 0, echani_shield_current: 0, credits: 31650 },
+  { username: "Kaey Noah", email: "kay@rpg.com", race: kaminoan, classe_perso: bio_savant, hp_max: 26, hp_current: 26, shield_max: 50, shield_current: 50, echani_shield_max: 50, echani_shield_current: 0, credits: 520 },
+  { username: "Nuok", email: "nuok@rpg.com", race: codruji, classe_perso: autodidact, hp_max: 38, hp_current: 38, shield_max: 0, shield_current: 0, echani_shield_max: 0, echani_shield_current: 0, credits: 1110 },
+  { username: "Pluto", email: "pluto@rpg.com", race: human, classe_perso: mercenary, hp_max: 34, hp_current: 34, shield_max: 50, shield_current: 50, echani_shield_max: 0, echani_shield_current: 0, credits: 0 },
+  { username: "Viggo", email: "viggo@rpg.com", race: toydarian, classe_perso: cyber_engineer, hp_max: 22, hp_current: 22, shield_max: 50, echani_shield_max: 0, echani_shield_current: 0, credits: 14850 },
+  { username: "Mas Tandor", email: "mas@rpg.com", race: clawdite, classe_perso: smuggler, hp_max: 21, hp_current: 21, shield_max: 20, shield_current: 20, echani_shield_max: 30, echani_shield_current: 30, credits: 8120 }
 ]
 
 puts "Creating healing inventory objects..."
@@ -113,7 +113,7 @@ ingredients = [
   { name: "Filet de Lommite", price: 1000, description: "Le filet de lommite est un échantillon rare d'un métal très résistant", rarity: "Rare" },
   { name: "Lingot de Duracier", price: 3000, description: "Le lingot de duracier est un alliage très rare et extrêmement résistant", rarity: "Très rare" },
   { name: "Fiole", price: 30, description: "Un contenant pour diverses préparations de potions et poisons", rarity: "Commun" },
-  { name: "Matière organique", price: 50, description: "Un substras de matière organique amalgamée", rarity: "Commun" },
+  { name: "Matière organique", price: 80, description: "Un substras de matière organique amalgamée", rarity: "Commun" },
   { name: "Dose de bacta", price: 100, description: "Une dose de bacta, cette substance régénératrice utilisée dans les medipacks et cuves à bacta", rarity: "Unco" },
   { name: "Dose de kolto", price: 300, description: "Une dose de kolto, une substance régénératrice rare et très efficace", rarity: "Rare" },
   { name: "Jeu d'éprouvettes", price: 50, description: "Un simple jeu d'éprouvettes pour l'artisanat du biosavant", rarity: "Commun" },
@@ -168,7 +168,8 @@ end
 puts "Creating skills..."
 skills = [
   { name: "Médecine", description: "Compétence pour soigner les autres." },
-  { name: "Résistance Corporelle", description: "Réduit les dégâts subis en fonction du jet de résistance corporelle." }
+  { name: "Résistance Corporelle", description: "Réduit les dégâts subis en fonction du jet de résistance corporelle." },
+  { name: "Ingénierie", description: "Compétence pour crafter des trucs" },
 ]
 
 skills.each do |skill|
@@ -176,5 +177,53 @@ skills.each do |skill|
     s.description = skill[:description]
   end
 end
+
+puts "Creating pets..."
+
+Pet.create!(
+  name: "Jiya",
+  race: "Jawa",
+  hp_current: 20,
+  hp_max: 20,
+  res_corp: 2,
+  res_corp_bonus: 1,
+  speed: 5,
+  damage_1: 5,
+  damage_2: 5,
+  accuracy: 6,
+  dodge: 5,
+  weapon_1: "Sabre Laser",
+  weapon_2: "Fusil Blaster +2"
+)
+
+Pet.create!(
+  name: "R4-X3",
+  race: "Astromex",
+  hp_current: 12,
+  hp_max: 12,
+  res_corp: 1,
+  res_corp_bonus: 2,
+  speed: 2,
+  damage_1: 6,
+  accuracy: 3,
+  dodge: 1,
+  weapon_1: "Lance-Flammes",
+)
+
+Pet.create!(
+  name: "Elenoa",
+  race: "Cathar",
+  hp_current: 18,
+  hp_max: 18,
+  res_corp: 1,
+  res_corp_bonus: 2,
+  speed: 8,
+  damage_1: 4,
+  damage_2: 5,
+  accuracy: 7,
+  dodge: 8,
+  weapon_1: "Griffes",
+  weapon_2: "Fusil Blaster Wilson"
+)
 
 puts "Task completed!"

@@ -5,3 +5,4 @@
 //= link popper.js
 //= link bootstrap.min.js
 //= link shield.mp3
+//= link CashMoney.mp3

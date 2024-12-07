@@ -169,6 +169,7 @@ class MjController < ApplicationController
     update_params[:shield_max]&.each do |user_id, shield_max_value|
       user = users_by_id[user_id.to_i]
       if user&.update(shield_max: shield_max_value.to_i)
+        user.update(shield_current: shield_max_value.to_i) if user.shield_current.nil? || user.shield_current < shield_max_value.to_i
         user.broadcast_energy_shield_update
         Rails.logger.debug "Updated Shield Max for user ##{user.id} to #{user.shield_max}"
       end
@@ -177,6 +178,7 @@ class MjController < ApplicationController
     update_params[:echani_shield_max]&.each do |user_id, echani_shield_max_value|
       user = users_by_id[user_id.to_i]
       if user&.update(echani_shield_max: echani_shield_max_value.to_i)
+        user.update(echani_shield_current: echani_shield_max_value.to_i) if user.echani_shield_current.nil? || user.echani_shield_current < echani_shield_max_value.to_i
         user.broadcast_echani_shield_update
         Rails.logger.debug "Updated Echani Shield Max for user ##{user.id} to #{user.echani_shield_max}"
       end
@@ -255,22 +257,26 @@ class MjController < ApplicationController
 
   def donner_objet
     @users = User.joins(:group).where(groups: { name: "PJ" })
-    @objects = InventoryObject.order(:name)
+    @categories = InventoryObject.distinct.pluck(:category).sort
+    @objects = InventoryObject.select(:id, :name, :category).map do |obj|
+      { id: obj.id, name: obj.name, category: obj.category }
+    end
   end
 
   def update_objet
     params[:object].each do |user_id, object_id|
       user = User.find(user_id)
       object = InventoryObject.find(object_id)
-
+      quantity = params[:quantity][user_id].to_i
+  
       user_inventory_object = user.user_inventory_objects.find_or_initialize_by(inventory_object_id: object.id)
       user_inventory_object.quantity ||= 0
-      user_inventory_object.quantity += 1
+      user_inventory_object.quantity += quantity
       user_inventory_object.save!
-
-      Rails.logger.info "✅ Objet #{object.name} donné à #{user.username}."
+  
+      Rails.logger.info "✅ Objet #{object.name} (x#{quantity}) donné à #{user.username}."
     end
-
+  
     redirect_to donner_objet_path, notice: "Objets donnés avec succès."
   rescue ActiveRecord::RecordNotFound => e
     redirect_to donner_objet_path, alert: "Erreur : #{e.message}"

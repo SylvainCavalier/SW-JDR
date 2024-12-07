@@ -9,6 +9,8 @@
   <%= turbo_stream_from "echani_shields_updates_#{current_user.id}" %>
 <% end %>
 
+<%= render 'pages/credits_sound' %>
+
 <div class="frame-container" style="position: relative; width: 100%; height: 100vh;">
 
   <!-- Username -->
@@ -28,13 +30,20 @@
   </div>
 
   <!-- Barre du haut à droite -->
-  <img src="<%= asset_path('top-bar.svg') %>" alt="Top Bar" class="ui-top-bar">
+  <div class="top-bar-container">
+    <img src="<%= asset_path('top-bar.svg') %>" alt="Top Bar" class="ui-top-bar">
+    <% if @patch_equipped %>
+      <i class="fa-regular fa-circle-down patch-icon"></i>
+    <% end %>
+  </div>
 
   <!-- Élément à gauche du screen -->
-  <% if current_user.classe_perso.name == "Bio-savant" %>
+  <% if current_user.classe_perso&.name == "Bio-savant" %>
     <%= link_to science_path do %>
       <img src="<%= asset_path('function.svg') %>" alt="Function UI" class="ui-function">
     <% end %>
+  <% else %>
+    <img src="<%= asset_path('function.svg') %>" alt="Function UI" class="ui-function">
   <% end %>
 
   <!-- Dé en bas de l'écran du screen -->
@@ -69,8 +78,8 @@
           data-shield-state="<%= current_user.shield_state %>">
         <i class="fa-solid fa-shield" data-shield-target="icon"></i>
         <turbo-frame id="user_<%= current_user.id %>_energy_shield_frame">
-          <p class="mt-1 mb-0" data-shield-target="shieldCurrent">
-            Bouclier d'énergie <%= current_user.shield_current %> / <%= current_user.shield_max %>
+          <p class="mt-1 mb-0" style="0.9em" data-shield-target="shieldCurrent">
+            Bouclier Energie <%= current_user.shield_current %> / <%= current_user.shield_max %>
           </p>
         </turbo-frame>
         <audio id="shield-sound" src="<%= asset_path('shield.mp3') %>" preload="auto"></audio>
@@ -98,8 +107,8 @@
           data-shield-state="<%= current_user.echani_shield_state %>">
         <i class="fa-solid fa-shield" data-shield-target="icon"></i>
         <turbo-frame id="user_<%= current_user.id %>_echani_shield_frame">
-          <p class="mt-1 mb-0" data-shield-target="shieldCurrent">
-            Bouclier echani <%= current_user.echani_shield_current %> / <%= current_user.echani_shield_max %>
+          <p class="mt-1 mb-0" style="0.9em" data-shield-target="shieldCurrent">
+            Bouclier Echani <%= current_user.echani_shield_current %> / <%= current_user.echani_shield_max %>
           </p>
         </turbo-frame>
         <audio id="shield-sound" src="<%= asset_path('shield.mp3') %>" preload="auto"></audio>

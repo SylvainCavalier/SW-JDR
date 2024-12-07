@@ -1,4 +1,3 @@
-# app/controllers/user_inventory_objects_controller.rb
 class UserInventoryObjectsController < ApplicationController
   before_action :set_user_inventory_object, only: [:use]
   before_action :set_target_user, only: [:use]

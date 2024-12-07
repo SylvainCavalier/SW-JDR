@@ -7,9 +7,14 @@ class TransactionsController < ApplicationController
 
   def create
     receiver = User.where('LOWER(username) = ?', params[:transaction][:receiver_username].downcase).first
-
+  
     if receiver.nil?
       redirect_to new_transaction_path, alert: 'Destinataire introuvable'
+      return
+    end
+  
+    if receiver == current_user
+      redirect_to new_transaction_path, alert: 'Vous ne pouvez pas vous envoyer des crédits à vous-même.'
       return
     end
   
@@ -22,7 +27,7 @@ class TransactionsController < ApplicationController
         current_user.update!(credits: current_user.credits - @transaction.amount)
         @transaction.receiver.update!(credits: @transaction.receiver.credits + @transaction.amount)
         @transaction.save!
-        
+  
         current_user.broadcast_credits_update
         receiver.broadcast_credits_update
       end
