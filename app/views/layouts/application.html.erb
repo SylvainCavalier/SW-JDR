@@ -30,6 +30,7 @@
   </head>
 
   <body>
+    <%= render "layouts/flash" %>
     <%= turbo_frame_tag "group-luck-popup", class: "hidden-popup" %>
     <div id="background" class="container-fluid justify-content-center align-items-center p-0">
       <%= yield %>

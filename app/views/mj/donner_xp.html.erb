@@ -25,8 +25,8 @@
 
     <!-- Bouton de validation -->
     <div>
-      <%= f.submit "Donner", class: "btn btn-success" %>
+      <%= f.submit "Donner", class: "btn btn-outline-success" %>
     </div>
   <% end %>
-  <%= link_to "Retour", current_user.group.name == "MJ" ? mj_dashboard_path : root_path, class: "btn btn-outline-success go-back" %>
+  <%= link_to "Retour", current_user.group.name == "MJ" ? mj_dashboard_path : root_path, class: "btn btn-outline-secondary go-back" %>
 </div>

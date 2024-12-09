@@ -5,6 +5,7 @@ UserSkill.destroy_all
 UserInventoryObject.destroy_all
 UserStatus.destroy_all
 Transaction.destroy_all
+Holonew.destroy_all
 
 # Supprimer les enregistrements principaux
 User.destroy_all

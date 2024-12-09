@@ -60,12 +60,17 @@ class User < ApplicationRecord
   end
 
   def apply_xp_bonus(xp_to_add)
-    increment!(:total_xp, xp_to_add)
+    previous_total_xp = total_xp
+    new_total_xp = previous_total_xp + xp_to_add
+  
+    update!(total_xp: new_total_xp)
     increment!(:xp, xp_to_add)
-
-    if human_race? && (total_xp % 10).zero?
-      increment!(:xp, 1)
-      notify_racial_xp_bonus
+  
+    if human_race?
+      bonuses_to_apply = (new_total_xp / 10) - (previous_total_xp / 10)
+      increment!(:xp, bonuses_to_apply) if bonuses_to_apply > 0
+  
+      notify_racial_xp_bonus if bonuses_to_apply > 0
     end
   end
 
