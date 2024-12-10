@@ -47,6 +47,11 @@ class MjController < ApplicationController
         new_hp_value = [new_hp_value, -10].max
         user.update(hp_current: new_hp_value)
         user.broadcast_hp_update
+
+        if new_shield_value == 0
+          turbo_stream_action(user, "energy")
+        end
+
         message = "Le joueur a pris #{actual_damage} dégâts après résistance corporelle."
       end
   
@@ -60,6 +65,11 @@ class MjController < ApplicationController
         new_shield_value = [user.echani_shield_current - damage, 0].max
         user.update(echani_shield_current: new_shield_value)
         user.broadcast_echani_shield_update
+
+        if new_shield_value == 0
+          turbo_stream_action(user, "echani")
+        end
+        
         message = "Bouclier Échani a pris #{damage} dégâts."
       else
         # Calcul des dégâts résiduels pour les PV

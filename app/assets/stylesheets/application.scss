@@ -141,7 +141,7 @@ span {
 .credits-text {
   position: absolute;
   top: 30%;   /* Centre verticalement par rapport au screen */
-  left: 50%;  /* Centre horizontalement par rapport au screen */
+  left: 45%;  /* Centre horizontalement par rapport au screen */
   transform: translateX(-50%);
   z-index: 2;
   font-size: 1.0rem; /* Ajuste la taille selon tes besoins */
@@ -151,7 +151,7 @@ span {
 .xp-container {
   position: absolute;
   top: 60%;   /* Centre verticalement par rapport au screen */
-  left: 50%;
+  left: 45%;
   z-index: 2;
 }
 
@@ -297,7 +297,7 @@ span {
 }
 
 .status-container p {
-  margin: 0;
+  margin: 1;
   font-size: 1.2em;
 }
 
@@ -350,7 +350,7 @@ span {
   font-size: 0.9em;
   color: white;
   font-weight: bold;
-  pointer-events: none;
+  pointer-events: auto;
 }
 
 .transfer-btn {

@@ -9,13 +9,13 @@ class TransactionsController < ApplicationController
     receiver = User.where('LOWER(username) = ?', params[:transaction][:receiver_username].downcase).first
   
     if receiver.nil?
-      redirect_to new_transaction_path, alert: 'Destinataire introuvable'
-      return
+      flash.now[:alert] = 'Destinataire introuvable'
+      render :new, status: :unprocessable_entity and return
     end
   
     if receiver == current_user
-      redirect_to new_transaction_path, alert: 'Vous ne pouvez pas vous envoyer des crédits à vous-même.'
-      return
+      flash.now[:alert] = 'Vous ne pouvez pas vous envoyer des crédits à vous-même.'
+      render :new, status: :unprocessable_entity and return
     end
   
     @transaction = Transaction.new(transaction_params)
@@ -25,23 +25,22 @@ class TransactionsController < ApplicationController
     if @transaction.amount <= current_user.credits && @transaction.amount > 0
       ActiveRecord::Base.transaction do
         current_user.update!(credits: current_user.credits - @transaction.amount)
-        @transaction.receiver.update!(credits: @transaction.receiver.credits + @transaction.amount)
+        receiver.update!(credits: receiver.credits + @transaction.amount)
         @transaction.save!
   
         current_user.broadcast_credits_update
         receiver.broadcast_credits_update
       end
   
-      if current_user.group.name == "MJ"
-        redirect_to new_transaction_path, notice: 'Transfert réussi'
-      else
-        redirect_to new_transaction_path, notice: 'Transfert réussi'
-      end
+      flash[:notice] = 'Transfert réussi.'
+      redirect_to new_transaction_path
     else
-      redirect_to new_transaction_path, alert: 'Transfert échoué, crédits insuffisants'
+      flash.now[:alert] = 'Transfert échoué, crédits insuffisants.'
+      render :new, status: :unprocessable_entity
     end
   rescue => e
-    redirect_to new_transaction_path, alert: 'Une erreur s\'est produite'
+    flash.now[:alert] = "Une erreur s'est produite : #{e.message}"
+    render :new, status: :internal_server_error
   end
 
   private

@@ -8,6 +8,40 @@ export default class extends Controller {
     this.active = this.element.dataset.shieldState === "true";
     this.updateIcon();
     console.log(`Shield ${this.shieldType} connecté avec état :`, this.active);
+    this.observeTurboFrame();
+  }
+
+  observeTurboFrame() {
+    const frameId = `user_${this.element.dataset.userId}_${this.shieldType}_shield_frame`;
+    const frame = document.getElementById(frameId);
+
+    if (!frame) {
+      console.warn(`Aucun turbo-frame trouvé avec l'ID : ${frameId}`);
+      return;
+    }
+
+    console.log(`Observateur configuré pour le turbo-frame avec ID : ${frame.id}`);
+
+    frame.addEventListener("turbo:frame-load", () => {
+      console.log(`Événement turbo:frame-load détecté pour le frame ID : ${frame.id}`);
+      const shieldCurrentAttr = this.shieldCurrentTarget.dataset.shieldCurrent;
+      const shieldCurrent = parseInt(shieldCurrentAttr, 10);
+
+      console.log(`Valeur actuelle du bouclier (${this.shieldType}) : ${shieldCurrent}`);
+
+      if (isNaN(shieldCurrent)) {
+        console.warn("⚠️ Valeur du bouclier non valide :", shieldCurrentAttr);
+        return;
+      }
+
+      if (shieldCurrent === 0 && this.active) {
+        console.log(`💡 Désactivation du bouclier ${this.shieldType} car valeur à 0.`);
+        this.active = false;
+        this.updateIcon();
+      } else if (shieldCurrent > 0 && !this.active) {
+        console.log(`💡 Activation possible du bouclier ${this.shieldType} avec valeur : ${shieldCurrent}`);
+      }
+    });
   }
 
   toggle() {
@@ -63,7 +97,19 @@ export default class extends Controller {
   }
 
   updateIcon() {
-    this.iconTarget.classList.toggle("active", this.active);
+    console.log(
+      `Mise à jour de l'icône pour le bouclier ${this.shieldType}. État actif : ${this.active}`
+    );
+  
+    // Si actif, on applique "active" et on enlève "inactive"
+    if (this.active) {
+      this.iconTarget.classList.add("active");
+      this.iconTarget.classList.remove("inactive");
+    } else {
+      // Si inactif, on applique "inactive" et on enlève "active"
+      this.iconTarget.classList.add("inactive");
+      this.iconTarget.classList.remove("active");
+    }
   }
 
   updateDomState(data) {

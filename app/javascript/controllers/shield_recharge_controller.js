@@ -32,6 +32,14 @@ export default class extends Controller {
       return;
     }
 
+    if (this.shieldCurrent === this.shieldMax) {
+      this.popupMessageTarget.innerText = `Le bouclier ${
+          this.shieldType === "energy" ? "d'énergie" : "Échani"
+      } est déjà plein !`;
+      modal.show();
+      return;
+    }
+
     if (this.shieldCurrent === 0) {
       // Cas où le bouclier est épuisé (mais existe)
       const rechargeCost = this.shieldMax * 10; // Recharge complète

@@ -142,7 +142,7 @@ puts "Finished adding inventory objects of category 'ingredient'."
 
 puts "Creating statuses..."
 statuses = [
-  { name: "En forme", description: "En pleine santé", color: "#00FF00" }, # Vert clair
+  { name: "En forme", description: "En pleine santé", color: "#1EDD88" }, # Vert clair
   { name: "Empoisonné", description: "Empoisonné", color: "#7F00FF" }, # Violet
   { name: "Irradié", description: "Irradié par des radiations", color: "#FFD700" }, # Or
   { name: "Agonisant", description: "À l'agonie, proche de la mort", color: "#8B0000" }, # Rouge foncé
