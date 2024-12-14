@@ -13,19 +13,19 @@
     <%= form_with(model: current_user, url: update_settings_user_path(current_user), method: :patch, local: true) do |f| %>
       <% if ["Mercenaire", "Sénateur", "Autodidacte"].include?(current_user.classe_perso&.name) %>
         <div class="input-group custom-input-group">
-          <%= f.check_box :robustesse, class: "form-check-input", id: "robustesse-checkbox" %>
+          <%= f.check_box :robustesse, class: "form-check-input" %>
           <%= f.label :robustesse, "Robustesse", class: "form-check-label ms-1" %>
         </div>
       <% end %>
       <% if ["Bio-savant", "Autodidacte"].include?(current_user.classe_perso&.name) %>
         <div class="input-group custom-input-group">
-          <%= f.check_box :homeopathie, class: "form-check-input", id: "homeopathie-checkbox" %>
+          <%= f.check_box :homeopathie, class: "form-check-input" %>
           <%= f.label :homeopathie, "Homéopathie", class: "form-check-label ms-1" %>
         </div>
       <% end %>
       <% if ["Contrebandier", "Autodidacte"].include?(current_user.classe_perso&.name) %>
         <div class="input-group custom-input-group">
-          <%= f.check_box :luck, class: "form-check-input", id: "luck-checkbox" %>
+          <%= f.check_box :luck, class: "form-check-input" %>
           <%= f.label :luck, "Chance du Contrebandier", class: "form-check-label ms-1" %>
         </div>
       <% end %>
