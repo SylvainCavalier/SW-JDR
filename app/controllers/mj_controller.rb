@@ -9,7 +9,11 @@ class MjController < ApplicationController
   end
 
   def infliger_degats
-    @users = User.where(group_id: Group.find_by(name: "PJ").id)
+    if params[:type] == 'pets'
+      @pets = Pet.all
+    else
+      @users = User.where(group_id: Group.find_by(name: "PJ").id)
+    end
   end
 
   def apply_damage
@@ -105,6 +109,43 @@ class MjController < ApplicationController
   
     # Retourner les résultats
     render json: { success: true, hp_current: user.hp_current, shield_current: user.shield_current, echani_shield_current: user.echani_shield_current, message: message }
+  end
+  
+  def apply_damage_pets
+    Rails.logger.debug "Paramètres reçus : #{params.inspect}"
+    pet = Pet.find(params[:pet_id])
+    damage = params[:damage].to_i
+    attack_type = params[:attack_type] # "physical", "ignore_defense"
+  
+    Rails.logger.debug "Type d'attaque : #{attack_type}"
+  
+    # Calcul de la résistance corporelle des pets
+    resistance_bonus = pet.calculate_resistance_bonus
+    Rails.logger.debug "🎲 Bonus total de résistance corporelle pour le pet : #{resistance_bonus}"
+  
+    case attack_type
+    when "physical"
+      # Appliquer la résistance corporelle
+      actual_damage = [damage - resistance_bonus, 0].max
+      new_hp_value = [pet.hp_current - actual_damage, 0].max
+      pet.update!(hp_current: new_hp_value)
+      message = "Le pet a pris #{actual_damage} dégâts après résistance corporelle."
+    when "ignore_defense"
+      # Dégâts ignorants la défense
+      new_hp_value = [pet.hp_current - damage, 0].max
+      pet.update!(hp_current: new_hp_value)
+      message = "Le pet a pris #{damage} dégâts directs, ignorants toute résistance."
+    else
+      # Type d'attaque non valide
+      render json: { success: false, message: "Type d'attaque invalide." }, status: :unprocessable_entity
+      return
+    end
+  
+    # Logique additionnelle si nécessaire
+    Rails.logger.debug "Message : #{message}"
+  
+    # Retourner les résultats
+    render json: { success: true, hp_current: pet.hp_current, message: message }
   end
 
   def handle_patch_activation(user, damage)
@@ -290,6 +331,26 @@ class MjController < ApplicationController
     redirect_to donner_objet_path, notice: "Objets donnés avec succès."
   rescue ActiveRecord::RecordNotFound => e
     redirect_to donner_objet_path, alert: "Erreur : #{e.message}"
+  end
+
+  def fix_pets
+    @pets = Pet.includes(:user) # Charge tous les pets avec leurs utilisateurs associés pour éviter le N+1
+  end
+
+  def send_pet_action_points
+    pj_group = Group.find_by(name: "PJ")
+
+    if pj_group.nil?
+      redirect_to mj_dashboard_path, alert: "Le groupe des joueurs (PJ) n'existe pas." and return
+    end
+
+    # Ajouter 5 points d'action aux utilisateurs du groupe "PJ", sans dépasser 10
+    pj_users = User.where(group_id: pj_group.id)
+    pj_users.each do |user|
+      user.update!(pet_action_points: [user.pet_action_points + 5, 10].min)
+    end
+
+    redirect_to fix_pets_path, notice: "5 points d'action ont été attribués aux joueurs (maximum 10 points par utilisateur)."
   end
   
   private

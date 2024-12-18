@@ -1,0 +1,11 @@
+<div class="input-group custom-input-group me-2" style="width: auto;" data-controller="increment">
+  <%= button_tag "-", type: "button", class: "btn btn-outline-secondary btn-sm", data: { action: "click->increment#decrement" } %>
+  <%= f.number_field damage_field, value: f.object.send(damage_field) || 0, min: 0, id: "#{f.object_name}_#{damage_field}", class: "form-control form-control-sm text-center", style: "width: 45px;", data: { "increment-target" => "input" } %>
+  <%= button_tag "+", type: "button", class: "btn btn-outline-secondary btn-sm", data: { action: "click->increment#increment" } %>
+</div>
+<span class="mx-1"><%= suffix %> +</span>
+<div class="input-group custom-input-group ms-2" style="width: auto;" data-controller="increment">
+  <%= button_tag "-", type: "button", class: "btn btn-outline-secondary btn-sm", data: { action: "click->increment#decrement" } %>
+  <%= f.number_field bonus_field, value: f.object.send(bonus_field) || 0, min: 0, id: "#{f.object_name}_#{bonus_field}", class: "form-control form-control-sm text-center", style: "width: 45px;", data: { "increment-target" => "input" } %>
+  <%= button_tag "+", type: "button", class: "btn btn-outline-secondary btn-sm", data: { action: "click->increment#increment" } %>
+</div>

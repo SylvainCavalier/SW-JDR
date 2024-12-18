@@ -30,5 +30,26 @@ if ("serviceWorker" in navigator) {
   console.error("Service workers are not supported.");
 }
 
+document.addEventListener("DOMContentLoaded", () => {
+  console.log("DOM entièrement chargé, configuration du cadre...");
+  const frame = document.querySelector(".ui-frame");
+
+  if (frame) {
+    const updateFrameHeight = () => {
+      const pageHeight = Math.max(
+        document.body.scrollHeight,
+        document.documentElement.scrollHeight
+      );
+
+      // Ajuste la hauteur du cadre pour qu'elle corresponde à la page
+      frame.style.height = `${pageHeight}px`;
+    };
+
+    // Ajustement initial et à chaque redimensionnement
+    updateFrameHeight();
+    window.addEventListener("resize", updateFrameHeight);
+  }
+});
+
 // Réduire le délai de la barre de progression Turbo
 Turbo.setProgressBarDelay(0);

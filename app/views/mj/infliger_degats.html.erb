@@ -1,60 +1,104 @@
 <div class="frame-container" style="position: relative; width: 100%; height: 100vh;">
-  <!-- Username -->
-  <p class="username-display mt-1 text-primary fw-bold">
-    <%= current_user.username %>
-  </p>
+  <!-- Onglets pour Joueurs et Pets -->
+  <ul class="nav nav-tabs">
+    <li class="nav-item">
+      <%= link_to "Joueurs", infliger_degats_path, class: "nav-link #{params[:type] != 'pets' ? 'active' : ''}" %>
+    </li>
+    <li class="nav-item">
+      <%= link_to "Pets", infliger_degats_path(type: 'pets'), class: "nav-link #{params[:type] == 'pets' ? 'active' : ''}" %>
+    </li>
+  </ul>
 
-  <!-- Form pour infliger des dégâts aux PJ -->
-  <div class="container" id="container-damage">
-    <% @users.each do |user| %>
-      <%= form_with url: infliger_degats_path, method: :post, local: true, data: { controller: "damage-application", damage_application_target: "form" } do %>
-        <!-- Inclure l'ID du joueur dans un champ caché -->
-        <%= hidden_field_tag :user_id, user.id %>
+  <!-- Affichage des joueurs ou des pets -->
+  <div class="container mt-3" id="container-damage">
+    <% if params[:type] == 'pets' %>
+      <% @pets.each do |pet| %>
+        <%= form_with url: apply_damage_pets_path, method: :post, local: true, data: { controller: "damage-application", damage_application_target: "form" } do %>
+          <%= hidden_field_tag :pet_id, pet.id %>
+          <div class="player-damage" data-controller="degats">
+            <p>
+              <%= pet.name %> - PV : <span class="pv-current"><%= pet.hp_current %></span> / <%= pet.hp_max %>
+            </p>
+            <div class="d-flex align-items-center justify-content-between">
+              <!-- Icônes -->
+              <div class="icon-group" data-controller="icon-toggle">
+                <!-- Icône de dégâts physiques -->
+                <i class="fa-regular fa-hand icon active" 
+                  data-action="click->icon-toggle#activate" 
+                  data-icon-toggle-target="icon" 
+                  data-attack-type="physical" 
+                  title="Dégâts physiques"></i>
+                <!-- Icône de dégâts ignorant la défense -->
+                <i class="fa-solid fa-star icon" 
+                  data-action="click->icon-toggle#activate" 
+                  data-icon-toggle-target="icon" 
+                  data-attack-type="ignore_defense" 
+                  title="Dégâts ignorants la défense"></i>
+                <%= hidden_field_tag :attack_type, "", data: { icon_toggle_target: "attackType" } %>
+              </div>
 
-        <div class="player-damage" data-controller="degats">
-          <p>
-            <%= user.username %> - PV : <span class="pv-current"><%= user.hp_current %></span> |
-            B : <span class="shield-energy-current"><%= user.shield_current %></span> / <%= user.shield_max %> |
-            BE : <span class="shield-echani-current"><%= user.echani_shield_current %></span> / <%= user.echani_shield_max %>
-          </p>
-          <div class="d-flex align-items-center justify-content-between">
-            <!-- Icônes -->
-            <div class="icon-group" data-controller="icon-toggle">
-              <!-- Icône de dégâts énergétiques -->
-              <i class="fa-solid fa-bolt icon active" 
-                data-action="click->icon-toggle#activate" 
-                data-icon-toggle-target="icon" 
-                data-attack-type="energy" 
-                title="Dégâts énergétiques"></i>
-              
-              <!-- Icône de dégâts physiques -->
-              <i class="fa-regular fa-hand icon mx-1" 
-                data-action="click->icon-toggle#activate" 
-                data-icon-toggle-target="icon" 
-                data-attack-type="physical" 
-                title="Dégâts physiques"></i>
-              
-              <!-- Icône de dégâts ignorant la défense -->
-              <i class="fa-solid fa-star icon" 
-                data-action="click->icon-toggle#activate" 
-                data-icon-toggle-target="icon" 
-                data-attack-type="ignore_defense" 
-                title="Dégâts ignorants la défense"></i>
-                
-              <%= hidden_field_tag :attack_type, "", data: { icon_toggle_target: "attackType" } %>
+              <!-- Input des dégâts -->
+              <div class="input-group custom-input-group">
+                <%= button_tag "-", class: "btn btn-outline-secondary", data: { action: "click->degats#decrement" } %>
+                <%= number_field_tag "damage", 1, class: "form-control custom-damage-input", min: 0, data: { "degats-target": "input", "damage-application-target": "input" } %>
+                <%= button_tag "+", class: "btn btn-outline-secondary", data: { action: "click->degats#increment" } %>
+              </div>
+
+              <!-- Bouton d'envoi -->
+              <%= submit_tag "Go", class: "btn btn-outline-secondary", data: { action: "damage-application#applyDamage" } %>
             </div>
-
-            <!-- Input des dégâts -->
-            <div class="input-group custom-input-group">
-              <%= button_tag "-", class: "btn btn-outline-secondary", data: { action: "click->degats#decrement" } %>
-              <%= number_field_tag "damage", 1, class: "form-control custom-damage-input", min: 0, data: { "degats-target": "input", "damage-application-target": "input" } %>
-              <%= button_tag "+", class: "btn btn-outline-secondary", data: { action: "click->degats#increment" } %>
-            </div>
-
-            <!-- Bouton d'envoi -->
-            <%= submit_tag "Go", class: "btn btn-outline-secondary", data: { action: "damage-application#applyDamage" } %>
           </div>
-        </div>
+        <% end %>
+      <% end %>
+    <% else %>
+      <% @users.each do |user| %>
+        <%= form_with url: infliger_degats_path, method: :post, local: true, data: { controller: "damage-application", damage_application_target: "form" } do %>
+          <%= hidden_field_tag :user_id, user.id %>
+          <div class="player-damage" data-controller="degats">
+            <p>
+              <%= user.username %> - PV : <span class="pv-current"><%= user.hp_current %></span> |
+              B : <span class="shield-energy-current"><%= user.shield_current %></span> / <%= user.shield_max %> |
+              BE : <span class="shield-echani-current"><%= user.echani_shield_current %></span> / <%= user.echani_shield_max %>
+            </p>
+            <div class="d-flex align-items-center justify-content-between">
+              <!-- Icônes -->
+              <div class="icon-group" data-controller="icon-toggle">
+                <!-- Icône de dégâts énergétiques -->
+                <i class="fa-solid fa-bolt icon active" 
+                  data-action="click->icon-toggle#activate" 
+                  data-icon-toggle-target="icon" 
+                  data-attack-type="energy" 
+                  title="Dégâts énergétiques"></i>
+                
+                <!-- Icône de dégâts physiques -->
+                <i class="fa-regular fa-hand icon mx-1" 
+                  data-action="click->icon-toggle#activate" 
+                  data-icon-toggle-target="icon" 
+                  data-attack-type="physical" 
+                  title="Dégâts physiques"></i>
+                
+                <!-- Icône de dégâts ignorant la défense -->
+                <i class="fa-solid fa-star icon" 
+                  data-action="click->icon-toggle#activate" 
+                  data-icon-toggle-target="icon" 
+                  data-attack-type="ignore_defense" 
+                  title="Dégâts ignorants la défense"></i>
+                  
+                <%= hidden_field_tag :attack_type, "", data: { icon_toggle_target: "attackType" } %>
+              </div>
+
+              <!-- Input des dégâts -->
+              <div class="input-group custom-input-group">
+                <%= button_tag "-", class: "btn btn-outline-secondary", data: { action: "click->degats#decrement" } %>
+                <%= number_field_tag "damage", 1, class: "form-control custom-damage-input", min: 0, data: { "degats-target": "input", "damage-application-target": "input" } %>
+                <%= button_tag "+", class: "btn btn-outline-secondary", data: { action: "click->degats#increment" } %>
+              </div>
+
+              <!-- Bouton d'envoi -->
+              <%= submit_tag "Go", class: "btn btn-outline-secondary", data: { action: "damage-application#applyDamage" } %>
+            </div>
+          </div>
+        <% end %>
       <% end %>
     <% end %>
   </div>

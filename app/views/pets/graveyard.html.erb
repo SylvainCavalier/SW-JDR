@@ -1,12 +1,17 @@
 <div class="frame-container" style="position: relative; width: 100%; height: 100vh; overflow-y: auto; overflow-x: hidden;">
-  <div class="pet-container mt-3">
-    <h2 class="text-success text-center mb-4">Liste des Familiers</h2>
+  <!-- Username -->
+  <p class="username-display mt-1 text-primary fw-bold">
+    <%= current_user.username.capitalize %>
+  </p>
 
-    <%# Liste des Humanoïdes %>
+  <div class="container mt-5">
+    <h2 class="text-danger text-center mb-4">Cimetière des Familiers</h2>
+
+    <%# Liste des Humanoïdes morts %>
     <div class="pet-category-box mb-5">
       <h3 class="text-center text-info">Humanoïdes</h3>
       <ul class="list-group">
-        <% @humanoids.each do |pet| %>
+        <% @dead_humanoids.each do |pet| %>
           <li class="list-group-item d-flex justify-content-between align-items-center">
             <div>
               <strong>Nom :</strong> <%= pet.name %> | 
@@ -21,11 +26,11 @@
       </ul>
     </div>
 
-    <%# Liste des Animaux %>
+    <%# Liste des Animaux morts %>
     <div class="pet-category-box mb-5">
-      <h3 class="text-center text-info">Animaux</h3>
+      <h3 class="text-center text-success">Animaux</h3>
       <ul class="list-group">
-        <% @animals.each do |pet| %>
+        <% @dead_animals.each do |pet| %>
           <li class="list-group-item d-flex justify-content-between align-items-center">
             <div>
               <strong>Nom :</strong> <%= pet.name %> | 
@@ -40,11 +45,11 @@
       </ul>
     </div>
 
-    <%# Liste des Droïdes %>
+    <%# Liste des Droïdes morts %>
     <div class="pet-category-box mb-5">
-      <h3 class="text-center text-info">Droïdes</h3>
+      <h3 class="text-center text-warning">Droïdes</h3>
       <ul class="list-group">
-        <% @droids.each do |pet| %>
+        <% @dead_droids.each do |pet| %>
           <li class="list-group-item d-flex justify-content-between align-items-center">
             <div>
               <strong>Nom :</strong> <%= pet.name %> | 
@@ -59,11 +64,11 @@
       </ul>
     </div>
 
-    <%# Liste des Bio-Armures %>
+    <%# Liste des Bio-Armures mortes %>
     <div class="pet-category-box mb-5">
-      <h3 class="text-center text-info">Bio-Armures</h3>
+      <h3 class="text-center text-danger">Bio-Armures</h3>
       <ul class="list-group">
-        <% @bio_armors.each do |pet| %>
+        <% @dead_bio_armors.each do |pet| %>
           <li class="list-group-item d-flex justify-content-between align-items-center">
             <div>
               <strong>Nom :</strong> <%= pet.name %> | 
@@ -78,18 +83,9 @@
       </ul>
     </div>
 
-    <%# Bouton pour créer un nouveau familier %>
-    <div class="justify-content-center d-flex mt-2">
-      <div class="text-center mx-2">
-        <%= link_to "Créer un Familier", new_pet_path, class: "btn btn-success btn-lg" %>
-      </div>
-      <div class="text-center mx-2">
-        <%= link_to graveyard_pets_path, class: "btn btn-dark btn-lg", title: "Voir le cimetière des familiers" do %>
-          <i class="fa-solid fa-skull-crossbones"></i>
-        <% end %>
-      </div>
+    <%# Retour à l'index principal %>
+    <div class="text-center mt-4">
+      <%= link_to "Retour à la Liste des Familiers", pets_path, class: "btn btn-outline-secondary" %>
     </div>
   </div>
-
-  <%= link_to "Retour", current_user.group.name == "MJ" ? mj_dashboard_path : root_path, class: "btn btn-outline-secondary go-back" %>
 </div>

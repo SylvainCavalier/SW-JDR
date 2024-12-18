@@ -13,7 +13,7 @@
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><%= dismiss_button %></button>
         <% end %>
         <% if confirm_button %>
-          <button type="button" class="btn btn-primary" data-bs-dismiss="modal" <%= confirm_action %>><%= confirm_button %></button>
+          <button type="button" class="btn btn-primary" data-action="<%= confirm_action %>"><%= confirm_button %></button>
         <% end %>
       </div>
     </div>

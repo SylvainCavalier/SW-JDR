@@ -52,7 +52,7 @@
   <% end %>
 
   <!-- Gestion des Pets -->
-  <%= link_to manage_pet_path, class: "btn btn-outline-success pets-home" do %>
+  <%= link_to pets_path, class: "btn btn-outline-success pets-home" do %>
     <i class="fa-solid fa-paw"></i>
   <% end %>
 
@@ -153,7 +153,7 @@
 
   <!-- Statut -->
   <turbo-frame id="user_<%= current_user.id %>_status_frame">
-    <div class="status-container">
+    <div class="status-container m-1">
       <% current_user.statuses.each do |status| %>
         <p style="color: <%= status.color %>;"><%= status.name %></p>
       <% end %>

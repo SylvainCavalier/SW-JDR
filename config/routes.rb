@@ -36,8 +36,15 @@ Rails.application.routes.draw do
   resources :holonews, only: [:index, :new, :create]
 
   resources :pets do
-    post :associate, on: :member
-    post :dissociate, on: :member
+    collection do
+      get 'graveyard', to: 'pets#graveyard'
+    end
+    member do
+      post 'perform_action', to: 'pets#perform_action'
+      post 'heal', to: 'pets#heal'
+      post 'associate', to: 'pets#associate'
+      post 'dissociate', to: 'pets#dissociate'
+    end
   end
 
   get 'science', to: 'science#science', as: 'science'
@@ -55,6 +62,7 @@ Rails.application.routes.draw do
 
   get 'mj/infliger_degats', to: 'mj#infliger_degats', as: 'infliger_degats'
   post 'mj/infliger_degats', to: 'mj#apply_damage'
+  post 'apply_damage_pets', to: 'mj#apply_damage_pets'
 
   get 'mj/fixer_pv_max', to: 'mj#fixer_pv_max', as: 'fixer_pv_max'
   post 'mj/fixer_pv_max', to: 'mj#update_pv_max'
@@ -69,6 +77,9 @@ Rails.application.routes.draw do
 
   get 'donner_objet', to: 'mj#donner_objet'
   post 'update_objet', to: 'mj#update_objet'
+
+  get 'fix_pets', to: 'mj#fix_pets'
+  post "mj/send_pet_action_points", to: "mj#send_pet_action_points", as: "send_pet_action_points"
 
   root 'pages#home'
 end

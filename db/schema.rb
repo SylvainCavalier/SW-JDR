@@ -10,9 +10,37 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_12_06_113826) do
+ActiveRecord::Schema[7.1].define(version: 2024_12_17_102840) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "active_storage_attachments", force: :cascade do |t|
+    t.string "name", null: false
+    t.string "record_type", null: false
+    t.bigint "record_id", null: false
+    t.bigint "blob_id", null: false
+    t.datetime "created_at", null: false
+    t.index ["blob_id"], name: "index_active_storage_attachments_on_blob_id"
+    t.index ["record_type", "record_id", "name", "blob_id"], name: "index_active_storage_attachments_uniqueness", unique: true
+  end
+
+  create_table "active_storage_blobs", force: :cascade do |t|
+    t.string "key", null: false
+    t.string "filename", null: false
+    t.string "content_type"
+    t.text "metadata"
+    t.string "service_name", null: false
+    t.bigint "byte_size", null: false
+    t.string "checksum"
+    t.datetime "created_at", null: false
+    t.index ["key"], name: "index_active_storage_blobs_on_key", unique: true
+  end
+
+  create_table "active_storage_variant_records", force: :cascade do |t|
+    t.bigint "blob_id", null: false
+    t.string "variation_digest", null: false
+    t.index ["blob_id", "variation_digest"], name: "index_active_storage_variant_records_uniqueness", unique: true
+  end
 
   create_table "classe_persos", force: :cascade do |t|
     t.string "name"
@@ -58,22 +86,39 @@ ActiveRecord::Schema[7.1].define(version: 2024_12_06_113826) do
     t.index ["pet_id"], name: "index_pet_inventory_objects_on_pet_id"
   end
 
+  create_table "pet_skills", force: :cascade do |t|
+    t.bigint "pet_id", null: false
+    t.bigint "skill_id", null: false
+    t.integer "mastery", default: 0, null: false
+    t.integer "bonus", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["pet_id"], name: "index_pet_skills_on_pet_id"
+    t.index ["skill_id"], name: "index_pet_skills_on_skill_id"
+  end
+
   create_table "pets", force: :cascade do |t|
     t.string "name"
     t.string "race"
     t.integer "hp_current"
     t.integer "hp_max"
-    t.integer "res_corp"
-    t.integer "res_corp_bonus"
-    t.float "speed"
-    t.string "damage_1"
-    t.string "damage_2"
-    t.float "accuracy"
-    t.float "dodge"
+    t.integer "damage_1"
+    t.integer "damage_2"
     t.string "weapon_1"
     t.string "weapon_2"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.text "description"
+    t.string "category"
+    t.string "url_image"
+    t.integer "damage_1_bonus", default: 0, null: false
+    t.integer "damage_2_bonus", default: 0, null: false
+    t.integer "mood", default: 0, null: false
+    t.integer "loyalty", default: 0, null: false
+    t.integer "hunger", default: 0, null: false
+    t.integer "fatigue", default: 0, null: false
+    t.bigint "status_id", null: false
+    t.index ["status_id"], name: "index_pets_on_status_id"
   end
 
   create_table "races", force: :cascade do |t|
@@ -164,6 +209,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_12_06_113826) do
     t.integer "echani_shield_max"
     t.boolean "luck", default: false
     t.bigint "pet_id"
+    t.integer "pet_action_points", default: 10
     t.index ["classe_perso_id"], name: "index_users_on_classe_perso_id"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["group_id"], name: "index_users_on_group_id"
@@ -172,9 +218,14 @@ ActiveRecord::Schema[7.1].define(version: 2024_12_06_113826) do
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
+  add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "holonews", "users"
   add_foreign_key "pet_inventory_objects", "inventory_objects"
   add_foreign_key "pet_inventory_objects", "pets"
+  add_foreign_key "pet_skills", "pets"
+  add_foreign_key "pet_skills", "skills"
+  add_foreign_key "pets", "statuses"
   add_foreign_key "user_inventory_objects", "inventory_objects"
   add_foreign_key "user_inventory_objects", "users"
   add_foreign_key "user_skills", "skills"

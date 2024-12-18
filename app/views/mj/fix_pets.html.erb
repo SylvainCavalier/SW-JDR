@@ -1,0 +1,43 @@
+<div class="container mt-5">
+  <h2 class="text-success text-center">Gestion des Familiers</h2>
+
+  <!-- Bouton pour envoyer 5 points d'action -->
+  <div class="text-center my-4">
+    <%= button_to "Envoyer 5 points d'action", send_pet_action_points_path, method: :post, class: "btn btn-outline-primary btn-lg" %>
+  </div>
+
+  <!-- Liste des familiers -->
+  <table class="table table-hover">
+    <thead>
+      <tr>
+        <th>Nom</th>
+        <th>Utilisateur</th>
+        <th>Humeur</th>
+        <th>Loyauté</th>
+        <th>Faim</th>
+        <th>Fatigue</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @pets.each do |pet| %>
+        <tr>
+          <td><%= pet.name %></td>
+          <td><%= pet.user&.username || "Non associé" %></td>
+          <td><%= pet.mood_description %></td>
+          <td><%= pet.loyalty_description %></td>
+          <td><%= pet.hunger_description %></td>
+          <td><%= pet.fatigue_description %></td>
+          <td>
+            <%= form_with url: fix_pets_path(pet), method: :patch, local: true, class: "d-inline-block" do %>
+              <%= select_tag :attribute, options_for_select([["Humeur", "mood"], ["Loyauté", "loyalty"], ["Faim", "hunger"], ["Fatigue", "fatigue"]]), class: "form-select" %>
+              <%= number_field_tag :value, 0, min: 0, max: 4, class: "form-control d-inline-block mx-2", style: "width: 80px;" %>
+              <%= submit_tag "Modifier", class: "btn btn-outline-success btn-sm" %>
+            <% end %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+  <%= link_to "Retour", current_user.group.name == "MJ" ? mj_dashboard_path : root_path, class: "btn btn-outline-secondary go-back" %>
+</div>

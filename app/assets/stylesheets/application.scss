@@ -100,7 +100,8 @@ span {
   top: 0;
   left: 0;
   width: 100%;
-  height: 100%;
+  height: auto;
+  min-height: 100%;
   object-fit: fill;
   z-index: -1;
 }
@@ -297,6 +298,20 @@ span {
 }
 
 .status-container p {
+  margin: 1;
+  font-size: 1.2em;
+}
+
+.health-status-container {
+  position: absolute;
+  bottom: 20%;
+  left: 13%;
+  width: 300px;
+  height: auto;
+  z-index: 3;
+}
+
+.health-status-container p {
   margin: 0;
   font-size: 1.2em;
 }
@@ -864,4 +879,76 @@ input.dice-count-input {
 .science-buttons .btn i {
   font-size: 24px;
   color: $success;
+}
+
+/* Page de gestion des PETS */
+
+.pet-container {
+  background-color: #000;
+  border: 2px solid rgba(0, 255, 0, 0.5);
+  border-radius: 15px;
+  box-shadow: 0 0 10px rgba(0, 255, 0, 0.7);
+  padding: 20px;
+  color: #0f0;
+  width: 90%; /* Largeur de la box */
+  margin: 5px auto 0 auto; /* 50px en haut, centré horizontalement */
+  display: block;
+}
+
+.pet-box {
+  padding: 10px;
+}
+
+.pet-status {
+  background-color: #333;
+  border: 1px solid rgba(0, 255, 0, 0.5);
+  border-radius: 8px;
+  padding: 10px 10px 60px 10px;
+}
+
+.pet-hp-bar-container {
+  position: absolute;
+  bottom: 25%;
+  width: 40vw;
+  height: auto;
+  z-index: 2;
+}
+
+.weapon-box,
+.description-box,
+.associated-box {
+  background-color: #222;
+  border: 1px solid rgba(0, 255, 0, 0.3);
+  border-radius: 8px;
+  padding: 15px;
+  margin-top: 10px;
+}
+
+.action-buttons .btn {
+  margin: 5px;
+}
+
+.hp-bar-wrapper {
+  position: relative; /* ou 'absolute' selon le contexte */
+  margin: 0 auto; /* Centrage horizontal */
+  width: 100%; /* Ajuste la largeur au besoin */
+  display: flex;
+  justify-content: center; /* Centre la barre dans la div */
+  align-items: center;
+}
+
+.list-group-item {
+  background: rgba(0, 0, 0, 0.7); /* Fond semi-transparent noir */
+  color: #00FF7F; /* Vert néon pour le texte */
+  border: 1px solid #00FF7F; /* Bordure verte lumineuse */
+  border-radius: 8px; /* Coins arrondis */
+  margin-bottom: 10px; /* Espacement entre les items */
+  box-shadow: 0 0 8px 2px rgba(0, 255, 127, 0.7); /* Effet néon */
+  transition: all 0.3s ease-in-out; /* Animation douce */
+}
+
+.list-group-item:hover {
+  background: rgba(0, 0, 0, 0.9); /* Fond légèrement plus sombre au survol */
+  box-shadow: 0 0 12px 4px rgba(0, 255, 127, 0.9); /* Lumière plus intense au survol */
+  transform: scale(1.02); /* Effet zoom léger */
 }

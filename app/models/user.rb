@@ -17,6 +17,8 @@ class User < ApplicationRecord
 
   validates :username, presence: true, uniqueness: true
   validates :hp_current, numericality: { greater_than_or_equal_to: -20 }
+  validates :pet_action_points, numericality: { greater_than_or_equal_to: 0, less_than_or_equal_to: 10 }
+
   validate :shield_current_values_valid
 
   after_update_commit :broadcast_xp_update, if: :saved_change_to_xp?
@@ -187,6 +189,10 @@ class User < ApplicationRecord
       partial: "pages/echani_shield_update",
       locals: { user: self }
     )
+  end
+
+  def add_pet_action_points(points)
+    update!(pet_action_points: [pet_action_points + points, 10].min)
   end
 
   private

@@ -19,7 +19,7 @@
         data-robustesse="<%= current_user.robustesse %>">
     <!-- GROSSE BARRE DE PV CENTRALE -->
     <div class="large-hp-bar-container">
-      <div class="status-container">
+      <div class="health-status-container m-0">
         <% current_user.statuses.each do |status| %>
           <p style="color: <%= status.color %>;"><%= status.name %></p>
         <% end %>

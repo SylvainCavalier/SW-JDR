@@ -1,20 +1,20 @@
 puts "Reset the database..."
 
-# Supprimer les dépendances
-UserSkill.destroy_all
-UserInventoryObject.destroy_all
-UserStatus.destroy_all
-Transaction.destroy_all
-Holonew.destroy_all
+# # Supprimer les dépendances
+# UserSkill.destroy_all
+# UserInventoryObject.destroy_all
+# UserStatus.destroy_all
+# Transaction.destroy_all
+# Holonew.destroy_all
 
-# Supprimer les enregistrements principaux
-User.destroy_all
-Skill.destroy_all
-InventoryObject.destroy_all
-Status.destroy_all
-ClassePerso.destroy_all
-Race.destroy_all
-Group.destroy_all
+# # Supprimer les enregistrements principaux
+# User.destroy_all
+# Skill.destroy_all
+# InventoryObject.destroy_all
+# Status.destroy_all
+# ClassePerso.destroy_all
+# Race.destroy_all
+# Group.destroy_all
 
 puts "Creating groups..."
 group1 = Group.create!(name: "MJ", description: "Le groupe des Maîtres du Jeu. Prosternez vous.")
