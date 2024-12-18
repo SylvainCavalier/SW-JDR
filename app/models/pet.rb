@@ -284,9 +284,9 @@ class Pet < ApplicationRecord
   end
 
   def set_default_values
-    self.mood ||= 0
-    self.loyalty ||= 0
-    self.hunger ||= 0
+    self.mood ||= 2
+    self.loyalty ||= 2
+    self.hunger ||= 2
     self.fatigue ||= 0
     self.status ||= Status.find_by(name: "En forme")
   end
