@@ -15,27 +15,42 @@
             </li>
             <li class="list-group-item">
               <strong>Résistance Corporelle :</strong>
-              <% base_stat = @pet.pet_skills.find_by(skill: Skill.find_by(name: "Résistance Corporelle"))&.mastery || 0 %>
-              <% modifier = @pet.stat_modifiers[:resistance_corporelle] || 0 %>
-              <%= base_stat %>D <% if modifier != 0 %> (<%= modifier.positive? ? "+#{modifier}" : modifier %>) <% end %>
+              <% pet_skill = @pet.pet_skills.find_by(skill: Skill.find_by(name: "Résistance Corporelle")) %>
+              <% base_stat = pet_skill&.mastery || 0 %>
+              <% bonus = pet_skill&.bonus || 0 %> <!-- Bonus -->
+              <% modifier = @pet.stat_modifiers[:resistance_corporelle] || 0 %> <!-- Modificateur -->
+              <%= base_stat %>D + <%= bonus %>
+              <% if modifier != 0 %> (<%= modifier.positive? ? "+#{modifier}" : modifier %>) <% end %>
             </li>
+
             <li class="list-group-item">
               <strong>Vitesse :</strong>
-              <% base_stat = @pet.pet_skills.find_by(skill: Skill.find_by(name: "Vitesse"))&.mastery || 0 %>
-              <% modifier = @pet.stat_modifiers[:vitesse] || 0 %>
-              <%= base_stat %>D <% if modifier != 0 %> (<%= modifier.positive? ? "+#{modifier}" : modifier %>) <% end %>
+              <% pet_skill = @pet.pet_skills.find_by(skill: Skill.find_by(name: "Vitesse")) %>
+              <% base_stat = pet_skill&.mastery || 0 %>
+              <% bonus = pet_skill&.bonus || 0 %> <!-- Bonus -->
+              <% modifier = @pet.stat_modifiers[:vitesse] || 0 %> <!-- Modificateur -->
+              <%= base_stat %>D + <%= bonus %>
+              <% if modifier != 0 %> (<%= modifier.positive? ? "+#{modifier}" : modifier %>) <% end %>
             </li>
+
             <li class="list-group-item">
               <strong>Précision :</strong>
-              <% base_stat = @pet.pet_skills.find_by(skill: Skill.find_by(name: "Précision"))&.mastery || 0 %>
-              <% modifier = @pet.stat_modifiers[:precision] || 0 %>
-              <%= base_stat %>D <% if modifier != 0 %> (<%= modifier.positive? ? "+#{modifier}" : modifier %>) <% end %>
+              <% pet_skill = @pet.pet_skills.find_by(skill: Skill.find_by(name: "Précision")) %>
+              <% base_stat = pet_skill&.mastery || 0 %>
+              <% bonus = pet_skill&.bonus || 0 %> <!-- Bonus -->
+              <% modifier = @pet.stat_modifiers[:precision] || 0 %> <!-- Modificateur -->
+              <%= base_stat %>D + <%= bonus %>
+              <% if modifier != 0 %> (<%= modifier.positive? ? "+#{modifier}" : modifier %>) <% end %>
             </li>
+
             <li class="list-group-item">
               <strong>Esquive :</strong>
-              <% base_stat = @pet.pet_skills.find_by(skill: Skill.find_by(name: "Esquive"))&.mastery || 0 %>
-              <% modifier = @pet.stat_modifiers[:esquive] || 0 %>
-              <%= base_stat %>D <% if modifier != 0 %> (<%= modifier.positive? ? "+#{modifier}" : modifier %>) <% end %>
+              <% pet_skill = @pet.pet_skills.find_by(skill: Skill.find_by(name: "Esquive")) %>
+              <% base_stat = pet_skill&.mastery || 0 %>
+              <% bonus = pet_skill&.bonus || 0 %> <!-- Bonus -->
+              <% modifier = @pet.stat_modifiers[:esquive] || 0 %> <!-- Modificateur -->
+              <%= base_stat %>D + <%= bonus %>
+              <% if modifier != 0 %> (<%= modifier.positive? ? "+#{modifier}" : modifier %>) <% end %>
             </li>
           </ul>
         </div>
