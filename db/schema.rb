@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_12_17_102840) do
+ActiveRecord::Schema[7.1].define(version: 2024_12_18_183435) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -117,7 +117,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_12_17_102840) do
     t.integer "loyalty", default: 0, null: false
     t.integer "hunger", default: 0, null: false
     t.integer "fatigue", default: 0, null: false
-    t.bigint "status_id", null: false
+    t.bigint "status_id", default: 40, null: false
     t.index ["status_id"], name: "index_pets_on_status_id"
   end
 

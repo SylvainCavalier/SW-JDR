@@ -288,6 +288,7 @@ class Pet < ApplicationRecord
     self.loyalty ||= 0
     self.hunger ||= 0
     self.fatigue ||= 0
+    self.status ||= Status.find_by(name: "En forme")
   end
 
   def random_comment(messages)
