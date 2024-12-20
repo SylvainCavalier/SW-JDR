@@ -352,6 +352,23 @@ class MjController < ApplicationController
 
     redirect_to fix_pets_path, notice: "5 points d'action ont été attribués aux joueurs (maximum 10 points par utilisateur)."
   end
+
+  def reset_health
+    # Soigner tous les joueurs du groupe PJ
+    players = User.where(group: Group.find_by(name: "PJ"))
+    players.each do |player|
+      player.update(hp_current: player.hp_max)
+    end
+
+    # Soigner tous les pets sauf ceux qui sont morts
+    pets = Pet.where("hp_current > ?", -10)
+    pets.each do |pet|
+      pet.update(hp_current: pet.hp_max)
+    end
+
+    flash[:success] = "Tous les joueurs et leurs familiers ont été soignés !"
+    redirect_to infliger_degats_path
+  end
   
   private
   

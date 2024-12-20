@@ -798,6 +798,16 @@ input#buy_hp.form-control.pv-max-input {
   border-radius: 5px;
 }
 
+.dice-result.low {
+  color: red;
+  font-weight: bold;
+}
+
+.dice-result.high {
+  color: $success;
+  font-weight: bold;
+}
+
 .increment-buttons {
   display: flex;
   align-items: center;
@@ -819,6 +829,51 @@ input#buy_hp.form-control.pv-max-input {
 
 input.dice-count-input {
   max-width: 40px;
+}
+
+.dice-details-container {
+  width: 30%;
+  padding: 10px;
+  background: #f9f9f9;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.dice-details {
+  font-size: 18px;
+  font-family: monospace;
+  line-height: 1.5;
+  white-space: pre-wrap; /* Pour forcer les sauts de ligne */
+}
+
+.dice-number {
+  display: inline-block;
+  margin: 0 5px;
+  font-size: 20px;
+  color: #333;
+  animation: zoom-dice 0.3s ease-in-out;
+}
+
+.dice-number.six {
+  color: $success; /* Les 6 en rouge */
+}
+
+.dice-number.one {
+  color: red; /* Les 1 en gris */
+}
+
+@keyframes zoom-dice {
+  0% {
+    transform: scale(1.5);
+    font-weight: bold;
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+    font-weight: normal;
+    opacity: 1;
+  }
 }
 
 /* Jet de chance de groupe */

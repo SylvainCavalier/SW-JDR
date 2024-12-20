@@ -81,5 +81,7 @@ Rails.application.routes.draw do
   get 'fix_pets', to: 'mj#fix_pets'
   post "mj/send_pet_action_points", to: "mj#send_pet_action_points", as: "send_pet_action_points"
 
+  post 'reset_health', to: 'mj#reset_health', as: :reset_health
+
   root 'pages#home'
 end

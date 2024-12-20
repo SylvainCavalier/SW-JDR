@@ -12,11 +12,11 @@ class Pet < ApplicationRecord
   validates :race, presence: true, length: { maximum: 12 }
   validates :category, inclusion: { in: %w[animal droïde bio-armure humanoïde], message: "%{value} n'est pas une catégorie valide." }
   validates :hp_max, numericality: { only_integer: true, greater_than: 0 }
-  validates :hp_current, numericality: { greater_than_or_equal_to: -10 }
+  validates :hp_current, numericality: { greater_than_or_equal_to: -20 }
   validates :damage_1, :damage_2, numericality: { only_integer: true, greater_than_or_equal_to: 0 }
   validates :damage_1_bonus, :damage_2_bonus, numericality: { only_integer: true, greater_than_or_equal_to: 0 }
 
-  before_save :resize_image
+  after_commit :resize_image_if_needed
   after_initialize :set_default_values, if: :new_record?
 
   def hunger_description
@@ -272,15 +272,19 @@ class Pet < ApplicationRecord
     Array.new(number) { rand(1..sides) }.sum
   end
 
-  def resize_image
-    return unless image.attached?
-  
+  def resize_image_if_needed
+    return unless saved_change_to_image?
+
     begin
       processed_variant = image.variant(resize_to_limit: [800, 800])
       processed_variant.processed
     rescue => e
       Rails.logger.error "Erreur lors du redimensionnement de l'image : #{e.message}"
     end
+  end
+
+  def saved_change_to_image?
+    saved_change_to_attribute?(:image) && image.attached?
   end
 
   def set_default_values
