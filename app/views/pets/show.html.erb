@@ -5,7 +5,7 @@
     <div class="pet-box">
       <!-- Section supérieure : Nom et Stats -->
       <div class="row">
-        <div class="col-md-6">
+        <div class="col-12 col-sm-6">
           <ul class="list-group">
             <li class="list-group-item">
               <strong>Nom :</strong> <%= @pet.name %>
@@ -54,7 +54,7 @@
             </li>
           </ul>
         </div>
-        <div class="col-md-6 pet-status text-center">
+        <div class="col-12 col-sm-6 pet-status text-center">
           <%= image_tag(@pet.image.attached? ? @pet.image.variant(resize_to_limit: [300, 300]) : "petbase.png", class: "pet-image") %>
           <div class="text-center d-flex justify-content-center align-items-center mt-1">
             <strong>Status :</strong> <%= @pet.status&.name || "Non défini" %>
@@ -96,7 +96,7 @@
 
       <!-- Section inférieure : Armes -->
       <div class="row mt-4">
-        <div class="col-md-6">
+        <div class="col-12 col-sm-6">
           <div class="weapon-box">
             <strong>Arme 1 :</strong> <%= @pet.weapon_1 %>
             <br>
@@ -107,7 +107,7 @@
             <% if modifier != 0 %> (<%= modifier.positive? ? "+#{modifier}" : modifier %>) <% end %>
           </div>
         </div>
-        <div class="col-md-6">
+        <div class="col-12 col-sm-6">
           <div class="weapon-box">
             <strong>Arme 2 :</strong> <%= @pet.weapon_2 %>
             <br>
@@ -130,7 +130,7 @@
       <% if current_user.pet_id == @pet.id %>
         <div class="row associated-box mt-4">
           <!-- Colonne gauche : caractéristiques avec modificateurs -->
-          <div class="col-md-6 mt-4">
+          <div class="col-12 col-sm-6">
             <ul class="list-group">
               <li class="list-group-item">
                 <strong>Humeur :</strong> <%= @pet.mood_description %>
@@ -148,7 +148,7 @@
           </div>
 
           <!-- Colonne droite : actions -->
-          <div class="col-md-6">
+          <div class="col-12 col-sm-6">
             <div class="text-center mb-1">
               <strong>Points d'action restants :</strong> <%= current_user.pet_action_points %> / 10
             </div>

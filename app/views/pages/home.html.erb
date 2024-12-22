@@ -51,15 +51,23 @@
   <img src="<%= asset_path('de6.png') %>" alt="Dé à 6 faces" class="dice-home">
   <% end %>
 
-  <!-- Gestion des Pets -->
-  <%= link_to pets_path, class: "btn btn-outline-success pets-home" do %>
-    <i class="fa-solid fa-paw"></i>
-  <% end %>
+  <!-- Boutons de bas de page -->
+  <div class="home-bottom-buttons d-flex">
+    <!-- Gestion des Pets -->
+    <%= link_to pets_path, class: "btn btn-outline-success pets-home" do %>
+      <i class="fa-solid fa-paw"></i>
+    <% end %>
 
-  <!-- Gestion des Réglages -->
-  <%= link_to settings_user_path(current_user), class: "btn btn-outline-success settings-home" do %>
-    <i class="fa-solid fa-gears"></i>
-  <% end %>
+    <!-- Règles du jeu -->
+    <%= link_to pets_path, class: "btn btn-outline-success rules-home" do %>
+      <i class="fa-solid fa-file-invoice"></i>
+    <% end %>
+
+    <!-- Gestion des Réglages -->
+    <%= link_to settings_user_path(current_user), class: "btn btn-outline-success settings-home" do %>
+      <i class="fa-solid fa-gears"></i>
+    <% end %>
+  </div>
 
   <!-- Bouclier d'énergie -->
   <div class="d-flex" data-controller="shield-recharge" 

@@ -21,7 +21,6 @@
     background-color: #000;
     color: #fff;
     text-align: center;
-    font-family: Arial, sans-serif;
   }
 
   body::before {
@@ -176,22 +175,26 @@ span {
   z-index: 5;
 }
 
-/* Dé en bas de l'écran */
-.pets-home {
+/* Boutons en bas de l'écran */
+.home-bottom-buttons {
   position: absolute;
   top: 80%;
   left: 62%;
   transform: translateY(-50%);
-  width: 11vw;
+  z-index: 5;
+}
+.pets-home {
+  width: 7vw;
   z-index: 5;
 }
 
 .settings-home {
-  position: absolute;
-  top: 80%;
-  left: 75%;
-  transform: translateY(-50%);
-  width: 11vw;
+  width: 7vw;
+  z-index: 5;
+}
+
+.rules-home {
+  width: 7vw;
   z-index: 5;
 }
 
@@ -969,6 +972,14 @@ input.dice-count-input {
   z-index: 2;
 }
 
+.pet-image {
+  width: 35vw;
+  border-radius: 5%;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.2);
+  border: white 1px solid;
+  margin: 0 auto;
+}
+
 .weapon-box,
 .description-box,
 .associated-box {
@@ -1006,4 +1017,41 @@ input.dice-count-input {
   background: rgba(0, 0, 0, 0.9); /* Fond légèrement plus sombre au survol */
   box-shadow: 0 0 12px 4px rgba(0, 255, 127, 0.9); /* Lumière plus intense au survol */
   transform: scale(1.02); /* Effet zoom léger */
+}
+
+/* Page de règles du jeu */
+
+.rules-summary {
+  margin-bottom: 20px;
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 15px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.rules-summary ul {
+  list-style: none;
+  padding: 0;
+}
+
+.rules-summary li {
+  margin: 5px 0;
+}
+
+.rules-summary a {
+  text-decoration: none;
+  color: #007bff;
+}
+
+.rules-summary a:hover {
+  text-decoration: underline;
+}
+
+.rules-content {
+  padding: 20px;
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }

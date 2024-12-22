@@ -83,5 +83,7 @@ Rails.application.routes.draw do
 
   post 'reset_health', to: 'mj#reset_health', as: :reset_health
 
+  get 'rules', to: 'pages#rules', as: 'rules'
+
   root 'pages#home'
 end

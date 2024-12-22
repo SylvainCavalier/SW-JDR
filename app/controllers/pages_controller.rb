@@ -7,4 +7,9 @@ class PagesController < ApplicationController
 
   def mj
   end
+
+  def rules
+    file_path = Rails.root.join("app", "views", "pages", "rules.md")
+    @rules_content = File.read(file_path).then { |content| Kramdown::Document.new(content).to_html }
+  end
 end
