@@ -29,7 +29,7 @@
           <td><%= pet.hunger_description %></td>
           <td><%= pet.fatigue_description %></td>
           <td>
-            <%= form_with url: fix_pets_path(pet), method: :patch, local: true, class: "d-inline-block" do %>
+            <%= form_with url: fix_pet_path(pet), method: :patch, local: true, class: "d-inline-block" do %>
               <%= select_tag :attribute, options_for_select([["Humeur", "mood"], ["Loyauté", "loyalty"], ["Faim", "hunger"], ["Fatigue", "fatigue"]]), class: "form-select" %>
               <%= number_field_tag :value, 0, min: 0, max: 4, class: "form-control d-inline-block mx-2", style: "width: 80px;" %>
               <%= submit_tag "Modifier", class: "btn btn-outline-success btn-sm" %>

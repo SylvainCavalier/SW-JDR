@@ -334,7 +334,20 @@ class MjController < ApplicationController
   end
 
   def fix_pets
-    @pets = Pet.includes(:user) # Charge tous les pets avec leurs utilisateurs associés pour éviter le N+1
+    if request.patch?
+      @pet = Pet.find(params[:id])
+      attribute = params[:attribute]
+      value = params[:value].to_i
+
+      if @pet.update(attribute => value)
+        flash[:success] = "L'attribut #{attribute.humanize} de #{@pet.name} a été mis à jour avec succès !"
+      else
+        flash[:error] = "Échec de la mise à jour de #{@pet.name}."
+      end
+      redirect_to fix_pets_path
+    else
+      @pets = Pet.includes(:user) # Charge tous les pets pour le GET
+    end
   end
 
   def send_pet_action_points

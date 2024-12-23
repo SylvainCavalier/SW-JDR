@@ -17,6 +17,14 @@
       <%= f.input :race, label: "Race", input_html: { maxlength: 12, id: "pet_race" } %>
     </div>
 
+    <div class="mb-3">
+      <%= f.input :size, label: "Taille (en centimètres)", input_html: { id: "pet_size" } %>
+    </div>
+
+    <div class="mb-3">
+      <%= f.input :weight, label: "Poids (en kg)", input_html: { id: "pet_weight" } %>
+    </div>
+
     <!-- Points de vie maximum -->
     <div class="mb-3">
       <%= f.label :hp_max, "Points de Vie Maximum", for: "pet_hp_max", class: "form-label" %>

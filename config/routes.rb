@@ -79,6 +79,7 @@ Rails.application.routes.draw do
   post 'update_objet', to: 'mj#update_objet'
 
   get 'fix_pets', to: 'mj#fix_pets'
+  patch 'fix_pets/:id', to: 'mj#fix_pets', as: 'fix_pet'
   post "mj/send_pet_action_points", to: "mj#send_pet_action_points", as: "send_pet_action_points"
 
   post 'reset_health', to: 'mj#reset_health', as: :reset_health

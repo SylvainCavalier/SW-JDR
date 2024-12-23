@@ -14,6 +14,12 @@
               <strong>Race :</strong> <%= @pet.race %>
             </li>
             <li class="list-group-item">
+              <strong>Taille :</strong> <%= @pet.size %> cm
+            </li>
+            <li class="list-group-item">
+              <strong>Poids :</strong> <%= @pet.weight %> kg
+            </li>
+            <li class="list-group-item">
               <strong>Résistance Corporelle :</strong>
               <% pet_skill = @pet.pet_skills.find_by(skill: Skill.find_by(name: "Résistance Corporelle")) %>
               <% base_stat = pet_skill&.mastery || 0 %>
@@ -138,9 +144,11 @@
               <li class="list-group-item">
                 <strong>Loyauté :</strong> <%= @pet.loyalty_description %>
               </li>
-              <li class="list-group-item">
-                <strong>Faim :</strong> <%= @pet.hunger_description %>
-              </li>
+              <% unless @pet.category == "humanoïde" %>
+                <li class="list-group-item">
+                  <strong>Faim :</strong> <%= @pet.hunger_description %>
+                </li>
+              <% end %>
               <li class="list-group-item">
                 <strong>Fatigue :</strong> <%= @pet.fatigue_description %>
               </li>

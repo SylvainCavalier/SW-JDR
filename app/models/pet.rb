@@ -6,7 +6,7 @@ class Pet < ApplicationRecord
   has_one_attached :image
 
   belongs_to :status, optional: true
-  belongs_to :user, optional: true
+  belongs_to :user, foreign_key: :id, primary_key: :pet_id, optional: true
 
   validates :name, presence: true, length: { maximum: 20 }
   validates :race, presence: true, length: { maximum: 12 }
@@ -15,16 +15,19 @@ class Pet < ApplicationRecord
   validates :hp_current, numericality: { greater_than_or_equal_to: -20 }
   validates :damage_1, :damage_2, numericality: { only_integer: true, greater_than_or_equal_to: 0 }
   validates :damage_1_bonus, :damage_2_bonus, numericality: { only_integer: true, greater_than_or_equal_to: 0 }
+  validates :size, numericality: { greater_than: 0, less_than_or_equal_to: 1000, message: "La taille doit être comprise entre 0 et 10 mètres." }
+  validates :weight, numericality: { greater_than: 0, less_than_or_equal_to: 500, message: "Le poids doit être compris entre 1 et 500 kg." }
 
   after_commit :resize_image_if_needed
   after_initialize :set_default_values, if: :new_record?
+  after_update :reset_hunger_for_special_categories
 
   def hunger_description
     ["Paralysé par la faim", "Affamé", "Faim", "Petit creux", "Repus"][hunger] || "Inconnu"
   end
 
   def fatigue_description
-    ["En pleine forme", "Un peu fatigué", "Fatigué", "Épuisé", "Exténué"][fatigue] || "Inconnu"
+    ["Exténué", "Epuisé", "Fatigué", "Un peu fatigué", "En pleine forme" ][fatigue] || "Inconnu"
   end
 
   def mood_description
@@ -41,11 +44,6 @@ class Pet < ApplicationRecord
   end
 
   def check_critical_states
-    if fatigue == 4
-      update!(loyalty: [loyalty - 1, 0].max)
-      Rails.logger.info "⚠️ Fatigue extrême atteinte : loyauté diminuée !"
-    end
-
     if mood == 0
       update!(loyalty: [loyalty - 1, 0].max)
       Rails.logger.info "⚠️ Humeur furieuse atteinte : loyauté diminuée !"
@@ -58,7 +56,6 @@ class Pet < ApplicationRecord
   end
 
   def random_skill_or_damage
-    # Récupère les skills ou les dégâts existants à partir des relations
     skill_or_damage = [
       { type: :skill, object: pet_skills.sample },
       { type: :damage, attribute: :damage_1 },
@@ -81,17 +78,18 @@ class Pet < ApplicationRecord
     update!(
       mood: [mood + 2, 4].min
     )
-    random_comment(["Il ronronne de bonheur.", "Votre câlin a illuminé sa journée.", "Un moment de douceur partagé."])
+    random_comment(["Il ronronne de bonheur.", "Votre câlin a illuminé sa journée.", "Il met ses pattes en l'air et profite."])
   end
 
   def play!
+    return "Action impossible : faim ou fatigue insuffisante." if hunger.zero? || fatigue.zero?
+
     update!(
       hunger: [hunger - 1, 0].max,
-      fatigue: [fatigue + 1, 4].min,
+      fatigue: [fatigue - 1, 4].min,
       mood: [mood + 1, 4].min,
       loyalty: loyalty_up || loyalty
     )
-    check_critical_states
     random_comment(["Il a couru partout, quelle énergie !", "Votre familier semble heureux après cette séance de jeu."])
   end
 
@@ -104,36 +102,47 @@ class Pet < ApplicationRecord
   end
 
   def train!
+    return "Action impossible : faim ou fatigue insuffisante." if hunger.zero? || fatigue.zero?
+  
+    message = "Aucun effet d'entraînement défini."
+  
     ActiveRecord::Base.transaction do
-      target = random_skill_or_damage
-
-      case target[:type]
-      when :skill
-        if target[:object]
-          target[:object].increment!(:bonus, 1)
-          message = "L'entraînement a amélioré son #{target[:object].skill.name} de +1 !"
-        else
-          message = "Aucun skill trouvé à améliorer, réessayez plus tard."
-        end
-      when :damage
-        increment!(target[:attribute], 1)
-        message = "L'entraînement a augmenté ses dégâts de +1 !"
+      random_outcome = rand(1..100)
+  
+      case random_outcome
+      when 1..50
+        message = "L'entraînement a été dur ! Mais aucun bonus n'est gagné cette fois."
+      when 51..60
+        skill = pet_skills.joins(:skill).find_by(skills: { name: "Esquive" })
+        message = update_skill_or_bonus(skill, "esquive")
+      when 61..70
+        skill = pet_skills.joins(:skill).find_by(skills: { name: "Vitesse" })
+        message = update_skill_or_bonus(skill, "vitesse")
+      when 71..80
+        skill = pet_skills.joins(:skill).find_by(skills: { name: "Précision" })
+        message = update_skill_or_bonus(skill, "précision")
+      when 81..90
+        increment!(:damage_1_bonus, 1)
+        message = "L'entraînement a augmenté ses dégâts (attaque 1) de +1 !"
+      when 91..100
+        increment!(:damage_2_bonus, 1)
+        message = "L'entraînement a augmenté ses dégâts (attaque 2) de +1 !"
       end
-
-      update!(fatigue: [fatigue + 2, 4].min, loyalty: loyalty_up || loyalty)
+  
+      update!(fatigue: [fatigue - 2, 4].min, loyalty: loyalty_up || loyalty)
+      check_critical_states
     end
-
-    check_critical_states
-    random_comment([message, "Votre familier semble plus fort !", "L'entraînement porte ses fruits."])
+  
+    random_comment([message, "Votre familier semble plus fort !"])
   rescue => e
     Rails.logger.error "Erreur pendant l'entraînement : #{e.message}"
-    "L'entraînement a échoué en raison d'une erreur."
+    "L'entraînement a échoué."
   end
 
   # Méthodes pour les droïdes
   def oil!
     update!(
-      fatigue: [fatigue - 2, 0].max,
+      fatigue: [fatigue + 2, 0].max,
       mood: [mood + 1, 4].min
     )
     random_comment(["Ses articulations grincent moins maintenant.", "Votre droïde semble parfaitement huilé."])
@@ -148,6 +157,7 @@ class Pet < ApplicationRecord
   end
 
   def upgrade!
+    return "Action impossible : faim ou fatigue insuffisante." if hunger.zero? || fatigue.zero?
     return "Pas assez de crédits !" unless user && user.credits >= 300
 
     ActiveRecord::Base.transaction do
@@ -171,14 +181,14 @@ class Pet < ApplicationRecord
       end
 
       # Fatigue et loyauté
-      update!(fatigue: [fatigue + 2, 4].min, loyalty: [loyalty - 1, 0].max,)
+      update!(fatigue: [fatigue - 2, 4].min, loyalty: [loyalty - 1, 0].max,)
 
       # Notification pour l'utilisateur
       user.notifications.create!(message: "Vous avez dépensé 200 crédits pour améliorer #{name}.")
     end
 
     check_critical_states
-    random_comment([message, "Votre droïde semble plus performant !", "Amélioration réussie, efficacité accrue."])
+    random_comment(message)
   rescue => e
     Rails.logger.error "Erreur pendant l'amélioration : #{e.message}"
     "L'amélioration a échoué en raison d'une erreur."
@@ -193,9 +203,10 @@ class Pet < ApplicationRecord
   end
 
   def chat!
+    return "Action impossible : faim ou fatigue insuffisante." if hunger.zero? || fatigue.zero?
     update!(
       mood: [mood + 1, 4].min,
-      fatigue: [fatigue + 1, 4].min,
+      fatigue: [fatigue - 1, 4].min,
       loyalty: loyalty_up || loyalty
     )
     check_critical_states
@@ -213,7 +224,7 @@ class Pet < ApplicationRecord
 
   def stat_modifiers
     modifiers = {
-      precision: 0,
+      accuracy: 0,
       damage: 0,
       resistance_corporelle: 0,
       vitesse: 0,
@@ -222,10 +233,10 @@ class Pet < ApplicationRecord
   
     # Modificateurs basés sur l'humeur
     case mood
-    when 4 then modifiers[:precision] += 1
-    when 2 then modifiers[:precision] -= 1; modifiers[:damage] += 1
-    when 1 then modifiers[:precision] -= 2; modifiers[:damage] += 2
-    when 0 then modifiers[:precision] -= 3; modifiers[:damage] += 3
+    when 4 then modifiers[:accuracy] += 1
+    when 2 then modifiers[:accuracy] -= 1; modifiers[:damage] += 1
+    when 1 then modifiers[:accuracy] -= 2; modifiers[:damage] += 2
+    when 0 then modifiers[:accuracy] -= 3; modifiers[:damage] += 3
     end
   
     # Modificateurs basés sur la loyauté
@@ -246,10 +257,10 @@ class Pet < ApplicationRecord
   
     # Modificateurs basés sur la fatigue
     case fatigue
-    when 0 then apply_global_skill_modifier(modifiers, 1); modifiers[:damage] += 1  # En pleine forme
+    when 4 then apply_global_skill_modifier(modifiers, 1); modifiers[:damage] += 1  # En pleine forme
     when 2 then apply_global_skill_modifier(modifiers, -1); modifiers[:damage] -= 1  # Fatigué
-    when 3 then apply_global_skill_modifier(modifiers, -2); modifiers[:damage] -= 2  # Épuisé
-    when 4 then apply_global_skill_modifier(modifiers, -3); modifiers[:damage] -= 3  # Exténué
+    when 1 then apply_global_skill_modifier(modifiers, -2); modifiers[:damage] -= 2  # Épuisé
+    when 0 then apply_global_skill_modifier(modifiers, -3); modifiers[:damage] -= 3  # Exténué
     end
   
     modifiers
@@ -291,7 +302,7 @@ class Pet < ApplicationRecord
     self.mood ||= 2
     self.loyalty ||= 2
     self.hunger ||= 2
-    self.fatigue ||= 0
+    self.fatigue ||= 2
     self.status ||= Status.find_by(name: "En forme")
   end
 
@@ -300,8 +311,28 @@ class Pet < ApplicationRecord
   end
 
   def apply_global_skill_modifier(modifiers, value)
-    %i[precision vitesse esquive].each do |skill|
+    %i[accuracy vitesse esquive].each do |skill|
       modifiers[skill] += value
+    end
+  end
+
+  def reset_hunger_for_special_categories
+    return if hunger == 3
+  
+    if %w[humanoïde droïde].include?(category)
+      update!(hunger: 3)
+    end
+  end
+
+  def update_skill_or_bonus(skill, skill_name)
+    return "Aucun skill #{skill_name} trouvé pour ce familier." if skill.nil?
+  
+    if skill.bonus < 2
+      skill.increment!(:bonus, 1)
+      "L'entraînement a amélioré son #{skill_name} de +1 (bonus)."
+    else
+      skill.update!(bonus: 0, mastery: skill.mastery + 1)
+      "L'entraînement a amélioré son #{skill_name} en passant à #{skill.mastery}D."
     end
   end
 end
