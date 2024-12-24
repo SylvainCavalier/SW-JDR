@@ -48,28 +48,38 @@ export default class extends Controller {
   }
 
   updateXpCost() {
+    console.log("updateXpCost() appelé");
     const buyAmount = parseInt(this.buyHpInputTarget.value) || 0;
+    console.log("buyAmount:", buyAmount);
+
     let totalCost = 0;
     let simulatedMaxHp = this.maxHp;
+    console.log("maxHp initial:", simulatedMaxHp);
 
     for (let i = 0; i < buyAmount; i++) {
       let costPerPoint;
   
       if (this.element.dataset.robustesse === "true") {
+        console.log("Robustesse activée");
         costPerPoint = Math.floor((simulatedMaxHp + 1) / 10);
+        console.log("CostPerPoint (robustesse):", costPerPoint);
         if ((simulatedMaxHp % 2) === 0) {
-        totalCost += costPerPoint;
+          totalCost += costPerPoint;
+          console.log("TotalCost mis à jour:", totalCost);
         }
         simulatedMaxHp += 1;
       } else {
+        console.log("Robustesse désactivée");
         costPerPoint = Math.floor(simulatedMaxHp / 10);
+        console.log("CostPerPoint:", costPerPoint);
         totalCost += costPerPoint;
         simulatedMaxHp++;
       }
     }
 
+    console.log("TotalCost final:", totalCost);
     this.xpCostTarget.textContent = totalCost;
-  }
+}
 
   async purchaseMaxHp(event) {
     event.preventDefault();
