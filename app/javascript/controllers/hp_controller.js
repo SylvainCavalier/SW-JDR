@@ -48,7 +48,7 @@ export default class extends Controller {
   }
 
   updateXpCost() {
-    console.log("updateXpCost() appelé");
+    console.log("Update HP Production code version: 1.0.0");
     const buyAmount = parseInt(this.buyHpInputTarget.value) || 0;
     console.log("buyAmount:", buyAmount);
 
@@ -79,7 +79,7 @@ export default class extends Controller {
 
     console.log("TotalCost final:", totalCost);
     this.xpCostTarget.textContent = totalCost;
-}
+  }
 
   async purchaseMaxHp(event) {
     event.preventDefault();
