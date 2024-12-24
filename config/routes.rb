@@ -23,6 +23,9 @@ Rails.application.routes.draw do
       get :patch
       post :equip_patch
       post :use_patch
+      get :inventory
+      post :sell_item
+      post :give_item
     end
 
     collection do

@@ -53,6 +53,7 @@ gem "cloudinary"
 gem 'image_processing', '~> 1.2'
 gem 'devise'
 gem "actioncable-enhanced-postgresql-adapter"
+gem 'kramdown'
 
 group :development, :test do
   gem "dotenv-rails"

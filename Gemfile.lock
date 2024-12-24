@@ -171,6 +171,8 @@ GEM
     jbuilder (2.12.0)
       actionview (>= 5.0.0)
       activesupport (>= 5.0.0)
+    kramdown (2.5.0)
+      rexml (>= 3.3.6)
     logger (1.6.1)
     loofah (2.22.0)
       crass (~> 1.0.2)
@@ -342,6 +344,7 @@ DEPENDENCIES
   image_processing (~> 1.2)
   importmap-rails
   jbuilder
+  kramdown
   pg (~> 1.1)
   puma (>= 5.0)
   rails (~> 7.1.4)

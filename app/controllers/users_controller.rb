@@ -1,9 +1,9 @@
 class UsersController < ApplicationController
   before_action :authenticate_user!
-  before_action :set_user, only: [:medipack, :healobjects, :buy_inventory_object]
+  before_action :set_user, only: [:medipack, :healobjects, :buy_inventory_object, :inventory, :sell_item, :give_item]
 
   def toggle_shield
-    shield_type = params[:shield_type] # "energy" ou "echani"
+    shield_type = params[:shield_type]
     user = current_user
   
     case shield_type
@@ -394,6 +394,43 @@ class UsersController < ApplicationController
     )
 
     render json: { success: true, message: "Jet de groupe lancé avec succès !" }
+  end
+
+  def inventory
+    @inventory_items = @user.user_inventory_objects.includes(:inventory_object).order('inventory_objects.category ASC')
+  end
+
+  def sell_item
+    item = @user.user_inventory_objects.find(params[:item_id])
+    quantity_to_sell = params[:quantity].to_i
+    if item.quantity >= quantity_to_sell
+      item.quantity -= quantity_to_sell
+      item.save!
+      credits_earned = (item.inventory_object.price / 5) * quantity_to_sell
+      @user.update!(credits: @user.credits + credits_earned)
+      flash[:success] = "#{quantity_to_sell} #{item.inventory_object.name} vendu(s) pour #{credits_earned} crédits."
+    else
+      flash[:error] = "Vous ne possédez pas assez d'objets pour effectuer cette vente."
+    end
+    redirect_to inventory_user_path(@user)
+  end
+
+  def give_item
+    item = @user.user_inventory_objects.find(params[:item_id])
+    recipient = User.find(params[:recipient_id])
+    quantity_to_give = params[:quantity].to_i
+    if item.quantity >= quantity_to_give
+      item.quantity -= quantity_to_give
+      item.save!
+      recipient_item = recipient.user_inventory_objects.find_or_create_by(inventory_object: item.inventory_object)
+      recipient_item.quantity ||= 0
+      recipient_item.quantity += quantity_to_give
+      recipient_item.save!
+      flash[:success] = "#{quantity_to_give} #{item.inventory_object.name} donné(s) à #{recipient.username}."
+    else
+      flash[:error] = "Vous ne possédez pas assez d'objets pour effectuer ce don."
+    end
+    redirect_to inventory_user_path(@user)
   end
 
   private

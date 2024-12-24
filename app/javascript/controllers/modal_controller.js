@@ -21,13 +21,30 @@ export default class extends Controller {
 
       // Gestion de l'action spécifique
       this.confirmButtonTarget.onclick = () => {
-        if (action === "delete#confirm") {
+        if (action === "sell#confirm") {
+          this.handleSell(path);
+        } else if (action === "delete#confirm") {
           this.handleDelete(path);
         } else if (action === "dissociate#confirm") {
           this.handleDissociate(path);
         }
       };
     });
+  }
+
+  handleSell(path) {
+    const form = document.createElement("form");
+    form.method = "POST";
+    form.action = path;
+
+    const csrfInput = document.createElement("input");
+    csrfInput.type = "hidden";
+    csrfInput.name = "authenticity_token";
+    csrfInput.value = document.querySelector('meta[name="csrf-token"]').content;
+
+    form.appendChild(csrfInput);
+    document.body.appendChild(form);
+    form.submit();
   }
 
   handleDelete(path) {

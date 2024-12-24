@@ -6,23 +6,48 @@
   <!-- Cadre principal SVG -->
   <img src="<%= asset_path('cadre2.svg') %>" alt="Cadre" class="ui-frame">
 
-  <!-- Cadre central avec l'écran de transfert -->
-  <div class="credits-container text-center m-2">
-    <!-- Affichage des crédits -->
-    <div class="current-credits-container text-center mb-3">
-      <p class="text-info fw-bold" style="font-size: 1.2rem;">
-        Crédits : <%= current_user.credits %> 💳
-      </p>
+  <!-- Conteneur principal à deux colonnes -->
+  <div class="content-container row" style="margin: 10vw;">
+    <!-- Colonne gauche : Transferts de crédits -->
+    <div class="col-12 col-sm-6">
+      <div class="text-center m-2">
+        <!-- Affichage des crédits -->
+        <p class="text-info fw-bold" style="font-size: 1.2rem;">
+          Crédits : <%= current_user.credits %> 💳
+        </p>
+        <!-- Transfert des crédits -->
+        <%= simple_form_for @transaction do |f| %>
+          <div class="form-group text-success">
+            <%= f.input :receiver_username, label: "Destinataire", as: :select, collection: User.where.not(id: current_user.id).order(:username).pluck(:username), include_blank: "Sélectionnez un joueur", input_html: { class: 'form-control' } %>
+          </div>
+          <div class="form-group text-success">
+            <%= f.input :amount, label: "Montant", input_html: { class: 'form-control' } %>
+          </div>
+          <%= f.submit "Transférer", class: "btn btn-outline-success" %>
+        <% end %>
+      </div>
     </div>
-    <!-- Transfert des crédits -->
-    <%= simple_form_for @transaction do |f| %>
-      <div class="form-group text-success">
-        <%= f.input :receiver_username, label: "Destinataire", as: :select, collection: User.where.not(id: current_user.id).order(:username).pluck(:username), include_blank: "Sélectionnez un joueur", input_html: { class: 'form-control' } %>
+
+    <!-- Colonne droite : XP -->
+    <div class="col-12 col-sm-6" data-controller="xp-spend" data-user-id="<%= current_user.id %>">
+      <div class="text-center m-2">
+        <!-- Affichage des XP -->
+        <p class="text-warning fw-bold xp" style="font-size: 1.2rem;" data-xp-spend-target="xp">
+          XP : <%= current_user.xp %>
+        </p>
+        <!-- Bouton pour dépenser de l'XP -->
+        <div>
+          <%= button_tag "Dépenser 1 XP", class: "btn btn-outline-primary btn-sm", data: { action: "xp-spend#decrement" } %>
+        </div>
       </div>
-      <div class="form-group text-success">
-        <%= f.input :amount, label: "Montant", input_html: { class: 'form-control' } %>
-      </div>
-      <%= f.submit "Transférer", class: "btn btn-outline-success" %>
+    </div>
+  </div>
+
+  <!-- Boutons en bas de la page -->
+  <div class="home-bottom-buttons d-flex">
+    <!-- Gestion de l'Inventaire -->
+    <%= link_to inventory_user_path(current_user), class: "btn btn-outline-success inventory-home" do %>
+      <i class="fa-solid fa-briefcase"></i>
     <% end %>
   </div>
 
