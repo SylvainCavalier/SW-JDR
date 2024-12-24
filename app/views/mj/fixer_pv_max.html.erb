@@ -21,6 +21,15 @@
       </div>
     <% end %>
 
+    <h1>Donner un bonus de PV max</h1>
+    <%= form_with url: apply_hp_bonus_mj_index_path, method: :post, local: true do |f| %>
+      <div class="form-group">
+        <%= label_tag :bonus, "Bonus de PV max à donner :" %>
+        <%= number_field_tag :bonus, 5, class: "form-control", min: 1 %>
+      </div>
+      <%= f.submit "Appliquer", class: "btn btn-primary mt-2" %>
+    <% end %>
+
     <div class="text-center mt-4">
       <%= link_to "Retour", current_user.group.name == "MJ" ? mj_dashboard_path : root_path, class: "btn btn-outline-success" %>
     </div>

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_12_23_113726) do
+ActiveRecord::Schema[7.1].define(version: 2024_12_24_005922) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -212,6 +212,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_12_23_113726) do
     t.boolean "luck", default: false
     t.bigint "pet_id"
     t.integer "pet_action_points", default: 10
+    t.integer "hp_bonus"
     t.index ["classe_perso_id"], name: "index_users_on_classe_perso_id"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["group_id"], name: "index_users_on_group_id"

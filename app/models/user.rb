@@ -18,6 +18,7 @@ class User < ApplicationRecord
   validates :username, presence: true, uniqueness: true
   validates :hp_current, numericality: { greater_than_or_equal_to: -20 }
   validates :pet_action_points, numericality: { greater_than_or_equal_to: 0, less_than_or_equal_to: 10 }
+  validates :hp_bonus, numericality: { greater_than_or_equal_to: 0 }, allow_nil: true
 
   validate :shield_current_values_valid
 

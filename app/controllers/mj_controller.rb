@@ -382,6 +382,15 @@ class MjController < ApplicationController
     flash[:success] = "Tous les joueurs et leurs familiers ont été soignés !"
     redirect_to infliger_degats_path
   end
+
+  def apply_hp_bonus
+    bonus = params[:bonus].to_i
+    users = User.where(group: Group.find_by(name: "PJ"))
+    users.update_all(hp_bonus: bonus)
+
+    flash[:success] = "Bonus de PV max de #{bonus} attribué à tous les joueurs."
+    redirect_to mj_dashboard_path
+  end
   
   private
   
