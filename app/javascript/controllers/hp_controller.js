@@ -48,43 +48,44 @@ export default class extends Controller {
   }
 
   updateXpCost() {
-    console.log("Update HP Production code version: 1.0.0");
+    console.log("updateXpCost() appelé");
     const buyAmount = parseInt(this.buyHpInputTarget.value) || 0;
     console.log("buyAmount:", buyAmount);
 
-    let totalCost = 0;
-    let simulatedMaxHp = this.maxHp;
+    let totalCost = 0; // Coût total en XP
+    let simulatedMaxHp = this.maxHp; // PV max simulés
     console.log("maxHp initial:", simulatedMaxHp);
 
+    let actualBuyCount = 0; // Nombre de PV réellement achetés (sans les gratuits)
+
     for (let i = 0; i < buyAmount; i++) {
-      let costPerPoint;
-    
-      if (this.element.dataset.robustesse === "true") {
-        console.log(`Iteration: ${i}`);
-        console.log("Robustesse activée");
-        costPerPoint = Math.floor((simulatedMaxHp + 1) / 10);
-        console.log("CostPerPoint (robustesse):", costPerPoint);
-        if ((simulatedMaxHp % 2) === 0) {
-          totalCost += costPerPoint;
-          console.log("TotalCost mis à jour:", totalCost);
+        // Pour chaque PV max (achetés + gratuits), on ne compte que ceux réellement achetés
+        if (this.element.dataset.robustesse === "true") {
+            console.log("Robustesse activée");
+
+            // On compte un coût uniquement pour les PV achetés (pairs dans ce cas)
+            if (actualBuyCount % 2 === 0) {
+                const costPerPoint = Math.floor((simulatedMaxHp + 1) / 10);
+                totalCost += costPerPoint;
+                console.log(`CostPerPoint pour HP acheté ${actualBuyCount + 1} :`, costPerPoint);
+            }
+
+            // Simule le passage de 2 PV max (1 acheté + 1 gratuit)
+            simulatedMaxHp += 2;
+            actualBuyCount++;
         } else {
-          console.log("Condition skipped: simulatedMaxHp % 2 !== 0");
+            console.log("Robustesse désactivée");
+            const costPerPoint = Math.floor(simulatedMaxHp / 10);
+            totalCost += costPerPoint;
+            simulatedMaxHp++;
         }
-        simulatedMaxHp += 1;
+
         console.log("simulatedMaxHp mis à jour:", simulatedMaxHp);
-      } else {
-        console.log("Robustesse désactivée");
-        costPerPoint = Math.floor(simulatedMaxHp / 10);
-        console.log("CostPerPoint:", costPerPoint);
-        totalCost += costPerPoint;
-        simulatedMaxHp++;
-      }
+        console.log("TotalCost mis à jour:", totalCost);
     }
-    
-    console.log("TotalCost final:", totalCost);
 
     console.log("TotalCost final:", totalCost);
-    this.xpCostTarget.textContent = totalCost;
+    this.xpCostTarget.textContent = totalCost; // Met à jour l'affichage du coût total
   }
 
   async purchaseMaxHp(event) {
