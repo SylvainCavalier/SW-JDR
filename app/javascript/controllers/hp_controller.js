@@ -58,16 +58,20 @@ export default class extends Controller {
 
     for (let i = 0; i < buyAmount; i++) {
       let costPerPoint;
-  
+    
       if (this.element.dataset.robustesse === "true") {
+        console.log(`Iteration: ${i}`);
         console.log("Robustesse activée");
         costPerPoint = Math.floor((simulatedMaxHp + 1) / 10);
         console.log("CostPerPoint (robustesse):", costPerPoint);
         if ((simulatedMaxHp % 2) === 0) {
           totalCost += costPerPoint;
           console.log("TotalCost mis à jour:", totalCost);
+        } else {
+          console.log("Condition skipped: simulatedMaxHp % 2 !== 0");
         }
         simulatedMaxHp += 1;
+        console.log("simulatedMaxHp mis à jour:", simulatedMaxHp);
       } else {
         console.log("Robustesse désactivée");
         costPerPoint = Math.floor(simulatedMaxHp / 10);
@@ -76,6 +80,8 @@ export default class extends Controller {
         simulatedMaxHp++;
       }
     }
+    
+    console.log("TotalCost final:", totalCost);
 
     console.log("TotalCost final:", totalCost);
     this.xpCostTarget.textContent = totalCost;
