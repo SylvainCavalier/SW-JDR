@@ -1055,3 +1055,72 @@ input.dice-count-input {
   border-radius: 8px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
+
+/* Page de gestion des crafts */
+
+.accordion {
+  background-color: #000; /* Fond noir */
+  border: 2px solid rgba(0, 255, 0, 0.5); /* Bordure lumineuse */
+  border-radius: 15px;
+  box-shadow: 0 0 10px rgba(0, 255, 0, 0.7); /* Effet lumineux */
+  color: #0f0; /* Texte vert */
+  padding: 20px;
+}
+
+.accordion-item {
+  background-color: #111; /* Fond légèrement plus clair pour les items */
+  border: 1px solid rgba(0, 255, 0, 0.5);
+  border-radius: 10px;
+  margin-bottom: 10px; /* Espacement entre les items */
+}
+
+.accordion-header {
+  background-color: #222;
+  color: #0f0;
+  border: 1px solid rgba(0, 255, 0, 0.5);
+  border-radius: 8px;
+  box-shadow: 0 0 5px rgba(0, 255, 0, 0.5);
+}
+
+.accordion-button {
+  background-color: #000;
+  color: #0f0;
+  border: none;
+  box-shadow: none;
+  padding: 10px;
+  font-size: 1.2rem;
+  text-transform: uppercase;
+}
+
+.accordion-button:hover {
+  background-color: rgba(0, 255, 0, 0.2); /* Survol lumineux */
+  color: #0f0;
+}
+
+.accordion-button:not(.collapsed) {
+  background-color: rgba(0, 255, 0, 0.1);
+  color: #0f0;
+  box-shadow: 0 0 8px rgba(0, 255, 0, 0.5);
+}
+
+.accordion-body {
+  background-color: #111;
+  color: #0f0;
+  padding: 15px;
+  border: 1px solid rgba(0, 255, 0, 0.3);
+  border-radius: 10px;
+}
+
+.item-box {
+  background-color: #000;
+  border: 1px solid rgba(0, 255, 0, 0.3);
+  border-radius: 8px;
+  padding: 10px;
+  margin-bottom: 10px;
+  box-shadow: 0 0 5px rgba(0, 255, 0, 0.5);
+}
+
+.item-box:hover {
+  background-color: rgba(0, 255, 0, 0.1);
+  box-shadow: 0 0 10px rgba(0, 255, 0, 0.7);
+}

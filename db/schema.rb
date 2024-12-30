@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_12_24_005922) do
+ActiveRecord::Schema[7.1].define(version: 2024_12_28_004136) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -160,6 +160,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_12_24_005922) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["inventory_object_id"], name: "index_user_inventory_objects_on_inventory_object_id"
+    t.index ["user_id", "inventory_object_id"], name: "idx_on_user_id_inventory_object_id_b86c0a23ac", unique: true
     t.index ["user_id"], name: "index_user_inventory_objects_on_user_id"
   end
 

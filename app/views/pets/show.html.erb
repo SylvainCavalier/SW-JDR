@@ -44,7 +44,7 @@
               <% pet_skill = @pet.pet_skills.find_by(skill: Skill.find_by(name: "Précision")) %>
               <% base_stat = pet_skill&.mastery || 0 %>
               <% bonus = pet_skill&.bonus || 0 %> <!-- Bonus -->
-              <% modifier = @pet.stat_modifiers[:precision] || 0 %> <!-- Modificateur -->
+              <% modifier = @pet.stat_modifiers[:accuracy] || 0 %> <!-- Modificateur -->
               <%= base_stat %>D + <%= bonus %>
               <% if modifier != 0 %> (<%= modifier.positive? ? "+#{modifier}" : modifier %>) <% end %>
             </li>
@@ -196,7 +196,7 @@
               modal_title: "Confirmation de dissociation",
               modal_message: "Êtes-vous sûr de vouloir dissocier ce familier ?",
               modal_confirm_button: "Dissocier",
-              modal_confirm_action: "dissociate#confirm",
+              modal_confirm_action: "dissociate#confirm", # Action de dissociation
               delete_path: dissociate_pet_path(@pet)
             } %>
         <% else %>
@@ -211,7 +211,7 @@
               modal_title: "Confirmation de suppression", 
               modal_message: "Êtes-vous sûr de vouloir supprimer ce familier ?", 
               modal_confirm_button: "Supprimer", 
-              modal_confirm_action: "delete#confirm",
+              modal_confirm_action: "delete#confirm", # Action de suppression
               delete_path: pet_path(@pet)
             } %>
       </div>

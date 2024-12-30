@@ -6,6 +6,13 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body" data-modal-target="message"></div>
+        <div id="transfer-section" style="display: none;">
+          <input type="hidden" id="transfer-item-id" value="">
+          <label for="player-select" class="form-label">Choisissez un équipier :</label>
+          <select id="player-select" class="form-control">
+            <!-- Options dynamiques -->
+          </select>
+        </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
         <button type="button" class="btn btn-primary" data-modal-target="confirmButton">Confirmer</button>

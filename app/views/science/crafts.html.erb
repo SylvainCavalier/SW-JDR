@@ -1,0 +1,58 @@
+<div class="frame-container" style="position: relative; width: 100%; height: 100vh; overflow-y: auto; overflow-x: hidden;" data-controller="modal">
+  <div class="pet-container m-5">
+    <h1 class="text-center">Craft</h1>
+
+    <div class="accordion" id="craftAccordion">
+      <% @craftables.group_by(&:category).each_with_index do |(category, items), index| %>
+        <div class="accordion-item">
+          <h2 class="accordion-header" id="heading-<%= index %>">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-<%= index %>" aria-expanded="false" aria-controls="collapse-<%= index %>">
+              <%= category.capitalize %>
+            </button>
+          </h2>
+          <div id="collapse-<%= index %>" class="accordion-collapse collapse" aria-labelledby="heading-<%= index %>" data-bs-parent="#craftAccordion">
+            <div class="accordion-body">
+              <% items.each do |item| %>
+                <div class="item-box mb-4">
+                  <% user_item = current_user.user_inventory_objects.find_by(inventory_object: item) %>
+                  <% user_quantity = user_item&.quantity || 0 %>
+                  <p><strong><%= "#{item.name} (Possédés : #{user_quantity})" %></strong></p>
+                  <p><%= item.description %></p>
+                  <p>Difficulté : <%= CRAFT_RECIPES[item.name][:difficulty] %></p>
+                  <ul>
+                    <% CRAFT_RECIPES[item.name][:ingredients]&.each do |ingredient_name, quantity| %>
+                      <% ingredient_quantity = current_user.user_inventory_objects.joins(:inventory_object)
+                                                        .find_by(inventory_objects: { name: ingredient_name })&.quantity || 0 %>
+                      <% insufficient = ingredient_quantity < quantity %>
+                      <li style="color: <%= insufficient ? 'red' : 'green' %>;">
+                        <%= "#{quantity} x #{ingredient_name} (#{ingredient_quantity} possédés)" %>
+                      </li>
+                    <% end %>
+                  </ul>
+
+                  <%= button_tag "Crafter",
+                    type: "button",
+                    class: "btn btn-primary m-2",
+                    data: {
+                      action: "modal#attemptCraft",
+                      item_id: item.id,
+                      difficulty: CRAFT_RECIPES[item.name][:difficulty],
+                      category: item.category,
+                      bs_toggle: "modal", # Toujours garder Bootstrap pour l'ouverture
+                      bs_target: "#genericModal", # Cible de la modale
+                      modal_title: "Craft Réussi !",
+                      modal_message: "Voulez-vous donner cet objet à un équipier ?",
+                      modal_confirm_button: "Oui",
+                      modal_confirm_action: "craft#transfer"
+                    } %>
+                </div>
+              <% end %>
+            </div>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  </div>
+
+  <%= link_to "Retour", science_path, class: "btn btn-outline-secondary go-back mt-3" %>
+</div>

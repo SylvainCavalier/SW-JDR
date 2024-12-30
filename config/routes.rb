@@ -51,11 +51,17 @@ Rails.application.routes.draw do
   end
 
   get 'science', to: 'science#science', as: 'science'
+  get "science/crafts", to: "science#crafts", as: :science_crafts
+  post 'attempt_craft', to: 'science#attempt_craft'
+  post '/science/attempt_transfer', to: 'science#attempt_transfer', as: 'attempt_transfer_science'
+  get "/science/players", to: "science#players", as: :science_players
 
   resources :science, only: [] do
     collection do
       get :list
       post :buy_inventory_object
+      get :settings, to: "science#settings"
+      post :update_settings, to: "science#update_settings"
     end
   end
 
@@ -69,6 +75,7 @@ Rails.application.routes.draw do
 
   get 'mj/fixer_pv_max', to: 'mj#fixer_pv_max', as: 'fixer_pv_max'
   post 'mj/fixer_pv_max', to: 'mj#update_pv_max'
+  post 'mj/apply_hp_bonus', to: 'mj#apply_hp_bonus'
 
   get 'mj/donner_xp', to: 'mj#donner_xp', as: 'donner_xp'
   post 'mj/donner_xp', to: 'mj#attribution_xp', defaults: { format: :turbo_stream }
