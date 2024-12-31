@@ -35,6 +35,12 @@
     <% if @patch_equipped %>
       <i class="fa-regular fa-circle-down patch-icon"></i>
     <% end %>
+    <% if @active_injection_object %>
+      <i class="fa-solid fa-syringe injection-icon"></i>
+    <% end %>
+    <% if current_user.active_implant_object %>
+      <i class="fa-solid fa-microchip implant-icon"></i>
+    <% end %>
   </div>
 
   <!-- Élément à gauche du screen -->
@@ -86,7 +92,7 @@
           data-shield-state="<%= current_user.shield_state %>">
         <i class="fa-solid fa-shield" data-shield-target="icon"></i>
         <turbo-frame id="user_<%= current_user.id %>_energy_shield_frame">
-          <p class="mt-1 mb-0" style="0.9em" data-shield-target="shieldCurrent">
+          <p class="mt-1 mb-0" style="font-size: 0.9em;" data-shield-target="shieldCurrent">
             Bouclier Energie <%= current_user.shield_current %> / <%= current_user.shield_max %>
           </p>
         </turbo-frame>
@@ -115,7 +121,7 @@
           data-shield-state="<%= current_user.echani_shield_state %>">
         <i class="fa-solid fa-shield" data-shield-target="icon"></i>
         <turbo-frame id="user_<%= current_user.id %>_echani_shield_frame">
-          <p class="mt-1 mb-0" style="0.9em" data-shield-target="shieldCurrent">
+          <p class="mt-1 mb-0" style="font-size: 0.9em;" data-shield-target="shieldCurrent">
             Bouclier Echani <%= current_user.echani_shield_current %> / <%= current_user.echani_shield_max %>
           </p>
         </turbo-frame>
@@ -163,7 +169,7 @@
   <turbo-frame id="user_<%= current_user.id %>_status_frame">
     <div class="status-container m-1">
       <% current_user.statuses.each do |status| %>
-        <p style="color: <%= status.color %>;"><%= status.name %></p>
+        <p style="color: <%= status.color %>; font-size: 0.9em;"><%= status.name %></p>
       <% end %>
     </div>
   </turbo-frame>

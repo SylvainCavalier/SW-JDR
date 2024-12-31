@@ -109,6 +109,7 @@ class UsersController < ApplicationController
     @user = current_user
     @medicine_skill = @user.user_skills.find_or_initialize_by(skill: Skill.find_by(name: "Médecine"))
     @res_corp_skill = @user.user_skills.find_or_initialize_by(skill: Skill.find_by(name: "Résistance Corporelle"))
+    @vitesse_skill = @user.user_skills.find_or_initialize_by(skill: Skill.find_by(name: "Vitesse"))
   end
   
   def update_settings
@@ -118,6 +119,8 @@ class UsersController < ApplicationController
     @user.medicine_bonus = params[:user][:medicine_bonus].to_i
     @user.res_corp_mastery = params[:user][:res_corp_mastery].to_i
     @user.res_corp_bonus = params[:user][:res_corp_bonus].to_i
+    @user.vitesse_mastery = params[:user][:vitesse_mastery].to_i
+    @user.vitesse_bonus = params[:user][:vitesse_bonus].to_i
   
     # Gestion du don "Homéopathie"
     if params[:user].key?(:homeopathie)
@@ -155,6 +158,11 @@ class UsersController < ApplicationController
       res_corp_skill.update(
         mastery: @user.res_corp_mastery,
         bonus: @user.res_corp_bonus
+      )
+      vitesse_skill = @user.user_skills.find_or_initialize_by(skill: Skill.find_by(name: "Vitesse"))
+      vitesse_skill.update(
+        mastery: @user.vitesse_mastery,
+        bonus: @user.vitesse_bonus
       )
       
       redirect_to settings_user_path(@user), notice: "Réglages mis à jour avec succès."
@@ -433,6 +441,90 @@ class UsersController < ApplicationController
     redirect_to inventory_user_path(@user)
   end
 
+  def injections
+    @user_injections = current_user.user_inventory_objects
+                                   .includes(:inventory_object)
+                                   .where("quantity > 0")
+                                   .where(inventory_objects: { category: "injection" })
+  end
+  
+  def equip_injection
+    injection_id = params[:injection_id]
+    injection = InventoryObject.find_by(id: injection_id)
+    
+    if current_user.user_inventory_objects.exists?(inventory_object_id: injection_id)
+      current_user.equip_injection(injection_id)
+      current_user.decrement_inventory!(injection_id)
+      current_user.apply_injection_effects
+
+      unless %w[Injection de trinitine Injection de bio-rage].include?(injection.name)
+        current_user.decrement!(:hp_current, 2)
+      end
+      
+      redirect_to injections_user_path(current_user), notice: "Injection active : #{current_user.active_injection_object&.name}."
+    else
+      redirect_to injections_user_path(current_user), alert: "Injection non disponible."
+    end
+  end
+
+  def deactivate_injection
+    if current_user.active_injection
+      current_user.remove_injection_effects
+      current_user.unequip_injection
+
+      redirect_to injections_user_path(current_user), notice: "Injection désactivée avec succès."
+    else
+      redirect_to injections_user_path(current_user), alert: "Aucune injection active à désactiver."
+    end
+  end
+
+  def use_trinitine
+    session[:trinitine_uses] ||= 0
+    session[:trinitine_uses] += 1
+  
+    if session[:trinitine_uses] <= 3
+      current_user.increment!(:hp_current, rand(1..6))
+      flash[:notice] = "Vous avez utilisé la Trinitine (#{session[:trinitine_uses]}/3)."
+    end
+  
+    if session[:trinitine_uses] >= 3
+      session.delete(:trinitine_uses)
+      current_user.unequip_injection
+      flash[:alert] = "Injection de Trinitine désactivée après 3 utilisations."
+    end
+  
+    redirect_to injections_user_path(current_user)
+  end
+
+  def implants
+    @user_implants = current_user.user_inventory_objects
+                                 .includes(:inventory_object)
+                                 .where("quantity > 0")
+                                 .where(inventory_objects: { category: "implant" })
+  end
+
+  def equip_implant
+    implant_id = params[:implant_id]
+  
+    if current_user.user_inventory_objects.exists?(inventory_object_id: implant_id)
+      current_user.equip_implant(implant_id)
+      current_user.apply_implant_effects
+      redirect_to implants_user_path(current_user), notice: "Implant équipé : #{current_user.active_implant_object&.name}."
+    else
+      redirect_to implants_user_path(current_user), alert: "Implant non disponible."
+    end
+  end
+  
+  def unequip_implant
+    if current_user.active_implant
+      current_user.remove_implant_effects
+      current_user.unequip_implant
+      redirect_to implants_user_path(current_user), notice: "Implant déséquipé avec succès."
+    else
+      redirect_to implants_user_path(current_user), alert: "Aucun implant actif à déséquiper."
+    end
+  end
+
   private
 
   def user_params
@@ -443,7 +535,9 @@ class UsersController < ApplicationController
       :medicine_mastery,
       :medicine_bonus,
       :res_corp_mastery,
-      :res_corp_bonus
+      :res_corp_bonus,
+      :active_injection,
+      :active_implant
     )
   end
   

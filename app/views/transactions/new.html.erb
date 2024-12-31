@@ -47,7 +47,16 @@
   <div class="home-bottom-buttons d-flex">
     <!-- Gestion de l'Inventaire -->
     <%= link_to inventory_user_path(current_user), class: "btn btn-outline-success inventory-home" do %>
-      <i class="fa-solid fa-briefcase"></i>
+      <i class="fa-solid fa-briefcase mx-1 p-1"></i>
+    <% end %>
+    <%= link_to injections_user_path(current_user), class: "btn btn-outline-success inventory-home" do %>
+      <i class="fa-solid fa-syringe mx-1 p-1"></i>
+    <% end %>
+    <%= link_to patch_user_path(current_user), class: "btn btn-outline-success inventory-home" do %>
+      <i class="fa-regular fa-circle-down mx-1 p-1"></i>
+    <% end %>
+    <%= link_to implants_user_path(current_user), class: "btn btn-outline-success inventory-home" do %>
+      <i class="fa-solid fa-microchip mx-1 p-1"></i>
     <% end %>
   </div>
 

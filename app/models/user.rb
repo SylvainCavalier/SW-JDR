@@ -27,8 +27,10 @@ class User < ApplicationRecord
 
   attr_accessor :medicine_mastery, :medicine_bonus
   attr_accessor :res_corp_mastery, :res_corp_bonus
+  attr_accessor :vitesse_mastery, :vitesse_bonus
 
   def set_status(status_name = nil)
+    # Si aucun statut n'est spécifié, déterminer en fonction des PV
     if status_name.blank?
       status_name = case hp_current
                     when 1..Float::INFINITY then "En forme"
@@ -38,6 +40,22 @@ class User < ApplicationRecord
                     end
     end
   
+    # Gestion des statuts protégés par les injections
+    protected_statuses = if active_injection_object&.name == "Injection de stimulant"
+                           ["Désorienté", "Sonné"]
+                         elsif active_injection_object&.name == "Injection tétrasulfurée"
+                           ["Sonné", "Inconscient", "Agonisant"]
+                         else
+                           []
+                         end
+  
+    # Si le statut est protégé, ne pas changer
+    if protected_statuses.include?(status_name)
+      Rails.logger.info "⚠️ Statut '#{status_name}' bloqué par l'injection active."
+      return
+    end
+  
+    # Appliquer le statut
     status = Status.find_by(name: status_name)
     if status
       user_statuses.destroy_all
@@ -133,6 +151,30 @@ class User < ApplicationRecord
     InventoryObject.find_by(id: patch)
   end
 
+  def equip_injection(injection_id)
+    update(active_injection: injection_id)
+  end
+
+  def unequip_injection
+    update(active_injection: nil)
+  end
+
+  def active_injection_object
+    InventoryObject.find_by(id: active_injection)
+  end
+
+  def equip_implant(implant_id)
+    update(active_implant: implant_id)
+  end
+
+  def unequip_implant
+    update(active_implant: nil)
+  end
+
+  def active_implant_object
+    InventoryObject.find_by(id: active_implant)
+  end
+
   def activate_energy_shield
     return unless can_activate_energy_shield?
 
@@ -194,6 +236,102 @@ class User < ApplicationRecord
 
   def add_pet_action_points(points)
     update!(pet_action_points: [pet_action_points + points, 10].min)
+  end
+
+  def decrement_inventory!(item_id)
+    item = user_inventory_objects.find_by(inventory_object_id: item_id)
+    item.decrement!(:quantity) if item&.quantity.to_i > 0
+  end
+
+  def apply_injection_effects
+    case active_injection_object&.name
+    when "Injection d'adrénaline"
+      vitesse_skill = user_skills.find_or_initialize_by(skill: Skill.find_by(name: "Vitesse"))
+      vitesse_skill.increment!(:mastery)
+    when "Injection de phosphore"
+      medicine_skill = user_skills.find_or_initialize_by(skill: Skill.find_by(name: "Médecine"))
+      medicine_skill.increment!(:mastery)
+    when "Injection de bio-rage"
+      set_status("Folie")
+    end
+  end
+  
+  def remove_injection_effects
+    case active_injection_object&.name
+    when "Injection d'adrénaline"
+      vitesse_skill = user_skills.find_or_initialize_by(skill: Skill.find_by(name: "Vitesse"))
+      vitesse_skill.decrement!(:mastery)
+    when "Injection de phosphore"
+      medicine_skill = user_skills.find_or_initialize_by(skill: Skill.find_by(name: "Médecine"))
+      medicine_skill.decrement!(:mastery)
+    when "Injection de bio-rage"
+      set_status("En forme")
+    end
+  end
+
+  def apply_implant_effects
+    implant = active_implant_object
+    return unless implant
+  
+    case implant.name
+    when "Implant de vitalité"
+      increment!(:hp_max, 5)
+    when "Implant de vitalité +"
+      increment!(:hp_max, 10)
+    else
+      skill_match = implant.name.match(/Implant de (.+?) (\+1|\+2|\+1D)/)
+      return unless skill_match
+  
+      skill_name = skill_match[1]
+      bonus_type = skill_match[2]
+  
+      skill = skills.find_by(name: skill_name)
+      return unless skill
+  
+      user_skill = user_skills.find_or_initialize_by(skill: skill)
+  
+      case bonus_type
+      when "+1"
+        user_skill.increment!(:bonus, 1)
+      when "+2"
+        user_skill.increment!(:bonus, 2)
+      when "+1D"
+        user_skill.increment!(:mastery, 1)
+      end
+    end
+  end
+  
+  def remove_implant_effects
+    implant = active_implant_object
+    return unless implant
+  
+    case implant.name
+    when "Implant de vitalité"
+      decrement!(:hp_max, 5)
+    when "Implant de vitalité +"
+      decrement!(:hp_max, 10)
+    else
+      skill_match = implant.name.match(/Implant de (.+?) (\+1|\+2|\+1D)/)
+      return unless skill_match
+  
+      skill_name = skill_match[1]
+      bonus_type = skill_match[2]
+  
+      skill = skills.find_by(name: skill_name)
+      return unless skill
+  
+      user_skill = user_skills.find_by(skill: skill)
+      return unless user_skill
+  
+      case bonus_type
+      when "+1"
+        user_skill.decrement!(:bonus, 1)
+      when "+2"
+        user_skill.decrement!(:bonus, 2)
+      when "+1D"
+        user_skill.decrement!(:mastery, 1)
+      end
+    end
   end
 
   private

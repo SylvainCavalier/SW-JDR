@@ -26,6 +26,12 @@ Rails.application.routes.draw do
       get :inventory
       post :sell_item
       post :give_item
+      get :injections
+      post :equip_injection
+      post :deactivate_injection
+      get :implants
+      post :equip_implant
+      post :unequip_implant
     end
 
     collection do

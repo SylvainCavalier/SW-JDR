@@ -3,6 +3,7 @@ class PagesController < ApplicationController
 
   def home
     @patch_equipped = current_user.equipped_patch.present?
+    @active_injection_object = current_user.active_injection_object
   end
 
   def mj

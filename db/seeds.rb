@@ -1,12 +1,32 @@
 puts "Adding new skills..."
 
+# Liste actuelle des compétences
 new_skills = [
   { name: "Vitesse", description: "Augmente les déplacements rapides." },
   { name: "Précision", description: "Améliore les tirs à distance." },
   { name: "Esquive", description: "Réduit les chances d'être touché." },
-  { name: "Ingénierie", description: "Permet de fabriquer et d'améliorer des objets techniques." }
+  { name: "Ingénierie", description: "Permet de fabriquer et d'améliorer des objets techniques." },
+  { name: "Médecine", description: "Compétence pour soigner les autres." },
+  { name: "Résistance Corporelle", description: "Réduit les dégâts subis en fonction du jet de résistance corporelle." }
 ]
 
+# Liste des nouvelles compétences à ajouter
+additional_skills = [
+  "Sabre-laser", "Arts martiaux", "Armes blanches", "Lancer", "Tir", "Discrétion", "Habileté",
+  "Observation", "Intuition", "Imitation", "Psychologie", "Commandement", "Marchandage",
+  "Persuasion", "Dressage", "Saut", "Escalade", "Endurance", "Intimidation", "Natation",
+  "Survie", "Nature", "Substances", "Savoir jedi", "Langage", "Astrophysique", "Planètes",
+  "Evaluation", "Illégalité", "Pilotage", "Esquive spatiale", "Astrogation", "Tourelles",
+  "Jetpack", "Réparation", "Sécurité", "Démolition", "Systèmes", "Contrôle",
+  "Sens", "Altération"
+]
+
+# Ajouter les nouvelles compétences à la liste existante
+additional_skills.each do |skill_name|
+  new_skills << { name: skill_name, description: "Description à définir pour #{skill_name}." }
+end
+
+# Créer ou mettre à jour les compétences dans la base de données
 new_skills.each do |skill|
   Skill.find_or_create_by!(name: skill[:name]) do |s|
     s.description = skill[:description]
@@ -14,6 +34,61 @@ new_skills.each do |skill|
 end
 
 puts "✅ New skills added successfully!"
+
+puts "Adding new implants..."
+# Liste des implants
+implants = [
+  { name: "Implant de vitalité", price: 400, description: "Implant lvl 1 ajoutant +5 Pvmax temporaires tant que l'implant est porté", rarity: "Commun", category: "implant" },
+  { name: "Implant de vitalité +", price: 1000, description: "Implant lvl 2 ajoutant +10 Pvmax temporaires tant que l'implant est porté", rarity: "Unco", category: "implant" },
+  { name: "Implant de récupération", price: 600, description: "Implant lvl 1 permettant de récupérer +1PV à chaque début de tour", rarity: "Commun", category: "implant" },
+  { name: "Implant de récupération +", price: 1200, description: "Implant lvl 2 permettant de récupérer +2PV à chaque début de tour", rarity: "Unco", category: "implant" },
+  { name: "Implant de comm neurale", price: 500, description: "Implant lvl 1 permettant de communiquer par la pensée avec un autre cyborg", rarity: "Commun", category: "implant" }
+]
+
+# Création ou mise à jour des implants dans la base de données
+implants.each do |implant|
+  InventoryObject.find_or_create_by!(name: implant[:name]) do |obj|
+    obj.price = implant[:price]
+    obj.description = implant[:description]
+    obj.rarity = implant[:rarity]
+    obj.category = implant[:category]
+  end
+end
+
+skills = Skill.all
+
+skills.each do |skill|
+  # Implant ajoutant +1 à la compétence
+  InventoryObject.create!(
+    name: "Implant de #{skill.name} +1",
+    price: 200,
+    description: "Ajoute +1 à la compétence #{skill.name} tant que l'implant est porté.",
+    rarity: "Commun",
+    category: "implant"
+  )
+
+  # Implant ajoutant +2 à la compétence
+  InventoryObject.create!(
+    name: "Implant de #{skill.name} +2",
+    price: 500,
+    description: "Ajoute +2 à la compétence #{skill.name} tant que l'implant est porté.",
+    rarity: "Unco",
+    category: "implant"
+  )
+
+  # Implant ajoutant +1D à la compétence
+  InventoryObject.create!(
+    name: "Implant de #{skill.name} +1D",
+    price: 1500,
+    description: "Ajoute +1D à la compétence #{skill.name} tant que l'implant est porté.",
+    rarity: "Rare",
+    category: "implant"
+  )
+end
+
+puts "✅ New implants added successfully!"
+
+puts "Adding new ingredients..."
 
 ingredients = [
   { name: "Composant", price: 10, description: "Une pièce basique pour fabriquer ou réparer des objets techniques divers. Se trouve partout", rarity: "Commun" },
@@ -114,9 +189,9 @@ plants.each do |plant|
 end
 
 injections = [
-  { name: "Injection d'adrénaline", price: 200, description: "Perd 1 PV mais augmente les compétences de dex de +1D pour 3 tours", rarity: "Unco", category: "injection" },
-  { name: "Injection d'hormone de Shalk", price: 300, description: "Perd 1 PV mais augmente les compétences de vig de +1D pour 3 tours", rarity: "Rare", category: "injection" },
-  { name: "Injection de phosphore", price: 100, description: "Perd 1 PV mais augmente les compétences de sav de +1D pour 3 tours", rarity: "Unco", category: "injection" },
+  { name: "Injection d'adrénaline", price: 200, description: "Perd 2 PV mais augmente les compétences de dex de +1D pour 3 tours", rarity: "Unco", category: "injection" },
+  { name: "Injection d'hormone de Shalk", price: 300, description: "Perd 2 PV mais augmente les compétences de vig de +1D pour 3 tours", rarity: "Rare", category: "injection" },
+  { name: "Injection de phosphore", price: 100, description: "Perd 2 PV mais augmente les compétences de sav de +1D pour 3 tours", rarity: "Unco", category: "injection" },
   { name: "Injection de focusféron", price: 100, description: "Perd 2 PV mais augmente les compétences de perc de +1D pour 3 tours", rarity: "Unco", category: "injection" },
   { name: "Injection de trinitine", price: 50, description: "Regagne +1D PV par tour pour 3 tours, mais -2 toutes comp", rarity: "Unco", category: "injection" },
   { name: "Injection de stimulant", price: 50, description: "Perd 2 PV mais est immunisé au statut désorienté ou sonné 3 tours", rarity: "Unco", category: "injection" },
@@ -169,3 +244,9 @@ poisons.each do |poison|
 end
 
 puts "✅ New objects added successfully!"
+
+puts "Adding new status..."
+
+Status.create!(name: "Folie", description: "Ne se contrôle plus et attaque le plus proche", color: "#FF69B4")
+
+puts "✅ New status added successfully!"

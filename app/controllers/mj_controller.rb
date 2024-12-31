@@ -308,29 +308,36 @@ class MjController < ApplicationController
 
   def donner_objet
     @users = User.joins(:group).where(groups: { name: "PJ" })
-    @categories = InventoryObject.distinct.pluck(:category).sort
+    @categories = InventoryObject.distinct.pluck(:category).map(&:downcase).uniq.sort
     @objects = InventoryObject.select(:id, :name, :category).map do |obj|
-      { id: obj.id, name: obj.name, category: obj.category }
+      { id: obj.id, name: obj.name, category: obj.category.downcase }
     end
+  
+    Rails.logger.debug "Catégories disponibles : #{@categories}"
   end
 
   def update_objet
-    params[:object].each do |user_id, object_id|
-      user = User.find(user_id)
-      object = InventoryObject.find(object_id)
-      quantity = params[:quantity][user_id].to_i
+    user_id = params[:user_id]
+    object_id = params[:object_id]
+    quantity = params[:quantity].to_i
   
-      user_inventory_object = user.user_inventory_objects.find_or_initialize_by(inventory_object_id: object.id)
-      user_inventory_object.quantity ||= 0
-      user_inventory_object.quantity += quantity
-      user_inventory_object.save!
+    user = User.find(user_id)
+    object = InventoryObject.find(object_id)
   
-      Rails.logger.info "✅ Objet #{object.name} (x#{quantity}) donné à #{user.username}."
+    user_inventory_object = user.user_inventory_objects.find_or_initialize_by(inventory_object_id: object.id)
+    user_inventory_object.quantity ||= 0
+    user_inventory_object.quantity += quantity
+    user_inventory_object.save!
+  
+    Rails.logger.info "✅ Objet #{object.name} (x#{quantity}) donné à #{user.username}."
+  
+    respond_to do |format|
+      format.json { render json: { success: true, message: "Objet #{object.name} (x#{quantity}) donné avec succès à #{user.username}." } }
     end
-  
-    redirect_to donner_objet_path, notice: "Objets donnés avec succès."
   rescue ActiveRecord::RecordNotFound => e
-    redirect_to donner_objet_path, alert: "Erreur : #{e.message}"
+    respond_to do |format|
+      format.json { render json: { success: false, error: "Erreur : #{e.message}" }, status: :unprocessable_entity }
+    end
   end
 
   def fix_pets

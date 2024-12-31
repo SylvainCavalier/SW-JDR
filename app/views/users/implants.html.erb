@@ -1,0 +1,75 @@
+<div class="frame-container" style="position: relative; width: 100%; height: 100vh;">
+  <!-- Username -->
+  <p class="username-display mt-1 text-primary fw-bold">
+    <%= current_user.username.capitalize %>
+  </p>
+
+  <!-- Cadre principal SVG -->
+  <img src="<%= asset_path('cadre2.svg') %>" alt="Cadre" class="ui-frame">
+
+  <div class="heal-container text-center">
+    <h3 class="text-center">Gestion des Implants</h3>
+
+    <!-- Implant actif -->
+    <div class="equipped-implant d-flex">
+      <i class="fa-solid fa-microchip me-2" style="z-index: 3; font-size: 30px; color: white;"></i>
+      <p class="mt-1">Implant actif : <%= current_user.active_implant_object&.name || "Aucun" %></p>
+    </div>
+
+    <!-- Désactiver l'implant -->
+    <% if current_user.active_implant %>
+      <div class="unequip-implant-section mt-3">
+        <%= button_to "Déséquiper Implant", unequip_implant_user_path(current_user), method: :post, class: "btn btn-outline-danger" %>
+      </div>
+    <% else %>
+      <p>Aucun implant actuellement actif.</p>
+    <% end %>
+
+    <!-- Bouton pour ouvrir la modale -->
+    <button type="button" class="btn btn-outline-success mt-3" data-bs-toggle="modal" data-bs-target="#equipImplantModal">
+      Équiper un implant
+    </button>
+
+    <!-- Modale pour sélectionner un implant -->
+    <div class="modal fade" id="equipImplantModal" tabindex="-1" aria-labelledby="equipImplantModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="equipImplantModalLabel">Sélectionner un Implant</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <table class="table table-hover">
+              <thead>
+                <tr>
+                  <th>Nom</th>
+                  <th>Description</th>
+                  <th>Quantité</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% @user_implants.each do |implant| %>
+                  <tr>
+                    <td><%= implant.inventory_object.name %></td>
+                    <td><%= implant.inventory_object.description %></td>
+                    <td><%= implant.quantity %></td>
+                    <td>
+                      <% if current_user.active_implant == implant.inventory_object.id %>
+                        <span>Équipé</span>
+                      <% else %>
+                        <%= button_to "Équiper", equip_implant_user_path(current_user), method: :post, class: "btn btn-outline-primary btn-sm",
+                                    params: { implant_id: implant.inventory_object.id } %>
+                      <% end %>
+                    </td>
+                  </tr>
+                <% end %>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <%= link_to "Retour", new_transaction_path, class: "btn btn-outline-secondary mt-3 go-back" %>
+</div>

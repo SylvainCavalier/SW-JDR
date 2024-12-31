@@ -3,8 +3,6 @@
   <p class="username-display mt-1 text-primary fw-bold">
     <%= current_user.username.capitalize %>
   </p>
-  <!-- Cadre principal SVG -->
-  <img src="<%= asset_path('cadre2.svg') %>" alt="Cadre" class="ui-frame">
   
   <!-- Cadre central avec l'écran de réglages -->
   <div class="settings-container">
@@ -69,6 +67,27 @@
             <%= button_tag "+", type: "button", class: "btn btn-outline-secondary btn-sm", data: { action: "click->increment#increment" } %>
           </div>
           <p class="ms-2 mt-3">Actuel : <%= @res_corp_skill&.mastery || 0 %>D + <%= @res_corp_skill&.bonus || 0 %></p>
+        </div>
+      </div>
+
+      <!-- Réglage de compétence : Vitesse -->
+      <div class="skill-section mt-2">
+        <div class="d-flex align-items-center flex-wrap mb-2">
+          <!-- Input pour le nombre de D -->
+          <p class="me-2 mt-3">Vitesse</p>
+          <div class="input-group custom-input-group me-2" style="width: auto;" data-controller="increment">
+            <%= button_tag "-", type: "button", class: "btn btn-outline-secondary btn-sm", data: { action: "click->increment#decrement" } %>
+            <%= f.number_field :vitesse_mastery, value: @vitesse_skill&.mastery || 0, min: 0, class: "form-control form-control-sm text-center", style: "width: 45px;", data: { "increment-target" => "input" } %>
+            <%= button_tag "+", type: "button", class: "btn btn-outline-secondary btn-sm", data: { action: "click->increment#increment" } %>
+          </div>
+          <span class="mx-1">D +</span>
+          <!-- Input pour le bonus -->
+          <div class="input-group custom-input-group ms-2" style="width: auto;" data-controller="increment">
+            <%= button_tag "-", type: "button", class: "btn btn-outline-secondary btn-sm", data: { action: "click->increment#decrement" } %>
+            <%= f.number_field :vitesse_bonus, value: @vitesse_skill&.bonus || 0, min: 0, class: "form-control form-control-sm text-center", style: "width: 45px;", data: { "increment-target" => "input" } %>
+            <%= button_tag "+", type: "button", class: "btn btn-outline-secondary btn-sm", data: { action: "click->increment#increment" } %>
+          </div>
+          <p class="ms-2 mt-3">Actuel : <%= @vitesse_skill&.mastery || 0 %>D + <%= @vitesse_skill&.bonus || 0 %></p>
         </div>
       </div>
 
