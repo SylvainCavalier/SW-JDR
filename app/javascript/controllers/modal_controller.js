@@ -114,7 +114,6 @@ export default class extends Controller {
       })
       .finally(() => {
         console.log("Requête de craft terminée.");
-        window.location.reload();
       });
   }
 

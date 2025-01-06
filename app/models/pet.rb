@@ -129,7 +129,7 @@ class Pet < ApplicationRecord
         message = "L'entraînement a augmenté ses dégâts (attaque 2) de +1 !"
       end
   
-      update!(fatigue: [fatigue - 2, 4].min, loyalty: loyalty_up || loyalty)
+      update!(fatigue: [fatigue - 2, 0].min, loyalty: loyalty_up || loyalty)
       check_critical_states
     end
   
