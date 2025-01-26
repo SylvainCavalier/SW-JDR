@@ -56,34 +56,36 @@ implants.each do |implant|
 end
 
 skills = Skill.all
-
 skills.each do |skill|
   # Implant ajoutant +1 à la compétence
-  InventoryObject.create!(
-    name: "Implant de #{skill.name} +1",
-    price: 200,
-    description: "Ajoute +1 à la compétence #{skill.name} tant que l'implant est porté.",
-    rarity: "Commun",
-    category: "implant"
-  )
+  InventoryObject.find_or_create_by!(
+    name: "Implant de #{skill.name} +1"
+  ) do |object|
+    object.price = 200
+    object.description = "Ajoute +1 à la compétence #{skill.name} tant que l'implant est porté."
+    object.rarity = "Commun"
+    object.category = "implant"
+  end
 
   # Implant ajoutant +2 à la compétence
-  InventoryObject.create!(
-    name: "Implant de #{skill.name} +2",
-    price: 500,
-    description: "Ajoute +2 à la compétence #{skill.name} tant que l'implant est porté.",
-    rarity: "Unco",
-    category: "implant"
-  )
+  InventoryObject.find_or_create_by!(
+    name: "Implant de #{skill.name} +2"
+  ) do |object|
+    object.price = 500
+    object.description = "Ajoute +2 à la compétence #{skill.name} tant que l'implant est porté."
+    object.rarity = "Unco"
+    object.category = "implant"
+  end
 
   # Implant ajoutant +1D à la compétence
-  InventoryObject.create!(
-    name: "Implant de #{skill.name} +1D",
-    price: 1500,
-    description: "Ajoute +1D à la compétence #{skill.name} tant que l'implant est porté.",
-    rarity: "Rare",
-    category: "implant"
-  )
+  InventoryObject.find_or_create_by!(
+    name: "Implant de #{skill.name} +1D"
+  ) do |object|
+    object.price = 1500
+    object.description = "Ajoute +1D à la compétence #{skill.name} tant que l'implant est porté."
+    object.rarity = "Rare"
+    object.category = "implant"
+  end
 end
 
 puts "✅ New implants added successfully!"
@@ -122,7 +124,7 @@ ingredients = [
   { name: "Diffuseur aérosol", price: 100, description: "Un diffuseur aérosol à ouverture manuelle ou retardée, pour y mettre des choses méchantes à diffuser dedans", rarity: "Unco" },
   { name: "Matière explosive", price: 200, description: "La matière explosive est une matière malléable et adaptable, qui sert à la fabrication d'explosifs", rarity: "Commun" },
   { name: "Poudre de Zabron", price: 100, description: "La poudre de zabron est issu d'un sable très volatile qui se disperse en de grandes volutes de fumée rose", rarity: "Commun" },
-  { name: "Neurotoxique", price: 300, description: "Une substance neurotoxique particulièrement dangereuse", rarity: "Rare" }
+  { name: "Neurotoxine", price: 300, description: "Une substance neurotoxique particulièrement dangereuse", rarity: "Rare" }
 ]
 
 ingredients.each do |ingredient|

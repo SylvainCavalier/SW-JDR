@@ -110,7 +110,7 @@ class ScienceController < ApplicationController
       render json: { 
         success: false, 
         error: "Craft raté. Vous avez perdu les ingrédients.",
-        refresh: true
+        delay: 1000
       }, status: :unprocessable_entity
     end
   end

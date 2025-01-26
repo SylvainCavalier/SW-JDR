@@ -14,15 +14,30 @@
             <div class="accordion-body">
               <% items.each do |item| %>
                 <div class="item-box mb-4">
-                  <% user_item = current_user.user_inventory_objects.find_by(inventory_object: item) %>
-                  <% user_quantity = user_item&.quantity || 0 %>
-                  <p><strong><%= "#{item.name} (Possédés : #{user_quantity})" %></strong></p>
+                  <div class="d-flex justify-content-between align-items-center">
+                    <% user_item = current_user.user_inventory_objects.find_by(inventory_object: item) %>
+                    <% user_quantity = user_item&.quantity || 0 %>
+                    <p><strong><%= "#{item.name} (Possédés : #{user_quantity})" %></strong></p>
+                    <!-- Bouton pour Transférer -->
+                    <%= button_tag "Donner",
+                      type: "button",
+                      class: "btn btn-outline-success btn-sm p-0",
+                      data: {
+                        bs_toggle: "modal",
+                        bs_target: "#genericModal",
+                        modal_title: "Transférer objet",
+                        modal_message: "Voulez-vous donner cet objet à un équipier ?",
+                        modal_confirm_button: "Confirmer",
+                        modal_confirm_action: "craft#transfer",
+                        item_id: item.id
+                      } %>
+                  </div>
                   <p><%= item.description %></p>
                   <p>Difficulté : <%= CRAFT_RECIPES[item.name][:difficulty] %></p>
                   <ul>
                     <% CRAFT_RECIPES[item.name][:ingredients]&.each do |ingredient_name, quantity| %>
                       <% ingredient_quantity = current_user.user_inventory_objects.joins(:inventory_object)
-                                                        .find_by(inventory_objects: { name: ingredient_name })&.quantity || 0 %>
+                                                            .find_by(inventory_objects: { name: ingredient_name })&.quantity || 0 %>
                       <% insufficient = ingredient_quantity < quantity %>
                       <li style="color: <%= insufficient ? 'red' : 'green' %>;">
                         <%= "#{quantity} x #{ingredient_name} (#{ingredient_quantity} possédés)" %>
@@ -30,6 +45,7 @@
                     <% end %>
                   </ul>
 
+                  <!-- Bouton pour Crafter -->
                   <%= button_tag "Crafter",
                     type: "button",
                     class: "btn btn-primary m-2",
@@ -37,13 +53,7 @@
                       action: "modal#attemptCraft",
                       item_id: item.id,
                       difficulty: CRAFT_RECIPES[item.name][:difficulty],
-                      category: item.category,
-                      bs_toggle: "modal", # Toujours garder Bootstrap pour l'ouverture
-                      bs_target: "#genericModal", # Cible de la modale
-                      modal_title: "Craft Réussi !",
-                      modal_message: "Voulez-vous donner cet objet à un équipier ?",
-                      modal_confirm_button: "Oui",
-                      modal_confirm_action: "craft#transfer"
+                      category: item.category
                     } %>
                 </div>
               <% end %>

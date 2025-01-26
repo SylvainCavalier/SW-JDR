@@ -71,18 +71,14 @@ CRAFT_RECIPES = {
     difficulty: 30,
     ingredients: { 
       "Neurotoxine" => 1,
-      "Dose de Kolto" => 1,
-      "Dose de Bacta" => 1,
+      "Dose de kolto" => 1,
+      "Dose de bacta" => 1,
       "Fiole" => 1,
       "Matière organique" => 2
     }
   },
 
   # Ingrédients craftables
-  "Matière organique" => {
-    difficulty: 10,
-    ingredients: { "Cadavre d'animal ou humanoïde" => 1 }
-  },
   "Diffuseur aérosol" => {
     difficulty: 10,
     ingredients: { "Composant" => 3, "Circuit de retransmission" => 1 }
