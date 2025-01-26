@@ -65,15 +65,25 @@ export default class extends Controller {
       .then((data) => {
         if (data.success) {
           console.log("Craft réussi :", data);
+      
+          // Mettre à jour les quantités dynamiquement
+          const craftController = this.application.getControllerForElementAndIdentifier(this.element, "craft");
+      
+          // Met à jour les ingrédients
+          if (data.ingredients) {
+            data.ingredients.forEach((ingredient) => {
+              craftController.updateIngredientQuantity(ingredient.name, ingredient.new_quantity);
+            });
+          }
+      
+          // Met à jour la quantité de l'objet
+          craftController.updateObjectQuantity(data.item.id, data.item.new_quantity);
+      
           alert(`Craft réussi : ${data.item.name}`);
         } else {
           console.warn("Craft échoué :", data.error);
           alert(`Échec du craft : ${data.error}`);
         }
-      })
-      .catch((error) => {
-        console.error("Erreur lors du craft :", error);
-        alert("Une erreur s'est produite lors du craft.");
       });
   }
 
@@ -124,6 +134,22 @@ export default class extends Controller {
       .then((response) => response.json())
       .then((data) => {
         if (data.success) {
+          console.log("Transfert réussi :", data);
+  
+          // Récupère le controller craft depuis le parent contenant le controller craft
+          const craftElement = document.querySelector("[data-controller~='craft']");
+          if (!craftElement) {
+            console.warn("Controller 'craft' introuvable.");
+            return;
+          }
+  
+          const craftController = this.application.getControllerForElementAndIdentifier(craftElement, "craft");
+          if (craftController) {
+            craftController.updateObjectQuantity(data.item.id, data.item.new_quantity);
+          } else {
+            console.warn("Controller 'craft' introuvable sur l'élément.");
+          }
+  
           alert(data.message);
           const modalElement = document.getElementById("genericModal");
           const modalInstance = bootstrap.Modal.getInstance(modalElement);
@@ -131,10 +157,6 @@ export default class extends Controller {
         } else {
           alert(data.error);
         }
-      })
-      .catch((error) => {
-        console.error("Erreur lors du transfert :", error);
-        alert("Une erreur s'est produite lors du transfert.");
       });
   }
 

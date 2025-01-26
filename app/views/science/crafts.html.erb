@@ -1,4 +1,4 @@
-<div class="frame-container" style="position: relative; width: 100%; height: 100vh; overflow-y: auto; overflow-x: hidden;" data-controller="modal">
+<div class="frame-container" style="position: relative; width: 100%; height: 100vh; overflow-y: auto; overflow-x: hidden;" data-controller="modal craft">
   <div class="pet-container m-5">
     <h1 class="text-center">Craft</h1>
 
@@ -13,11 +13,11 @@
           <div id="collapse-<%= index %>" class="accordion-collapse collapse" aria-labelledby="heading-<%= index %>" data-bs-parent="#craftAccordion">
             <div class="accordion-body">
               <% items.each do |item| %>
-                <div class="item-box mb-4">
+                <% user_item = current_user.user_inventory_objects.find_by(inventory_object: item) %>
+                <% user_quantity = user_item&.quantity || 0 %>
+                <div class="item-box mb-4" data-craft-target="item" data-item-id="<%= item.id %>" data-item-quantity="<%= user_quantity %>">
                   <div class="d-flex justify-content-between align-items-center">
-                    <% user_item = current_user.user_inventory_objects.find_by(inventory_object: item) %>
-                    <% user_quantity = user_item&.quantity || 0 %>
-                    <p><strong><%= "#{item.name} (Possédés : #{user_quantity})" %></strong></p>
+                    <p><strong><%= "#{item.name}" %> (<span data-craft-target="objectQuantity"><%= user_quantity %></span> possédés)</strong></p>
                     <!-- Bouton pour Transférer -->
                     <%= button_tag "Donner",
                       type: "button",
@@ -37,10 +37,15 @@
                   <ul>
                     <% CRAFT_RECIPES[item.name][:ingredients]&.each do |ingredient_name, quantity| %>
                       <% ingredient_quantity = current_user.user_inventory_objects.joins(:inventory_object)
-                                                            .find_by(inventory_objects: { name: ingredient_name })&.quantity || 0 %>
+                                                                    .find_by(inventory_objects: { name: ingredient_name })&.quantity || 0 %>
                       <% insufficient = ingredient_quantity < quantity %>
-                      <li style="color: <%= insufficient ? 'red' : 'green' %>;">
-                        <%= "#{quantity} x #{ingredient_name} (#{ingredient_quantity} possédés)" %>
+                      <li style="color: <%= insufficient ? 'red' : 'green' %>;"
+                          data-craft-target="ingredient"
+                          data-ingredient-name="<%= ingredient_name %>"
+                          data-ingredient-required-quantity="<%= quantity %>"
+                          data-ingredient-possessed-quantity="<%= ingredient_quantity %>">
+                        <%= "#{quantity} x #{ingredient_name}" %> 
+                        (<span data-craft-target="ingredientQuantity"><%= ingredient_quantity %></span> possédés)
                       </li>
                     <% end %>
                   </ul>
@@ -53,7 +58,8 @@
                       action: "modal#attemptCraft",
                       item_id: item.id,
                       difficulty: CRAFT_RECIPES[item.name][:difficulty],
-                      category: item.category
+                      category: item.category,
+                      craftTarget: "craftButton"
                     } %>
                 </div>
               <% end %>

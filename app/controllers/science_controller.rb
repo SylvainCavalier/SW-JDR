@@ -101,7 +101,16 @@ class ScienceController < ApplicationController
       Rails.logger.debug "Craft réussi : #{item_to_craft.name}, ID : #{item_to_craft.id}"
       render json: { 
         success: true, 
-        item: { id: item_to_craft.id, name: item_to_craft.name, category: item_to_craft.category } 
+        item: { 
+          id: item_to_craft.id, 
+          name: item_to_craft.name, 
+          new_quantity: user_item.quantity 
+        },
+        ingredients: ingredients.map do |ingredient_name, quantity|
+          user_ingredient = current_user.user_inventory_objects.joins(:inventory_object)
+                                        .find_by("LOWER(inventory_objects.name) = ?", ingredient_name.downcase)
+          { name: ingredient_name, new_quantity: user_ingredient&.quantity || 0 }
+        end
       }
     else
       # Craft raté
@@ -110,7 +119,6 @@ class ScienceController < ApplicationController
       render json: { 
         success: false, 
         error: "Craft raté. Vous avez perdu les ingrédients.",
-        delay: 1000
       }, status: :unprocessable_entity
     end
   end
@@ -147,9 +155,23 @@ class ScienceController < ApplicationController
       # Vérifie si le patch doit être équipé
       if InventoryObject.find(item_id).category == "patch" && target_player.patch.nil?
         target_player.update!(patch: item_id)
-        render json: { success: true, message: "Objet transféré et équipé à #{target_player.username}." }
+        render json: { 
+          success: true, 
+          message: "Objet transféré et équipé à #{target_player.username}.",
+          item: { 
+            id: item_id, 
+            new_quantity: user_item.quantity 
+          }
+        }
       else
-        render json: { success: true, message: "Objet transféré avec succès à #{target_player.username}." }
+        render json: { 
+          success: true, 
+          message: "Objet transféré avec succès à #{target_player.username}.",
+          item: { 
+            id: item_id, 
+            new_quantity: user_item.quantity 
+          }
+        }
       end
     else
       render json: { success: false, error: "Quantité insuffisante pour transférer cet objet." }, status: :unprocessable_entity
