@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_12_31_153653) do
+ActiveRecord::Schema[7.1].define(version: 2025_01_29_152252) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -137,6 +137,33 @@ ActiveRecord::Schema[7.1].define(version: 2024_12_31_153653) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "sphero_skills", force: :cascade do |t|
+    t.bigint "sphero_id"
+    t.bigint "skill_id"
+    t.integer "mastery", null: false
+    t.integer "bonus", default: 0
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["skill_id"], name: "index_sphero_skills_on_skill_id"
+    t.index ["sphero_id"], name: "index_sphero_skills_on_sphero_id"
+  end
+
+  create_table "spheros", force: :cascade do |t|
+    t.string "name", default: "Sphéro-Droïde"
+    t.string "category", null: false
+    t.integer "quality", null: false
+    t.integer "medipacks", default: 0
+    t.integer "hp_current", default: 20
+    t.integer "hp_max", default: 20
+    t.integer "shield_current", default: 0
+    t.integer "shield_max", default: 0
+    t.bigint "user_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.boolean "active", default: false
+    t.index ["user_id"], name: "index_spheros_on_user_id"
+  end
+
   create_table "statuses", force: :cascade do |t|
     t.string "name"
     t.text "description"
@@ -232,6 +259,9 @@ ActiveRecord::Schema[7.1].define(version: 2024_12_31_153653) do
   add_foreign_key "pet_skills", "pets"
   add_foreign_key "pet_skills", "skills"
   add_foreign_key "pets", "statuses"
+  add_foreign_key "sphero_skills", "skills"
+  add_foreign_key "sphero_skills", "spheros"
+  add_foreign_key "spheros", "users"
   add_foreign_key "user_inventory_objects", "inventory_objects"
   add_foreign_key "user_inventory_objects", "users"
   add_foreign_key "user_skills", "skills"

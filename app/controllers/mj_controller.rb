@@ -9,8 +9,11 @@ class MjController < ApplicationController
   end
 
   def infliger_degats
-    if params[:type] == 'pets'
+    case params[:type]
+    when 'pets'
       @pets = Pet.all
+    when 'spheros'
+      @spheros = Sphero.where(active: true) # Sélectionne uniquement les sphéro-droïdes actifs
     else
       @users = User.where(group_id: Group.find_by(name: "PJ").id)
     end
@@ -146,6 +149,59 @@ class MjController < ApplicationController
   
     # Retourner les résultats
     render json: { success: true, hp_current: pet.hp_current, message: message }
+  end
+
+  def apply_damage_spheros
+    sphero = Sphero.find(params[:sphero_id])
+    damage = params[:damage].to_i
+    attack_type = params[:attack_type]
+  
+    Rails.logger.debug "💥 Attaque reçue : #{damage} dégâts de type #{attack_type} sur #{sphero.name}"
+  
+    # 🔹 Étape 1 : Gestion du bouclier
+    if sphero.shield_current > 0
+      shield_damage = [damage, sphero.shield_current].min
+      sphero.update!(shield_current: sphero.shield_current - shield_damage)
+  
+      Rails.logger.debug "🛡️ Bouclier absorbé #{shield_damage} dégâts. Nouveau bouclier : #{sphero.shield_current}"
+  
+      return render json: {
+        success: true,
+        hp_current: sphero.hp_current,
+        shield_current: sphero.shield_current,
+        message: "Le sphéro-droïde #{sphero.name} a perdu #{shield_damage} points de bouclier."
+      }
+    end
+  
+    # 🔹 Étape 2 : Dégâts sur les HP (si bouclier épuisé)
+    if sphero.shield_current == 0
+      if attack_type == "physical"
+        resistance_skill = sphero.sphero_skills.joins(:skill).find_by(skills: { name: "Résistance Corporelle" })
+        
+        if resistance_skill.nil?
+          Rails.logger.warn "⚠️ Compétence 'Résistance Corporelle' introuvable pour le sphéro-droïde #{sphero.id}."
+          resistance_bonus = 0
+        else
+          resistance_mastery = resistance_skill.mastery || 0
+          resistance_bonus = (1..resistance_mastery).map { rand(1..6) }.sum + (resistance_skill.bonus || 0)
+        end
+      
+        Rails.logger.debug "🎲 Jet de Résistance Corporelle : #{resistance_bonus}"
+        damage = [damage - resistance_bonus, 0].max # Réduction des dégâts
+      end
+  
+      new_hp_value = [sphero.hp_current - damage, 0].max
+      sphero.update!(hp_current: new_hp_value)
+  
+      Rails.logger.debug "💥 Dégâts appliqués : #{damage} PV sur #{sphero.name}"
+  
+      return render json: {
+        success: true,
+        hp_current: sphero.hp_current,
+        shield_current: sphero.shield_current,
+        message: "Le sphéro-droïde #{sphero.name} a perdu #{damage} PV."
+      }
+    end
   end
 
   def handle_patch_activation(user, damage)
@@ -398,8 +454,33 @@ class MjController < ApplicationController
     flash[:success] = "Bonus de PV max de #{bonus} attribué à tous les joueurs."
     redirect_to mj_dashboard_path
   end
+
+  def sphero
+    @sphero = Sphero.new
+    @players = User.where(group: Group.find_by(name: "PJ"))
+  
+    if @players.empty?
+      flash[:alert] = "Aucun joueur trouvé dans le groupe PJ."
+      redirect_to mj_sphero_path and return
+    end
+  end
+  
+  def create_sphero
+    @sphero = Sphero.new(sphero_params)
+    @players = User.where(group: Group.find_by(name: "PJ"))
+  
+    if @sphero.save
+      redirect_to mj_sphero_path, notice: "Sphéro-Droïde créé avec succès."
+    else
+      render :new_sphero
+    end
+  end
   
   private
+  
+  def sphero_params
+    params.require(:sphero).permit(:name, :category, :quality, :user_id)
+  end
   
   def calculate_damage(damage, resistance_bonus)
     if resistance_bonus >= damage * 2

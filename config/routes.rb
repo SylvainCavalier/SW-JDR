@@ -32,6 +32,7 @@ Rails.application.routes.draw do
       get :implants
       post :equip_implant
       post :unequip_implant
+      get :sphero
     end
 
     collection do
@@ -71,6 +72,21 @@ Rails.application.routes.draw do
     end
   end
 
+  resources :spheros, only: [:destroy] do
+    member do
+      post :activate
+      post :deactivate
+      post :transfer
+      post :repair
+      post :repair_kit
+      post :recharge
+      post :protect
+      post :attack
+      post :use_medipack 
+      post :add_medipack
+    end
+  end
+
   get 'manage_pet', to: 'pets#manage_pet', as: :manage_pet
 
   get 'mj', to: 'pages#mj', as: 'mj_dashboard'
@@ -78,6 +94,7 @@ Rails.application.routes.draw do
   get 'mj/infliger_degats', to: 'mj#infliger_degats', as: 'infliger_degats'
   post 'mj/infliger_degats', to: 'mj#apply_damage'
   post 'apply_damage_pets', to: 'mj#apply_damage_pets'
+  post 'apply_damage_spheros', to: 'mj#apply_damage_spheros'
 
   get 'mj/fixer_pv_max', to: 'mj#fixer_pv_max', as: 'fixer_pv_max'
   post 'mj/fixer_pv_max', to: 'mj#update_pv_max'
@@ -97,6 +114,10 @@ Rails.application.routes.draw do
   get 'fix_pets', to: 'mj#fix_pets'
   patch 'fix_pets/:id', to: 'mj#fix_pets', as: 'fix_pet'
   post "mj/send_pet_action_points", to: "mj#send_pet_action_points", as: "send_pet_action_points"
+
+  get "mj/sphero", to: "mj#sphero", as: "mj_sphero"
+  post "mj/sphero/create", to: "mj#create_sphero", as: "mj_create_sphero"
+
 
   post 'reset_health', to: 'mj#reset_health', as: :reset_health
 

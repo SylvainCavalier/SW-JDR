@@ -1,0 +1,36 @@
+<div class="frame-container d-flex flex-column align-items-center mt-3" style="position: relative; width: 100%; height: 100vh;">
+  <h2>Créer un Sphéro-Droïde</h2>
+
+  <%= simple_form_for @sphero, url: mj_create_sphero_path, method: :post do |f| %>
+    <div class="mb-3">
+      <%= f.input :user_id, 
+        collection: @players, 
+        label: "Joueur",
+        prompt: "Sélectionnez un joueur",
+        value_method: :id, 
+        label_method: :username
+      %>
+    </div>
+
+    <div class="mb-3">
+      <%= f.input :category, 
+        collection: [["Attaque", "attaque"], ["Protection", "protection"], ["Survie", "survie"]],
+        label: "Catégorie",
+        prompt: "Sélectionnez une catégorie"
+      %>
+    </div>
+
+    <div class="mb-3">
+      <%= f.input :quality, 
+        collection: [[1, 1], [2, 2], [3, 3]],
+        label: "Qualité",
+        prompt: "Sélectionnez une qualité"
+      %>
+    </div>
+
+    <div class="mb-3">
+      <%= f.submit "Créer Sphéro-Droïde", class: "btn btn-primary" %>
+    </div>
+  <% end %>
+  <%= link_to "Retour", current_user.group.name == "MJ" ? mj_dashboard_path : root_path, class: "btn btn-outline-secondary go-back" %>
+</div>

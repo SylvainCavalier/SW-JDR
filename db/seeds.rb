@@ -245,6 +245,8 @@ poisons.each do |poison|
   end
 end
 
+repair_kit = InventoryObject.find_or_create_by!(name: "Kit de réparation", category: "soins", description: "Répare un droïde.")
+
 puts "✅ New objects added successfully!"
 
 puts "Adding new status..."

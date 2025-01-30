@@ -9,7 +9,7 @@
   <!-- Conteneur principal à deux colonnes -->
   <div class="content-container row" style="margin: 10vw;">
     <!-- Colonne gauche : Transferts de crédits -->
-    <div class="col-12 col-sm-6">
+    <div class="col-12 col-sm-8">
       <div class="text-center m-2">
         <!-- Affichage des crédits -->
         <p class="text-info fw-bold" style="font-size: 1.2rem; margin-bottom: 0;">
@@ -29,7 +29,7 @@
     </div>
 
     <!-- Colonne droite : XP -->
-    <div class="col-12 col-sm-6" data-controller="xp-spend" data-user-id="<%= current_user.id %>">
+    <div class="col-12 col-sm-4" data-controller="xp-spend" data-user-id="<%= current_user.id %>">
       <div class="text-center m-2">
         <!-- Affichage des XP -->
         <p class="text-warning fw-bold xp" style="font-size: 1.2rem;" data-xp-spend-target="xp">
@@ -44,7 +44,7 @@
   </div>
 
   <!-- Boutons en bas de la page -->
-  <div class="home-bottom-buttons d-flex">
+  <div class="transaction-bottom-buttons d-flex">
     <!-- Gestion de l'Inventaire -->
     <%= link_to inventory_user_path(current_user), class: "btn btn-outline-success inventory-home" do %>
       <i class="fa-solid fa-briefcase mx-1 p-1"></i>
@@ -57,6 +57,9 @@
     <% end %>
     <%= link_to implants_user_path(current_user), class: "btn btn-outline-success inventory-home" do %>
       <i class="fa-solid fa-microchip mx-1 p-1"></i>
+    <% end %>
+    <%= link_to sphero_user_path(current_user), class: "btn btn-outline-success inventory-home" do %>
+      <i class="fa-brands fa-discord"></i>
     <% end %>
   </div>
 

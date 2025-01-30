@@ -1,0 +1,135 @@
+<div class="frame-container" style="position: relative; width: 100%; height: 100vh; overflow-y: auto; overflow-x: hidden;", data-controller="sphero">
+  <div class="sphero-container container py-4" data-controller="sphero">
+    <div class="text-center">
+      <h1 class="sphero-title">Sphéro-Droïde</h1>
+    </div>
+
+    <% if @active_sphero %>
+      <div class="sphero-box row">
+        <!-- Image -->
+        <div class="col-12 col-sm-4 text-center">
+          <img src="<%= asset_path('sphero.png') %>" alt="Sphéro-Droïde" class="sphero-image">
+        </div>
+
+        <!-- Informations générales -->
+        <div class="sphero-info col-12 col-sm-8 p-3">
+          <p><strong>Nom :</strong> <%= @active_sphero.name %></p>
+          <p><strong>Catégorie :</strong> <%= @active_sphero.category.capitalize %></p>
+          <p><strong>Qualité :</strong> <%= @active_sphero.quality %></p>
+        </div>
+
+        <!-- État du sphéro-droïde -->
+        <div class="sphero-status col-12 p-3">
+          <p><strong>Points de blindage :</strong> <%= @active_sphero.hp_current %> / <%= @active_sphero.hp_max %></p>
+          <p><strong>Bouclier :</strong> <%= @active_sphero.shield_current %> / <%= @active_sphero.shield_max %></p>
+
+          <% if @active_sphero.category == "survie" %>
+            <div class="d-flex justify-content-center p-1">
+              <p class="mb-0"><strong>Medipacks :</strong>
+                <span id="medipack-count-<%= @active_sphero.id %>"><%= @active_sphero.medipacks %></span>
+              </p>
+              <div class="btn-group ms-3">
+                <%= button_tag "+", type: "button", class: "btn btn-outline-primary btn-sm me-2",
+                      data: { action: "click->sphero#addMedipack", sphero_id: @active_sphero.id } %>
+                <%= button_tag "Utiliser", type: "button", class: "btn btn-outline-success btn-sm",
+                      data: { bs_toggle: "modal", bs_target: "#genericModal",
+                              modal_title: "Utiliser un Medipack",
+                              modal_message: "Sur quel équipier voulez-vous utiliser un medipack ?",
+                              modal_confirm_button: "Confirmer",
+                              action: "click->sphero#showMedipackTransferSection",
+                              sphero_id: @active_sphero.id } %>
+              </div>
+            </div>
+          <% end %>
+        </div>
+
+        <!-- Actions possibles -->
+        <div class="sphero-actions col-12 p-3">
+          <h3>Actions</h3>
+          <div class="btn-group">
+            <% if @active_sphero.hp_current < @active_sphero.hp_max %>
+              <%= button_tag "Réparer", type: "button", class: "btn btn-outline-warning btn-sm",
+                    data: { bs_toggle: "modal", bs_target: "#genericModal",
+                            modal_title: "Réparer votre Sphéro-Droïde",
+                            modal_message: "Voulez-vous réparer ce sphéro-droïde ?",
+                            modal_confirm_button: "Confirmer",
+                            modal_confirm_action: "sphero#repair",
+                            sphero_id: @active_sphero.id } %>
+            <% end %>
+
+            <% if @active_sphero.shield_current < @active_sphero.shield_max %>
+              <%= button_tag "Recharger", type: "button", class: "btn btn-outline-info btn-sm",
+                    data: { bs_toggle: "modal", bs_target: "#genericModal",
+                            modal_title: "Recharge du bouclier",
+                            modal_message: "Voulez-vous recharger ?",
+                            modal_confirm_button: "Confirmer",
+                            modal_confirm_action: "sphero#recharge",
+                            sphero_id: @active_sphero.id } %>
+            <% end %>
+
+            <%= button_tag "Désactiver", type: "button", class: "btn btn-outline-danger btn-sm",
+                  data: { bs_toggle: "modal", bs_target: "#genericModal",
+                          modal_title: "Désactiver le Sphéro-Droïde",
+                          modal_message: "Voulez-vous désactiver ce sphéro-droïde ?",
+                          modal_confirm_button: "Désactiver",
+                          modal_confirm_action: "sphero#deactivate",
+                          sphero_id: @active_sphero.id } %>
+          </div>
+        </div>
+
+        <!-- Compétences -->
+        <div class="sphero-skills col-12 p-3">
+          <h3>Compétences :</h3>
+          <ul class="list-group">
+            <li class="list-group-item"><strong>Esquive :</strong> <%= @active_sphero.sphero_skills.find_by(skill: Skill.find_by(name: "Esquive"))&.mastery || 0 %>D</li>
+            <li class="list-group-item"><strong>Résistance Corporelle :</strong> <%= @active_sphero.sphero_skills.find_by(skill: Skill.find_by(name: "Résistance Corporelle"))&.mastery || 0 %>D</li>
+
+            <% if @active_sphero.category == "protection" %>
+              <li class="list-group-item"><strong>Habileté :</strong> <%= @active_sphero.sphero_skills.find_by(skill: Skill.find_by(name: "Habileté"))&.mastery || 0 %>D
+                <%= button_tag "Protéger", type: "button", class: "btn btn-outline-warning btn-sm",
+                      data: { action: "click->sphero#protect", sphero_id: @active_sphero.id } %>
+              </li>
+            <% end %>
+
+            <% if @active_sphero.category == "attaque" %>
+              <li class="list-group-item"><strong>Tir :</strong> <%= @active_sphero.sphero_skills.find_by(skill: Skill.find_by(name: "Tir"))&.mastery || 0 %>D
+                <%= button_tag "Attaquer", type: "button", class: "btn btn-outline-danger btn-sm",
+                      data: { action: "click->sphero#attack", sphero_id: @active_sphero.id } %>
+              </li>
+            <% end %>
+            <% if @active_sphero.category == "survie" %>
+              <li class="list-group-item"><strong>Médecine :</strong> <%= @active_sphero.sphero_skills.find_by(skill: Skill.find_by(name: "Médecine"))&.mastery || 0 %>D
+              </li>
+            <% end %>
+          </ul>
+        </div>
+      </div>
+
+    <% elsif @spheros.any? %>
+      <div class="sphero-list row">
+        <% @spheros.each do |sphero| %>
+          <div class="sphero-item col-12 col-md-6 p-2">
+            <div class="card p-3">
+              <p><strong><%= sphero.name %></strong></p>
+              <p>Catégorie : <%= sphero.category.capitalize %></p>
+              <p>Qualité : <%= sphero.quality %></p>
+
+              <%= button_tag "Activer", type: "button", class: "btn btn-outline-primary btn-sm",
+                    data: { bs_toggle: "modal", bs_target: "#genericModal",
+                            modal_title: "Activer le Sphéro-Droïde",
+                            modal_message: "Voulez-vous activer ce sphéro-droïde ?",
+                            modal_confirm_button: "Activer",
+                            modal_confirm_action: "sphero#activate",
+                            sphero_id: sphero.id } %>
+            </div>
+          </div>
+        <% end %>
+      </div>
+
+    <% else %>
+      <p class="no-sphero-message">Aucun sphéro-droïde activé, demandez conseil à votre MJ préféré.</p>
+    <% end %>
+
+    <%= link_to "Retour", new_transaction_path, class: "btn btn-outline-secondary mt-3 go-back" %>
+  </div>
+</div>

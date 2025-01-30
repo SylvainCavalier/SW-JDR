@@ -110,6 +110,7 @@ class UsersController < ApplicationController
     @medicine_skill = @user.user_skills.find_or_initialize_by(skill: Skill.find_by(name: "Médecine"))
     @res_corp_skill = @user.user_skills.find_or_initialize_by(skill: Skill.find_by(name: "Résistance Corporelle"))
     @vitesse_skill = @user.user_skills.find_or_initialize_by(skill: Skill.find_by(name: "Vitesse"))
+    @reparation_skill = current_user.user_skills.find_by(skill: Skill.find_by(name: "Réparation"))
   end
   
   def update_settings
@@ -121,6 +122,8 @@ class UsersController < ApplicationController
     @user.res_corp_bonus = params[:user][:res_corp_bonus].to_i
     @user.vitesse_mastery = params[:user][:vitesse_mastery].to_i
     @user.vitesse_bonus = params[:user][:vitesse_bonus].to_i
+    @user.reparation_mastery = params[:user][:reparation_mastery].to_i
+    @user.reparation_bonus = params[:user][:reparation_bonus].to_i
   
     # Gestion du don "Homéopathie"
     if params[:user].key?(:homeopathie)
@@ -149,22 +152,11 @@ class UsersController < ApplicationController
     end
   
     if @user.update(user_params)
-      medicine_skill = @user.user_skills.find_or_initialize_by(skill: Skill.find_by(name: "Médecine"))
-      medicine_skill.update(
-        mastery: @user.medicine_mastery,
-        bonus: @user.medicine_bonus
-      )
-      res_corp_skill = @user.user_skills.find_or_initialize_by(skill: Skill.find_by(name: "Résistance Corporelle"))
-      res_corp_skill.update(
-        mastery: @user.res_corp_mastery,
-        bonus: @user.res_corp_bonus
-      )
-      vitesse_skill = @user.user_skills.find_or_initialize_by(skill: Skill.find_by(name: "Vitesse"))
-      vitesse_skill.update(
-        mastery: @user.vitesse_mastery,
-        bonus: @user.vitesse_bonus
-      )
-      
+      update_skill("Médecine", @user.medicine_mastery, @user.medicine_bonus)
+      update_skill("Résistance Corporelle", @user.res_corp_mastery, @user.res_corp_bonus)
+      update_skill("Vitesse", @user.vitesse_mastery, @user.vitesse_bonus)
+      update_skill("Réparation", @user.reparation_mastery, @user.reparation_bonus) # ✅ Sécurisation de "Réparation"
+  
       redirect_to settings_user_path(@user), notice: "Réglages mis à jour avec succès."
     else
       render :settings, alert: "Erreur lors de la mise à jour des réglages."
@@ -525,7 +517,20 @@ class UsersController < ApplicationController
     end
   end
 
+  def sphero
+    @active_sphero = current_user.spheros.includes(sphero_skills: :skill).find_by(active: true)
+    @spheros = current_user.spheros.includes(sphero_skills: :skill).where(active: false)
+  end
+
   private
+
+  def update_skill(skill_name, mastery, bonus)
+    skill = Skill.find_by(name: skill_name)
+    return unless skill
+  
+    user_skill = current_user.user_skills.find_or_initialize_by(skill: skill)
+    user_skill.update(mastery: mastery.to_i, bonus: bonus.to_i)
+  end
 
   def user_params
     params.require(:user).permit(
@@ -536,6 +541,8 @@ class UsersController < ApplicationController
       :medicine_bonus,
       :res_corp_mastery,
       :res_corp_bonus,
+      :reparation_mastery,
+      :reparation_bonus,
       :active_injection,
       :active_implant
     )

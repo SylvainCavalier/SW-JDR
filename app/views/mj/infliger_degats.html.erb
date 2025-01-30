@@ -7,6 +7,9 @@
     <li class="nav-item">
       <%= link_to "Pets", infliger_degats_path(type: 'pets'), class: "nav-link #{params[:type] == 'pets' ? 'active' : ''}" %>
     </li>
+    <li class="nav-item">
+      <%= link_to "Sphéros", infliger_degats_path(type: 'spheros'), class: "nav-link #{params[:type] == 'spheros' ? 'active' : ''}" %>
+    </li>
   </ul>
 
   <!-- Affichage des joueurs ou des pets -->
@@ -18,6 +21,46 @@
           <div class="player-damage" data-controller="degats">
             <p>
               <%= pet.name %> - PV : <span class="pv-current"><%= pet.hp_current %></span> / <%= pet.hp_max %>
+            </p>
+            <div class="d-flex align-items-center justify-content-between">
+              <!-- Icônes -->
+              <div class="icon-group" data-controller="icon-toggle">
+                <!-- Icône de dégâts physiques -->
+                <i class="fa-regular fa-hand icon active" 
+                  data-action="click->icon-toggle#activate" 
+                  data-icon-toggle-target="icon" 
+                  data-attack-type="physical" 
+                  title="Dégâts physiques"></i>
+                <!-- Icône de dégâts ignorant la défense -->
+                <i class="fa-solid fa-star icon" 
+                  data-action="click->icon-toggle#activate" 
+                  data-icon-toggle-target="icon" 
+                  data-attack-type="ignore_defense" 
+                  title="Dégâts ignorants la défense"></i>
+                <%= hidden_field_tag :attack_type, "", data: { icon_toggle_target: "attackType" } %>
+              </div>
+
+              <!-- Input des dégâts -->
+              <div class="input-group custom-input-group">
+                <%= button_tag "-", class: "btn btn-outline-secondary", data: { action: "click->degats#decrement" } %>
+                <%= number_field_tag "damage", 1, class: "form-control custom-damage-input", min: 0, data: { "degats-target": "input", "damage-application-target": "input" } %>
+                <%= button_tag "+", class: "btn btn-outline-secondary", data: { action: "click->degats#increment" } %>
+              </div>
+
+              <!-- Bouton d'envoi -->
+              <%= submit_tag "Go", class: "btn btn-outline-secondary", data: { action: "damage-application#applyDamage" } %>
+            </div>
+          </div>
+        <% end %>
+      <% end %>
+    <% elsif params[:type] == 'spheros' %>
+      <% @spheros.each do |sphero| %>
+        <%= form_with url: apply_damage_spheros_path, method: :post, local: true, data: { controller: "damage-application", damage_application_target: "form" } do %>
+          <%= hidden_field_tag :sphero_id, sphero.id %>
+          <div class="player-damage" data-controller="degats">
+            <p>
+              <%= sphero.name %> - PV : <span class="pv-current"><%= sphero.hp_current %></span> / <%= sphero.hp_max %> |
+              B : <span class="shield-energy-current"><%= sphero.shield_current %></span> / <%= sphero.shield_max %>
             </p>
             <div class="d-flex align-items-center justify-content-between">
               <!-- Icônes -->

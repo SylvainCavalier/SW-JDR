@@ -30,7 +30,9 @@
   </head>
 
   <body>
-    <%= render "layouts/flash" %>
+    <div id="flash-container">
+      <%= render "layouts/flash" %>
+    </div>
     <%= render 'shared/generic_modal' %>
     <%= turbo_frame_tag "group-luck-popup", class: "hidden-popup" %>
     <div id="background" class="container-fluid justify-content-center align-items-center p-0">

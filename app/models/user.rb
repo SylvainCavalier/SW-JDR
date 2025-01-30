@@ -14,6 +14,7 @@ class User < ApplicationRecord
   has_many :skills, through: :user_skills
   has_many :user_statuses, dependent: :destroy
   has_many :statuses, through: :user_statuses
+  has_many :spheros, dependent: :destroy
 
   validates :username, presence: true, uniqueness: true
   validates :hp_current, numericality: { greater_than_or_equal_to: -20 }
@@ -28,6 +29,7 @@ class User < ApplicationRecord
   attr_accessor :medicine_mastery, :medicine_bonus
   attr_accessor :res_corp_mastery, :res_corp_bonus
   attr_accessor :vitesse_mastery, :vitesse_bonus
+  attr_accessor :reparation_mastery, :reparation_bonus
 
   def set_status(status_name = nil)
     # Si aucun statut n'est spécifié, déterminer en fonction des PV

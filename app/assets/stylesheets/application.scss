@@ -179,7 +179,7 @@ span {
 .home-bottom-buttons {
   position: absolute;
   top: 80%;
-  left: 60%;
+  left: 65%;
   transform: translateY(-50%);
   z-index: 5;
 }
@@ -625,6 +625,14 @@ input[type="submit"] {
   color: white;
   text-shadow: 0 0 5px rgba(255, 255, 255, 0.8);
   transform: scale(1.1);
+}
+
+.transaction-bottom-buttons {
+  position: absolute;
+  top: 80%;
+  left: 50%;
+  transform: translateY(-50%);
+  z-index: 5;
 }
 
 /* Page de gestion des PV */
@@ -1144,4 +1152,49 @@ input.dice-count-input {
 .item-box:hover {
   background-color: rgba(0, 255, 0, 0.1);
   box-shadow: 0 0 10px rgba(0, 255, 0, 0.7);
+}
+
+/* Page de gestion des sphéros */
+
+.sphero-container {
+  background-color: #000;
+  border: 2px solid rgba(0, 255, 0, 0.5);
+  border-radius: 15px;
+  box-shadow: 0 0 10px rgba(0, 255, 0, 0.7);
+  padding: 20px;
+  color: #0f0;
+  width: 90%;
+  margin: 20px auto;
+  display: block;
+  text-align: center;
+}
+
+.sphero-image {
+  width: 180px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 255, 0, 0.7);
+  border: 1px solid #0f0;
+  margin-bottom: 15px;
+}
+
+.sphero-info {
+  background-color: #222;
+  border: 1px solid rgba(0, 255, 0, 0.5);
+  border-radius: 8px;
+  padding: 15px;
+  margin-bottom: 10px;
+}
+
+.sphero-skills {
+  background-color: #111;
+  border: 1px solid rgba(0, 255, 0, 0.5);
+  border-radius: 8px;
+  padding: 15px;
+  margin-top: 10px;
+  text-align: left;
+}
+.sphero-skills li {
+  list-style-type: none;
+  margin: 5px 0;
+  color: $success;
 }

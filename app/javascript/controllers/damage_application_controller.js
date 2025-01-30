@@ -23,14 +23,19 @@ export default class extends Controller {
     .then(response => response.json())
     .then(data => {
       if (data.success) {
-        // Mise à jour des PV ou du bouclier directement dans l'interface
-        const pvElement = this.formTarget.querySelector('.pv-current'); // Sélectionne l'élément PV
-        if (pvElement) {
-          pvElement.innerHTML = data.hp_current; // Mise à jour des PV
-        }
+        // 🔹 Mise à jour dynamique des PV et des boucliers dans l'interface
+        const pvElement = this.formTarget.querySelector('.pv-current'); // PV actuels
+        const shieldElement = this.formTarget.querySelector('.shield-energy-current'); // Bouclier énergétique
+        const shieldEchaniElement = this.formTarget.querySelector('.shield-echani-current'); // Bouclier Echani
+    
+        if (pvElement) pvElement.innerHTML = data.hp_current;
+        if (shieldElement) shieldElement.innerHTML = data.shield_current;
+        if (shieldEchaniElement) shieldEchaniElement.innerHTML = data.echani_shield_current;
+    
+        console.log(`✅ Dégâts appliqués : PV ${data.hp_current}, Bouclier ${data.shield_current}, Bouclier Echani ${data.echani_shield_current}`);
       } else {
-        console.error("Erreur lors de l'application des dégâts");
+        console.error("❌ Erreur lors de l'application des dégâts :", data.error);
       }
-    });
+    })
   }
 }
