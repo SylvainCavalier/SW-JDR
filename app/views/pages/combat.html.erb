@@ -63,4 +63,5 @@
       </tbody>
     </table>
   <% end %>
+  <%= link_to "Retour", current_user.group.name == "MJ" ? mj_dashboard_path : root_path, class: "btn btn-outline-secondary go-back" %>
 </div>
