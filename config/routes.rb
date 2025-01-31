@@ -45,6 +45,8 @@ Rails.application.routes.draw do
 
   resources :holonews, only: [:index, :new, :create]
 
+  resources :enemies, only: [:create, :update, :destroy]
+
   resources :pets do
     collection do
       get 'graveyard', to: 'pets#graveyard'
@@ -118,6 +120,15 @@ Rails.application.routes.draw do
   get "mj/sphero", to: "mj#sphero", as: "mj_sphero"
   post "mj/sphero/create", to: "mj#create_sphero", as: "mj_create_sphero"
 
+  get "mj/combat", to: "combat#index", as: :mj_combat
+  post "mj/combat/start", to: "combat#start_combat", as: :start_combat
+  post "mj/combat/end", to: "combat#end_combat", as: :end_combat
+  post "mj/combat/add_enemy", to: "combat#add_enemy", as: :add_enemy
+  delete "mj/combat/remove_enemy/:id", to: "combat#remove_enemy", as: :remove_enemy
+  patch "mj/combat/update_enemy_stat/:id", to: "combat#update_stat", as: :update_enemy_stat
+
+  get 'combat', to: 'pages#combat', as: 'combat'
+  post "combat/add_pj", to: "combat#add_pj_to_combat", as: :add_pj_to_combat
 
   post 'reset_health', to: 'mj#reset_health', as: :reset_health
 

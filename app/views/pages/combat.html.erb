@@ -1,0 +1,66 @@
+<div class="combat-container">
+  <h1 class="text-center mb-4">Assistant de Combat</h1>
+
+  <% participants = User.where.not(vitesse: nil).order(vitesse: :desc) + Enemy.order(vitesse: :desc, enemy_type: :asc, number: :asc) %>
+
+  <% if participants.empty? %>
+    <p class="text-warning text-center">⚠️ Aucun combat en cours.</p>
+  <% else %>
+    <p class="text-success text-center">⚔️ Combat en cours</p>
+
+    <!-- Formulaire pour que les PJ puissent ajouter leur vitesse -->
+    <div class="card bg-dark text-white p-3 mb-4">
+      <h4>Ajouter votre initiative</h4>
+      <%= form_with url: add_pj_to_combat_path, method: :post, local: true, class: "d-flex align-items-center gap-2" do |f| %>
+        <%= f.number_field :vitesse, class: "form-control", min: 1, placeholder: "Votre vitesse", required: true %>
+        <%= f.submit "Ajouter", class: "btn btn-primary" %>
+      <% end %>
+    </div>
+
+    <!-- Tableau des participants (PJ et Ennemis) -->
+    <h2 class="mt-4">Ordre d'Initiative</h2>
+    <table class="table table-dark table-striped text-center align-middle">
+      <thead>
+        <tr>
+          <th>Participant</th>
+          <th>PV</th>
+          <th>Bouclier</th>
+          <th>Vitesse</th>
+          <th>Statut</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% (User.where.not(vitesse: nil) + Enemy.all).sort_by(&:vitesse).reverse.each do |participant| %>
+          <tr>
+            <!-- Colonne Participant -->
+            <td class="fw-bold">
+              <% if participant.is_a?(User) %>
+                <%= participant.username %>
+              <% else %>
+                <%= "#{participant.enemy_type} #{participant.number}" %>
+              <% end %>
+            </td>
+
+            <!-- PV -->
+            <td><%= participant.hp_current %> / <%= participant.hp_max %></td>
+
+            <!-- Bouclier -->
+            <td><%= participant.shield_current %> / <%= participant.shield_max %></td>
+
+            <!-- Vitesse -->
+            <td><%= participant.vitesse %></td>
+
+            <!-- Statut -->
+            <td>
+              <% if participant.is_a?(User) %>
+                <%= participant.statuses.last&.name || "Aucun statut" %>
+              <% else %>
+                <%= participant.status %>
+              <% end %>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  <% end %>
+</div>

@@ -10,17 +10,20 @@
   <div class="mj-container d-flex">
     <div class="mj-actions m-1">
       <%= link_to "Transférer crédits", new_transaction_path, class: "btn btn-outline-success mb-3" %>
-      <%= link_to "Infliger dégâts", infliger_degats_path, class: "btn btn-outline-success mb-3" %>
-      <%= link_to "Lancer les dés", dice_users_path, class: "btn btn-outline-success mb-3" %>
-      <%= link_to "Fixer PV max", fixer_pv_max_path, class: "btn btn-outline-success mb-3" %>
-      <%= link_to "Pets", fix_pets_path, class: "btn btn-outline-success mb-3" %>
-    </div>
-    <div class="mj-actions m-1">
+      <%= link_to "Donner Objet", donner_objet_path, class: "btn btn-outline-success mb-3" %>
       <%= link_to "Donner XP", mj_donner_xp_path, class: "btn btn-outline-success mb-3" %>
       <%= link_to "Holonews", holonews_path, class: "btn btn-outline-success mb-3" %>
+    </div>
+    <div class="mj-actions m-1">
+      <%= link_to "Fixer PV max", fixer_pv_max_path, class: "btn btn-outline-success mb-3" %>
       <%= link_to "Fixer Statut", fixer_statut_path, class: "btn btn-outline-success mb-3" %>
-      <%= link_to "Donner Objet", donner_objet_path, class: "btn btn-outline-success mb-3" %>
+      <%= link_to "Pets", fix_pets_path, class: "btn btn-outline-success mb-3" %>
       <%= link_to "Sphero-droïdes", mj_sphero_path, class: "btn btn-outline-success mb-3" %>
+    </div>
+    <div class="mj-actions m-1">
+      <%= link_to "Infliger dégâts", infliger_degats_path, class: "btn btn-outline-success mb-3" %>
+      <%= link_to "Combat", mj_combat_path, class: "btn btn-outline-success mb-3" %>
+      <%= link_to "Lancer les dés", dice_users_path, class: "btn btn-outline-success mb-3" %>
     </div>
   </div>
 </div>

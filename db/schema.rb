@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_01_29_152252) do
+ActiveRecord::Schema[7.1].define(version: 2025_01_31_135903) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -47,6 +47,30 @@ ActiveRecord::Schema[7.1].define(version: 2025_01_29_152252) do
     t.text "description"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "enemies", force: :cascade do |t|
+    t.string "enemy_type"
+    t.integer "number"
+    t.integer "hp_current"
+    t.integer "hp_max"
+    t.integer "shield_current"
+    t.integer "shield_max"
+    t.string "status"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer "vitesse"
+  end
+
+  create_table "enemy_skills", force: :cascade do |t|
+    t.bigint "enemy_id", null: false
+    t.bigint "skill_id", null: false
+    t.integer "mastery"
+    t.integer "bonus"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["enemy_id"], name: "index_enemy_skills_on_enemy_id"
+    t.index ["skill_id"], name: "index_enemy_skills_on_skill_id"
   end
 
   create_table "groups", force: :cascade do |t|
@@ -243,6 +267,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_01_29_152252) do
     t.integer "hp_bonus"
     t.integer "active_injection"
     t.integer "active_implant"
+    t.integer "vitesse"
     t.index ["classe_perso_id"], name: "index_users_on_classe_perso_id"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["group_id"], name: "index_users_on_group_id"
@@ -253,6 +278,8 @@ ActiveRecord::Schema[7.1].define(version: 2025_01_29_152252) do
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "enemy_skills", "enemies"
+  add_foreign_key "enemy_skills", "skills"
   add_foreign_key "holonews", "users"
   add_foreign_key "pet_inventory_objects", "inventory_objects"
   add_foreign_key "pet_inventory_objects", "pets"
