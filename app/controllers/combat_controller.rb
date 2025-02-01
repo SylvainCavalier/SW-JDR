@@ -71,6 +71,48 @@ class CombatController < ApplicationController
     redirect_to combat_path
   end
 
+  def add_pet_to_combat
+    if current_user.pet_id.present?
+      pet = Pet.find_by(id: current_user.pet_id)
+      
+      if pet
+        pet.update(vitesse: params[:vitesse])
+        flash[:notice] = "#{pet.name} a rejoint le combat avec une vitesse de #{params[:vitesse]}."
+      else
+        flash[:alert] = "Impossible d'ajouter le pet, une erreur est survenue."
+      end
+    else
+      flash[:alert] = "Vous n'avez pas de pet associé."
+    end
+  
+    redirect_to combat_path
+  end
+
+  def remove_participant
+    participant = params[:type].constantize.find(params[:id])
+    
+    if participant.update(vitesse: nil)
+      flash[:notice] = "#{participant.is_a?(User) ? 'Le joueur' : 'Le pet'} a été retiré du combat."
+    else
+      flash[:alert] = "Impossible de retirer #{participant.is_a?(User) ? 'le joueur' : 'le pet'} du combat."
+    end
+    
+    redirect_to mj_combat_path
+  end
+
+  def increment_turn
+    combat_state = CombatState.first_or_create(turn: 1)
+    combat_state.update(turn: combat_state.turn + 1)
+    redirect_to mj_combat_path, notice: "Tour avancé à #{combat_state.turn}."
+  end
+  
+  def decrement_turn
+    combat_state = CombatState.first_or_create(turn: 1)
+    new_turn = [1, combat_state.turn - 1].max
+    combat_state.update(turn: new_turn)
+    redirect_to mj_combat_path, notice: "Tour réduit à #{new_turn}."
+  end
+
   private
 
   def enemy_params

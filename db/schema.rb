@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_01_31_135903) do
+ActiveRecord::Schema[7.1].define(version: 2025_02_01_014926) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -45,6 +45,12 @@ ActiveRecord::Schema[7.1].define(version: 2025_01_31_135903) do
   create_table "classe_persos", force: :cascade do |t|
     t.string "name"
     t.text "description"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "combat_states", force: :cascade do |t|
+    t.integer "turn"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
@@ -144,6 +150,9 @@ ActiveRecord::Schema[7.1].define(version: 2025_01_31_135903) do
     t.bigint "status_id", default: 40, null: false
     t.integer "size", default: 100, null: false
     t.integer "weight", default: 50, null: false
+    t.integer "vitesse"
+    t.integer "shield_current", default: 0
+    t.integer "shield_max", default: 0
     t.index ["status_id"], name: "index_pets_on_status_id"
   end
 

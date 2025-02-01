@@ -17,6 +17,8 @@ class Pet < ApplicationRecord
   validates :damage_1_bonus, :damage_2_bonus, numericality: { only_integer: true, greater_than_or_equal_to: 0 }
   validates :size, numericality: { greater_than: 0, less_than_or_equal_to: 1000, message: "La taille doit être comprise entre 0 et 10 mètres." }
   validates :weight, numericality: { greater_than: 0, less_than_or_equal_to: 500, message: "Le poids doit être compris entre 1 et 500 kg." }
+  validates :vitesse, numericality: { only_integer: true, greater_than_or_equal_to: 0 }, allow_nil: true
+  validates :shield_current, :shield_max, numericality: { only_integer: true, greater_than_or_equal_to: 0 }
 
   after_commit :resize_image_if_needed
   after_initialize :set_default_values, if: :new_record?

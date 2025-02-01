@@ -7,15 +7,7 @@
     <p class="text-warning text-center">⚠️ Aucun combat en cours.</p>
   <% else %>
     <p class="text-success text-center">⚔️ Combat en cours</p>
-
-    <!-- Formulaire pour que les PJ puissent ajouter leur vitesse -->
-    <div class="card bg-dark text-white p-3 mb-4">
-      <h4>Ajouter votre initiative</h4>
-      <%= form_with url: add_pj_to_combat_path, method: :post, local: true, class: "d-flex align-items-center gap-2" do |f| %>
-        <%= f.number_field :vitesse, class: "form-control", min: 1, placeholder: "Votre vitesse", required: true %>
-        <%= f.submit "Ajouter", class: "btn btn-primary" %>
-      <% end %>
-    </div>
+    <h2 class="text-center">Tour actuel : <span class="fw-bold"><%= CombatState.first&.turn || 1 %></span></h2>
 
     <!-- Tableau des participants (PJ et Ennemis) -->
     <h2 class="mt-4">Ordre d'Initiative</h2>
@@ -30,12 +22,14 @@
         </tr>
       </thead>
       <tbody>
-        <% (User.where.not(vitesse: nil) + Enemy.all).sort_by(&:vitesse).reverse.each do |participant| %>
+        <% (User.where.not(vitesse: nil) + Enemy.all + Pet.where.not(vitesse: nil)).sort_by(&:vitesse).reverse.each do |participant| %>
           <tr>
             <!-- Colonne Participant -->
             <td class="fw-bold">
               <% if participant.is_a?(User) %>
                 <%= participant.username %>
+              <% elsif participant.is_a?(Pet) %>
+                <%= participant.name %> (<%= User.find_by(pet_id: participant.id)&.username %>)
               <% else %>
                 <%= "#{participant.enemy_type} #{participant.number}" %>
               <% end %>
@@ -54,6 +48,8 @@
             <td>
               <% if participant.is_a?(User) %>
                 <%= participant.statuses.last&.name || "Aucun statut" %>
+              <% elsif participant.is_a?(Pet) %>
+                <%= participant.status&.name || "Aucun statut" %>
               <% else %>
                 <%= participant.status %>
               <% end %>
@@ -63,5 +59,27 @@
       </tbody>
     </table>
   <% end %>
+
+  <!-- Formulaire pour que les PJ puissent ajouter leur vitesse -->
+    <div class="card bg-dark text-white p-3 mb-4">
+      <h4>Ajouter votre initiative</h4>
+      <%= form_with url: add_pj_to_combat_path, method: :post, local: true, class: "d-flex align-items-center gap-2" do |f| %>
+        <%= f.number_field :vitesse, class: "form-control", min: 1, placeholder: "Votre vitesse", required: true %>
+        <%= f.submit "Ajouter", class: "btn btn-outline-success" %>
+      <% end %>
+    </div>
+
+    <!-- Formulaire pour ajouter la vitesse du pet si le joueur en a un -->
+    <% if current_user.pet_id.present? %>
+      <div class="card bg-dark text-white p-3 mb-4">
+        <h4>Ajouter votre pet au combat</h4>
+        <%= form_with url: add_pet_to_combat_path, method: :post, local: true, class: "d-flex align-items-center gap-2" do |f| %>
+          <%= f.hidden_field :pet_id, value: current_user.pet_id %>
+          <%= f.number_field :vitesse, class: "form-control", min: 1, placeholder: "Vitesse du pet", required: true %>
+          <%= f.submit "Ajouter", class: "btn btn-outline-success" %>
+        <% end %>
+      </div>
+    <% end %>
+
   <%= link_to "Retour", current_user.group.name == "MJ" ? mj_dashboard_path : root_path, class: "btn btn-outline-secondary go-back" %>
 </div>

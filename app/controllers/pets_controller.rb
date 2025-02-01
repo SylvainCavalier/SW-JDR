@@ -64,7 +64,6 @@ class PetsController < ApplicationController
   def dissociate
     pet = current_user.pet
     if current_user.update(pet_id: nil)
-      pet.update!(loyalty: [pet.loyalty - 1, 0].max) if pet
       redirect_to pets_path, notice: "Le familier a été dissocié avec succès."
     else
       redirect_to pet_path(current_user.pet), alert: "Impossible de dissocier ce familier."
@@ -159,7 +158,6 @@ class PetsController < ApplicationController
   private
   
   def calculate_heal_points(user, pet)
-    # Par exemple : jet de médecine + bonus
     dice_roll = rand(1..6) * user.user_skills.find_by(skill: Skill.find_by(name: "Médecine")).mastery
     bonus = user.user_skills.find_by(skill: Skill.find_by(name: "Médecine")).bonus
     dice_roll + bonus

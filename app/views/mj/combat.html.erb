@@ -7,27 +7,22 @@
     <%= simple_form_for @enemy, url: add_enemy_path, method: :post do |f| %>
       <div class="row">
         <!-- Champs pour Enemy -->
-        <div class="col-12 col-sm-4">
-          <%= f.input :enemy_type, collection: ["Ennemi CaC", "Ennemi distant", "Lieutenant", "Boss"], 
+        <div class="col-12 col-sm-3">
+          <%= f.input :enemy_type, collection: ["Trandoshan", "Mandalorien", "Garde", "Droïde", "Bandit", "Chasseur", "Ennemi CaC", "Ennemi distant", "Lieutenant", "Boss"], 
                       label: "Type d'ennemi", prompt: "Sélectionnez un type", class: "form-control" %>
         </div>
-        <div class="col-12 col-sm-3">
+        <div class="col-12 col-sm-2">
           <%= f.input :hp_max, label: "PV Max", input_html: { min: 1, value: 20, class: "form-control" } %>
         </div>
-        <div class="col-12 col-sm-3">
+        <div class="col-12 col-sm-2">
           <%= f.input :shield_max, label: "Bouclier Max", input_html: { min: 0, value: 0, class: "form-control" } %>
         </div>
-      </div>
-
-      <div class="row mt-3">
-        <div class="col-12 col-sm-3">
+        <div class="col-12 col-sm-2">
           <%= f.input :vitesse, label: "Vitesse", input_html: { min: 1, value: 15, class: "form-control" } %>
         </div>
       </div>
 
       <!-- Champs pour EnemySkills -->
-      <p class="mt-4">Compétences</p>
-
       <%= f.fields_for :enemy_skills do |es| %>
         <% skill_name = es.object.skill&.name %>
         
@@ -57,67 +52,125 @@
     <% end %>
   </div>
 
+  <div class="d-flex align-items-center mb-3">
+    <h2 class="me-3">Tour actuel :</h2>
+    <div class="d-flex align-items-center" data-controller="combat">
+      <%= button_tag "-", type: "button", class: "btn btn-outline-secondary btn-sm me-2", 
+            data: { action: "combat#decrementTurn" } %>
+      <span class="fw-bold mx-2" data-combat-target="turn-counter"><%= CombatState.first&.turn || 1 %></span>
+      <%= button_tag "+", type: "button", class: "btn btn-outline-secondary btn-sm ms-2", 
+            data: { action: "combat#incrementTurn" } %>
+    </div>
+  </div>
+
   <!-- Liste des ennemis -->
-  <p class="mt-4">Liste des ennemis</p>
-  <table class="table table-dark table-striped text-center align-middle" data-controller="combat">
-    <thead>
-      <tr>
-        <th>Ennemi</th>
-        <th>PV</th>
-        <th>Bouclier</th>
-        <th>Vitesse</th>
-        <th>Statut</th>
-        <th>Actions</th>
-      </tr>
-    </thead>
-    <tbody>
-      <% Enemy.order(vitesse: :desc, enemy_type: :asc, number: :asc).each do |enemy| %>
-        <tr data-combat-target="enemyRow" data-enemy-id="<%= enemy.id %>">
-          <!-- Colonne Ennemi (Fusion Type + Numéro) -->
-          <td class="fw-bold"><%= "#{enemy.enemy_type} #{enemy.number}" %></td>
+    <h1 class="text-center mb-4">Assistant de Combat</h1>
 
-          <!-- PV avec boutons d'incrémentation -->
-          <td>
-            <div class="d-flex align-items-center justify-content-center">
-              <%= button_tag "-", type: "button", class: "btn btn-outline-secondary btn-sm me-1", 
-                    data: { action: "combat#decrementHp", enemy_id: enemy.id } %>
-              <span class="fw-bold mx-1" data-combat-target="hp"><%= enemy.hp_current %></span>
-              <span class="mx-1">/</span>
-              <span class="fw-bold"><%= enemy.hp_max %></span>
-              <%= button_tag "+", type: "button", class: "btn btn-outline-secondary btn-sm ms-1", 
-                    data: { action: "combat#incrementHp", enemy_id: enemy.id } %>
-            </div>
-          </td>
+    <% participants = User.where.not(vitesse: nil).order(vitesse: :desc) + 
+                      Enemy.order(vitesse: :desc, enemy_type: :asc, number: :asc) + 
+                      Pet.where.not(vitesse: nil) %>
 
-          <!-- Bouclier avec boutons d'incrémentation -->
-          <td>
-            <div class="d-flex align-items-center justify-content-center">
-              <%= button_tag "-", type: "button", class: "btn btn-outline-secondary btn-sm me-1", 
-                    data: { action: "combat#decrementShield", enemy_id: enemy.id } %>
-              <span class="fw-bold mx-1" data-combat-target="shield"><%= enemy.shield_current %></span>
-              <span class="mx-1">/</span>
-              <span class="fw-bold"><%= enemy.shield_max %></span>
-              <%= button_tag "+", type: "button", class: "btn btn-outline-secondary btn-sm ms-1", 
-                    data: { action: "combat#incrementShield", enemy_id: enemy.id } %>
-            </div>
-          </td>
+    <% if participants.empty? %>
+      <p class="text-warning text-center">⚠️ Aucun combat en cours.</p>
+    <% else %>
+      <p class="text-success text-center">⚔️ Combat en cours</p>
 
-          <!-- Colonne Vitesse -->
-          <td class="fw-bold"><%= enemy.vitesse %></td>
+      <!-- Tableau des participants -->
+      <h2 class="mt-4">Ordre d'Initiative</h2>
+      <table class="table table-dark table-striped text-center align-middle" data-controller="combat">
+        <thead>
+          <tr>
+            <th>Participant</th>
+            <th>PV</th>
+            <th>Bouclier</th>
+            <th>Vitesse</th>
+            <th>Statut</th>
+            <% if current_user.group.name == "MJ" %>
+              <th>Actions</th>
+            <% end %>
+          </tr>
+        </thead>
+        <tbody>
+          <% participants.sort_by(&:vitesse).reverse.each do |participant| %>
+            <tr data-combat-target="participantRow" data-participant-id="<%= participant.id %>">
+              
+              <!-- Participant (Joueur, Pet ou Ennemi) -->
+              <td class="fw-bold">
+                <% if participant.is_a?(User) %>
+                  <%= participant.username %>
+                <% elsif participant.is_a?(Pet) %>
+                  <%= participant.name %> (<%= User.find_by(pet_id: participant.id)&.username %>)
+                <% else %>
+                  <%= "#{participant.enemy_type} #{participant.number}" %>
+                <% end %>
+              </td>
 
-          <!-- Statut -->
-          <td><%= enemy.status %></td>
+              <!-- PV -->
+              <td>
+                <% if participant.is_a?(Enemy) && current_user.group.name == "MJ" %>
+                  <div class="d-flex align-items-center justify-content-center">
+                    <%= button_tag "-", type: "button", class: "btn btn-outline-secondary btn-sm me-1",
+                          data: { action: "combat#decrementHp", participant_id: participant.id } %>
+                    <span class="fw-bold mx-1" data-combat-target="hp"><%= participant.hp_current %></span>
+                    <span class="mx-1">/</span>
+                    <span class="fw-bold"><%= participant.hp_max %></span>
+                    <%= button_tag "+", type: "button", class: "btn btn-outline-secondary btn-sm ms-1",
+                          data: { action: "combat#incrementHp", participant_id: participant.id } %>
+                  </div>
+                <% else %>
+                  <%= participant.hp_current %> / <%= participant.hp_max %>
+                <% end %>
+              </td>
 
-          <!-- Bouton Supprimer -->
-          <td>
-            <%= button_to "Supprimer", remove_enemy_path(enemy), method: :delete, 
-                  class: "btn btn-danger btn-sm", 
-                  data: { confirm: "Supprimer cet ennemi ?" } %>
-          </td>
-        </tr>
-      <% end %>
-    </tbody>
-  </table>
+              <!-- Bouclier -->
+              <td>
+                <% if participant.is_a?(Enemy) && current_user.group.name == "MJ" %>
+                  <div class="d-flex align-items-center justify-content-center">
+                    <%= button_tag "-", type: "button", class: "btn btn-outline-secondary btn-sm me-1",
+                          data: { action: "combat#decrementShield", participant_id: participant.id } %>
+                    <span class="fw-bold mx-1" data-combat-target="shield"><%= participant.shield_current %></span>
+                    <span class="mx-1">/</span>
+                    <span class="fw-bold"><%= participant.shield_max %></span>
+                    <%= button_tag "+", type: "button", class: "btn btn-outline-secondary btn-sm ms-1",
+                          data: { action: "combat#incrementShield", participant_id: participant.id } %>
+                  </div>
+                <% else %>
+                  <%= participant.shield_current %> / <%= participant.shield_max %>
+                <% end %>
+              </td>
+
+              <!-- Vitesse -->
+              <td><%= participant.vitesse %></td>
+
+              <!-- Statut -->
+              <td>
+                <% if participant.is_a?(User) %>
+                  <%= participant.statuses.last&.name || "Aucun statut" %>
+                <% elsif participant.is_a?(Pet) %>
+                  <%= participant.status&.name || "Aucun statut" %>
+                <% else %>
+                  <%= participant.status %>
+                <% end %>
+              </td>
+
+              <!-- Actions (Seulement pour le MJ et uniquement sur les ennemis) -->
+              <td>
+                <% if participant.is_a?(Enemy) && current_user.group.name == "MJ" %>
+                  <%= button_to "Supprimer", remove_enemy_path(participant), method: :delete, 
+                        class: "btn btn-danger btn-sm", 
+                        data: { confirm: "Supprimer cet ennemi ?" } %>
+                <% elsif participant.is_a?(User) || participant.is_a?(Pet) %>
+                  <%= button_to "Enlever", remove_participant_path(type: participant.class.name, id: participant.id), 
+                        method: :patch, class: "btn btn-warning btn-sm", 
+                        data: { confirm: "Retirer ce participant du combat ?" } %>
+                <% end %>
+              </td>
+
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    <% end %>
 
   <%= link_to "Retour", mj_dashboard_path, class: "btn btn-outline-secondary mt-3 go-back" %>
 </div>

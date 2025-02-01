@@ -126,9 +126,13 @@ Rails.application.routes.draw do
   post "mj/combat/add_enemy", to: "combat#add_enemy", as: :add_enemy
   delete "mj/combat/remove_enemy/:id", to: "combat#remove_enemy", as: :remove_enemy
   patch "mj/combat/update_enemy_stat/:id", to: "combat#update_stat", as: :update_enemy_stat
+  patch "mj/combat/remove_participant/:type/:id", to: "combat#remove_participant", as: :remove_participant
+  patch "mj/combat/increment_turn", to: "combat#increment_turn", as: :increment_turn
+  patch "mj/combat/decrement_turn", to: "combat#decrement_turn", as: :decrement_turn
 
   get 'combat', to: 'pages#combat', as: 'combat'
   post "combat/add_pj", to: "combat#add_pj_to_combat", as: :add_pj_to_combat
+  post "combat/add_pet", to: "combat#add_pet_to_combat", as: :add_pet_to_combat
 
   post 'reset_health', to: 'mj#reset_health', as: :reset_health
 

@@ -45,4 +45,22 @@ export default class extends Controller {
     let currentShield = parseInt(this.shieldTargets.find(el => el.closest("tr").dataset.enemyId == enemyId).textContent, 10);
     this.updateEnemyStat(enemyId, "shield_current", currentShield - 1);
   }
+
+  incrementTurn() {
+    fetch("/mj/combat/increment_turn", { method: "PATCH", headers: { "X-CSRF-Token": document.querySelector('meta[name="csrf-token"]').content } })
+      .then(response => response.text())
+      .then(() => {
+        let currentTurn = parseInt(this.turnCounterTarget.innerText)
+        this.turnCounterTarget.innerText = currentTurn + 1
+      })
+  }
+
+  decrementTurn() {
+    fetch("/mj/combat/decrement_turn", { method: "PATCH", headers: { "X-CSRF-Token": document.querySelector('meta[name="csrf-token"]').content } })
+      .then(response => response.text())
+      .then(() => {
+        let currentTurn = parseInt(this.turnCounterTarget.innerText)
+        this.turnCounterTarget.innerText = Math.max(1, currentTurn - 1)
+      })
+  }
 }
