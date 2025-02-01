@@ -94,7 +94,13 @@ class ScienceController < ApplicationController
     if roll >= difficulty
       # Craft réussi
       user_item = current_user.user_inventory_objects.find_or_initialize_by(inventory_object: item_to_craft)
-      user_item.increment!(:quantity)
+
+      if user_item.new_record?
+        user_item.quantity = 1  # Assigner une quantité initiale si l'objet n'existait pas encore
+        user_item.save!
+      else
+        user_item.increment!(:quantity)
+      end
   
       consume_ingredients(ingredients)
   
