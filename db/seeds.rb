@@ -251,6 +251,6 @@ puts "✅ New objects added successfully!"
 
 puts "Adding new status..."
 
-Status.create!(name: "Folie", description: "Ne se contrôle plus et attaque le plus proche", color: "#FF69B4")
+Status.find_or_create_by!(name: "Folie", description: "Ne se contrôle plus et attaque le plus proche", color: "#FF69B4")
 
 puts "✅ New status added successfully!"

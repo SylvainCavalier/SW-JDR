@@ -397,7 +397,9 @@ class UsersController < ApplicationController
   end
 
   def inventory
-    @inventory_items = @user.user_inventory_objects.includes(:inventory_object).order('inventory_objects.category ASC')
+    @inventory_items = @user.user_inventory_objects
+                            .includes(:inventory_object)
+                            .order('inventory_objects.category ASC, inventory_objects.name ASC')
   end
 
   def sell_item
