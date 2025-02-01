@@ -2,10 +2,9 @@ class PetsController < ApplicationController
   before_action :set_pet, only: %i[show edit update destroy perform_action]
 
   def index
-    @humanoids = Pet.where(category: "humanoïde").where.not(status: Status.find_by(name: "Mort"))
-    @animals = Pet.where(category: "animal").where.not(status: Status.find_by(name: "Mort"))
-    @droids = Pet.where(category: "droïde").where.not(status: Status.find_by(name: "Mort"))
-    @bio_armors = Pet.where(category: "bio-armure").where.not(status: Status.find_by(name: "Mort"))
+    @humanoids = Pet.where(category: "humanoïde").order(:name).where.not(status: Status.find_by(name: "Mort"))
+    @animals = Pet.where(category: "animal").order(:name).where.not(status: Status.find_by(name: "Mort"))
+    @droids = Pet.where(category: "droïde").order(:name).where.not(status: Status.find_by(name: "Mort"))
   end
 
   def new
