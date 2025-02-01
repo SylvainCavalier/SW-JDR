@@ -29,7 +29,7 @@
                     <tr>
                       <td><%= item.inventory_object.name %></td>
                       <td><%= item.quantity %></td>
-                      <td><%= item.inventory_object.price.to_i %></td>
+                      <td><%= (item.inventory_object.price || 0).to_i %></td>
                       <td><%= item.inventory_object.rarity %></td>
                       <td><%= item.inventory_object.description %></td>
                       <td>
@@ -40,7 +40,7 @@
                               bs_toggle: "modal",
                               bs_target: "#genericModal",
                               modal_title: "Vendre cet objet ?",
-                              modal_message: "Voulez-vous vraiment vendre 1 #{item.inventory_object.name} pour #{item.inventory_object.price.to_i / 5} crédits ?"
+                              modal_message: "Voulez-vous vraiment vendre 1 #{item.inventory_object.name} pour #{(item.inventory_object.price || 0).to_i / 5} crédits ?",
                               modal_confirm_button: "Vendre",
                               modal_confirm_action: "sell#confirm",
                               delete_path: sell_item_user_path(current_user, item_id: item.id, quantity: 1)
