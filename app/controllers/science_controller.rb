@@ -192,6 +192,10 @@ class ScienceController < ApplicationController
   def bestiaire
     @animals = Pet.where(category: "animal").order(:name).where.not(status: Status.find_by(name: "Mort"))
   end
+
+  def showbestiaire
+    @pet = Pet.find(params[:id])
+  end
   
   private
 

@@ -67,6 +67,7 @@ Rails.application.routes.draw do
   post 'attempt_craft', to: 'science#attempt_craft'
   post '/science/attempt_transfer', to: 'science#attempt_transfer', as: 'attempt_transfer_science'
   get "/science/players", to: "science#players", as: :science_players
+  get "science/showbestiaire/:id", to: "science#showbestiaire", as: :showbestiaire
 
   resources :science, only: [] do
     collection do
