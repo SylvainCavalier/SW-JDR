@@ -11,7 +11,7 @@ class MjController < ApplicationController
   def infliger_degats
     case params[:type]
     when 'pets'
-      @pets = Pet.all
+      @pets = Pet.where(id: User.where.not(pet_id: nil).pluck(:pet_id))
     when 'spheros'
       @spheros = Sphero.where(active: true) # Sélectionne uniquement les sphéro-droïdes actifs
     else
