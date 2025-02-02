@@ -33,6 +33,8 @@ Rails.application.routes.draw do
       post :equip_implant
       post :unequip_implant
       get :sphero
+      get :edit_notes
+      patch :update_notes
     end
 
     collection do
@@ -61,6 +63,7 @@ Rails.application.routes.draw do
 
   get 'science', to: 'science#science', as: 'science'
   get "science/crafts", to: "science#crafts", as: :science_crafts
+  get "science/bestiaire", to: "science#bestiaire", as: :science_bestiaire
   post 'attempt_craft', to: 'science#attempt_craft'
   post '/science/attempt_transfer', to: 'science#attempt_transfer', as: 'attempt_transfer_science'
   get "/science/players", to: "science#players", as: :science_players

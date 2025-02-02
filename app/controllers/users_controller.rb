@@ -524,6 +524,22 @@ class UsersController < ApplicationController
     @spheros = current_user.spheros.includes(sphero_skills: :skill).where(active: false)
   end
 
+  def edit_notes
+    @user = User.find(params[:id])
+  end
+
+  def update_notes
+    @user = User.find(params[:id])
+  
+    if @user.update(notes: params[:user][:notes])
+      flash[:notice] = "Notes mises à jour avec succès."
+    else
+      flash[:alert] = "Erreur lors de la mise à jour des notes."
+    end
+  
+    redirect_to edit_notes_user_path(@user)
+  end
+
   private
 
   def update_skill(skill_name, mastery, bonus)

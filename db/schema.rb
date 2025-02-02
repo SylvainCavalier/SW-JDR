@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_02_01_014926) do
+ActiveRecord::Schema[7.1].define(version: 2025_02_02_024402) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -277,6 +277,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_02_01_014926) do
     t.integer "active_injection"
     t.integer "active_implant"
     t.integer "vitesse"
+    t.text "notes"
     t.index ["classe_perso_id"], name: "index_users_on_classe_perso_id"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["group_id"], name: "index_users_on_group_id"

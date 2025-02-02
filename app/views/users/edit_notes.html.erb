@@ -1,0 +1,14 @@
+<div class="frame-container" style="position: relative; width: 100%; height: 100vh; overflow-y: auto; overflow-x: hidden;">
+  <div class="pet-container mt-5 mb-3">
+    <h2 class="text-center">Vos Notes</h2>
+
+    <%= form_with model: @user, url: update_notes_user_path(@user), method: :patch, local: true do |f| %>
+      <div class="mb-3">
+        <%= f.text_area :notes, class: "form-control", rows: 10, placeholder: "Ajoutez ici des notes personnalisées sur votre inventaire..." %>
+      </div>
+      <%= f.submit "Enregistrer", class: "btn btn-outline-success" %>
+    <% end %>
+  </div>
+
+  <%= link_to "Retour", current_user.group.name == "MJ" ? mj_dashboard_path : new_transaction_path, class: "btn btn-outline-secondary go-back-two" %>
+</div>

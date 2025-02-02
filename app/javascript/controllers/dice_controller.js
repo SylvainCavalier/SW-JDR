@@ -99,6 +99,23 @@ export default class extends Controller {
   rollD12() {
     const luckBonus = this.element.dataset.luck === "true" ? 1 : 0;
     const result = Math.floor(Math.random() * 12) + 1 + luckBonus;
-    this.resultD12Target.value = result;
-  }
+    
+    this.resultD12Target.value = result; // Met à jour l'affichage de l'input
+    this.applyResultStyle12(result); // Passe la bonne valeur
+}
+
+applyResultStyle12(result) {
+    const lowThreshold = 3;
+    const highThreshold = 10;
+
+    // Supprime les classes existantes
+    this.resultD12Target.classList.remove("low", "high");
+
+    // Ajoute la classe appropriée
+    if (result <= lowThreshold) {
+      this.resultD12Target.classList.add("low");
+    } else if (result >= highThreshold) {
+      this.resultD12Target.classList.add("high");
+    }
+}
 }

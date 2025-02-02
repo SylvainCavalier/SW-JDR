@@ -51,7 +51,7 @@ class ScienceController < ApplicationController
   end
 
   def crafts
-    @craftables = InventoryObject.where(name: CRAFT_RECIPES.keys)
+    @craftables = InventoryObject.where(name: CRAFT_RECIPES.keys).order(:name)
   end
   
   def attempt_craft
@@ -187,6 +187,10 @@ class ScienceController < ApplicationController
   def players
     players = Group.find_by(name: "PJ")&.users || []
     render json: players.map { |player| { id: player.id, username: player.username } }
+  end
+
+  def bestiaire
+    @animals = Pet.where(category: "animal").order(:name).where.not(status: Status.find_by(name: "Mort"))
   end
   
   private

@@ -39,6 +39,9 @@
         <div>
           <%= button_tag "Dépenser 1 XP", class: "btn btn-outline-primary btn-sm", data: { action: "xp-spend#decrement" } %>
         </div>
+        <%= link_to edit_notes_user_path(current_user), class: "btn btn-outline-success mt-3" do %>
+          <i class="fa-regular fa-note-sticky"></i>
+        <% end %>
       </div>
     </div>
   </div>

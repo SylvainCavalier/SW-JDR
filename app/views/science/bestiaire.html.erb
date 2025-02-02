@@ -1,0 +1,22 @@
+<div class="frame-container" style="position: relative; width: 100%; height: 100vh; overflow-y: auto; overflow-x: hidden;">
+  <div class="pet-container mt-3">
+    <div class="pet-category-box mb-5">
+      <h3 class="text-center text-info">Bestiaire</h3>
+      <ul class="list-group">
+        <% @animals.each do |pet| %>
+          <li class="list-group-item d-flex justify-content-between align-items-center">
+            <div>
+              <strong></strong> <%= pet.name %> | 
+              <strong></strong> <%= pet.race %> | 
+              <strong>PV :</strong> <%= "#{pet.hp_current} / #{pet.hp_max}" %> | 
+              <strong> <%= User.find_by(pet_id: pet.id)&.username %> </strong>
+            </div>
+            <div>
+              <%= link_to "Voir", pet_path(pet), class: "btn btn-outline-primary btn-sm" %>
+            </div>
+          </li>
+        <% end %>
+      </ul>
+    </div>
+  </div>
+</div>
