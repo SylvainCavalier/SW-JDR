@@ -435,6 +435,29 @@ class UsersController < ApplicationController
     redirect_to inventory_user_path(@user)
   end
 
+  def remove_item
+    item = current_user.user_inventory_objects.find_by(id: params[:item_id])
+  
+    if item
+      Rails.logger.debug "🛠️ Objet trouvé: #{item.inspect}" # Vérifier si l'objet est bien trouvé
+      
+      if item.quantity > 1
+        Rails.logger.debug "🔻 Décrémentation de la quantité de #{item.inventory_object.name}"
+        item.update!(quantity: item.quantity - 1)
+        flash[:notice] = "1 #{item.inventory_object.name} a été retiré de votre inventaire."
+      else
+        Rails.logger.debug "❌ Suppression de l'objet car quantité = 0"
+        item.destroy  # Supprime uniquement si quantité = 0
+        flash[:notice] = "L'objet #{item.inventory_object.name} a été complètement retiré de votre inventaire."
+      end
+    else
+      Rails.logger.debug "⚠️ Objet introuvable"
+      flash[:alert] = "Objet introuvable."
+    end
+  
+    redirect_back(fallback_location: inventory_user_path(current_user))
+  end
+
   def injections
     @user_injections = current_user.user_inventory_objects
                                    .includes(:inventory_object)

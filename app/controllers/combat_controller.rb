@@ -51,6 +51,7 @@ class CombatController < ApplicationController
   end
 
   def update_stat
+    Rails.logger.debug "📌 Paramètres reçus : #{params.inspect}"
     @enemy = Enemy.find(params[:id])
     field = params.keys.find { |key| ["hp_current", "shield_current"].include?(key) }
   
@@ -103,14 +104,16 @@ class CombatController < ApplicationController
   def increment_turn
     combat_state = CombatState.first_or_create(turn: 1)
     combat_state.update(turn: combat_state.turn + 1)
-    redirect_to mj_combat_path, notice: "Tour avancé à #{combat_state.turn}."
+    
+    render json: { success: true, turn: combat_state.turn }
   end
   
   def decrement_turn
     combat_state = CombatState.first_or_create(turn: 1)
     new_turn = [1, combat_state.turn - 1].max
     combat_state.update(turn: new_turn)
-    redirect_to mj_combat_path, notice: "Tour réduit à #{new_turn}."
+    
+    render json: { success: true, turn: new_turn }
   end
 
   private

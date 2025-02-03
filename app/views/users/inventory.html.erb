@@ -1,5 +1,5 @@
 <div class="frame-container" style="position: relative; width: 100%; height: 100vh; overflow-y: auto; overflow-x: hidden;">
-  <div class="pet-container mt-3">
+  <div class="pet-container mt-4">
     <h1 class="text-center">Inventaire</h1>
 
     <div class="accordion" id="inventoryAccordion">
@@ -31,20 +31,27 @@
                       <td><%= item.quantity %></td>
                       <td><%= (item.inventory_object.price || 0).to_i %></td>
                       <td><%= item.inventory_object.rarity %></td>
-                      <td><%= item.inventory_object.description %></td>
+                      <td style="font-size: 0.8rem;"><%= item.inventory_object.description %></td>
                       <td>
-                        <%= button_tag "Vendre",
-                            type: "button",
-                            class: "btn btn-outline-danger btn-sm",
-                            data: {
-                              bs_toggle: "modal",
-                              bs_target: "#genericModal",
-                              modal_title: "Vendre cet objet ?",
-                              modal_message: "Voulez-vous vraiment vendre 1 #{item.inventory_object.name} pour #{(item.inventory_object.price || 0).to_i / 5} crédits ?",
-                              modal_confirm_button: "Vendre",
-                              modal_confirm_action: "sell#confirm",
-                              delete_path: sell_item_user_path(current_user, item_id: item.id, quantity: 1)
-                            } %>
+                        <div class="d-flex mb-2">
+                          <%= button_tag "Vendre",
+                              type: "button",
+                              class: "btn btn-outline-warning btn-sm me-1",
+                              data: {
+                                bs_toggle: "modal",
+                                bs_target: "#genericModal",
+                                modal_title: "Vendre cet objet ?",
+                                modal_message: "Voulez-vous vraiment vendre 1 #{item.inventory_object.name} pour #{(item.inventory_object.price || 0).to_i / 5} crédits ?",
+                                modal_confirm_button: "Vendre",
+                                modal_confirm_action: "sell#confirm",
+                                delete_path: sell_item_user_path(current_user, item_id: item.id, quantity: 1)
+                              } %>
+                          <%= button_to "Suppr",
+                              remove_item_user_path(current_user, item.id),
+                              method: :patch,
+                              class: "btn btn-outline-warning btn-sm",
+                              data: { confirm: "Voulez-vous vraiment supprimer 1 #{item.inventory_object.name} de votre inventaire ?" } %>
+                        </div>
 
                         <%= form_with url: give_item_user_path(current_user), method: :post, local: true, class: "d-inline" do |f| %>
                           <%= hidden_field_tag :item_id, item.id %>
@@ -63,5 +70,5 @@
       <% end %>
     </div>
   </div>
-  <%= link_to "Retour", current_user.group.name == "MJ" ? mj_dashboard_path : new_transaction_path, class: "btn btn-outline-secondary go-back" %>
+  <%= link_to "Retour", current_user.group.name == "MJ" ? mj_dashboard_path : new_transaction_path, class: "btn btn-outline-secondary go-back-two" %>
 </div>

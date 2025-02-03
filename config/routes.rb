@@ -43,6 +43,8 @@ Rails.application.routes.draw do
     end
   end
 
+  patch "users/:id/remove_item/:item_id", to: "users#remove_item", as: :remove_item_user
+
   resources :transactions, only: [:new, :create]
 
   resources :holonews, only: [:index, :new, :create]

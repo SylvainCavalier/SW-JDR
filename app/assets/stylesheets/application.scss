@@ -451,7 +451,7 @@ span {
 
 .go-back-two {
   position: absolute;
-  top: 14%;
+  top: 12%;
   left: 8%;
   z-index: 2;
 }
@@ -481,7 +481,7 @@ span {
 }
 
 input[type="submit"] {
-  font-size: 1.1rem;
+  font-size: 1.0 rem;
   padding: 5px 10px;
   border-radius: 5px;
   color: $success;
@@ -1100,7 +1100,7 @@ input.dice-count-input {
   border-radius: 15px;
   box-shadow: 0 0 10px rgba(0, 255, 0, 0.7); /* Effet lumineux */
   color: #0f0; /* Texte vert */
-  padding: 20px;
+  padding: 10px;
 }
 
 .accordion-item {

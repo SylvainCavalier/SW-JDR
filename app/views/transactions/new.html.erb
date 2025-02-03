@@ -1,7 +1,7 @@
 <div class="frame-container" style="position: relative; width: 100%; height: 100vh;">
   <!-- Username -->
   <p class="username-display mt-1 text-primary fw-bold">
-    <%= current_user.username.capitalize %>
+    <%= current_user.username.titleize %>
   </p>
   <!-- Cadre principal SVG -->
   <img src="<%= asset_path('cadre2.svg') %>" alt="Cadre" class="ui-frame">

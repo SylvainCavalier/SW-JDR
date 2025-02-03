@@ -1,10 +1,10 @@
 import { Controller } from "@hotwired/stimulus";
 
 export default class extends Controller {
-  static targets = ["enemyRow", "hp", "shield"];
+  static targets = ["participantRow", "hp", "shield", "turnCounter"];
 
-  updateEnemyStat(enemyId, field, value) {
-    fetch(`/mj/combat/update_enemy_stat/${enemyId}`, {
+  updateEnemyStat(participantId, field, value) {
+    fetch(`/mj/combat/update_enemy_stat/${participantId}`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json", "X-CSRF-Token": document.querySelector("meta[name='csrf-token']").content },
       body: JSON.stringify({ [field]: value })
@@ -12,55 +12,75 @@ export default class extends Controller {
     .then(response => response.json())
     .then(data => {
       if (data.success) {
-        let enemyRow = this.enemyRowTargets.find(row => row.dataset.enemyId == enemyId);
-        if (enemyRow) {
-          if (field === "hp_current") enemyRow.querySelector("[data-combat-target='hp']").textContent = data.hp_current;
-          if (field === "shield_current") enemyRow.querySelector("[data-combat-target='shield']").textContent = data.shield_current;
+        let participantRow = this.participantRowTargets.find(row => row.dataset.participantId == participantId);
+        if (participantRow) {
+          if (field === "hp_current") participantRow.querySelector("[data-combat-target='hp']").textContent = data.hp_current;
+          if (field === "shield_current") participantRow.querySelector("[data-combat-target='shield']").textContent = data.shield_current;
         }
       }
     })
     .catch(error => console.error("Erreur de mise à jour :", error));
   }
-
+  
   incrementHp(event) {
-    let enemyId = event.currentTarget.dataset.enemyId;
-    let currentHp = parseInt(this.hpTargets.find(el => el.closest("tr").dataset.enemyId == enemyId).textContent, 10);
-    this.updateEnemyStat(enemyId, "hp_current", currentHp + 1);
+    let participantId = event.currentTarget.dataset.participantId; // <-- On récupère participant_id
+    let currentHp = parseInt(this.hpTargets.find(el => el.closest("tr").dataset.participantId == participantId).textContent, 10);
+    this.updateEnemyStat(participantId, "hp_current", currentHp + 1);
   }
-
+  
   decrementHp(event) {
-    let enemyId = event.currentTarget.dataset.enemyId;
-    let currentHp = parseInt(this.hpTargets.find(el => el.closest("tr").dataset.enemyId == enemyId).textContent, 10);
-    this.updateEnemyStat(enemyId, "hp_current", currentHp - 1);
+    let participantId = event.currentTarget.dataset.participantId; // <-- Changement ici aussi
+    let currentHp = parseInt(this.hpTargets.find(el => el.closest("tr").dataset.participantId == participantId).textContent, 10);
+    this.updateEnemyStat(participantId, "hp_current", currentHp - 1);
   }
-
+  
   incrementShield(event) {
-    let enemyId = event.currentTarget.dataset.enemyId;
-    let currentShield = parseInt(this.shieldTargets.find(el => el.closest("tr").dataset.enemyId == enemyId).textContent, 10);
-    this.updateEnemyStat(enemyId, "shield_current", currentShield + 1);
+    let participantId = event.currentTarget.dataset.participantId;
+    let currentShield = parseInt(this.shieldTargets.find(el => el.closest("tr").dataset.participantId == participantId).textContent, 10);
+    this.updateEnemyStat(participantId, "shield_current", currentShield + 1);
   }
-
+  
   decrementShield(event) {
-    let enemyId = event.currentTarget.dataset.enemyId;
-    let currentShield = parseInt(this.shieldTargets.find(el => el.closest("tr").dataset.enemyId == enemyId).textContent, 10);
-    this.updateEnemyStat(enemyId, "shield_current", currentShield - 1);
+    let participantId = event.currentTarget.dataset.participantId;
+    let currentShield = parseInt(this.shieldTargets.find(el => el.closest("tr").dataset.participantId == participantId).textContent, 10);
+    this.updateEnemyStat(participantId, "shield_current", currentShield - 1);
   }
 
   incrementTurn() {
-    fetch("/mj/combat/increment_turn", { method: "PATCH", headers: { "X-CSRF-Token": document.querySelector('meta[name="csrf-token"]').content } })
-      .then(response => response.text())
-      .then(() => {
-        let currentTurn = parseInt(this.turnCounterTarget.innerText)
-        this.turnCounterTarget.innerText = currentTurn + 1
-      })
-  }
+    console.log("🟢 IncrementTurn déclenché");
+    
+    fetch("/mj/combat/increment_turn", { 
+      method: "PATCH", 
+      headers: { "X-CSRF-Token": document.querySelector('meta[name="csrf-token"]').content } 
+    })
+    .then(response => response.json())  // ✅ On récupère bien du JSON
+    .then(data => {
+        if (data.success) {
+            console.log(`✅ Tour après mise à jour : ${data.turn}`);
+            this.turnCounterTarget.innerText = data.turn;  // ✅ Met à jour l'affichage
+        } else {
+            console.error("🔴 Erreur serveur :", data.error);
+        }
+    })
+    .catch(error => console.error("🔴 Erreur dans incrementTurn :", error));
+}
 
-  decrementTurn() {
-    fetch("/mj/combat/decrement_turn", { method: "PATCH", headers: { "X-CSRF-Token": document.querySelector('meta[name="csrf-token"]').content } })
-      .then(response => response.text())
-      .then(() => {
-        let currentTurn = parseInt(this.turnCounterTarget.innerText)
-        this.turnCounterTarget.innerText = Math.max(1, currentTurn - 1)
-      })
-  }
+decrementTurn() {
+    console.log("🟢 DecrementTurn déclenché");
+
+    fetch("/mj/combat/decrement_turn", { 
+      method: "PATCH", 
+      headers: { "X-CSRF-Token": document.querySelector('meta[name="csrf-token"]').content } 
+    })
+    .then(response => response.json())  // ✅ On récupère bien du JSON
+    .then(data => {
+        if (data.success) {
+            console.log(`✅ Tour après mise à jour : ${data.turn}`);
+            this.turnCounterTarget.innerText = data.turn;  // ✅ Met à jour l'affichage
+        } else {
+            console.error("🔴 Erreur serveur :", data.error);
+        }
+    })
+    .catch(error => console.error("🔴 Erreur dans decrementTurn :", error));
+}
 }
