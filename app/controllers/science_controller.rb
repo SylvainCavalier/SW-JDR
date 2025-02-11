@@ -190,7 +190,7 @@ class ScienceController < ApplicationController
   end
 
   def bestiaire
-    @animals = Pet.where(category: "animal").order(:name).where.not(status: Status.find_by(name: "Mort"))
+    @animals = Pet.where(creature: true).where.not(status: Status.find_by(name: "Mort")).order(:name)
   end
 
   def showbestiaire
