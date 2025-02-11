@@ -12,7 +12,7 @@
               <strong> <%= User.find_by(pet_id: pet.id)&.username %> </strong>
             </div>
             <div>
-              <%= link_to "Voir", pet_path(pet), class: "btn btn-outline-primary btn-sm" %>
+              <%= link_to "Voir", showbestiaire_path(pet), class: "btn btn-outline-primary btn-sm" %>
             </div>
           </li>
         <% end %>

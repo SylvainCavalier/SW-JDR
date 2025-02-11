@@ -1,22 +1,52 @@
 <div id="fixer-statuts-container" class="frame-container" style="position: relative; width: 100%; height: 100vh;">
   <div class="container mt-4" style="max-width: 600px;">
-    <h2 class="text-center" style="color: white;">Fixer Statut des Joueurs</h2>
+    <!-- Onglets pour Joueurs, Pets -->
+    <ul class="nav nav-tabs">
+      <li class="nav-item">
+        <%= link_to "Joueurs", mj_fixer_statut_path, class: "nav-link #{params[:type] != 'pets' ? 'active' : ''}" %>
+      </li>
+      <li class="nav-item">
+        <%= link_to "Pets", mj_fixer_statut_path(type: 'pets'), class: "nav-link #{params[:type] == 'pets' ? 'active' : ''}" %>
+      </li>
+    </ul>
 
-    <% @users.each do |user| %>
-      <div class="d-flex align-items-center justify-content-between mb-2" style="line-height: 1;">
-        <p class="mb-0" style="font-size: 0.9rem;"><%= user.username %> - Statut actuel : <%= user.statuses.last&.name || "En forme" %></p>
-
-        <%= form_with url: fixer_statut_path, method: :post, local: true do |form| %>
-          <div class="d-flex align-items-center" style="position: relative;">
-            <%= select_tag "status[#{user.id}]", options_for_select(@statuses.map { |status| [status.name, status.id] }, user.statuses.last&.id), class: "fixer-statuts-select form-select form-select-sm me-2", style: "width: 120px;" %>
-            <%= submit_tag "Go", name: "submit_#{user.id}", class: "btn btn-outline-success btn-sm ms-1 p-0" %>
+    <div class="container mt-3">
+      <% if params[:type] == 'pets' %>
+        <h2 class="text-center" style="color: white;">Fixer Statut des Pets</h2>
+        <% @pets.each do |pet| %>
+          <div class="d-flex align-items-center justify-content-between mb-2">
+            <p class="mb-0" style="font-size: 0.9rem;">
+              <%= pet.name %> - Statut actuel : <%= pet.status&.name || "En forme" %>
+            </p>
+            <%= form_with url: mj_fixer_statut_pets_path, method: :post, local: true do |form| %>
+              <div class="d-flex align-items-center">
+                <%= select_tag "status[#{pet.id}]", options_for_select(@statuses.map { |status| [status.name, status.id] }, pet.status&.id), class: "fixer-statuts-select form-select form-select-sm me-2", style: "width: 120px;" %>
+                <%= submit_tag "Go", name: "submit_#{pet.id}", class: "btn btn-outline-success btn-sm ms-1 p-0" %>
+              </div>
+            <% end %>
           </div>
         <% end %>
-      </div>
-    <% end %>
 
-    <div class="text-center mt-4">
-      <%= link_to "Retour", current_user.group.name == "MJ" ? mj_dashboard_path : root_path, class: "btn btn-outline-success" %>
+      <% else %>
+        <h2 class="text-center" style="color: white;">Fixer Statut des Joueurs</h2>
+        <% @users.each do |user| %>
+          <div class="d-flex align-items-center justify-content-between mb-2">
+            <p class="mb-0" style="font-size: 0.9rem;">
+              <%= user.username %> - Statut actuel : <%= user.statuses.last&.name || "En forme" %>
+            </p>
+            <%= form_with url: mj_fixer_statut_path, method: :post, local: true do |form| %>
+              <div class="d-flex align-items-center">
+                <%= select_tag "status[#{user.id}]", options_for_select(@statuses.map { |status| [status.name, status.id] }, user.statuses.last&.id), class: "fixer-statuts-select form-select form-select-sm me-2", style: "width: 120px;" %>
+                <%= submit_tag "Go", name: "submit_#{user.id}", class: "btn btn-outline-success btn-sm ms-1 p-0" %>
+              </div>
+            <% end %>
+          </div>
+        <% end %>
+      <% end %>
+
+      <div class="text-center mt-4">
+        <%= link_to "Retour", current_user.group.name == "MJ" ? mj_dashboard_path : root_path, class: "btn btn-outline-success" %>
+      </div>
     </div>
   </div>
 </div>

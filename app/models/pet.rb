@@ -19,10 +19,12 @@ class Pet < ApplicationRecord
   validates :weight, numericality: { greater_than: 0, less_than_or_equal_to: 500, message: "Le poids doit être compris entre 1 et 500 kg." }
   validates :vitesse, numericality: { only_integer: true, greater_than_or_equal_to: 0 }, allow_nil: true
   validates :shield_current, :shield_max, numericality: { only_integer: true, greater_than_or_equal_to: 0 }
+  validates :age, numericality: { greater_than_or_equal_to: 1, only_integer: true }
 
   after_commit :resize_image_if_needed
   after_initialize :set_default_values, if: :new_record?
   after_update :reset_hunger_for_special_categories
+  after_update :assign_death_status, if: -> { hp_current <= -10 }
 
   def hunger_description
     ["Paralysé par la faim", "Affamé", "Faim", "Petit creux", "Repus"][hunger] || "Inconnu"
@@ -281,6 +283,23 @@ class Pet < ApplicationRecord
 
   private
 
+  def assign_death_status
+    mort_status = Status.find_by(name: "Mort")
+    return if mort_status.nil?
+
+    # Si le pet a -10 PV et n'est pas déjà en statut "Mort", on lui applique
+    if hp_current <= -10 && status_id != mort_status.id
+      update_column(:status_id, mort_status.id)
+      Rails.logger.debug "💀 Le pet #{name} est maintenant Mort (Statut mis à jour)."
+    end
+
+    # 🚨 Protection : si le statut est retiré manuellement, on ne le remet pas immédiatement
+    if hp_current > -10 && status_id == mort_status.id
+      Rails.logger.debug "🛑 Statut Mort retiré manuellement, pas de réattribution."
+      return
+    end
+  end
+
   def roll_dice(number, sides)
     Array.new(number) { rand(1..sides) }.sum
   end
@@ -303,8 +322,8 @@ class Pet < ApplicationRecord
   def set_default_values
     self.mood ||= 2
     self.loyalty ||= 2
-    self.hunger ||= 2
-    self.fatigue ||= 2
+    self.hunger ||= 4
+    self.fatigue ||= 4
     self.status ||= Status.find_by(name: "En forme")
   end
 

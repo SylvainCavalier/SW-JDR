@@ -994,6 +994,8 @@ input.dice-count-input {
 }
 
 .pet-status {
+  display: flex;
+  flex-direction: column;
   background-color: #333;
   border: 1px solid rgba(0, 255, 0, 0.5);
   border-radius: 8px;
@@ -1002,7 +1004,6 @@ input.dice-count-input {
 
 .pet-hp-bar-container {
   position: absolute;
-  bottom: 25%;
   width: 40vw;
   height: auto;
   z-index: 2;
@@ -1031,7 +1032,6 @@ input.dice-count-input {
 }
 
 .hp-bar-wrapper {
-  position: relative; /* ou 'absolute' selon le contexte */
   margin: 0 auto; /* Centrage horizontal */
   width: 100%; /* Ajuste la largeur au besoin */
   display: flex;

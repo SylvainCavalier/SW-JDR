@@ -90,6 +90,11 @@ class PetsController < ApplicationController
     # Recherche d'un medipack dans l'inventaire de l'utilisateur
     medipack = current_user.user_inventory_objects.joins(:inventory_object)
                        .find_by(inventory_objects: { name: "Medipack" })
+
+    # Vérification si le pet est "Mort"
+    if @pet.status.name == "Mort"
+      redirect_to pet_path(@pet), alert: "Vous ne pouvez pas soigner un familier mort !" and return
+    end
   
     # Vérification si l'utilisateur possède un medipack
     if medipack.nil? || medipack.quantity <= 0
@@ -152,6 +157,25 @@ class PetsController < ApplicationController
   
     current_user.decrement!(:pet_action_points)
     render_flash_and_redirect(message)
+  end
+
+  def recharger_bouclier
+    pet = Pet.find(params[:id])
+  
+    if pet.shield_max == 0
+      return render json: { success: false, message: "Ce pet n'a pas de bouclier." }, status: :unprocessable_entity
+    end
+  
+    cost = (pet.shield_max - pet.shield_current) * 10
+  
+    if current_user.credits < cost
+      return render json: { success: false, message: "Pas assez de crédits pour recharger." }, status: :unprocessable_entity
+    end
+  
+    current_user.update!(credits: current_user.credits - cost)
+    pet.update!(shield_current: pet.shield_max)
+  
+    render json: { success: true, shield_current: pet.shield_max, message: "Bouclier rechargé !" }
   end
   
   private

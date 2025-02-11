@@ -115,40 +115,71 @@ class MjController < ApplicationController
   end
   
   def apply_damage_pets
-    Rails.logger.debug "Paramètres reçus : #{params.inspect}"
+    Rails.logger.debug "📌 Paramètres reçus : #{params.inspect}"
     pet = Pet.find(params[:pet_id])
     damage = params[:damage].to_i
-    attack_type = params[:attack_type] # "physical", "ignore_defense"
+    attack_type = params[:attack_type] # "energy", "physical", "ignore_defense"
   
-    Rails.logger.debug "Type d'attaque : #{attack_type}"
+    Rails.logger.debug "⚔️ Type d'attaque : #{attack_type}"
   
-    # Calcul de la résistance corporelle des pets
+    # Calcul du bonus de résistance des pets
     resistance_bonus = pet.calculate_resistance_bonus
-    Rails.logger.debug "🎲 Bonus total de résistance corporelle pour le pet : #{resistance_bonus}"
+    Rails.logger.debug "🛡️ Résistance corporelle du pet : #{resistance_bonus}"
+  
+    message = ""
   
     case attack_type
+    when "energy"
+      if pet.shield_max > 0 && pet.shield_current > 0
+        # Attaque sur le bouclier énergétique
+        new_shield_value = [pet.shield_current - damage, 0].max
+        pet.update(shield_current: new_shield_value)
+  
+        Rails.logger.debug "🛡️ Bouclier énergétique a absorbé #{damage} dégâts."
+        message = "Le pet #{pet.name} a perdu #{damage} points de bouclier."
+  
+        if new_shield_value == 0
+          Rails.logger.debug "❗ Bouclier énergétique détruit."
+        end
+      else
+        actual_damage = [damage - resistance_bonus, 1].max
+        new_hp_value = [pet.hp_current - actual_damage, -10].max
+        pet.update(hp_current: new_hp_value)
+        
+        Rails.logger.debug "💥 Le pet #{pet.name} a pris #{actual_damage} dégâts énergétiques."
+        message = "Le pet #{pet.name} a subi #{actual_damage} dégâts énergétiques."
+      end
+  
     when "physical"
-      # Appliquer la résistance corporelle
-      actual_damage = [damage - resistance_bonus, 0].max
-      new_hp_value = [pet.hp_current - actual_damage, 0].max
-      pet.update!(hp_current: new_hp_value)
-      message = "Le pet a pris #{actual_damage} dégâts après résistance corporelle."
+      # Les dégâts physiques contournent le bouclier et vont directement aux PV
+      actual_damage = [damage - resistance_bonus, 1].max
+      new_hp_value = [pet.hp_current - actual_damage, -10].max
+      pet.update(hp_current: new_hp_value)
+  
+      Rails.logger.debug "🩸 Le pet #{pet.name} a pris #{actual_damage} dégâts physiques après résistance."
+      message = "Le pet #{pet.name} a subi #{actual_damage} dégâts physiques après résistance."
+  
     when "ignore_defense"
-      # Dégâts ignorants la défense
-      new_hp_value = [pet.hp_current - damage, 0].max
-      pet.update!(hp_current: new_hp_value)
-      message = "Le pet a pris #{damage} dégâts directs, ignorants toute résistance."
+      # Dégâts ignorants la défense et les boucliers, allant directement aux PV
+      new_hp_value = [pet.hp_current - damage, -10].max
+      pet.update(hp_current: new_hp_value)
+  
+      Rails.logger.debug "💀 Le pet #{pet.name} a pris #{damage} dégâts directs, ignorants toute défense."
+      message = "Le pet #{pet.name} a subi #{damage} dégâts directs, ignorants la résistance et les boucliers."
+  
     else
-      # Type d'attaque non valide
+      Rails.logger.error "⚠️ Type d'attaque invalide : #{attack_type}"
       render json: { success: false, message: "Type d'attaque invalide." }, status: :unprocessable_entity
       return
     end
   
-    # Logique additionnelle si nécessaire
-    Rails.logger.debug "Message : #{message}"
-  
     # Retourner les résultats
-    render json: { success: true, hp_current: pet.hp_current, message: message }
+    render json: {
+      success: true,
+      hp_current: pet.hp_current,
+      shield_current: pet.shield_current,
+      message: message
+    }
   end
 
   def apply_damage_spheros
@@ -333,7 +364,24 @@ class MjController < ApplicationController
 
   def fixer_statut
     @users = User.where(group: Group.find_by(name: "PJ"))
+    @pets = Pet.where(id: User.where.not(pet_id: nil).pluck(:pet_id))
     @statuses = Status.all
+  end
+
+  def fixer_statut_pets
+    params[:status].each do |pet_id, status_id|
+      pet = Pet.find_by(id: pet_id)
+      if pet
+        previous_status = pet.status_id
+        pet.update(status_id: status_id)
+  
+        if previous_status == Status.find_by(name: "Mort")&.id && status_id != previous_status
+          pet.update(hp_current: [pet.hp_current, -9].max)
+          Rails.logger.debug "🔥 Statut Mort retiré, PV ajustés à #{pet.hp_current}"
+        end
+      end
+    end
+    redirect_to mj_fixer_statut_path(type: 'pets'), notice: "Statuts des pets mis à jour avec succès."
   end
 
   def update_statut

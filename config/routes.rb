@@ -60,6 +60,7 @@ Rails.application.routes.draw do
       post 'heal', to: 'pets#heal'
       post 'associate', to: 'pets#associate'
       post 'dissociate', to: 'pets#dissociate'
+      post 'recharger_bouclier', to: 'pets#recharger_bouclier'
     end
   end
 
@@ -115,6 +116,7 @@ Rails.application.routes.draw do
 
   get 'mj/fixer_statut', to: 'mj#fixer_statut', as: 'fixer_statut'
   post 'mj/fixer_statut', to: 'mj#update_statut'
+  post "mj/fixer_statut_pets", to: "mj#fixer_statut_pets"
 
   get 'donner_objet', to: 'mj#donner_objet'
   post 'update_objet', to: 'mj#update_objet'

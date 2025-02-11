@@ -12,6 +12,11 @@
       <%= f.input :category, label: "Catégorie", as: :select, collection: ["animal", "droïde", "bio-armure", "humanoïde"], include_blank: "Sélectionnez une catégorie", input_html: { id: "pet_category" } %>
     </div>
 
+    <!-- Âge -->
+    <div class="mb-3">
+      <%= f.input :age, label: "Age du Familier", input_html: { id: "pet_age", min: 1 } %>
+    </div>
+
     <!-- Race -->
     <div class="mb-3">
       <%= f.input :race, label: "Race", input_html: { maxlength: 12, id: "pet_race" } %>
