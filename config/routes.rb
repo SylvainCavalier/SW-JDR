@@ -35,6 +35,7 @@ Rails.application.routes.draw do
       get :sphero
       get :edit_notes
       patch :update_notes
+      patch :avatar_upload
     end
 
     collection do

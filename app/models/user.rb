@@ -15,6 +15,7 @@ class User < ApplicationRecord
   has_many :user_statuses, dependent: :destroy
   has_many :statuses, through: :user_statuses
   has_many :spheros, dependent: :destroy
+  has_one_attached :avatar
 
   validates :username, presence: true, uniqueness: true
   validates :hp_current, numericality: { greater_than_or_equal_to: -20 }
@@ -25,6 +26,7 @@ class User < ApplicationRecord
 
   after_update_commit :broadcast_xp_update, if: :saved_change_to_xp?
   after_update :update_status_based_on_hp
+  after_commit :resize_image_if_needed
 
   attr_accessor :medicine_mastery, :medicine_bonus
   attr_accessor :res_corp_mastery, :res_corp_bonus
@@ -337,6 +339,21 @@ class User < ApplicationRecord
   end
 
   private
+
+  def resize_image_if_needed
+    return unless saved_change_to_avatar?
+
+    begin
+      processed_variant = avatar.variant(resize_to_limit: [800, 800])
+      processed_variant.processed
+    rescue => e
+      Rails.logger.error "Erreur lors du redimensionnement de l'image : #{e.message}"
+    end
+  end
+
+  def saved_change_to_avatar?
+    saved_change_to_attribute?(:avatar) && avatar.attached?
+  end
 
   def update_status_based_on_hp
     if saved_change_to_hp_current?

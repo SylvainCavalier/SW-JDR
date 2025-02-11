@@ -563,7 +563,20 @@ class UsersController < ApplicationController
     redirect_to edit_notes_user_path(@user)
   end
 
+  def avatar_upload
+    @user = User.find(params[:id])
+    if @user.update(avatar_params)
+      redirect_to root_path, notice: "Avatar mis à jour avec succès !"
+    else
+      redirect_to root_path, alert: "Erreur lors de l'upload."
+    end
+  end
+  
   private
+  
+  def avatar_params
+    params.require(:user).permit(:avatar)
+  end
 
   def update_skill(skill_name, mastery, bonus)
     skill = Skill.find_by(name: skill_name)

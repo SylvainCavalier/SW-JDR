@@ -125,14 +125,14 @@ span {
   position: absolute;
   top: 50%;   /* Centre verticalement par rapport au cadre */
   left: 50%;  /* Centre horizontalement par rapport au cadre */
-  width: 40vw;
-  transform: translate(-55%, -50%); /* Corrige le positionnement pour un vrai centrage */
+  width: 36vw;
+  transform: translate(-50%, -50%); /* Corrige le positionnement pour un vrai centrage */
   z-index: 2;
 }
 
 .screen-background {
   position: relative;
-  width: 90%; /* S'adapte à la taille de credits-container */
+  width: 100%; /* S'adapte à la taille de credits-container */
   height: auto; /* Conserve le ratio de l'image */
   max-width: 300px; /* Optionnel : limite la taille maximale du screen */
   z-index: 1;
@@ -145,17 +145,17 @@ span {
   transform: translateX(-50%);
   z-index: 2;
   font-size: 1.0rem; /* Ajuste la taille selon tes besoins */
-  color: #00ffcc; /* Ajuste la couleur */
+  color: $success; /* Ajuste la couleur */
 }
 
 .xp-container {
   position: absolute;
   top: 60%;   /* Centre verticalement par rapport au screen */
-  left: 45%;
+  left: 50%;
   z-index: 2;
 }
 
-/* Élément à gauche du screen (function.svg) */
+/* Élément à gauche du screen (function.svg) 
 .ui-function {
   position: absolute;
   top: 50%;
@@ -163,6 +163,48 @@ span {
   transform: translateY(-50%);
   width: 11vw;
   z-index: 2;
+} */
+
+/* Avatar */
+.avatar-container {
+  position: absolute;
+  top: 50%;
+  left: 15%;
+  transform: translateY(-50%);
+  width: 11vw;
+  z-index: 2;
+  text-align: center;
+  margin-top: 10px;
+}
+
+.avatar-label {
+  display: inline-block;
+  width: 6rem;
+  height: 6rem;
+  border-radius: 15px;
+  border: 3px solid #00aaff;
+  background-color: white;
+  cursor: pointer;
+  overflow: hidden;
+  box-shadow: 0 0 10px #00aaff, 0 0 30px rgba(0, 170, 255, 0.5);
+  transition: transform 0.2s ease-in-out, box-shadow 0.3s ease-in-out;
+}
+
+.avatar-label:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 15px #00aaff, 0 0 40px rgba(0, 170, 255, 0.7);
+}
+
+.avatar-preview, .avatar-placeholder {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 50px;
+  font-weight: bold;
+  color: #00aaff;
 }
 
 /* Dé en bas de l'écran */
@@ -212,13 +254,10 @@ span {
 .shield {
   position: absolute;
   top: 50%;
-  right: 23%;
+  right: 20%;
   transform: translateY(-50%);
   z-index: 3;
-}
-
-.shield-icon {
-  width: 80px;
+  width: 4rem;
 }
 
 /* Style pour le bouclier inactif */
@@ -237,13 +276,10 @@ span {
 .echani-shield {
   position: absolute;
   top: 50%;
-  right: 12%;
+  right: 10%;
   transform: translateY(-50%);
   z-index: 3;
-}
-
-.echani-shield-icon {
-  width: 80px;
+  width: 4rem;
 }
 
 /* Style pour le bouclier inactif */
@@ -316,9 +352,7 @@ span {
   position: absolute;
   bottom: 20%;
   left: 13%;
-  width: 300px;
-  height: auto;
-  z-index: 3;
+  z-index: 2;
 }
 
 .status-container p {

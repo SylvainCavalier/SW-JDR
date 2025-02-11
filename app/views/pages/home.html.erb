@@ -43,14 +43,19 @@
     <% end %>
   </div>
 
-  <!-- Élément à gauche du screen -->
-  <% if current_user.classe_perso&.name == "Bio-savant" %>
-    <%= link_to science_path do %>
-      <img src="<%= asset_path('function.svg') %>" alt="Function UI" class="ui-function">
+  <!-- Avatar -->
+  <div class="avatar-container" data-controller="avatar">
+    <%= form_with(model: current_user, url: avatar_upload_user_path(current_user), method: :patch, local: true, html: { multipart: true, data: { direct_upload_url: rails_direct_uploads_path } }) do |form| %>
+      <label for="avatar-upload" class="avatar-label">
+        <% if current_user.avatar.attached? %>
+          <%= image_tag(current_user.avatar, class: "avatar-preview", data: { avatar_target: "preview" }) %>
+        <% else %>
+          <div class="avatar-placeholder" data-avatar-target="preview">+</div>
+        <% end %>
+      </label>
+      <%= form.file_field :avatar, id: "avatar-upload", class: "d-none", accept: "image/*", data: { action: "change->avatar#preview" } %>
     <% end %>
-  <% else %>
-    <img src="<%= asset_path('function.svg') %>" alt="Function UI" class="ui-function">
-  <% end %>
+  </div>
 
   <!-- Dé en bas de l'écran du screen -->
   <%= link_to dice_users_path do %>
@@ -97,8 +102,8 @@
           data-shield-state="<%= current_user.shield_state %>">
         <i class="fa-solid fa-shield" data-shield-target="icon"></i>
         <turbo-frame id="user_<%= current_user.id %>_energy_shield_frame">
-          <p class="mt-1 mb-0" style="font-size: 0.9em;" data-shield-target="shieldCurrent">
-            Bouclier Energie <%= current_user.shield_current %>/<%= current_user.shield_max %>
+          <p class="mt-1 mb-0" style="font-size: 0.8em;" data-shield-target="shieldCurrent">
+            Energie <%= current_user.shield_current %>/<%= current_user.shield_max %>
           </p>
         </turbo-frame>
         <audio id="shield-sound" src="<%= asset_path('shield.mp3') %>" preload="auto"></audio>
@@ -109,8 +114,9 @@
               data-action="click->shield-recharge#openRechargePopup" 
               data-shield-type="energy"
               data-shield-max="<%= current_user.shield_max || 0 %>"
-              data-shield-current="<%= current_user.shield_current || 0 %>">
-        Rech.
+              data-shield-current="<%= current_user.shield_current || 0 %>"
+              style="width: 80%;">
+        ++
       </button>
     </div>
 
@@ -126,8 +132,8 @@
           data-shield-state="<%= current_user.echani_shield_state %>">
         <i class="fa-solid fa-shield" data-shield-target="icon"></i>
         <turbo-frame id="user_<%= current_user.id %>_echani_shield_frame">
-          <p class="mt-1 mb-0" style="font-size: 0.9em;" data-shield-target="shieldCurrent">
-            Bouclier Echani <%= current_user.echani_shield_current %>/<%= current_user.echani_shield_max %>
+          <p class="mt-1 mb-0" style="font-size: 0.8em;" data-shield-target="shieldCurrent">
+            Echani <%= current_user.echani_shield_current %>/<%= current_user.echani_shield_max %>
           </p>
         </turbo-frame>
         <audio id="shield-sound" src="<%= asset_path('shield.mp3') %>" preload="auto"></audio>
@@ -138,8 +144,9 @@
               data-action="click->shield-recharge#openRechargePopup" 
               data-shield-type="echani"
               data-shield-max="<%= current_user.echani_shield_max || 0 %>"
-              data-shield-current="<%= current_user.echani_shield_current || 0 %>">
-        Rech.
+              data-shield-current="<%= current_user.echani_shield_current || 0 %>"
+              style="width: 80%;">
+        ++
       </button>
     </div>
 
