@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_02_09_113615) do
+ActiveRecord::Schema[7.1].define(version: 2025_02_13_213008) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -86,6 +86,16 @@ ActiveRecord::Schema[7.1].define(version: 2025_02_09_113615) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "holonew_reads", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.bigint "holonew_id", null: false
+    t.boolean "read"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["holonew_id"], name: "index_holonew_reads_on_holonew_id"
+    t.index ["user_id"], name: "index_holonew_reads_on_user_id"
+  end
+
   create_table "holonews", force: :cascade do |t|
     t.string "title"
     t.text "content"
@@ -94,6 +104,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_02_09_113615) do
     t.datetime "updated_at", null: false
     t.integer "target_user"
     t.string "target_group"
+    t.boolean "read", default: false
     t.index ["user_id"], name: "index_holonews_on_user_id"
   end
 
@@ -207,6 +218,16 @@ ActiveRecord::Schema[7.1].define(version: 2025_02_09_113615) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "subscriptions", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.text "endpoint"
+    t.text "p256dh"
+    t.text "auth"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_subscriptions_on_user_id"
+  end
+
   create_table "transactions", force: :cascade do |t|
     t.integer "sender_id"
     t.integer "receiver_id"
@@ -292,6 +313,8 @@ ActiveRecord::Schema[7.1].define(version: 2025_02_09_113615) do
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "enemy_skills", "enemies"
   add_foreign_key "enemy_skills", "skills"
+  add_foreign_key "holonew_reads", "holonews"
+  add_foreign_key "holonew_reads", "users"
   add_foreign_key "holonews", "users"
   add_foreign_key "pet_inventory_objects", "inventory_objects"
   add_foreign_key "pet_inventory_objects", "pets"
@@ -301,6 +324,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_02_09_113615) do
   add_foreign_key "sphero_skills", "skills"
   add_foreign_key "sphero_skills", "spheros"
   add_foreign_key "spheros", "users"
+  add_foreign_key "subscriptions", "users"
   add_foreign_key "user_inventory_objects", "inventory_objects"
   add_foreign_key "user_inventory_objects", "users"
   add_foreign_key "user_skills", "skills"

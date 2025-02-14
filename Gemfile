@@ -54,6 +54,7 @@ gem 'image_processing', '~> 1.2'
 gem 'devise'
 gem "actioncable-enhanced-postgresql-adapter"
 gem 'kramdown'
+gem 'kaminari'
 
 group :development, :test do
   gem "dotenv-rails"
@@ -80,3 +81,5 @@ group :test do
   gem "capybara"
   gem "selenium-webdriver"
 end
+
+gem "webpush", "~> 1.1"

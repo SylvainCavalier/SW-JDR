@@ -4,6 +4,7 @@ class PagesController < ApplicationController
   def home
     @patch_equipped = current_user.equipped_patch.present?
     @active_injection_object = current_user.active_injection_object
+    @unread_holonews_count = current_user.holonew_reads.where(read: false).count
   end
 
   def mj

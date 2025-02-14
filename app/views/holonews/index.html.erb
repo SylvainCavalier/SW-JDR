@@ -1,24 +1,33 @@
 <div class="frame-container" style="position: relative; width: 100%; height: 100vh;">
-  <!-- Username -->
   <p class="username-display mt-1 text-primary fw-bold">
     <%= current_user.username.titleize %>
   </p>
-  <!-- Cadre principal SVG -->
   <img src="<%= asset_path('cadre2.svg') %>" alt="Cadre" class="ui-frame">
-  <!-- Cadre central avec l'écran de transfert' -->
-  <div class="container mt-4">
-    <div class="holonews-list-container mx-2" style="overflow-y: scroll; height: 100vh;">
+  <div class="holonews-container">
+    <div class="holonews-list-container mx-2" data-controller="toggle-content">
       <% @holonews.each do |holonew| %>
-        <div class="holonew-item p-1 mb-1 bg-light rounded">
+        <div class="holonew-item p-1 mb-1 <%= current_user.has_read?(holonew) ? 'bg-light' : 'bg-warning' %> rounded">
           <h3><%= holonew.title %></h3>
-          <p><%= holonew.content %></p>
+          <p><strong>Expéditeur:</strong> <%= holonew.sender.username %></p>
+
+          <p class="preview"><%= truncate(holonew.content, length: 100) %></p>
+
+          <p class="full-content d-none" data-toggle-content-target="content"><%= holonew.content %></p>
+
+          <button class="btn btn-link" data-toggle-content-target="button" data-action="click->toggle-content#toggle">
+            Voir plus
+          </button>
         </div>
       <% end %>
+    </div>
+
+    <!-- Pagination -->
+    <div class="pagination m-3">
+      <%= link_to '« Précédent', holonews_path(page: @holonews.prev_page), class: "btn btn-outline-primary" if @holonews.prev_page %>
+      <%= link_to 'Suivant »', holonews_path(page: @holonews.next_page), class: "btn btn-outline-primary" if @holonews.next_page %>
     </div>
   </div>
 
   <%= link_to "Retour", current_user.group.name == "MJ" ? mj_dashboard_path : root_path, class: "btn btn-outline-success go-back" %>
-  <% if current_user.group.name.in?(['MJ', 'PNJ']) %>
-    <%= link_to "Créer", new_holonew_path, class: "btn btn-outline-secondary go-create" %>
-  <% end %>
+  <%= link_to "Envoyer", new_holonew_path, class: "btn btn-outline-secondary go-create" %>
 </div>

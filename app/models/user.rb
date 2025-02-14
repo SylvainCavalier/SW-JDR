@@ -8,6 +8,7 @@ class User < ApplicationRecord
   belongs_to :race, optional: true
   belongs_to :classe_perso, class_name: "ClassePerso", foreign_key: "classe_perso_id", optional: true
   belongs_to :pet, optional: true
+  has_many :subscriptions, dependent: :destroy
   has_many :user_inventory_objects
   has_many :inventory_objects, through: :user_inventory_objects
   has_many :user_skills
@@ -15,6 +16,10 @@ class User < ApplicationRecord
   has_many :user_statuses, dependent: :destroy
   has_many :statuses, through: :user_statuses
   has_many :spheros, dependent: :destroy
+  has_many :sent_holonews, class_name: "Holonew", foreign_key: "user_id", dependent: :destroy
+  has_many :received_holonews, class_name: "Holonew", foreign_key: "target_user", primary_key: "id"
+  has_many :holonew_reads, dependent: :destroy
+  has_many :read_holonews, through: :holonew_reads, source: :holonew
   has_one_attached :avatar
 
   validates :username, presence: true, uniqueness: true
@@ -334,6 +339,20 @@ class User < ApplicationRecord
         user_skill.decrement!(:bonus, 2)
       when "+1D"
         user_skill.decrement!(:mastery, 1)
+      end
+    end
+  end
+
+  def has_read?(holonew)
+    holonew_reads.exists?(holonew: holonew)
+  end
+
+  def mark_holonews_as_read(holonews)
+    holonews.each do |holonew|
+      record = holonew_reads.find_or_create_by(holonew: holonew)
+      unless record.read?
+        record.update(read: true)
+        puts "📖 Holonew #{holonew.id} marquée comme lue pour #{self.username}"
       end
     end
   end

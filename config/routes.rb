@@ -1,7 +1,7 @@
 Rails.application.routes.draw do
   devise_for :users
 
-  get "service-worker" => "pwa#service_worker", as: :pwa_service_worker
+  get "/service-worker.js", to: "pwa#service_worker", as: :pwa_service_worker, format: :js
   get "manifest" => "pwa#manifest", as: :pwa_manifest
 
   resources :users, only: [] do
@@ -48,7 +48,10 @@ Rails.application.routes.draw do
 
   resources :transactions, only: [:new, :create]
 
+  resources :subscriptions, only: [:create, :destroy]
+
   resources :holonews, only: [:index, :new, :create]
+  get 'holonews/count', to: 'holonews#count'
 
   resources :enemies, only: [:create, :update, :destroy]
 

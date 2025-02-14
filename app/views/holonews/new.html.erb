@@ -7,7 +7,7 @@
   <img src="<%= asset_path('cadre2.svg') %>" alt="Cadre" class="ui-frame">
   <!-- Formulaire -->
   <div class="custom-form">
-    <%= simple_form_for @holonew do |f| %>
+    <%= simple_form_for @holonew, local: true do |f| %>
       <div class="form-group">
         <%= f.input :title, label: "Titre", input_html: { class: 'form-control' } %>
       </div>

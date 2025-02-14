@@ -7,6 +7,7 @@
   <%= turbo_stream_from "shields_updates_#{current_user.id}" %>
   <%= turbo_stream_from "energy_shields_updates_#{current_user.id}" %>
   <%= turbo_stream_from "echani_shields_updates_#{current_user.id}" %>
+  <%= turbo_stream_from "user_#{current_user.id}_holonews_counter" %>
 <% end %>
 
 <%= render 'pages/credits_sound' %>
@@ -42,6 +43,14 @@
       <i class="fa-solid fa-microchip implant-icon"></i>
     <% end %>
   </div>
+
+  <% if current_user.classe_perso&.name == "Bio-savant" %>
+    <%= link_to science_path do %>
+      <img src="<%= asset_path('function.svg') %>" alt="Function UI" class="ui-function">
+    <% end %>
+  <% else %>
+    <img src="<%= asset_path('function.svg') %>" alt="Function UI" class="ui-function">
+  <% end %>
 
   <!-- Avatar -->
   <div class="avatar-container" data-controller="avatar">
@@ -190,8 +199,15 @@
     <%= render partial: "hp_bar", locals: { user: current_user } %>
   </turbo-frame>
 
-  <!-- Boutons d'action -->
-  <%= link_to "Holonews", holonews_path, class: "btn btn-outline-success holonews-btn" %>
+  <!-- Bouton Holonews avec compteur dynamique -->
+  <div class="holonews-btn">
+    <%= link_to holonews_path, class: "position-relative" do %>
+      <img src="<%= asset_path('holonewspng.png') %>" alt="Holonews" class="holonews-icon">
+      <turbo-frame id="user_<%= current_user.id %>_holonews_counter">
+        <%= render "holonews/count", unread_count: { user_id: current_user.id, count: @unread_holonews_count } %>
+      </turbo-frame>
+    <% end %>
+  </div>
   <%= button_to "✖", destroy_user_session_path, method: :delete, data: { turbo: false, confirm: "Se déconnecter ?" },
     style: "position: absolute; top: 10px; right: 70px; color: #333; font-size: 10px; text-decoration: none; z-index: 3;",
     onmouseover: "this.style.color='#ff0000'", onmouseout: "this.style.color='#333'" %>
