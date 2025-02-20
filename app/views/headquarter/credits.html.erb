@@ -1,0 +1,25 @@
+<div class="text-center m-2">
+  <h1 class="text-success">Transfert de Crédits</h1>
+
+  <!-- Affichage des crédits de la base -->
+  <p class="text-info fw-bold" style="font-size: 1.2rem; margin-bottom: 0;">
+    Crédits de la Base : <%= @headquarter.credits %> 💳
+  </p>
+
+  <!-- Formulaire de transfert -->
+  <%= form_with url: transfer_credits_headquarter_path, method: :post, local: true do |f| %>
+    <div class="form-group text-success">
+      <%= label_tag :receiver_username, "Destinataire" %>
+      <%= select_tag :receiver_username, options_from_collection_for_select(User.where.not(id: nil).order(:username), :username, :username, prompt: "Sélectionnez un joueur"), class: 'form-select' %>
+    </div>
+
+    <div class="form-group text-success">
+      <%= label_tag :amount, "Montant" %>
+      <%= number_field_tag :amount, nil, class: 'form-control', min: 1, step: 1, required: true %>
+    </div>
+
+    <%= f.submit "Transférer", class: "btn btn-outline-success mt-2" %>
+  <% end %>
+
+  <%= link_to "Retour", headquarter_path, class: "btn btn-outline-secondary mt-2" %>
+</div>

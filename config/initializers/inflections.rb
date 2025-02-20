@@ -17,4 +17,5 @@
 
 ActiveSupport::Inflector.inflections do |inflect|
   inflect.irregular 'holonew', 'holonews'
+  inflect.irregular 'headquarter', 'headquarter'
 end

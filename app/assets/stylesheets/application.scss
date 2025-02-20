@@ -134,7 +134,7 @@ span {
   position: relative;
   width: 100%; /* S'adapte à la taille de credits-container */
   height: auto; /* Conserve le ratio de l'image */
-  max-width: 300px; /* Optionnel : limite la taille maximale du screen */
+  max-width: 500px; /* Optionnel : limite la taille maximale du screen */
   z-index: 1;
 }
 
@@ -154,16 +154,6 @@ span {
   left: 50%;
   z-index: 2;
 }
-
-/* Élément à gauche du screen (function.svg) */
-.ui-function {
-  position: absolute;
-  top: 25%;
-  left: 15%;
-  transform: translateY(-50%);
-  width: 11vw;
-  z-index: 2;
-} 
 
 /* Avatar */
 .avatar-container {
@@ -435,13 +425,30 @@ span {
   z-index: 3;
 }
 
-.holonews-btn {
-  top: 14%;
-  left: 30%;
-  width: 12vw;
+/* Élément à gauche du screen */
+.home-top-icons {
   position: absolute;
+  top: 25%;
+  left: 10%;
+  transform: translateY(-50%);
+}
+
+.ui-function {
+  width: 11vw;
+} 
+
+.fight-btn {
+  width: 12vw;
+}
+
+.fight-icon {
+  width: 12vw;
   font-size: 2em;
-  z-index: 3;
+}
+
+.holonews-btn {
+  width: 12vw;
+  font-size: 2em;
   color: #00BFFF;
 }
 
@@ -531,10 +538,10 @@ span {
 }
 
 .select-destinataire {
-  font-size: 1.2rem;    /* Agrandir la police */
-  padding: 10px;        /* Ajouter du padding pour améliorer l'affichage */
-  z-index: 5;           /* Assurer que le menu déroulant est bien visible */
-  position: relative;   /* S'assurer qu'il n'est pas affecté par le positionnement absolu des autres éléments */
+  font-size: 1.2rem;
+  padding: 10px;
+  z-index: 5;
+  position: relative;
 }
 
 .select-destinataire option {
@@ -1267,4 +1274,176 @@ input.dice-count-input {
   list-style-type: none;
   margin: 5px 0;
   color: $success;
+}
+
+/* ------------- BASE -------------- */
+
+.headquarter-container {
+  background-color: #111; /* Fond sombre */
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0px 0px 20px rgba(0, 255, 0, 0.5);
+}
+
+.headquarter-info {
+  background: rgba(0, 255, 0, 0.1);
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0px 0px 10px rgba(0, 255, 0, 0.3);
+  color: $success;
+}
+
+.headquarter-info h1 {
+  color: $success;
+  text-shadow: 0px 0px 10px $success;
+  display: inline-block;
+  padding: 5px 15px;
+  border: 2px solid rgba(0, 255, 100, 0.6);
+  border-radius: 12px;
+}
+
+.headquarter-info p {
+  font-size: 18px;
+  color: #aaf;
+}
+
+.location, .credits, .description {
+  padding: 10px;
+  border-radius: 10px;
+  margin: 10px 0;
+  text-shadow: 0px 0px 5px $success;
+}
+
+.image-upload-container {
+  position: relative;
+  width: 100%;
+  height: 250px;
+  border: 2px dashed $success;
+  border-radius: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  box-shadow: 0px 0px 10px rgba(0, 255, 0, 0.5);
+}
+
+.image-placeholder {
+  font-size: 18px;
+  color: $success;
+  text-align: center;
+  text-shadow: 0px 0px 5px $success;
+}
+
+.image-placeholder i {
+  font-size: 24px;
+  margin-right: 5px;
+}
+
+.headquarter-image {
+  width: 100%;
+  height: 250px;
+  object-fit: cover;
+  border-radius: 10px;
+  box-shadow: 0px 0px 10px rgba(0, 255, 0, 0.7);
+}
+
+.edit-icon {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: rgba(0, 0, 0, 0.7);
+  color: #fff;
+  padding: 5px;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.edit-icon2 {
+  background: rgba(0, 0, 0, 0.7);
+  color: #fff;
+  padding: 5px;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: 0.3s;
+  margin-left: 5px;
+}
+
+.button-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.neon-btn {
+  text-shadow: 0px 0px 5px $success;
+  border: 2px solid $success;
+  box-shadow: 0px 0px 10px rgba(0, 255, 0, 0.5);
+  transition: all 0.3s ease;
+}
+
+.neon-btn:hover {
+  background-color: $success;
+  color: #111;
+  box-shadow: 0px 0px 20px rgba(0, 255, 0, 0.8);
+}
+
+// Ajout d'un effet lumineux aux crédits
+.credits {
+  font-size: 1.4rem;
+  color: #0f0;
+  text-shadow: 0 0 5px rgba(0, 255, 100, 0.7), 0 0 10px rgba(0, 255, 100, 0.4);
+}
+
+.credits a {
+  color: #0f0;
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
+
+.location i {
+  color: #0f0;
+  transition: all 0.3s ease;
+}
+
+// Amélioration de la description
+.description {
+  font-style: italic;
+  opacity: 0.9;
+  max-width: 80%;
+  margin: auto;
+}
+
+.building-card {
+  border: 2px solid #28a745;
+  box-shadow: 0px 0px 15px #28a745;
+  transition: all 0.3s ease-in-out;
+}
+
+.building-card:hover {
+  transform: scale(1.03);
+  box-shadow: 0px 0px 25px #28a745;
+}
+
+.table-dark th, .table-dark td {
+  border-color: #28a745;
+}
+
+.bg-success {
+  background-color: #28a745 !important;
+  color: #000 !important;
+}
+
+.text-success {
+  color: #28a745 !important;
+}
+
+.badge.bg-warning {
+  font-size: 0.9rem;
+}
+
+.table-hover tbody tr:hover {
+  background-color: rgba(40, 167, 69, 0.3);
 }

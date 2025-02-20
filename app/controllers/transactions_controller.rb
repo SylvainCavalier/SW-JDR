@@ -6,7 +6,11 @@ class TransactionsController < ApplicationController
   end
 
   def create
-    receiver = User.where('LOWER(username) = ?', params[:transaction][:receiver_username].downcase).first
+    if params[:transaction][:receiver_username].downcase == "headquarter"
+      receiver = Headquarter.first
+    else
+      receiver = User.where('LOWER(username) = ?', params[:transaction][:receiver_username].downcase).first
+    end
   
     if receiver.nil?
       flash.now[:alert] = 'Destinataire introuvable'
@@ -20,23 +24,42 @@ class TransactionsController < ApplicationController
   
     @transaction = Transaction.new(transaction_params)
     @transaction.sender = current_user
-    @transaction.receiver = receiver
   
-    if @transaction.amount <= current_user.credits && @transaction.amount > 0
-      ActiveRecord::Base.transaction do
-        current_user.update!(credits: current_user.credits - @transaction.amount)
-        receiver.update!(credits: receiver.credits + @transaction.amount)
-        @transaction.save!
+    if receiver.is_a?(Headquarter)
+      # Transfert vers la base
+      if @transaction.amount <= current_user.credits && @transaction.amount > 0
+        ActiveRecord::Base.transaction do
+          current_user.update!(credits: current_user.credits - @transaction.amount)
+          receiver.update!(credits: receiver.credits + @transaction.amount)
+        end
   
         current_user.broadcast_credits_update
-        receiver.broadcast_credits_update
+        flash[:notice] = 'Transfert réussi vers la base.'
+        redirect_to new_transaction_path
+      else
+        flash.now[:alert] = 'Transfert échoué, crédits insuffisants.'
+        render :new, status: :unprocessable_entity
       end
-  
-      flash[:notice] = 'Transfert réussi.'
-      redirect_to new_transaction_path
     else
-      flash.now[:alert] = 'Transfert échoué, crédits insuffisants.'
-      render :new, status: :unprocessable_entity
+      # Transfert entre joueurs (inchangé)
+      @transaction.receiver = receiver
+  
+      if @transaction.amount <= current_user.credits && @transaction.amount > 0
+        ActiveRecord::Base.transaction do
+          current_user.update!(credits: current_user.credits - @transaction.amount)
+          receiver.update!(credits: receiver.credits + @transaction.amount)
+          @transaction.save!
+  
+          current_user.broadcast_credits_update
+          receiver.broadcast_credits_update
+        end
+  
+        flash[:notice] = 'Transfert réussi.'
+        redirect_to new_transaction_path
+      else
+        flash.now[:alert] = 'Transfert échoué, crédits insuffisants.'
+        render :new, status: :unprocessable_entity
+      end
     end
   rescue => e
     flash.now[:alert] = "Une erreur s'est produite : #{e.message}"

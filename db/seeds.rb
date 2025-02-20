@@ -254,3 +254,39 @@ puts "Adding new status..."
 Status.find_or_create_by!(name: "Folie", description: "Ne se contrôle plus et attaque le plus proche", color: "#FF69B4")
 
 puts "✅ New status added successfully!"
+
+puts "Adding new base..."
+
+Headquarter.find_or_create_by!(name: "Nom de la base", location: "Planète inconnue", credits: 0, description: "Aucune description pour l'instant.")
+
+puts "✅ New base added successfully!"
+
+puts "📦 Création des bâtiments par défaut..."
+
+headquarter = Headquarter.first_or_create!(name: "Base Célestiale", location: "Mobile - Bordure Extérieure", credits: 0, description: "Une mystérieuse base très ancienne")
+
+if Building::BUILDING_DATA.nil?
+  puts "⚠️ Erreur : Impossible de charger les données des bâtiments !"
+  exit
+end
+
+Building::BUILDING_DATA.each do |building_type, levels|
+  levels.each do |level, data|
+    level = level.to_i  # S'assurer que le level est bien un entier
+
+    building = headquarter.buildings.find_or_initialize_by(name: data["name"])
+
+    # Mise à jour ou création du bâtiment
+    building.update!(
+      level: 0,
+      description: data["description"],
+      price: data["price"],
+      category: building_type,  # On utilise le type de bâtiment (ex: "Hangar") comme catégorie
+      properties: data["properties"] || {}
+    )
+
+    puts "✅ Bâtiment ajouté : #{building.name} (Niveau #{building.level})"
+  end
+end
+
+puts "✅ Bâtiments créés avec succès."

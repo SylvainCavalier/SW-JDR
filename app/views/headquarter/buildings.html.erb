@@ -1,0 +1,67 @@
+<div class="frame-container" style="position: relative; width: 100%; height: 100vh; overflow-y: auto; overflow-x: hidden;">
+  <div class="d-flex justify-content-between">
+    <%= link_to "Retour", headquarter_path, class: "btn btn-outline-secondary m-2" %>
+    <h1 class="text-center text-success">Bâtiments de la Base</h1>
+    <i class="fa-solid fa-building-flag"></i>
+  </div>
+
+  <div class="row">
+    <% @buildings.group_by(&:category).each do |category, buildings| %>
+      <% current_building = buildings.max_by(&:level) %>
+      
+      <div class="col-md-6 mb-4">
+        <div class="card bg-dark text-light p-3 shadow-lg rounded building-card">
+          <h3 class="text-success text-center"><%= current_building.name %></h3>
+          
+          <% if current_building.level == 0 %>
+            <p class="text-warning text-center">Actuel : <strong>Rien</strong></p>
+            <p class="text-muted text-center">Ce bâtiment n'a pas encore été construit.</p>
+          <% else %>
+            <p class="text-muted"><%= current_building.description %></p>
+            <ul class="list-group">
+              <% current_building.properties.each do |key, value| %>
+                <li class="list-group-item bg-transparent text-light rounded shadow-sm">
+                  <strong><%= key %> :</strong> <%= value %>
+                </li>
+              <% end %>
+            </ul>
+          <% end %>
+
+          <!-- Section d'amélioration -->
+          <div class="mt-3">
+            <h5 class="text-center text-success">Améliorations Disponibles</h5>
+            <table class="table table-dark table-hover border-success">
+              <thead>
+                <tr class="text-success">
+                  <th>Niveau</th>
+                  <th>Description</th>
+                  <th>Prix</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% Building::BUILDING_DATA[category].each do |level, data| %>
+                  <% level = level.to_i %>
+                  <tr class="<%= 'bg-success text-dark fw-bold' if level == current_building.level %>">
+                    <td class="text-center"><%= level %></td>
+                    <td><%= data["description"] %></td>
+                    <td class="text-center"><%= data["price"] %> crédits</td>
+                    <td class="text-center">
+                      <% if level == current_building.level %>
+                        <span class="badge bg-warning text-dark">Niveau actuel</span>
+                      <% elsif level == current_building.level + 1 %>
+                        <%= button_to "Acheter", upgrade_building_path(current_building, level: level), method: :patch, class: "btn btn-outline-success btn-sm" %>
+                      <% else %>
+                        <span class="badge bg-secondary">Indisponible</span>
+                      <% end %>
+                    </td>
+                  </tr>
+                <% end %>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    <% end %>
+  </div>
+</div>

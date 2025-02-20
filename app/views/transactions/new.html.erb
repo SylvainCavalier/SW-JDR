@@ -18,11 +18,20 @@
         <!-- Transfert des crédits -->
         <%= simple_form_for @transaction do |f| %>
           <div class="form-group text-success">
-            <%= f.input :receiver_username, label: "Destinataire", as: :select, collection: User.where.not(id: current_user.id).order(:username).pluck(:username), include_blank: "Sélectionnez un joueur", input_html: { class: 'form-control' } %>
+            <%= f.label :receiver_username, "Destinataire" %>
+            <%= f.select :receiver_username, 
+                  options_for_select(
+                    User.where.not(id: current_user.id).order(:username).pluck(:username) + 
+                    [[Headquarter.first.name, "headquarter"]]
+                  ), 
+                  { include_blank: "Sélectionnez un destinataire" }, 
+                  class: "form-control" %>
           </div>
+
           <div class="form-group text-success">
             <%= f.input :amount, label: "Montant", input_html: { class: 'form-control' } %>
           </div>
+
           <%= f.submit "Transférer", class: "btn btn-outline-success" %>
         <% end %>
       </div>

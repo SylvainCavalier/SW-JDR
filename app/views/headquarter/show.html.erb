@@ -1,0 +1,54 @@
+<div class="headquarter-container m-2">
+  <!-- Haut : Image de la base -->
+  <div class="image-upload-container position-relative">
+    <% if @headquarter.image.attached? %>
+      <%= image_tag @headquarter.image, class: "headquarter-image" %>
+      <!-- Icône d'édition en haut à droite de l'image -->
+      <label for="headquarter_image_upload" class="edit-icon">
+        <i class="fa-solid fa-pen"></i>
+      </label>
+    <% else %>
+      <!-- Icône "+" quand il n'y a pas d'image -->
+      <label for="headquarter_image_upload" class="image-placeholder">
+        <i class="fa-solid fa-plus"></i> Ajouter une image
+      </label>
+    <% end %>
+
+    <%= form_for @headquarter, html: { multipart: true } do |f| %>
+      <%= f.file_field :image, id: "headquarter_image_upload", class: "d-none", onchange: "this.form.submit();" %>
+    <% end %>
+  </div>
+  <div class="row">
+    <!-- Colonne gauche : Infos de la base -->
+    <div class="col-sm-8 text-center">
+      <div class="headquarter-info">
+        <div class="d-flex align-items-center justify-content-center">
+          <h1> <%= @headquarter.name %> </h1>
+          <%= link_to edit_headquarter_path do %>
+            <i class="fa-solid fa-pen edit-icon2"></i>
+          <% end %>
+        </div>
+        <p class="location"><i class="fa-solid fa-map-marker-alt"></i> <%= @headquarter.location %></p>
+        <p class="credits">
+          <%= link_to credits_headquarter_path do %>
+            <i class="fa-solid fa-coins"></i> 
+          <% end %>
+          <%= @headquarter.credits %> crédits
+          </p>
+        <p class="description"><%= @headquarter.description %></p>
+      </div>
+    </div>
+
+    <!-- Colonne droite : Boutons -->
+    <div class="col-sm-4">
+      <div class="button-container">
+        <%= link_to "Inventaire", inventory_headquarter_path, class: "btn btn-success btn-lg neon-btn" %>
+        <%= link_to "Bâtiments", buildings_headquarter_path, class: "btn btn-success btn-lg neon-btn" %>
+        <%= link_to "Personnel", personnel_headquarter_path, class: "btn btn-success btn-lg neon-btn" %>
+        <%= link_to "Boutique", shop_headquarter_path, class: "btn btn-success btn-lg neon-btn" %>
+        <%= link_to "Défense", defense_headquarter_path, class: "btn btn-success btn-lg neon-btn" %>
+      </div>
+    </div>
+  </div>
+  <%= link_to "Retour", current_user.group.name == "MJ" ? mj_dashboard_path : root_path, class: "btn btn-outline-secondary mt-3" %>
+</div>

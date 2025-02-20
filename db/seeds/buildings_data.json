@@ -1,0 +1,231 @@
+{
+  "Hangar": {
+    "1": {
+      "name": "Hangar basique",
+      "description": "Un hangar basique, un trou dans le mur pour les vaisseaux, et quelques caisses.",
+      "price": 1000,
+      "properties": {
+        "Capacité": "3 emplacements de vaisseaux",
+        "Murs": "Parois naturelles",
+        "Ravitaillement": "Aucun",
+        "Automatisation": "Non",
+        "Défense": "Porte basique"
+      }
+    },
+    "2": {
+      "name": "Hangar aménagé",
+      "description": "Un hangar aménagé avec des murs renforcés et un espace plus optimisé.",
+      "price": 3000,
+      "properties": {
+        "Capacité": "5 emplacements de vaisseaux",
+        "Murs": "Parois aménagées",
+        "Ravitaillement": "Basique",
+        "Automatisation": "Non",
+        "Défense": "Porte blindée"
+      }
+    },
+    "3": {
+      "name": "Hangar de la rébellion",
+      "description": "Un hangar militaire bien protégé, capable de stocker plusieurs vaisseaux.",
+      "price": 6000,
+      "properties": {
+        "Capacité": "10 emplacements de vaisseaux",
+        "Murs": "Parois renforcées",
+        "Ravitaillement": "Basique",
+        "Automatisation": "Non",
+        "Défense": "Tourelle & porte blindée"
+      }
+    },
+    "4": {
+      "name": "Hangar automatisé",
+      "description": "Un hangar ultra-moderne avec des systèmes automatiques et une sécurité maximale.",
+      "price": 15000,
+      "properties": {
+        "Capacité": "20 emplacements de vaisseaux",
+        "Murs": "Parois blindées",
+        "Ravitaillement": "Avancé",
+        "Automatisation": "Oui",
+        "Défense": "Bouclier & tourelle"
+      }
+    }
+  },
+  "Atelier": {
+    "1": {
+      "name": "Atelier de bricolage",
+      "description": "Un petit atelier permettant des réparations basiques sur les vaisseaux.",
+      "price": 1000,
+      "properties": {
+        "Réparation": "+2PB/jour",
+        "Bonus": "+2 aux jets d’amélioration de vaisseaux"
+      }
+    },
+    "2": {
+      "name": "Atelier d'entretien",
+      "description": "Un atelier mieux équipé pour gérer tous les dégâts basiques des vaisseaux.",
+      "price": 5000,
+      "properties": {
+        "Réparation": "+4PB/jour",
+        "Bonus": "+1D aux jets d’amélioration de vaisseaux"
+      }
+    },
+    "3": {
+      "name": "Atelier avancé",
+      "description": "Un atelier spécialisé pouvant réparer armes et hyperdrive des vaisseaux.",
+      "price": 7000,
+      "properties": {
+        "Réparation": "+6PB/jour",
+        "Bonus": "+2D aux jets d’amélioration de vaisseaux"
+      }
+    },
+    "4": {
+      "name": "Atelier spécialisé",
+      "description": "Un atelier de pointe, capable de réinitialiser l'identification des vaisseaux.",
+      "price": 12000,
+      "properties": {
+        "Réparation": "+8PB/jour",
+        "Bonus": "+3D aux jets d’amélioration de vaisseaux"
+      }
+    }
+  },
+  "Centre de contrôle": {
+    "1": {
+      "name": "Centre de contrôle temporaire",
+      "description": "Un centre de contrôle rudimentaire permettant une supervision basique de la base.",
+      "price": 500,
+      "properties": {
+        "Fonction": "Supervision basique"
+      }
+    },
+    "2": {
+      "name": "Centre de contrôle aménagé",
+      "description": "Un centre de contrôle équipé de caméras de surveillance pour chaque section de la base.",
+      "price": 1000,
+      "properties": {
+        "Surveillance": "Caméras sur toute la base"
+      }
+    },
+    "3": {
+      "name": "Centre de contrôle rebelle",
+      "description": "Une salle de contrôle avancée intégrant la gestion de la défense interne et externe.",
+      "price": 2000,
+      "properties": {
+        "Défense": "Gestion avancée des systèmes de sécurité"
+      }
+    },
+    "4": {
+      "name": "Centre de contrôle moderne",
+      "description": "Une salle de contrôle auxiliaire pour prendre le relais en cas de panne de la principale.",
+      "price": 5000,
+      "properties": {
+        "Sécurité": "Salle de contrôle de secours"
+      }
+    }
+  },
+  "Dortoirs": {
+    "1": {
+      "name": "Dortoirs précaires",
+      "description": "Quelques lits de camp pour le personnel, inconfortables mais pratiques.",
+      "price": 500,
+      "properties": {
+        "Capacité": "10 places"
+      }
+    },
+    "2": {
+      "name": "Dortoirs aménagés",
+      "description": "Des dortoirs optimisés pour le repos du personnel.",
+      "price": 1000,
+      "properties": {
+        "Capacité": "20 places",
+        "Bonus": "+2 PV max temporaire"
+      }
+    },
+    "3": {
+      "name": "Dortoirs confortables",
+      "description": "Des dortoirs bien aménagés pour un meilleur confort.",
+      "price": 4000,
+      "properties": {
+        "Capacité": "30 places",
+        "Bonus": "+3 PV max temporaire, +1 PV max permanent"
+      }
+    },
+    "4": {
+      "name": "Dortoirs optimisés",
+      "description": "Des dortoirs modernes et individuels pour le personnel.",
+      "price": 8000,
+      "properties": {
+        "Capacité": "50 places",
+        "Bonus": "+4 PV max temporaire, +1 PV max permanent"
+      }
+    }
+  },
+  "Infirmerie": {
+    "1": {
+      "name": "Infirmerie",
+      "description": "Une infirmerie rudimentaire avec des moyens limités.",
+      "price": 1000,
+      "properties": {
+        "Bonus": "+1D aux jets de médecine, +1D PV par nuit"
+      }
+    },
+    "2": {
+      "name": "Dispensaire",
+      "description": "Un dispensaire équipé pour les opérations de combat.",
+      "price": 3000,
+      "properties": {
+        "Bonus": "+2D aux jets de médecine, +2D PV par nuit, +1 aux jets de séquelle"
+      }
+    },
+    "3": {
+      "name": "Hôpital",
+      "description": "Un hôpital complet avec des équipements avancés pour des soins intensifs.",
+      "price": 10000,
+      "properties": {
+        "Bonus": "+3D aux jets de médecine, +3D PV par nuit, +1 aux jets de séquelle"
+      }
+    }
+  },
+  "Centrale énergétique": {
+    "1": {
+      "name": "Thermo-moteur faiblard",
+      "description": "Un moteur basique, sale et capricieux, pour alimenter la base en énergie.",
+      "price": 1000,
+      "properties": {
+        "Capacité énergétique": "Faible",
+        "Fiabilité": "Capricieuse",
+        "Bâtiments supportés": "Niveau 1 uniquement"
+      }
+    },
+    "2": {
+      "name": "Centrale énergétique",
+      "description": "Une centrale énergétique digne de ce nom qui pourra alimenter tous les bâtiments de 2e niveau.",
+      "price": 5000,
+      "properties": {
+        "Capacité énergétique": "Moyenne",
+        "Fiabilité": "Stable",
+        "Bâtiments supportés": "Niveau 1 et 2"
+      }
+    },
+    "3": {
+      "name": "Centrale double cœur",
+      "description": "Une centrale avancée qui permettra d’alimenter tous les systèmes de défense les plus avancés et tous les bâtiments de 3e niveau.",
+      "price": 15000,
+      "properties": {
+        "Capacité énergétique": "Élevée",
+        "Fiabilité": "Très stable",
+        "Bâtiments supportés": "Niveau 1, 2 et 3",
+        "Défense": "Alimentation des systèmes de défense avancés"
+      }
+    },
+    "4": {
+      "name": "Réacteurs à plasma",
+      "description": "Une centrale dernière génération permettant le fonctionnement de tous les bâtiments de 4e niveau.",
+      "price": 30000,
+      "properties": {
+        "Capacité énergétique": "Maximale",
+        "Fiabilité": "Parfaite",
+        "Bâtiments supportés": "Tous les niveaux",
+        "Défense": "Alimentation optimisée des boucliers et défenses"
+      }
+    }
+  }
+}

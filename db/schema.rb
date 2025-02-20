@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_02_13_213008) do
+ActiveRecord::Schema[7.1].define(version: 2025_02_17_223735) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -40,6 +40,30 @@ ActiveRecord::Schema[7.1].define(version: 2025_02_13_213008) do
     t.bigint "blob_id", null: false
     t.string "variation_digest", null: false
     t.index ["blob_id", "variation_digest"], name: "index_active_storage_variant_records_uniqueness", unique: true
+  end
+
+  create_table "building_pets", force: :cascade do |t|
+    t.bigint "building_id", null: false
+    t.bigint "pet_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["building_id"], name: "index_building_pets_on_building_id"
+    t.index ["pet_id"], name: "index_building_pets_on_pet_id"
+  end
+
+  create_table "buildings", force: :cascade do |t|
+    t.string "name"
+    t.integer "level", default: 0
+    t.string "description"
+    t.integer "price"
+    t.string "category"
+    t.bigint "chief_pet_id"
+    t.bigint "headquarter_id", null: false
+    t.jsonb "properties", default: {}
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["chief_pet_id"], name: "index_buildings_on_chief_pet_id"
+    t.index ["headquarter_id"], name: "index_buildings_on_headquarter_id"
   end
 
   create_table "classe_persos", force: :cascade do |t|
@@ -81,6 +105,25 @@ ActiveRecord::Schema[7.1].define(version: 2025_02_13_213008) do
 
   create_table "groups", force: :cascade do |t|
     t.string "name"
+    t.text "description"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "headquarter_inventory_objects", force: :cascade do |t|
+    t.bigint "headquarter_id", null: false
+    t.bigint "inventory_object_id", null: false
+    t.integer "quantity"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["headquarter_id"], name: "index_headquarter_inventory_objects_on_headquarter_id"
+    t.index ["inventory_object_id"], name: "index_headquarter_inventory_objects_on_inventory_object_id"
+  end
+
+  create_table "headquarters", force: :cascade do |t|
+    t.string "name"
+    t.string "location"
+    t.integer "credits"
     t.text "description"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -311,8 +354,14 @@ ActiveRecord::Schema[7.1].define(version: 2025_02_13_213008) do
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "building_pets", "buildings"
+  add_foreign_key "building_pets", "pets"
+  add_foreign_key "buildings", "headquarters"
+  add_foreign_key "buildings", "pets", column: "chief_pet_id"
   add_foreign_key "enemy_skills", "enemies"
   add_foreign_key "enemy_skills", "skills"
+  add_foreign_key "headquarter_inventory_objects", "headquarters"
+  add_foreign_key "headquarter_inventory_objects", "inventory_objects"
   add_foreign_key "holonew_reads", "holonews"
   add_foreign_key "holonew_reads", "users"
   add_foreign_key "holonews", "users"

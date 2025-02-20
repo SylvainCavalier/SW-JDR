@@ -1,0 +1,31 @@
+<div class="container headquarter-edit-container">
+  <h1 class="text-center">Modifier la Base</h1>
+
+  <%= form_for @headquarter, html: { multipart: true, class: "headquarter-form" } do |f| %>
+
+    <!-- Champ Nom -->
+    <div class="form-group">
+      <%= f.label :name, "Nom de la Base", class: "form-label" %>
+      <%= f.text_field :name, class: "form-control form-control-lg neon-input" %>
+    </div>
+
+    <!-- Champ Localisation -->
+    <div class="form-group">
+      <%= f.label :location, "Localisation", class: "form-label" %>
+      <%= f.text_field :location, class: "form-control form-control-lg neon-input" %>
+    </div>
+
+    <!-- Champ Description -->
+    <div class="form-group">
+      <%= f.label :description, "Description", class: "form-label" %>
+      <%= f.text_area :description, class: "form-control form-control-lg neon-textarea", rows: 4 %>
+    </div>
+
+    <!-- Boutons -->
+    <div class="form-group text-center">
+      <%= f.submit "Enregistrer", class: "btn btn-success btn-lg neon-btn" %>
+      <%= link_to "Annuler", headquarter_path, class: "btn btn-secondary btn-lg neon-btn-outline" %>
+    </div>
+
+  <% end %>
+</div>

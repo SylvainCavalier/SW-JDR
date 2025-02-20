@@ -50,6 +50,25 @@ Rails.application.routes.draw do
 
   resources :subscriptions, only: [:create, :destroy]
 
+  resource :headquarter, only: [:show, :edit, :update] do
+    member do
+      get :inventory
+      get :buildings
+      get :personnel
+      get :shop
+      get :defense
+      get :credits
+      post :transfer_credits
+      get :observation
+      patch 'remove_item/:item_id', to: 'headquarter#remove_item', as: 'remove_item'
+      post 'give_item', to: 'headquarter#give_item', as: 'give_item'
+    end
+  end
+
+  resources :buildings, only: [] do
+    patch :upgrade, on: :member
+  end
+
   resources :holonews, only: [:index, :new, :create]
   get 'holonews/count', to: 'holonews#count'
 
