@@ -83,5 +83,9 @@ Rails.application.configure do
     Bullet.rails_logger = true               # Logs dans les logs Rails
     Bullet.add_footer = true                 # Ajoute un message dans le footer des pages
     Bullet.bullet_logger = true              # Logs dans un fichier Bullet log
+    Bullet.add_safelist type: :unused_eager_loading, class_name: "Building", association: :building_pets
+    Bullet.add_safelist type: :unused_eager_loading, class_name: "Building", association: :pets
+    Bullet.add_safelist type: :n_plus_one_query, class_name: "Building", association: :pets
+    Bullet.add_safelist type: :unused_eager_loading, class_name: "Building", association: :chief_pet
   end
 end

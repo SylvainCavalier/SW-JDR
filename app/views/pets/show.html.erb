@@ -197,6 +197,9 @@
                 <%= button_to "Discuter", perform_action_pet_path(@pet, action_type: "chat"), method: :post, class: "btn btn-outline-success mb-2" %>
                 <%= button_to "Frapper", perform_action_pet_path(@pet, action_type: "hit"), method: :post, class: "btn btn-outline-success mb-2" %>
                 <%= button_to "Entrainer", perform_action_pet_path(@pet, action_type: "train"), method: :post, class: "btn btn-outline-primary mb-2" %>
+                <% if @pet.force? && @pet.apprentice.nil? %>
+                  <%= button_to "Prendre comme apprenti", create_apprentice_path(pet_id: @pet.id), method: :post, class: "btn btn-primary", data: { confirm: "Voulez-vous vraiment prendre ce pet comme apprenti ?" } %>
+                <% end %>
               <% end %>
             </div>
           </div>

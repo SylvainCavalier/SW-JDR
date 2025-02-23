@@ -290,3 +290,28 @@ Building::BUILDING_DATA.each do |building_type, levels|
 end
 
 puts "✅ Bâtiments créés avec succès."
+
+puts "📦 Création des systèmes de défense..."
+
+defenses = [
+  { name: "Système d'alarme", description: "Des systèmes d’alarme retentissant automatiquement en cas d’attaque. +1 défense", price: 1000, bonus: 1 },
+  { name: "Système de défense interne", description: "Tourelles automatiques et semi-automatiques pour protéger l’intérieur. +1 défense", price: 5000, bonus: 1 },
+  { name: "Pièges internes", description: "Des pièges ingénieux parsèment la base. +1 défense", price: 3000, bonus: 1 },
+  { name: "Pulso blaster sol/air", description: "Défense anti-aérienne contre les vaisseaux ennemis. +2 défense", price: 10000, bonus: 2 },
+  { name: "Pulso blaster sol/sol", description: "Pulso-blaster pour contrer les troupes terrestres. +2 défense", price: 12000, bonus: 2 },
+  { name: "Canons à ions", description: "Système avancé de défense anti-vaisseaux. +2 défense", price: 30000, bonus: 2 },
+  { name: "Station orbitale", description: "Poste avancé d'observation et défense spatiale. +3 défense", price: 80000, bonus: 3 },
+  { name: "Drones", description: "Défense basée sur des droïdes autonomes. +3 défense", price: 100000, bonus: 3 },
+  { name: "Boucliers", description: "Protège des assauts énergétiques. +2 défense", price: 50000, bonus: 2 },
+  { name: "Renforcement des murs", description: "Améliore la résistance aux attaques. +1 défense", price: 10000, bonus: 1 }
+]
+
+defenses.each do |defense|
+  Defense.find_or_create_by!(name: defense[:name]) do |d|
+    d.description = defense[:description]
+    d.price = defense[:price]
+    d.bonus = defense[:bonus]
+  end
+end
+
+puts "✅ Systèmes de défense ajoutés avec succès."

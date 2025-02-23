@@ -12,6 +12,8 @@
 @import "components/index";
 @import "pages/index";
 
+@import "pages/observation";
+
 @media screen and (orientation: portrait) {
   body {
     display: flex;
@@ -125,7 +127,7 @@ span {
   position: absolute;
   top: 50%;   /* Centre verticalement par rapport au cadre */
   left: 50%;  /* Centre horizontalement par rapport au cadre */
-  width: 36vw;
+  width: 33vw;
   transform: translate(-50%, -50%); /* Corrige le positionnement pour un vrai centrage */
   z-index: 2;
 }
@@ -408,7 +410,7 @@ span {
 
 .hp-text {
   position: absolute;
-  top: 11px;
+  top: 8px;
   left: 15%;
   font-size: 0.9em;
   color: white;

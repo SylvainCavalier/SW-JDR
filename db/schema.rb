@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_02_17_223735) do
+ActiveRecord::Schema[7.1].define(version: 2025_02_23_140912) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -40,6 +40,18 @@ ActiveRecord::Schema[7.1].define(version: 2025_02_17_223735) do
     t.bigint "blob_id", null: false
     t.string "variation_digest", null: false
     t.index ["blob_id", "variation_digest"], name: "index_active_storage_variant_records_uniqueness", unique: true
+  end
+
+  create_table "apprentices", force: :cascade do |t|
+    t.string "jedi_name"
+    t.bigint "pet_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer "side", default: 0
+    t.string "speciality", default: "Commun"
+    t.integer "midi_chlorians"
+    t.string "saber_style"
+    t.index ["pet_id"], name: "index_apprentices_on_pet_id"
   end
 
   create_table "building_pets", force: :cascade do |t|
@@ -77,6 +89,17 @@ ActiveRecord::Schema[7.1].define(version: 2025_02_17_223735) do
     t.integer "turn"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "defenses", force: :cascade do |t|
+    t.string "name", null: false
+    t.integer "price", null: false
+    t.text "description", null: false
+    t.integer "bonus", default: 0
+    t.bigint "headquarter_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["headquarter_id"], name: "index_defenses_on_headquarter_id"
   end
 
   create_table "enemies", force: :cascade do |t|
@@ -118,6 +141,15 @@ ActiveRecord::Schema[7.1].define(version: 2025_02_17_223735) do
     t.datetime "updated_at", null: false
     t.index ["headquarter_id"], name: "index_headquarter_inventory_objects_on_headquarter_id"
     t.index ["inventory_object_id"], name: "index_headquarter_inventory_objects_on_inventory_object_id"
+  end
+
+  create_table "headquarter_objects", force: :cascade do |t|
+    t.string "name", null: false
+    t.integer "quantity", default: 1
+    t.bigint "user_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_headquarter_objects_on_user_id"
   end
 
   create_table "headquarters", force: :cascade do |t|
@@ -209,6 +241,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_02_17_223735) do
     t.integer "shield_max", default: 0
     t.boolean "creature", default: false, null: false
     t.integer "age", default: 1, null: false
+    t.boolean "force"
     t.index ["status_id"], name: "index_pets_on_status_id"
   end
 
@@ -354,14 +387,17 @@ ActiveRecord::Schema[7.1].define(version: 2025_02_17_223735) do
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "apprentices", "pets"
   add_foreign_key "building_pets", "buildings"
   add_foreign_key "building_pets", "pets"
   add_foreign_key "buildings", "headquarters"
   add_foreign_key "buildings", "pets", column: "chief_pet_id"
+  add_foreign_key "defenses", "headquarters"
   add_foreign_key "enemy_skills", "enemies"
   add_foreign_key "enemy_skills", "skills"
   add_foreign_key "headquarter_inventory_objects", "headquarters"
   add_foreign_key "headquarter_inventory_objects", "inventory_objects"
+  add_foreign_key "headquarter_objects", "users"
   add_foreign_key "holonew_reads", "holonews"
   add_foreign_key "holonew_reads", "users"
   add_foreign_key "holonews", "users"

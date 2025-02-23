@@ -3,6 +3,8 @@ class Pet < ApplicationRecord
   has_many :inventory_objects, through: :pet_inventory_objects
   has_many :pet_skills, dependent: :destroy
   has_many :skills, through: :pet_skills
+  has_many :building_pets, dependent: :destroy
+  has_many :buildings, through: :building_pets
   has_one_attached :image
 
   belongs_to :status, optional: true
@@ -20,6 +22,8 @@ class Pet < ApplicationRecord
   validates :vitesse, numericality: { only_integer: true, greater_than_or_equal_to: 0 }, allow_nil: true
   validates :shield_current, :shield_max, numericality: { only_integer: true, greater_than_or_equal_to: 0 }
   validates :age, numericality: { greater_than_or_equal_to: 1, only_integer: true }
+
+  scope :force_sensitive_humanoids, -> { where(category: "humanoïde", force: true) }
 
   after_commit :resize_image_if_needed
   after_initialize :set_default_values, if: :new_record?

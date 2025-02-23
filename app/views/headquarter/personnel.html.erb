@@ -1,1 +1,32 @@
-lol
+<div class="frame-container m-2" style="position: relative; width: 100%; height: 100vh; overflow-y: auto;" data-controller="headquarter-inventory">
+  <h1>Personnel de la Base</h1>
+
+  <p>Total : <%= @total_personnel %> / Capacité Max : <%= @capacity_max %></p>
+
+  <div class="table-responsive">
+    <table class="table table-bordered table-striped">
+      <thead class="table-dark">
+        <tr>
+          <th style="width: 25%;">Nom</th>
+          <th style="width: 25%;">Race</th>
+          <th style="width: 35%;">Bâtiment</th>
+          <th style="width: 15%;">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @personnel.each do |pet| %>
+          <tr id="personnel_<%= pet.id %>">
+            <td class="text-truncate"><%= pet.name %></td>
+            <td class="text-truncate"><%= pet.race %></td>
+            <td class="text-truncate"><%= pet.building_pets.first&.building&.name || "Aucun" %></td>
+            <td>
+              <%= button_to "❌", remove_personnel_headquarter_path(pet), method: :delete, data: { turbo: false, confirm: "Retirer ce membre du personnel ?" }, class: "btn btn-sm" %>         
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+
+  <%= link_to "Retour", headquarter_path, class: "btn btn-outline-secondary" %>
+</div>

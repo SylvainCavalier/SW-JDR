@@ -227,5 +227,205 @@
         "Défense": "Alimentation optimisée des boucliers et défenses"
       }
     }
+  },
+  "Armurerie": {
+    "1": {
+      "name": "Armurerie",
+      "description": "Une armurerie basique et régulièrement approvisionnée par votre armurier.",
+      "price": 1000,
+      "properties": {
+        "Sécurité": "Basse",
+        "Approvisionnement": "Basique",
+        "Accès": "Libre"
+      }
+    },
+    "2": {
+      "name": "Armurerie sécurisée",
+      "description": "Une armurerie sécurisée et aménagée où vous pourrez retrouver de nombreux types d’armes, alimentée par votre personnel de base.",
+      "price": 3000,
+      "properties": {
+        "Sécurité": "Renforcée",
+        "Approvisionnement": "Avancé",
+        "Accès": "Restreint"
+      }
+    },
+    "3": {
+      "name": "Armurerie de luxe",
+      "description": "L’armurerie de luxe vous permet de retrouver ici 1 arme rare à l’issue de chacune de vos missions.",
+      "price": 6000,
+      "properties": {
+        "Sécurité": "Maximale",
+        "Approvisionnement": "Exceptionnel",
+        "Arme rare": "1 après chaque mission"
+      }
+    }
+  },
+  "Tour de surveillance": {
+    "1": {
+      "name": "Tour panoramique",
+      "description": "Tour d’observation bardée de radars surplombant la base, avec un petit canon pour la défense.",
+      "price": 2000,
+      "properties": {
+        "Observation": "Radar",
+        "Défense": "Petit canon",
+        "Visibilité": "Élevée"
+      }
+    },
+    "2": {
+      "name": "Tour télescopique",
+      "description": "Encore plus moderne, la tour d’observation télescopique peut pivoter pour optimiser son champ de vision.",
+      "price": 6000,
+      "properties": {
+        "Observation": "Radar amélioré",
+        "Défense": "Système de tir automatisé",
+        "Rotation": "Oui"
+      }
+    }
+  },
+  "Centre spirituel": {
+    "1": {
+      "name": "Salle de méditation",
+      "description": "Un espace dédié aux êtres sensibles à la Force pour se recentrer et se découvrir.",
+      "price": 500,
+      "properties": {
+        "Bonus": "+1 en Con, Sens ou Alt à la première méditation",
+        "Ambiance": "Paisible"
+      }
+    },
+    "2": {
+      "name": "Cloître d'entraînement",
+      "description": "Un espace structuré conforme aux normes Jedi pour un entraînement spirituel optimal.",
+      "price": 3000,
+      "properties": {
+        "Bonus": "+1 permanent à la première méditation",
+        "Architecture": "Jedi standard"
+      }
+    },
+    "3": {
+      "name": "Enclave Jedi",
+      "description": "Un complexe spirituel imposant combinant tradition et modernité.",
+      "price": 10000,
+      "properties": {
+        "Bonus": "+2 permanent à la première méditation, bonus temporaires à chaque séance",
+        "Équipements": "Salle d'entraînement Jedi"
+      }
+    }
+  },
+  "Complexe d'entraînement": {
+    "1": {
+      "name": "Salle de sport",
+      "description": "Une salle pour garder une condition physique correcte.",
+      "price": 800,
+      "properties": {
+        "Bonus": "+2 XP permanent",
+        "Équipements": "Basique"
+      }
+    },
+    "2": {
+      "name": "Salle d'entraînement",
+      "description": "Salle équipée pour des exercices avancés avec cibles mobiles.",
+      "price": 5000,
+      "properties": {
+        "Bonus": "+2 XP permanent",
+        "Équipements": "Avancé"
+      }
+    },
+    "3": {
+      "name": "Stade artificiel",
+      "description": "Un espace de combat sécurisé permettant des affrontements réalistes.",
+      "price": 15000,
+      "properties": {
+        "Bonus": "+2 XP permanent",
+        "Fonctionnalité": "Duels et combats non mortels entre joueurs"
+      }
+    }
+  },
+  "Laboratoire de recherche": {
+    "1": {
+      "name": "Laboratoire artisanal",
+      "description": "Un espace rudimentaire pour les biosavants débutants.",
+      "price": 1000,
+      "properties": {
+        "Bonus": "+2 aux jets d'artisanat",
+        "Équipements": "Basique"
+      }
+    },
+    "2": {
+      "name": "Laboratoire aménagé",
+      "description": "Un laboratoire bien équipé pour des recherches avancées.",
+      "price": 3000,
+      "properties": {
+        "Bonus": "+1D aux jets d'artisanat",
+        "Équipements": "Standard"
+      }
+    },
+    "3": {
+      "name": "Laboratoire modernisé",
+      "description": "Un complexe de recherche avancé doté de cuves et de matériel sophistiqué.",
+      "price": 10000,
+      "properties": {
+        "Bonus": "+1D aux jets d'artisanat, +1 en génétique",
+        "Équipements": "Haut de gamme"
+      }
+    }
+  },
+  "Atelier d'ingénierie": {
+    "1": {
+      "name": "Établi artisanal",
+      "description": "Une planche sur deux tréteaux, mais utile pour les ingénieurs astucieux.",
+      "price": 1000,
+      "properties": {
+        "Bonus": "+1 en ingénierie",
+        "Équipements": "Minimaliste"
+      }
+    },
+    "2": {
+      "name": "Établi aménagé",
+      "description": "Un espace équipé pour un travail plus efficace.",
+      "price": 3000,
+      "properties": {
+        "Bonus": "+2 aux jets d'artisanat",
+        "Équipements": "Moyen"
+      }
+    },
+    "3": {
+      "name": "Établi modernisé",
+      "description": "Un atelier équipé de technologies avancées pour optimiser l'ingénierie.",
+      "price": 10000,
+      "properties": {
+        "Bonus": "+1D aux jets d'artisanat",
+        "Équipements": "Haute technologie"
+      }
+    }
+  },
+  "Refuge animalier": {
+    "1": {
+      "name": "Animalerie",
+      "description": "Un petit refuge où les animaux peuvent se reposer et se nourrir.",
+      "price": 500,
+      "properties": {
+        "Capacité": "5 emplacements",
+        "Fonction": "Vétérinaire"
+      }
+    },
+    "2": {
+      "name": "Écuries",
+      "description": "Un espace plus grand avec des infrastructures adaptées à l'élevage.",
+      "price": 2000,
+      "properties": {
+        "Capacité": "10 emplacements",
+        "Fonction": "Élevage possible"
+      }
+    },
+    "3": {
+      "name": "Zoo",
+      "description": "Un grand espace aménagé où les animaux prospèrent en toute sécurité.",
+      "price": 5000,
+      "properties": {
+        "Capacité": "30 emplacements",
+        "Bonus": "+3 PV max temporaires",
+        "Fonction": "Élevage possible"
+      }
+    }
   }
 }

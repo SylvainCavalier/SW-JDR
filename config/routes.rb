@@ -51,8 +51,19 @@ Rails.application.routes.draw do
   resources :subscriptions, only: [:create, :destroy]
 
   resource :headquarter, only: [:show, :edit, :update] do
-    member do
+    collection do
       get :inventory
+      get :observation
+      patch :inventory
+      post :add_item
+      delete "remove_personnel/:id", to: "headquarter#remove_personnel", as: :remove_personnel
+      get :defenses
+      post "buy_defense/:id", to: "headquarter#buy_defense", as: :buy_defense
+    end
+  
+    member do
+      patch 'update_quantity/:id', to: 'headquarter#update_quantity', as: :update_quantity
+      delete 'remove_item/:id', to: 'headquarter#remove_item', as: :remove_item
       get :buildings
       get :personnel
       get :shop
@@ -60,19 +71,24 @@ Rails.application.routes.draw do
       get :credits
       post :transfer_credits
       get :observation
-      patch 'remove_item/:item_id', to: 'headquarter#remove_item', as: 'remove_item'
-      post 'give_item', to: 'headquarter#give_item', as: 'give_item'
     end
   end
 
   resources :buildings, only: [] do
     patch :upgrade, on: :member
+    patch :assign_pet, on: :member
+    patch :set_chief_pet, on: :member
+    delete :remove_pet, on: :member
   end
 
   resources :holonews, only: [:index, :new, :create]
   get 'holonews/count', to: 'holonews#count'
 
   resources :enemies, only: [:create, :update, :destroy]
+
+  resources :apprentices do
+    post :create_from_pet, on: :collection, as: :create
+  end
 
   resources :pets do
     collection do

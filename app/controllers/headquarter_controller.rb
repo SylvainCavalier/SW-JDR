@@ -7,6 +7,9 @@ class HeadquarterController < ApplicationController
   def edit
   end
 
+  def observation
+  end
+
   def update
     if @headquarter.update(headquarter_params)
       redirect_to headquarter_path, notice: "Base mise à jour"
@@ -29,35 +32,56 @@ class HeadquarterController < ApplicationController
   end
 
   def inventory
-    @headquarter_inventory_items = @headquarter.headquarter_inventory_objects.includes(:inventory_object)
+    @headquarter_objects = User.includes(:avatar_attachment) # Précharge les avatars
+                               .index_with { |user| HeadquarterObject.where(user: user) }
+                               .sort_by { |user, _| user == current_user ? 0 : 1 }
+                               .to_h
   end
 
-  def remove_item
-    item = @headquarter.headquarter_inventory_objects.find(params[:id])
-    if item.quantity > 1
-      item.update(quantity: item.quantity - 1)
-    else
+  def update_quantity
+    item = HeadquarterObject.find(params[:id])
+    change = params[:change].to_i
+  
+    if change == -1 && item.quantity <= 1
       item.destroy
-    end
-    redirect_to headquarter_inventory_path, notice: "#{item.inventory_object.name} supprimé."
-  end
-
-  def give_item
-    item = @headquarter.headquarter_inventory_objects.find(params[:item_id])
-    recipient = User.find(params[:recipient_id])
-    
-    if item.quantity >= params[:quantity].to_i
-      UserInventoryObject.create(user: recipient, inventory_object: item.inventory_object, quantity: params[:quantity])
-      item.update(quantity: item.quantity - params[:quantity].to_i)
-      item.destroy if item.quantity.zero?
-      redirect_to headquarter_inventory_path, notice: "#{params[:quantity]} #{item.inventory_object.name} donnés à #{recipient.username}."
+      render json: { removed: true, item_id: item.id }
     else
-      redirect_to headquarter_inventory_path, alert: "Quantité invalide."
+      item.update(quantity: item.quantity + change)
+      render json: { item_id: item.id, new_quantity: item.quantity }
     end
+  end
+  
+  def add_item
+    item_name = params[:name].strip
+    quantity = params[:quantity].to_i
+  
+    if item_name.blank? || quantity <= 0
+      render json: { error: "Nom invalide ou quantité insuffisante." }, status: :unprocessable_entity
+      return
+    end
+  
+    item = HeadquarterObject.find_or_initialize_by(name: item_name, user: current_user)
+
+    if item.new_record?
+      item.quantity = quantity
+    else
+      item.quantity += quantity
+    end
+
+    item.save!
+  
+    render json: { item_id: item.id, name: item.name, new_quantity: item.quantity, user_id: current_user.id }
+  end
+  
+  def remove_item
+    item = HeadquarterObject.find(params[:id])
+    item.destroy
+  
+    render json: { removed: true, item_id: item.id }
   end
 
   def buildings
-    @buildings = @headquarter.buildings
+    @buildings = @headquarter.buildings.includes(:pets)
     @available_buildings = Building.all - @buildings
   end
 
@@ -66,9 +90,6 @@ class HeadquarterController < ApplicationController
   end
 
   def shop
-  end
-
-  def defense
   end
 
   def credits
@@ -107,6 +128,60 @@ class HeadquarterController < ApplicationController
   rescue => e
     flash.now[:alert] = "Une erreur s'est produite : #{e.message}"
     render :credits, status: :internal_server_error
+  end
+
+  def personnel
+    @headquarter = Headquarter.first # Unique HQ
+  
+    @personnel = Pet.joins(:building_pets)
+                    .joins("INNER JOIN buildings ON buildings.id = building_pets.building_id")
+                    .where("buildings.headquarter_id = ?", @headquarter.id)
+                    .includes(building_pets: :building)
+  
+    @total_personnel = @personnel.count
+  
+    @dormitory = @headquarter.buildings
+                         .where(category: "Dortoirs")
+                         .order(level: :desc)
+                         .first
+
+    @capacity_max = @dormitory ? @dormitory.level * 10 : 0
+  end
+
+  def remove_personnel
+    @building_pet = BuildingPet.find_by(pet_id: params[:id])
+  
+    if @building_pet
+      @building_pet.destroy
+  
+      respond_to do |format|
+        format.turbo_stream { render turbo_stream: turbo_stream.remove("personnel_#{params[:id]}") }
+        format.html { redirect_to personnel_headquarter_path, notice: "Membre supprimé avec succès." }
+      end
+    else
+      respond_to do |format|
+        format.html { redirect_to personnel_headquarter_path, alert: "Erreur : ce membre du personnel n'est pas affecté à un bâtiment." }
+      end
+    end
+  end
+
+  def defenses
+    @headquarter = Headquarter.first
+    @installed_defenses = @headquarter.defenses || []
+    @available_defenses = Defense.where.not(id: @installed_defenses.pluck(:id)) || []
+  end
+
+  def buy_defense
+    @headquarter = Headquarter.first
+    defense = Defense.find(params[:id])
+  
+    if @headquarter.credits >= defense.price && !@headquarter.defenses.include?(defense)
+      @headquarter.defenses << defense
+      @headquarter.update(credits: @headquarter.credits - defense.price)
+      redirect_to defenses_headquarter_path, notice: "Défense achetée avec succès !"
+    else
+      redirect_to defenses_headquarter_path, alert: "Achat impossible."
+    end
   end
 
   private

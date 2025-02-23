@@ -1,6 +1,8 @@
 class Building < ApplicationRecord
   belongs_to :headquarter
   belongs_to :chief_pet, class_name: 'Pet', optional: true
+  has_many :building_pets, dependent: :destroy
+  has_many :pets, through: :building_pets
 
   validates :name, presence: true
   validates :level, numericality: { only_integer: true, equal_or_greater_than: 0 }

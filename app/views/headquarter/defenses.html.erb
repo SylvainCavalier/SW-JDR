@@ -1,0 +1,47 @@
+<div class="frame-container" style="position: relative; width: 100%; height: 100vh; overflow-y: auto; overflow-x: hidden;">
+  <div class="d-flex justify-content-between align-items-center">
+    <%= link_to "Retour", headquarter_path, class: "btn btn-outline-secondary m-2" %>
+    <h1 class="text-center text-success">Défenses de la Base</h1>
+    <i class="fa-solid fa-shield-halved"></i>
+  </div>
+
+  <% if @installed_defenses.any? %>
+    <div class="row m-2">
+      <% @installed_defenses.each do |defense| %>
+        <div class="col-12 col-md-6 mb-2">
+          <div class="card bg-dark text-light p-3 shadow-lg rounded defense-card">
+            <h3 class="text-success text-center"><%= defense.name %></h3>
+            <p class="text-success text-center"><%= defense.description %></p>
+            <div class="d-flex justify-content-between align-items-center">
+              <span class="text-warning">Bonus Défense: <strong>+<%= defense.bonus %></strong></span>
+              <span class="badge bg-success">Installée</span>
+            </div>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  <% else %>
+    <p class="text-warning text-center">Aucune défense installée.</p>
+  <% end %>
+
+  <h2 class="text-success text-center mt-4">Défenses disponibles à l'achat</h2>
+
+  <% if @available_defenses.any? %>
+    <div class="row m-2">
+      <% @available_defenses.each do |defense| %>
+        <div class="col-12 col-md-6 mb-2">
+          <div class="card bg-dark text-light p-3 shadow-lg rounded defense-card">
+            <h3 class="text-success text-center"><%= defense.name %></h3>
+            <p class="text-warning text-center">Non installée</p>
+            <div class="d-flex justify-content-between align-items-center">
+              <span class="text-warning">Bonus Défense: <strong>+<%= defense.bonus %></strong></span>
+              <%= button_to "Acheter (#{defense.price} crédits)", buy_defense_headquarter_path(id: defense.id), method: :post, class: "btn btn-outline-warning btn-sm" %>
+            </div>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  <% else %>
+    <p class="text-warning text-center">Toutes les défenses disponibles sont déjà installées.</p>
+  <% end %>
+</div>

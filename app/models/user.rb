@@ -8,6 +8,7 @@ class User < ApplicationRecord
   belongs_to :race, optional: true
   belongs_to :classe_perso, class_name: "ClassePerso", foreign_key: "classe_perso_id", optional: true
   belongs_to :pet, optional: true
+  has_one :apprentice, dependent: :nullify
   has_many :subscriptions, dependent: :destroy
   has_many :user_inventory_objects
   has_many :inventory_objects, through: :user_inventory_objects

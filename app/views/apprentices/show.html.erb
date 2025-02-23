@@ -1,0 +1,27 @@
+<h1><%= @apprentice.jedi_name %> (<%= @apprentice.speciality %>)</h1>
+
+<p>Nom d'origine : <%= @apprentice.pet.name %></p>
+<p>Maître Jedi : <%= @apprentice.user.username %></p>
+<p>Côté de la Force : <%= @apprentice.side %></p>
+<p>Midi-chloriens : <%= @apprentice.midi_chlorians %></p>
+<p>Style au sabre : <%= @apprentice.saber_style || "Non défini" %></p>
+
+<h2>Compétences</h2>
+<table class="table">
+  <thead>
+    <tr>
+      <th>Compétence</th>
+      <th>Maîtrise (D)</th>
+      <th>Bonus</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @apprentice.apprentice_skills.includes(:skill).each do |as| %>
+      <tr>
+        <td><%= as.skill.name.capitalize %></td>
+        <td><%= as.mastery %>D</td>
+        <td><%= as.bonus %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
