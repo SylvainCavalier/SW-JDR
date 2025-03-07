@@ -427,5 +427,83 @@
         "Fonction": "Élevage possible"
       }
     }
+  },
+  "Cantina": {
+    "1": {
+      "name": "Salle de vie",
+      "description": "Quelques tonneaux pour s'asseoir et 3 ou 4 jeux de pazaac pour passer le temps",
+      "price": 500,
+      "properties": {
+        "Moral de la base": "Amélioré",
+        "Achat": "Boissons basiques"
+      }
+    },
+    "2": {
+      "name": "Salle de vie avec cuisine",
+      "description": "Salle de vie plus agréable à vivre, avec une cuisine pour les repas.",
+      "price": 1000,
+      "properties": {
+        "Moral de la base": "Amélioré",
+        "Achat": "Boissons et repas",
+        "Bonus": "+2 aux jets de perception pendant 2 jours"
+      }
+    },
+    "3": {
+      "name": "Salle de vie confortable",
+      "description": "Salle de vie confortable avec de nombreuses installations de loisir, et même un vibro-baby-foot.",
+      "price": 3000,
+      "properties": {
+        "Moral de la base": "Amélioré",
+        "Achat": "Boissons et repas",
+        "Bonus": "+1D aux jets de perception pendant 2 jours"
+      }
+    },
+    "4": {
+      "name": "Salle de vie moderne",
+      "description": "Salle de vie moderne avec des toboggans, des piscines à balles et des jeux vidéo. Inutile donc indispensable.",
+      "price": 5000,
+      "properties": {
+        "Moral de la base": "Au top",
+        "Achat": "Boissons et repas",
+        "Bonus": "+1D aux jets de perception pendant 2 jours"
+      }
+    }
+  },
+  "Réserve": {
+    "1": {
+      "name": "Cavité de réserve",
+      "description": "Une cavité humide pour y ranger les fournitures nécessaires à la base.",
+      "price": 500,
+      "properties": {
+        "Capacité": "30 objets"
+      }
+    },
+    "2": {
+      "name": "Réserve",
+      "description": "Une vraie réserve avec de vraies étagères et quelques caisses au rangement presque logique",
+      "price": 1000,
+      "properties": {
+        "Capacité": "50 objets"
+      }
+    },
+    "3": {
+      "name": "Réserve aménagée",
+      "description": "Une réserve sécurisée et aménagée spécialement contre l'humidité, les champignons et les indélicatesses des voleurs",
+      "price": 2000,
+      "properties": {
+        "Capacité": "100 objets",
+        "Reserve sécurisée": "Oui"
+      }
+    },
+    "4": {
+      "name": "Réserve de luxe",
+      "description": "Une réserve de luxe avec des étagères en bois précieux et des caisses en cuir de bantha",
+      "price": 5000,
+      "properties": {
+        "Capacité": "infini",
+        "Reserve sécurisée": "Oui",
+        "Reserve secrète": "Oui"
+      }
+    }
   }
 }
