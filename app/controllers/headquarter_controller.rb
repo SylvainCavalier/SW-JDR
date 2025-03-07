@@ -131,12 +131,13 @@ class HeadquarterController < ApplicationController
   end
 
   def personnel
-    @headquarter = Headquarter.first # Unique HQ
+    @headquarter = Headquarter.first
   
     @personnel = Pet.joins(:building_pets)
                     .joins("INNER JOIN buildings ON buildings.id = building_pets.building_id")
                     .where("buildings.headquarter_id = ?", @headquarter.id)
                     .includes(building_pets: :building)
+                    .order(:name)
   
     @total_personnel = @personnel.count
   
