@@ -16,11 +16,11 @@
     </tr>
   </thead>
   <tbody>
-    <% @apprentice.apprentice_skills.includes(:skill).each do |as| %>
+    <% @apprentice.pet_skills.includes(:skill).each do |ps| %>
       <tr>
-        <td><%= as.skill.name.capitalize %></td>
-        <td><%= as.mastery %>D</td>
-        <td><%= as.bonus %></td>
+        <td><%= ps.skill.name.capitalize %></td>
+        <td><%= ps.mastery %>D</td>
+        <td><%= ps.bonus %></td>
       </tr>
     <% end %>
   </tbody>
