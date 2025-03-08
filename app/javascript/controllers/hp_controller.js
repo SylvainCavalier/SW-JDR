@@ -61,18 +61,18 @@ export default class extends Controller {
     for (let i = 0; i < buyAmount; i++) {
         // Pour chaque PV max (achetés + gratuits), on ne compte que ceux réellement achetés
         if (this.element.dataset.robustesse === "true") {
-            console.log("Robustesse activée");
+          console.log("Robustesse activée");
 
-            // On compte un coût uniquement pour les PV achetés (pairs dans ce cas)
-            if (actualBuyCount % 2 === 0) {
-                const costPerPoint = Math.floor((simulatedMaxHp + 1) / 10);
-                totalCost += costPerPoint;
-                console.log(`CostPerPoint pour HP acheté ${actualBuyCount + 1} :`, costPerPoint);
-            }
+          // Calcul du coût basé sur le HP après l'achat et le bonus
+          if (actualBuyCount % 2 === 0) {
+              const costPerPoint = Math.floor((this.maxHp + actualBuyCount) / 10);
+              totalCost += costPerPoint;
+              console.log(`CostPerPoint pour HP acheté ${actualBuyCount + 1} :`, costPerPoint);
+          }
 
-            // Simule le passage de 2 PV max (1 acheté + 1 gratuit)
-            simulatedMaxHp += 2;
-            actualBuyCount++;
+          // On ajoute 2 PV (1 acheté + 1 gratuit)
+          simulatedMaxHp += 2;
+          actualBuyCount++;
         } else {
             console.log("Robustesse désactivée");
             const costPerPoint = Math.floor(simulatedMaxHp / 10);
