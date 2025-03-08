@@ -1,5 +1,13 @@
 <div class="combat-container">
   <h1 class="text-center mb-4">Assistant de Combat</h1>
+    <div class="force-field-container">
+      <div class="force_field">
+        <div class="sword">
+          <div class="grip"></div>
+          <div class="beam"></div>
+        </div>
+      </div>
+  </div>
 
   <% participants = User.where.not(vitesse: nil).order(vitesse: :desc) + Enemy.order(vitesse: :desc, enemy_type: :asc, number: :asc) %>
 

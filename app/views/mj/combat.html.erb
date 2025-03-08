@@ -1,6 +1,57 @@
 <div class="combat-container">
   <h1 class="text-center mb-4">Gestion du Combat</h1>
 
+  <!-- Formulaire d'ajout d'ennemis -->
+  <div class="enemy-form-box p-4">
+    <p>Ajouter un ennemi</p>
+    <%= simple_form_for @enemy, url: add_enemy_path, method: :post do |f| %>
+      <div class="row">
+        <!-- Champs pour Enemy -->
+        <div class="col-12 col-sm-3">
+          <%= f.input :enemy_type, collection: ["Trandoshan", "Créature", "Terentatek", "Mandalorien", "Garde", "Droïde", "Bandit", "Chasseur", "Ennemi CaC", "Ennemi distant", "Lieutenant", "Boss"], 
+                      label: "Type d'ennemi", prompt: "Sélectionnez un type", class: "form-control" %>
+        </div>
+        <div class="col-12 col-sm-2">
+          <%= f.input :hp_max, label: "PV Max", input_html: { min: 1, value: 20, class: "form-control" } %>
+        </div>
+        <div class="col-12 col-sm-2">
+          <%= f.input :shield_max, label: "Bouclier Max", input_html: { min: 0, value: 0, class: "form-control" } %>
+        </div>
+        <div class="col-12 col-sm-2">
+          <%= f.input :vitesse, label: "Vitesse", input_html: { min: 1, value: 15, class: "form-control" } %>
+        </div>
+      </div>
+
+      <!-- Champs pour EnemySkills -->
+      <%= f.fields_for :enemy_skills do |es| %>
+        <% skill_name = es.object.skill&.name %>
+        
+        <% if skill_name == "Résistance Corporelle" %>
+          <div class="d-flex align-items-center flex-wrap mb-2">
+            <p class="me-2 mt-3">Résistance Corporelle</p>
+            <div class="input-group custom-input-group me-2" style="width: auto;" data-controller="increment">
+              <%= button_tag "-", type: "button", class: "btn btn-outline-secondary btn-sm", data: { action: "click->increment#decrement" } %>
+              <%= es.number_field :mastery, value: es.object.mastery || 0, min: 0, class: "form-control form-control-sm text-center", style: "width: 45px;", data: { "increment-target" => "input" } %>
+              <%= button_tag "+", type: "button", class: "btn btn-outline-secondary btn-sm", data: { action: "click->increment#increment" } %>
+            </div>
+            <span class="mx-1">D +</span>
+            <div class="input-group custom-input-group ms-2" style="width: auto;" data-controller="increment">
+              <%= button_tag "-", type: "button", class: "btn btn-outline-secondary btn-sm", data: { action: "click->increment#decrement" } %>
+              <%= es.number_field :bonus, value: es.object.bonus || 0, min: 0, class: "form-control form-control-sm text-center", style: "width: 45px;", data: { "increment-target" => "input" } %>
+              <%= button_tag "+", type: "button", class: "btn btn-outline-secondary btn-sm", data: { action: "click->increment#increment" } %>
+            </div>
+          </div>
+        <% end %>
+
+        <%= es.hidden_field :skill_id %>
+      <% end %>
+
+      <div class="col-12 col-sm-2 d-flex align-items-end">
+        <%= f.submit "Ajouter", class: "btn btn-outline-success w-100" %>
+      </div>
+    <% end %>
+  </div>
+
   <div class="d-flex align-items-center mb-3" data-controller="combat">
     <h2 class="me-3">Tour actuel :</h2>
     <div class="d-flex align-items-center">
