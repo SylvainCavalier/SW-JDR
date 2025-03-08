@@ -777,7 +777,7 @@ Les actions en défense sont à part, elles peuvent être utilisées à n'import
 A noter qu'il est possible de retarder son tour d'action pendant le tour de jeu, afin d'agir après un autre personnage au lieu d'agir avant. Cela retarde d'autant la durée des effets positifs et négatifs qui s'appliquent au joueur pour un certain nombre de rounds, mais aussi la remise à zéro des actions en défense, alors attention.
 Les actions combinées : Il est possible de prévoir d'interagir avec un autre personnage pour faire des actions plus complexes à plusieurs en cours de combat. Les joueurs les plus rapides devront alors retarder leur action au moment du tour du joueur le plus lent de ceux qui participent à l'action combinée.
 
-**3 – Les dégâts et DD**
+#### 3. Les dégâts et DD
 DD signifie « Dés de Dégâts », ils représentent le nombre de dés à lancer pour déterminer les dégâts donnés ou subis. Chaque arme a sa propre puissance.
 Les dégâts à mains nues sont le jet de vigueur -1DD. En clair, un personnage qui a 5D de Vig et qui frappe à mains nues lancera 4DD s'il touche l'ennemi.
 Les dégâts peuvent être réduits en fonction des circonstances. La plupart du temps, il s'agira de prendre en compte le jet de précision précédent : ainsi, un personnage joueur ou ennemi qui a été touché de peu, ou qui a gagné de peu un jet opposé, verra ses dégâts réduits de -1DD.
@@ -785,7 +785,7 @@ Les dégâts ne sont pas tout de suite subis sous forme de PV. Ils se voient opp
 Si la Res Corp est supérieure aux dégâts, alors le personnage perd tout de même 1PV, par souci de cohérence de jeu et de dynamisme.
 Cependant, si la Res Corp est plus de 2 fois supérieure aux dégâts, alors le personnage ne prend aucun dégât.
 
-**4- Dégâts de zone et Dégâts en cône**
+#### 4. Dégâts de zone et Dégâts en cône
 Les dégâts d'une arme peuvent aussi provoquer des dégâts de zone, comme les explosifs ou les diffuseurs aérosol, mais aussi des dégâts en cône, comme les armes lourdes (canons, blasters mitrailleurs, armes de véhicules...).
 Les dégâts de zone provoquent des dégâts sur un certain périmètre autour du point d'impact, en général 10x10m. Pour les esquiver, il ne faut pas seulement faire un chiffre en esquive plus grand que le chiffre de lancer de la grenade. Chaque seuil de 5 supplémentaire permet d'esquiver 1D de dégâts en plus de la grenade.
 Exemple : Le lanceur fait 16 en jet de lancer et le défenseur fait 17 en esquive. Le jet de dégâts de la grenade est de 5DD. Il réussira à s'éloigner suffisamment pour ne recevoir que 4DD.
@@ -793,7 +793,7 @@ Pour esquiver plus que cela, il faudrait qu'il dépasser le jet de lancer d'au m
 Le dégât de zone est donc beaucoup plus dur à éviter complètement que le dégât direct.
 Le dégât de cône fonctionne presque de la même façon, tout ceux qui sont dans le cône de l'attaque sont touchés, faire plus en esquive que le jet de tir permet d'éviter seulement 1DD de dégâts, mais il suffit cette fois de faire un seuil de 5 supplémentaire en esquive par rapport au jet de lancer pour sortir complètement du cône d'attaque et éviter l'intégralité des dégâts.
 
-**5- La parade**
+#### 5. La parade
 La parade est toujours possible que l'on soit à mains nues ou avec une arme à la main.
 Cependant les règles diffèrent un peu selon la situation.
 La parade à mains nues opposée à une attaque à mains nues, permet d'annuler la moitié des dégâts bruts lorsque le jet de combat à mains nues du défenseur est plus élevé que celui de l'attaquant.
@@ -804,7 +804,7 @@ La parade à l'arme blanche opposée à une attaque à l'arme blanche, permet si
 La parade à l'arme blanche opposée à une attaque à distance permet d'annuler également l'intégralité des dégâts ennemis. Cependant, si les dégâts absorbés sont au moins égaux à 5DD, l'arme du défenseur a une chance de se briser de 4/12 (il faut qu'il fasse au moins 4 au jet de chance). Exception faite, bien entendu, des sabre-laser, dont la lame est composée de lumière concentrée.
 La parade à l'arme à distance (par exemple, si le défenseur a un blaster à la main), sera considérée comme une parade à l'arme blanche, à la nuance près que celle-ci ne peut pas infliger de dégâts en parant.
 
-**6 – Les séquelles**
+#### 6. Les séquelles
 Les coups qui font passer le personnage sous 0 PV peuvent entrainer des séquelles permanentes, dont la teneur dépend d'un jet de chance (D12)  
 Jet de chance 12 : Aucune séquelle  
 Jet de chance 10-11 : Le personnage perd 1 PV max  
@@ -814,7 +814,7 @@ Jet de chance 4-5 : Le personnage est grièvement blessé, doit être hospitali
 Jet de chance 2-3 : Le personnage est grièvement blessé, doit être hospitalisé d'urgence et perd 2PV max + perd définitivement un membre (bras, jambe)
 Jet de chance 1 : Le personnage est dans le coma, doit être hospitalisé d'urgence et perd 1D dans une caractéristique et toutes les compétences afférentes.
 
-**7 – Le malus de distance**
+#### 7. Le malus de distance
 Plus la distance est importante avec la cible, plus il est difficile de toucher à distance.
 À moins de 5 mètres, l'impact de la distance est nul et l'ennemi a beaucoup de mal à esquiver : Il faut faire 5 pour toucher, et le défenseur a un malus de -1D à son jet d'esquive, hors dons ou pouvoirs particuliers d'intuition.
 Entre 5 et 20 mètres, l'impact de la distance est ressentie, il faut faire 10 pour toucher
@@ -823,7 +823,7 @@ Au delà de 50 mètres de distance, il faut faire 20 pour toucher avec une arme 
 Si l'ennemi est à couvert, le seuil de difficulté est augmenté de 5 pour le tireur.
 Si l'ennemi est caché (à couvert pendant un tour entier sans attaquer), il est impossible à atteindre.
 
-**8 - Utilisation des dons**
+#### 8. Utilisation des dons
 Les dons s'utilisent comme n'importe quelle compétence, en tant qu'action d'attaque, de défense, de soutien, de soin ou de mouvement.
 Un don de défense peut donc être utilisé à tout moment du combat, alors que les autres dons ne sont utilisables que pendant le tour du joueur.
 Le joueur peut utiliser plusieurs dons différents pendant son tour d'action, tant que cela respecte les règles d'utilisation des compétences classiques (une seule action de mouvement, d'action et de soutien par tour).
@@ -834,14 +834,14 @@ _Illimité_ : Dons classiques, ils peuvent être joués en combat ou en dehors 
 _1/combat_ : Ils ne peuvent être utilisés qu'une seule fois par combat, pour des raisons d'équilibrage en raison de leur trop grande puissance, ou pour des questions de logique de jeu. La phase de combat peut durer le temps de plusieurs vagues d'ennemis différents, ce qui compte pour identifier une même phase de combat c'est que celle-ci s'opère dans une continuité, avec une identité de lieu, et des ennemis de même nature. Dès lors que le jeu est marqué d'un temps d'arrêt des combats et de quelques minutes de discussion dans le cadre d'une autre phase de jeu, avec un changement d'endroit, le combat qui s'en suivrait serait un nouveau combat, et le don pourrait être réutilisé.
 _1/jour_ : Ils ne peuvent être utilisés qu'une seule fois par jour, pour des raisons d'équilibrage en raison de leur trop grande puissance, ou pour des questions de logique de jeu. Le jour de jeu dépend en fait non pas de la durée de la journée sur une planète donnée, mais du moment où les Pjs se reposent durablement après une mission ou en cours de mission.
 
-**9 - Utilisation des pouvoirs Jedi**
+#### 9. Utilisation des pouvoirs Jedi
 Les pouvoirs suivent les mêmes règles que les dons. Il en est des offensifs, des défensifs, de soutien, de soin. Tout comme les dons, on peut utiliser plusieurs pouvoirs par tour, tant que l'on ne dépasse pas la limite d'une action d'attaque, de mouvement et de soutien.
 Il y a une limite à l'utilisation des pouvoirs Jedi, mais qui ne marche pas de la même façon que pour les dons. Elle est basée sur l'épuisement. Effectivement, un Jedi qui fait trop appel à la Force peut épuiser sa capacité à le faire, et plus le pouvoir est puissant, plus la probabilité est grande qu'il provoque l'épuisement du Jedi.
 Celui-ci lance un jet de chance (D12) après chaque pouvoir.
 Si un pouvoir a une capacité d'épuisement de 4, alors le Jedi doit faire au moins 4 à son jet pour ne pas subir l'épuisement.
 S'il est épuisé, le Jedi ne peut plus lancer aucun pouvoir jusqu'à son prochain temps de repos d'au moins 1h.
 
-**10 – Utilisation d'un medipack**  
+#### 10. Utilisation d'un medipack
 Le médipack est un objet spécial dont l'utilisation prend un tour entier.  
 Cela signifie que jusqu'au tour suivant du joueur, il est en train de soigner quelqu'un ou lui-même et il ne lance donc le jet de médecine qu'au tour suivant pour octroyer la récupération de points de vie.  
 Le tour du soigné est sauté pendant la durée du soin.  
@@ -850,7 +850,7 @@ Si le soigneur est touché par une attaque, sa tentative de soin est ratée et l
 Les effets des pouvoirs de soin Jedi sont immédiats et ne prennent pas un tour complet.
 Certains dons permettent également de réduire la durée des soins.
 
-**11 – Les attaques d'opportunité**
+#### 11. Les attaques d'opportunité
 Il est parfois possible pour un PJ d'attaquer l'ennemi même quand ce n'est pas son tour de jouer.  
 Cette situation s'appelle l'attaque d'opportunité.
 La règle générale est que l'AO est possible lorsque l'ennemi, au cours d'une action de mouvement, se retrouve à passer à portée du PJ (qui peut alors lancer une attaque d'opportunité de corps à corps) ou à passer devant la ligne de mire du PJ qui vient d'attaquer le tour précédent (qui peut alors lancer une attaque d'opportunité à distance).
@@ -861,12 +861,12 @@ Pour toucher, l'attaquant d'opportunité lance son jet de compétence comme s'il
 L'AO n'est pas automatique car est une action hors-tour, il faut que le joueur soit réactif et déclare rapidement qu'il lance une attaque d'opportunité s'il voit que l'ennemi passe à sa portée.
 On ne peut lancer qu'une seule AO par tour.
 
-**12 – L'attaque surprise**
+#### 12. L'attaque surprise
 Les attaques offensives lancées dans le cadre d'une embuscade, sont des attaques surprises.
 Les attaques surprises sont impossibles à esquiver ou parer à moins que les défenseurs ne réussissent un jet d'intuition ou un don équivalent pour déterminer s'ils sentent venir l'attaque surprise. La réussite de base d’un jet d’intuition est 15, ou il s’oppose au jet de discrétion ennemi.
 Les jets de précision et de dégâts sont alors lancés contre les défenseurs, qui ne lanceront toutefois leur jet de vitesse de la phase d'engagement qu'à la fin du tour de tous les attaquants surprise.
 
-**13 – L'attaque à deux armes**
+#### 13. L'attaque à deux armes
 Il est possible d'avoir une arme dans chaque main ou une double arme (double vibro-lame, double sabre-laser), ce qui permet d'attaquer une fois pour chaque main, donc 2 fois dans le même tour.
 Cependant, le prix à payer est un malus de -2D de précision à chaque main.
 Certains dons passifs, pouvoirs ou objets réduisent ce malus.
@@ -875,7 +875,7 @@ Une attaque à deux armes ou avec une double arme est considérée comme étant 
 Si le joueur bénéficie d'un effet lui donnant 1 action supplémentaire par tour, alors il peut effectuer 2 fois 1 action par main, ce qui revient à 4 attaques.
 Si le joueur utilise un don d'attaque, celui-ci s'appliquera à l'attaque de chacune de ses mains, car l'utilisation des deux mains ne constitue qu'une seule action.
 
-**14 – Les différents statuts en combat**
+#### 14. Les différents statuts en combat
 Le statut de base d'un joueur en combat est « en pleine forme ».
 Cependant il peut arriver que les PJ ou les PNJ obtiennent des statuts particuliers en combat, positifs ou négatifs.
 Statuts positifs :
@@ -899,12 +899,12 @@ _Agonisant_ : Le défenseur vient de passer en dessous de 0 PV suite à une att
 _Inconscient_ : Le défenseur est à 0 PV ou moins mais son état est stable, il est donc seulement inconscient. Il ne peut plus rien faire tant qu'il ne repasse pas au dessus de 0 PV. Lorsqu’il repasse au dessus de 0 PV en combat, il a besoin d’un tour entier de récupération avant de pouvoir à nouveau effectuer des actions.
 _Mort_ : Le défenseur est passé en dessous de -10 PV, il est donc mort. À moins qu'un de ses alliés ou lui-même ait un don ou pouvoir particulier pour l'éviter, cet état est définitif. Voir point 20- la mort et le wipe.
 
-**15 – La couverture**
+#### 15. La couverture
 Il est nécessaire de tenir compte de quand le personnage se cache derrière une caisse, une barrière, un container, etc. pour se protéger. La possibilité de le touche dépend alors de s'il est actif et continue d'attaquer et d'agir derrière sa position de couverture.
 Ainsi, s'il ne fait aucune action de mouvement ou d'attaque ce tour, alors il est impossible à toucher à distance, il est en statut caché.
 S'il continue à attaquer ou bouger de place, malgré la couverture il deviendra possible de le toucher, mais cela deviendra plus difficile à cause du statut à couvert, avec une difficulté de toucher relevée d'un seuil (+5).
 
-**16 – Mode discrétion**
+#### 16. Mode discrétion
 Pour ne pas être vu des ennemis, un joueur qui n'est pas déjà repéré ou qui s'est mis hors de vue des ennemis peut lancer un jet de discrétion. Sauf exception, un 10 suffit à se cacher des droïdes, et un 15 suffit à se cacher d'ennemis basiques. Un 20 peut être nécessaire pour des ennemis perceptifs, et jusqu'à 30 pour un boss.
 Le seuil est abaissé de 5 si le joueur est planqué dans l'obscurité.  
 Attention : Certains objets ou pouvoirs ennemis permettent de détecter la présence des joueurs.  
@@ -913,13 +913,13 @@ Une action offensive dévoilera sa présence, et il ne pourra alors plus se cach
 Une action de soutien ou une action en défense ne dévoile pas sa présence. Il est donc possible de prodiguer des soins, utiliser un objet ou préparer une attaque pour le tour suivant.
 Une action de mouvement ne dévoilera pas forcément sa présence, mais alors le seuil de difficulté du jet de discrétion est augmenté de 5.
 
-**17 – Mode posé**
+#### 17. Mode posé
 Pour certains dons ou pouvoirs, il peut être nécessaire d'être en mode posé. Cela signifie que le joueur n'a pas fait d'action de mouvement depuis le tour d'avant.
 
-**18 – Mode défensif**
+#### 18. Mode défensif
 Si le joueur n'effectue aucune action d’attaque pendant son tour, il peut alors décider d’utiliser une action de soutien pour se mettre en position « en défense » et gagne ainsi +1D à ses éventuelles actions en défense à venir au cours du tour. Il gagne également un bonus de +1D à ses jets d'observation, audition, intuition, car il est aux aguets.
 
-**19 – Les différents types de dégâts**
+#### 19. Les différents types de dégâts
 _Physique_ : Ce sont des coups physiques à mains nues ou à l'arme blanche. On peut s'en protéger avec un bouclier echani.  
 _Energétique_ : Ce sont les tirs de laser et les explosions. La plupart des dégâts sont énergétiques dans star wars. On peut s'en protéger avec un bouclier d'énergie.  
 _Sonique_ : Ignore def. Ce sont des dégâts d'onde qui atteignent directement les tympans, le cerveau et les organes des êtres vivants. Les droïdes y sont insensibles. On peut s'en protéger avec un bouclier echani.
@@ -931,20 +931,20 @@ _Impact_ : Ignore def. C'est l'effet de blast d'une puissante arme. Provoque le
 _Irradiant_ : Ignore def. Ce sont les dégâts provoquées par des armes chargées d'énergie radioactive. Provoque le statut irradié (jet de chance 9 pour ne pas avoir ce statut). Pas de bouclier possible.
 _Toxique_ : Ignore def. Ce sont les dégâts provoquées par le poison ou les produits toxiques. La dangerosité dépend du poison. Peut provoquer le statut empoisonné (jet de chance 7)
 
-**20 - Batailles, balles perdues et tirs alliés**
+#### 20. Batailles, balles perdues et tirs alliés
 Il est des combats qui mettent en jeu tellement de protagonistes qu'il serait vain de vouloir tous les jouer les uns après les autres. Mais il est pourtant nécessaire de les encadrer avec des règles. Ces combats sont appelés des batailles. Elles mettent en scène plus d'une vingtaine de protagonistes.
 Dans ce cas, seuls les ennemis les plus proches sont décrits et mis en situation, et les Pjs ne s'occupent que de ces ennemis, le temps de fuir, de gagner du temps en attendant des alliés, d'attendre une nouvelle phase du scénario ou de la bataille, etc.
 Cependant, il ne serait pas logique d'ignorer la présence de tous les autres adversaires. Aussi, il y a des règles spécifiques au cours des batailles.
 La règle des balles perdues : À la fin du round, avant que les tours d'action ne se répètent, chaque PJ lance un dé de chance. Plus le nombre d'adversaire engagés dans la bataille est important, plus le jet de chance devra être élevé pour éviter de se prendre une balle perdue. Celle-ci pourra, selon le jet de chance ou les circonstances voulues par le MJ, causer entre 3DD et 5DD de dommage aux Pjs qui n'auront pas atteint le score nécessaire pour y échapper. Il n'y a aucun moyen de les esquiver ou de les parer, sauf avec des dons ou des pouvoirs de défense prévus pour. Le don « renvoi » des Jedis ne permet pas de renvoyer une balle perdue.
 La règle des tirs alliés : S'il y a également trop d'alliés pour qu'ils soient tous représentés dans la bataille, alors la même menace imprévisible planera sur les ennemis. Chaque joueur, au cours de son tour et en plus de ses propres actions, peut décider d'invoquer un tir allié contre un ennemi spécifique. Il tire un jet de chance, et s'il le réussit, l'ennemi visé est touché par un tir allié, dont la puissance est entre 3DD et 5DD selon le résultat du jet. La difficulté du jet de chance dépend du nombre d'alliés non représentés en soutien.
 
-**21 – La fuite**
+#### 21. La fuite
 Il est possible pour les joueurs de s'enfuir en début de combat ou en cours de combat s'ils ne sont pas en ont la possibilité matérielle : C'est à dire s'ils ne sont pas inconscients, bloqués ou encerclés, et qu'ils ont une voie de repli accessible.  
 Ils doivent alors réussir un jet d'endurance opposé aux ennemis poursuivants.
 Ceux qui ne réussissent pas leur jet d'endurance sont rattrapés par les ennemis, et ceux qui ont réussi leur jet peuvent choisir de rester pour les aider ou de continuer fuir de leur côté.
 L'action de fuite compte simplement comme étant une action de mouvement, ce qui signifie qu'il est possible de continuer à attaquer, utiliser des objets ou faire des actions en défense tout en s'enfuyant.
 
-**22- La mort, le baroud d'honneur et le wipe**
+#### 22. La mort, le baroud d'honneur et le wipe
 Un joueur a été imprudent, ou malchanceux aux dés, ou bien le MJ a mal dosé la difficulté du combat ; bref, peu importe les raisons, mais il peut arriver que la **mort** frappe un personnage passé en dessous de -10PV.  
 Si c'est un personnage non joueur, il faudra faire avec, c'est la dure réalité du quotidien dans l'univers Star Wars.
 Si c'est le personnage d'un joueur qui meurt, dans ce cas il pleure puis il crée un nouveau personnage avec lequel jouer. Tous ses objets sont répartis entre les autres joueurs.  
