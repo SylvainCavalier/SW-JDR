@@ -35,7 +35,7 @@
             <!-- Colonne Participant -->
             <td class="fw-bold">
               <% if participant.is_a?(User) %>
-                <%= participant.username %>
+                <%= participant.username.capitalize %>
               <% elsif participant.is_a?(Pet) %>
                 <%= participant.name %> (<%= User.find_by(pet_id: participant.id)&.username %>)
               <% else %>
