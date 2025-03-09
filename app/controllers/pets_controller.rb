@@ -13,7 +13,7 @@ class PetsController < ApplicationController
 
   def create
     @pet = Pet.new(pet_params)
-    @pet.hp_current = @pet.hp_max # Initialise les HP actuels aux HP max
+    @pet.hp_current = @pet.hp_max
     if @pet.save
       update_pet_skills(@pet)
       redirect_to @pet, notice: "Familier créé avec succès."
@@ -111,9 +111,8 @@ class PetsController < ApplicationController
     new_hp = [@pet.hp_current + heal_points, @pet.hp_max].min
     @pet.update!(hp_current: new_hp)
   
-    # Mise à jour de la quantité de medipacks et augmentation de la loyauté
+    # Mise à jour de la quantité de medipacks
     medipack.decrement!(:quantity)
-    @pet.loyalty_up
   
     redirect_to pet_path(@pet), notice: "Votre familier a été soigné de #{heal_points} PV !"
   end
@@ -181,9 +180,12 @@ class PetsController < ApplicationController
   private
   
   def calculate_heal_points(user, pet)
-    dice_roll = rand(1..6) * user.user_skills.find_by(skill: Skill.find_by(name: "Médecine")).mastery
-    bonus = user.user_skills.find_by(skill: Skill.find_by(name: "Médecine")).bonus
-    dice_roll + bonus
+    skill = user.user_skills.find_by(skill: Skill.find_by(name: "Médecine"))
+    return 0 unless skill
+
+    dice_roll = Array.new(skill.mastery) { rand(1..6) }.sum
+    total = dice_roll + skill.bonus
+    (total.to_f / 2).ceil
   end
 
   def set_pet
