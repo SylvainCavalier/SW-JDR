@@ -5,6 +5,7 @@ export default class extends Controller {
 
   connect() {
     console.log("Contrôleur shieldRecharge connecté !");
+    this.userId = this.element.dataset.userId;
     console.log("popupMessage target:", this.popupMessageTarget);
   }
 

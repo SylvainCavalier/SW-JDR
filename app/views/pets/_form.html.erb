@@ -1,6 +1,7 @@
 <div class="content-container">
   <h2 class="text-success text-center mt-3"><%= form_title %></h2>
   <%= simple_form_for @pet, html: { multipart: true } do |f| %>
+    <%= f.error_notification %>
     
     <!-- Nom -->
     <div class="mb-3">

@@ -32,11 +32,6 @@
       <div class="large-hp-text" data-hp-target="hpText">
         <p>PV : <span><%= current_user.hp_current %></span> / <%= current_user.hp_max %></p>
       </div>
-      <% if current_user.hp_bonus.present? && current_user.hp_bonus > 0 %>
-        <div class="hp-bonus-container">
-          <p class="text-success fw-bold">Bonus : <%= current_user.hp_bonus %> PV</p>
-        </div>
-      <% end %>
     </div>
 
     <!-- Réglage des PV -->

@@ -44,9 +44,15 @@ class MjController < ApplicationController
       if user.shield_state && user.shield_current > 0
         # Dégâts au bouclier énergétique
         new_shield_value = [user.shield_current - damage, 0].max
-        user.update(shield_current: new_shield_value)
+        user.update(
+          shield_current: new_shield_value,
+          shield_state: new_shield_value > 0
+        )
         user.broadcast_energy_shield_update
         message = "Bouclier d'énergie a pris #{damage} dégâts."
+    
+        # turbo_stream_action seulement si le bouclier tombe à zéro
+        turbo_stream_action(user, "energy") if new_shield_value == 0
       else
         # Calcul des dégâts résiduels pour les PV
         actual_damage = calculate_damage(damage, resistance_bonus)
@@ -54,10 +60,6 @@ class MjController < ApplicationController
         new_hp_value = [new_hp_value, -10].max
         user.update(hp_current: new_hp_value)
         user.broadcast_hp_update
-
-        if new_shield_value == 0
-          turbo_stream_action(user, "energy")
-        end
 
         message = "Le joueur a pris #{actual_damage} dégâts après résistance corporelle."
       end
@@ -70,7 +72,10 @@ class MjController < ApplicationController
       if user.echani_shield_state && user.echani_shield_current > 0
         # Dégâts au bouclier Échani
         new_shield_value = [user.echani_shield_current - damage, 0].max
-        user.update(echani_shield_current: new_shield_value)
+        user.update(
+          echani_shield_current: new_shield_value,
+          echani_shield_state: new_shield_value > 0
+        )
         user.broadcast_echani_shield_update
 
         if new_shield_value == 0
@@ -495,11 +500,17 @@ class MjController < ApplicationController
   end
 
   def apply_hp_bonus
-    bonus = params[:bonus].to_i
+    bonus = params[:hp_bonus][:bonus].to_i
     users = User.where(group: Group.find_by(name: "PJ"))
-    users.update_all(hp_bonus: bonus)
-
-    flash[:success] = "Bonus de PV max de #{bonus} attribué à tous les joueurs."
+  
+    User.transaction do
+      users.find_each do |user|
+        user.update!(hp_current: user.hp_max + bonus)
+        user.broadcast_hp_update
+      end
+    end
+  
+    flash[:success] = "Bonus temporaire de #{bonus} PV attribué à tous les joueurs."
     redirect_to mj_dashboard_path
   end
 

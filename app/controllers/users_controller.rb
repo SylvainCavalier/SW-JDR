@@ -28,8 +28,8 @@ class UsersController < ApplicationController
     end
   
     # Diffusion des mises à jour
-    user.broadcast_energy_shield_update if shield_type == "energy"
-    user.broadcast_echani_shield_update if shield_type == "echani"
+    user.broadcast_energy_shield_update
+    user.broadcast_echani_shield_update
   
     render json: {
       success: true,
@@ -195,8 +195,11 @@ class UsersController < ApplicationController
 
   def medipack
     @users = User.joins(:group).where(groups: { name: "PJ" }).order(:username).to_a
-    @users.delete(current_user) # Retire le current_user de la liste triée
-    @users.unshift(current_user) # Ajoute le current_user au début
+    @users.delete(current_user)
+    @users.unshift(current_user)
+
+    @pets = @users.map(&:pet).compact
+    
     @user_inventory_objects = current_user.user_inventory_objects.includes(:inventory_object)
   end
 

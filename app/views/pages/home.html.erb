@@ -115,69 +115,78 @@
     <% end %>
   </div>
 
-  <!-- Bouclier d'énergie -->
+  <!-- Boucliers -->
   <div class="d-flex" data-controller="shield-recharge" 
       data-user-id="<%= current_user.id %>"
       data-credits="<%= current_user.credits %>">
 
     <!-- Bouclier d'énergie -->
     <div class="shield">
-      <div class="shield-icon"
-          data-controller="shield"
-          data-action="click->shield#toggle"
-          data-user-id="<%= current_user.id %>"
-          data-shield-type="energy"
-          data-shield-max="<%= current_user.shield_max || 0 %>"
-          data-shield-current="<%= current_user.shield_current || 0 %>"
-          data-shield-state="<%= current_user.shield_state %>">
-        <i class="fa-solid fa-shield" data-shield-target="icon"></i>
-        <turbo-frame id="user_<%= current_user.id %>_energy_shield_frame">
-          <p class="mt-1 mb-0" style="font-size: 0.8em;" data-shield-target="shieldCurrent">
-            Energie <%= current_user.shield_current %>/<%= current_user.shield_max %>
-          </p>
-        </turbo-frame>
-        <audio id="shield-sound" src="<%= asset_path('shield.mp3') %>" preload="auto"></audio>
-      </div>
-
-      <!-- Bouton de recharge -->
-      <button class="btn btn-outline-primary btn-sm" 
-              data-action="click->shield-recharge#openRechargePopup" 
-              data-shield-type="energy"
-              data-shield-max="<%= current_user.shield_max || 0 %>"
-              data-shield-current="<%= current_user.shield_current || 0 %>"
-              style="width: 80%;">
-        ++
-      </button>
+      <turbo-frame id="user_<%= current_user.id %>_energy_shield_frame">
+        <div class="shield-icon"
+            data-controller="shield"
+            data-action="click->shield#toggle"
+            data-user-id="<%= current_user.id %>"
+            data-shield-type="energy"
+            data-shield-max="<%= current_user.shield_max || 0 %>"
+            data-shield-current="<%= current_user.shield_current || 0 %>"
+            data-shield-state="<%= current_user.shield_state %>">
+            
+            <i class="fa-solid fa-shield" data-shield-target="icon"></i>
+            
+            <p class="mt-1 mb-0" style="font-size: 0.8em;" 
+              data-shield-target="shieldCurrent"
+              data-shield-current="<%= current_user.shield_current %>"
+              data-shield-state="<%= current_user.shield_state %>">
+              Energie <%= current_user.shield_current %>/<%= current_user.shield_max %>
+            </p>
+        </div>
+        <!-- Bouton de recharge -->
+        <button class="btn btn-outline-primary btn-sm" 
+                data-action="click->shield-recharge#openRechargePopup" 
+                data-shield-type="energy"
+                data-shield-max="<%= current_user.shield_max || 0 %>"
+                data-shield-current="<%= current_user.shield_current || 0 %>"
+                style="width: 80%;">
+          ++
+        </button>
+      </turbo-frame>
+      <audio id="shield-sound" src="<%= asset_path('shield.mp3') %>" preload="auto"></audio>
     </div>
 
     <!-- Bouclier echani -->
     <div class="echani-shield">
-      <div class="echani-shield-icon"
-          data-controller="shield"
-          data-action="click->shield#toggle"
-          data-user-id="<%= current_user.id %>"
-          data-shield-type="echani"
-          data-shield-max="<%= current_user.echani_shield_max || 0 %>"
-          data-shield-current="<%= current_user.echani_shield_current || 0 %>"
-          data-shield-state="<%= current_user.echani_shield_state %>">
-        <i class="fa-solid fa-shield" data-shield-target="icon"></i>
-        <turbo-frame id="user_<%= current_user.id %>_echani_shield_frame">
-          <p class="mt-1 mb-0" style="font-size: 0.8em;" data-shield-target="shieldCurrent">
-            Echani <%= current_user.echani_shield_current %>/<%= current_user.echani_shield_max %>
+      <turbo-frame id="user_<%= current_user.id %>_echani_shield_frame">
+        <div class="echani-shield-icon"
+            data-controller="shield"
+            data-action="click->shield#toggle"
+            data-user-id="<%= current_user.id %>"
+            data-shield-type="echani"
+            data-shield-max="<%= current_user.echani_shield_max || 0 %>"
+            data-shield-current="<%= current_user.echani_shield_current || 0 %>"
+            data-shield-state="<%= current_user.echani_shield_state %>">
+          
+          <i class="fa-solid fa-shield" data-shield-target="icon"></i>
+          
+          <p class="mt-1 mb-0" style="font-size: 0.8em;" 
+            data-shield-target="shieldCurrent"
+            data-shield-current="<%= current_user.echani_shield_current %>"
+            data-shield-state="<%= current_user.echani_shield_state %>">
+            Energie <%= current_user.echani_shield_current %>/<%= current_user.echani_shield_max %>
           </p>
-        </turbo-frame>
-        <audio id="shield-sound" src="<%= asset_path('shield.mp3') %>" preload="auto"></audio>
-      </div>
-
-      <!-- Bouton de recharge -->
-      <button class="btn btn-outline-primary btn-sm" 
-              data-action="click->shield-recharge#openRechargePopup" 
-              data-shield-type="echani"
-              data-shield-max="<%= current_user.echani_shield_max || 0 %>"
-              data-shield-current="<%= current_user.echani_shield_current || 0 %>"
-              style="width: 80%;">
-        ++
-      </button>
+        </div>
+          
+        <!-- Bouton de recharge -->
+        <button class="btn btn-outline-primary btn-sm" 
+                data-action="click->shield-recharge#openRechargePopup" 
+                data-shield-type="echani"
+                data-shield-max="<%= current_user.echani_shield_max || 0 %>"
+                data-shield-current="<%= current_user.echani_shield_current || 0 %>"
+                style="width: 80%;">
+          ++
+        </button>
+      </turbo-frame>
+      <audio id="shield-sound" src="<%= asset_path('shield.mp3') %>" preload="auto"></audio>
     </div>
 
     <!-- Pop-up de confirmation de recharge --> 

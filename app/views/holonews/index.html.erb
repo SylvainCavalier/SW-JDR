@@ -8,15 +8,24 @@
       <% @holonews.each do |holonew| %>
         <div class="holonew-item p-1 mb-1 <%= current_user.has_read?(holonew) ? 'bg-light' : 'bg-warning' %> rounded">
           <h3><%= holonew.title %></h3>
-          <p><strong>Expéditeur:</strong> <%= holonew.sender.username %></p>
+          <p>
+            <strong>Expéditeur :</strong> <%= holonew.sender.username %><br>
+            <small class="text-muted text-success">
+              Envoyé le <%= l(holonew.created_at, format: "%d/%m/%Y à %H:%M") %>
+            </small>
+          </p>
 
-          <p class="preview"><%= truncate(holonew.content, length: 100) %></p>
+          <% if holonew.content.length > 100 %>
+            <p class="text-truncate" data-toggle-content-target="content">
+              <%= holonew.content %>
+            </p>
+            <button class="btn btn-link p-0" data-action="click->toggle-content#toggle">
+              Voir plus
+            </button>
+          <% else %>
+            <p><%= holonew.content %></p>
+          <% end %>
 
-          <p class="full-content d-none" data-toggle-content-target="content"><%= holonew.content %></p>
-
-          <button class="btn btn-link" data-toggle-content-target="button" data-action="click->toggle-content#toggle">
-            Voir plus
-          </button>
         </div>
       <% end %>
     </div>

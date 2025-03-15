@@ -7,7 +7,8 @@ class Pet < ApplicationRecord
   has_many :buildings, through: :building_pets
   has_one_attached :image
 
-  belongs_to :status, optional: true
+  has_many :pet_statuses, dependent: :destroy
+  has_many :statuses, through: :pet_statuses
   belongs_to :user, foreign_key: :id, primary_key: :pet_id, optional: true
 
   validates :name, presence: true, length: { maximum: 20 }
@@ -28,8 +29,19 @@ class Pet < ApplicationRecord
   after_commit :resize_image_if_needed
   after_initialize :set_default_values, if: :new_record?
   after_update :reset_hunger_for_special_categories
-  after_update :assign_death_status, if: -> { hp_current <= -10 }
+  after_update :update_status_based_on_hp
+  after_create :set_default_status
 
+  def update_status_based_on_hp
+    if saved_change_to_hp_current?
+      set_status_based_on_hp
+    end
+  end
+
+  def current_status
+    pet_statuses.order(created_at: :desc).first&.status
+  end
+  
   def hunger_description
     ["Paralysé par la faim", "Affamé", "Faim", "Petit creux", "Repus"][hunger] || "Inconnu"
   end
@@ -287,21 +299,32 @@ class Pet < ApplicationRecord
 
   private
 
-  def assign_death_status
-    mort_status = Status.find_by(name: "Mort")
-    return if mort_status.nil?
+  def set_default_status
+    status_en_forme = Status.find_by(name: "En forme")
+    pet_statuses.create!(status: status_en_forme) if status_en_forme
+  end
 
-    # Si le pet a -10 PV et n'est pas déjà en statut "Mort", on lui applique
-    if hp_current <= -10 && status_id != mort_status.id
-      update_column(:status_id, mort_status.id)
-      Rails.logger.debug "💀 Le pet #{name} est maintenant Mort (Statut mis à jour)."
+  def update_status_based_on_hp
+    if saved_change_to_hp_current?
+      set_status
     end
+  end
 
-    # 🚨 Protection : si le statut est retiré manuellement, on ne le remet pas immédiatement
-    if hp_current > -10 && status_id == mort_status.id
-      Rails.logger.debug "🛑 Statut Mort retiré manuellement, pas de réattribution."
-      return
-    end
+  def set_status_based_on_hp
+    new_status_name = case hp_current
+                      when 1..Float::INFINITY then "En forme"
+                      when 0 then "Inconscient"
+                      when -9..-1 then "Agonisant"
+                      else "Mort"
+                      end
+  
+    new_status = Status.find_by(name: new_status_name)
+    return unless new_status
+    return if current_status == new_status
+  
+    pet_statuses.destroy_all
+    pet_statuses.create!(status: new_status)
+    Rails.logger.debug "🔄 Le pet #{name} a maintenant le statut : #{new_status.name}"
   end
 
   def roll_dice(number, sides)

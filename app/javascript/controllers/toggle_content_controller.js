@@ -1,13 +1,15 @@
 import { Controller } from "@hotwired/stimulus";
 
 export default class extends Controller {
-  static targets = ["content", "button"];
+  static targets = ["content"];
 
   toggle(event) {
-    const button = event.currentTarget;
-    const content = button.previousElementSibling;
+    event.preventDefault();
+    const content = event.currentTarget.previousElementSibling;
 
-    content.classList.toggle("d-none");
-    button.innerText = content.classList.contains("d-none") ? "Voir plus" : "Voir moins";
+    content.classList.toggle("text-truncate");
+    event.currentTarget.textContent = content.classList.contains("text-truncate")
+      ? "Voir plus"
+      : "Voir moins";
   }
 }

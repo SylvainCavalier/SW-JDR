@@ -1,5 +1,29 @@
 <turbo-frame id="user_<%= user.id %>_energy_shield_frame">
-  <p class="mt-1 mb-0" style="font-size: 0.8em;" data-shield-target="shieldCurrent" data-shield-current="<%= user.shield_current %>">
-    Energie <%= user.shield_current %> / <%= user.shield_max %>
-  </p>
+  <div class="shield-icon"
+      data-controller="shield"
+      data-action="click->shield#toggle"
+      data-user-id="<%= user.id %>"
+      data-shield-type="energy"
+      data-shield-max="<%= user.shield_max || 0 %>"
+      data-shield-current="<%= user.shield_current || 0 %>"
+      data-shield-state="<%= user.shield_state %>">
+      
+      <i class="fa-solid fa-shield" data-shield-target="icon"></i>
+      
+      <p class="mt-1 mb-0" style="font-size: 0.8em;" 
+        data-shield-target="shieldCurrent"
+        data-shield-current="<%= user.shield_current %>"
+        data-shield-state="<%= user.shield_state %>">
+        Energie <%= user.shield_current %>/<%= user.shield_max %>
+      </p>
+  </div>
+  <!-- Bouton de recharge -->
+  <button class="btn btn-outline-primary btn-sm" 
+          data-action="click->shield-recharge#openRechargePopup" 
+          data-shield-type="energy"
+          data-shield-max="<%= user.shield_max || 0 %>"
+          data-shield-current="<%= user.shield_current || 0 %>"
+          style="width: 80%;">
+    ++
+  </button>
 </turbo-frame>

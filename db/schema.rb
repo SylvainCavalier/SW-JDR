@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_02_23_140912) do
+ActiveRecord::Schema[7.1].define(version: 2025_03_15_214713) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -213,6 +213,15 @@ ActiveRecord::Schema[7.1].define(version: 2025_02_23_140912) do
     t.index ["skill_id"], name: "index_pet_skills_on_skill_id"
   end
 
+  create_table "pet_statuses", force: :cascade do |t|
+    t.bigint "pet_id", null: false
+    t.bigint "status_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["pet_id"], name: "index_pet_statuses_on_pet_id"
+    t.index ["status_id"], name: "index_pet_statuses_on_status_id"
+  end
+
   create_table "pets", force: :cascade do |t|
     t.string "name"
     t.string "race"
@@ -405,6 +414,8 @@ ActiveRecord::Schema[7.1].define(version: 2025_02_23_140912) do
   add_foreign_key "pet_inventory_objects", "pets"
   add_foreign_key "pet_skills", "pets"
   add_foreign_key "pet_skills", "skills"
+  add_foreign_key "pet_statuses", "pets"
+  add_foreign_key "pet_statuses", "statuses"
   add_foreign_key "pets", "statuses"
   add_foreign_key "sphero_skills", "skills"
   add_foreign_key "sphero_skills", "spheros"

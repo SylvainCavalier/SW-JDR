@@ -18,8 +18,7 @@ class PetsController < ApplicationController
       update_pet_skills(@pet)
       redirect_to @pet, notice: "Familier créé avec succès."
     else
-      flash.now[:alert] = "Erreur lors de la création du familier."
-      render :new
+      render :new, status: :unprocessable_entity
     end
   end
 
@@ -53,10 +52,13 @@ class PetsController < ApplicationController
 
   def associate
     pet = Pet.find(params[:id])
-    if current_user.update(pet_id: pet.id)
+  
+    if pet.user.present?
+      redirect_to pet_path(pet), notice: "#{pet.name} est déjà associé à un autre joueur. Il doit d'abord être dissocié."
+    elsif current_user.update(pet_id: pet.id)
       redirect_to pet_path(pet), notice: "#{pet.name} a été associé à votre personnage."
     else
-      redirect_to pet_path(pet), alert: "Impossible d'associer ce familier."
+      redirect_to pet_path(pet), notice: "Impossible d'associer ce familier."
     end
   end
   
@@ -65,7 +67,7 @@ class PetsController < ApplicationController
     if current_user.update(pet_id: nil)
       redirect_to pets_path, notice: "Le familier a été dissocié avec succès."
     else
-      redirect_to pet_path(current_user.pet), alert: "Impossible de dissocier ce familier."
+      redirect_to pet_path(current_user.pet), notice: "Impossible de dissocier ce familier."
     end
   end
 

@@ -144,11 +144,12 @@ span {
 .credits-text {
   position: absolute;
   top: 30%;   /* Centre verticalement par rapport au screen */
-  left: 45%;  /* Centre horizontalement par rapport au screen */
+  left: 55%;  /* Centre horizontalement par rapport au screen */
   transform: translateX(-50%);
   z-index: 2;
   font-size: 1.0rem; /* Ajuste la taille selon tes besoins */
   color: $success; /* Ajuste la couleur */
+  width: 80%;
 }
 
 .xp-container {
@@ -156,6 +157,7 @@ span {
   top: 60%;   /* Centre verticalement par rapport au screen */
   left: 50%;
   z-index: 2;
+  font-size: 0.9rem;
 }
 
 /* Avatar */
@@ -763,9 +765,9 @@ input[type="submit"] {
 
 .large-hp-text {
   position: absolute;
-  top: 15px;
+  top: 8px;
   left: 15%;
-  font-size: 1.3em;
+  font-size: 1.2em;
   color: white;
   font-weight: bold;
   pointer-events: none;
@@ -853,7 +855,7 @@ input#buy_hp.form-control.pv-max-input {
   align-items: center;
   top: 17%;
   left: 10%;
-  width: 600px;
+  width: 80vw;
   height: auto;
   z-index: 2;
 }

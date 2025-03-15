@@ -32,10 +32,11 @@ class HeadquarterController < ApplicationController
   end
 
   def inventory
-    @headquarter_objects = User.includes(:avatar_attachment) # Précharge les avatars
-                               .index_with { |user| HeadquarterObject.where(user: user) }
-                               .sort_by { |user, _| user == current_user ? 0 : 1 }
-                               .to_h
+    @headquarter_objects = User.includes(:avatar_attachment)
+                            .joins(:group).where(groups: { name: "PJ" })
+                             .index_with { |user| HeadquarterObject.where(user: user) }
+                             .sort_by { |user, _| user == current_user ? 0 : 1 }
+                             .to_h
   end
 
   def update_quantity

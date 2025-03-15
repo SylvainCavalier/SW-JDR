@@ -1,5 +1,30 @@
 <turbo-frame id="user_<%= user.id %>_echani_shield_frame">
-  <p class="mt-1 mb-0" style="font-size: 0.8em;" data-shield-target="shieldCurrent" data-shield-current="<%= user.echani_shield_current %>">
-    Echani <%= user.echani_shield_current %> / <%= user.echani_shield_max %>
-  </p>
+  <div class="echani-shield-icon"
+      data-controller="shield"
+      data-action="click->shield#toggle"
+      data-user-id="<%= user.id %>"
+      data-shield-type="echani"
+      data-shield-max="<%= user.echani_shield_max || 0 %>"
+      data-shield-current="<%= user.echani_shield_current || 0 %>"
+      data-shield-state="<%= user.echani_shield_state %>">
+    
+    <i class="fa-solid fa-shield" data-shield-target="icon"></i>
+    
+    <p class="mt-1 mb-0" style="font-size: 0.8em;" 
+      data-shield-target="shieldCurrent"
+      data-shield-current="<%= user.echani_shield_current %>"
+      data-shield-state="<%= user.echani_shield_state %>">
+      Energie <%= user.echani_shield_current %>/<%= user.echani_shield_max %>
+    </p>
+  </div>
+    
+  <!-- Bouton de recharge -->
+  <button class="btn btn-outline-primary btn-sm" 
+          data-action="click->shield-recharge#openRechargePopup" 
+          data-shield-type="echani"
+          data-shield-max="<%= user.echani_shield_max || 0 %>"
+          data-shield-current="<%= user.echani_shield_current || 0 %>"
+          style="width: 80%;">
+    ++
+  </button>
 </turbo-frame>
