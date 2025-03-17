@@ -306,7 +306,7 @@ class Pet < ApplicationRecord
 
   def update_status_based_on_hp
     if saved_change_to_hp_current?
-      set_status
+      set_status_based_on_hp
     end
   end
 
@@ -320,11 +320,12 @@ class Pet < ApplicationRecord
   
     new_status = Status.find_by(name: new_status_name)
     return unless new_status
-    return if current_status == new_status
   
-    pet_statuses.destroy_all
-    pet_statuses.create!(status: new_status)
-    Rails.logger.debug "🔄 Le pet #{name} a maintenant le statut : #{new_status.name}"
+    # Vérifie si le pet a déjà ce statut
+    unless pet_statuses.exists?(status: new_status)
+      pet_statuses.create!(status: new_status)
+      Rails.logger.debug "🔄 Le pet #{name} a maintenant un nouveau statut : #{new_status.name}"
+    end
   end
 
   def roll_dice(number, sides)

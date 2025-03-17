@@ -11,11 +11,14 @@ export default class extends Controller {
   }
 
   async useHeal(event) {
+    event.preventDefault();
+
     const button = event.currentTarget;
-    const userId = button.dataset.userId;
+    const targetType = button.dataset.targetType;  // "user" ou "pet"
+    const targetId = targetType === "user" ? button.dataset.userId : button.dataset.petId;
 
     const itemElement = this.healItemTargets.find(
-      (item) => item.dataset.userId === String(userId)
+      (item) => item.dataset[targetType + "Id"] === String(targetId)
     );
 
     if (!itemElement) {
@@ -26,8 +29,10 @@ export default class extends Controller {
     const itemId = itemElement.value;
 
     try {
+      // 🔹 Désactiver bouton et select pendant la requête
       button.disabled = true;
       button.textContent = "Chargement...";
+      itemElement.disabled = true;
 
       const response = await fetch(`/users/${this.currentUserIdValue}/heal_player`, {
         method: "POST",
@@ -35,11 +40,12 @@ export default class extends Controller {
           "Content-Type": "application/json",
           "X-CSRF-Token": document.querySelector("[name='csrf-token']").content,
         },
-        body: JSON.stringify({ player_id: userId, item_id: itemId }),
+        body: JSON.stringify({ target_type: targetType, target_id: targetId, item_id: itemId }),
       });
 
       button.textContent = "Utiliser";
       button.disabled = false;
+      itemElement.disabled = false;
 
       if (response.ok) {
         const data = await response.json();
@@ -49,17 +55,11 @@ export default class extends Controller {
           return;
         }
 
-        this.updatePlayerHp(userId, data.new_hp, data.item_quantity, itemId);
-        alert(`🎉 ${data.player_name} a été soigné. PV repris : ${data.healed_points}`);
+        this.updateTargetHp(targetType, targetId, data.new_hp, data.item_quantity, itemId);
+        alert(`🎉 ${data.target_name} a été soigné. PV repris : ${data.healed_points}`);
 
-        const playerBox = this.element.querySelector(`[data-user-id="${userId}"]`);
-        if (playerBox && data.new_status !== null) {
-          const statusElement = playerBox.querySelector(".player-status");
-          if (statusElement) {
-            statusElement.textContent = `Statut : ${data.new_status}`;
-            console.log(`🔄 Statut mis à jour pour ${data.player_name}: ${data.new_status}`);
-          }
-        }
+        // Mise à jour du statut
+        this.updateStatus(targetType, targetId, data.new_status);
 
       } else {
         const error = await response.json();
@@ -68,21 +68,22 @@ export default class extends Controller {
     } catch (error) {
       button.textContent = "Utiliser";
       button.disabled = false;
+      itemElement.disabled = false;
       alert("Une erreur inattendue s'est produite. Veuillez réessayer.");
     }
   }
 
-  updatePlayerHp(userId, newHp, itemQuantity, itemId) {
-    const playerBox = this.element.querySelector(`[data-user-id="${userId}"]`);
-    if (!playerBox) return;
+  updateTargetHp(targetType, targetId, newHp, itemQuantity, itemId) {
+    const targetBox = this.element.querySelector(`[data-${targetType}-id="${targetId}"]`);
+    if (!targetBox) return;
 
-    const hpElement = playerBox.querySelector(".player-hp");
+    const hpElement = targetBox.querySelector(".player-hp");
     if (hpElement) {
       const maxHp = hpElement.dataset.hpMax;
       hpElement.textContent = `PV : ${newHp} / ${maxHp}`;
     }
 
-    const healItemSelect = playerBox.querySelector(`[data-heal-target="healItem"]`);
+    const healItemSelect = targetBox.querySelector(`[data-heal-target="healItem"]`);
     if (healItemSelect) {
       const optionToUpdate = healItemSelect.querySelector(`option[value="${itemId}"]`);
       if (optionToUpdate) {
@@ -98,6 +99,19 @@ export default class extends Controller {
           emptyOption.disabled = true;
           healItemSelect.appendChild(emptyOption);
         }
+      }
+    }
+  }
+
+  updateStatus(targetType, targetId, newStatus) {
+    const targetBox = this.element.querySelector(`[data-${targetType}-id="${targetId}"]`);
+    if (!targetBox) return;
+
+    if (newStatus !== null) {
+      const statusElement = targetBox.querySelector(".player-status");
+      if (statusElement) {
+        statusElement.textContent = `Statut : ${newStatus}`;
+        console.log(`🔄 Statut mis à jour pour ${targetId} (${targetType}): ${newStatus}`);
       }
     }
   }

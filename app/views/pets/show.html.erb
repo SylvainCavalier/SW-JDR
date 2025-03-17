@@ -66,13 +66,19 @@
         <div class="col-12 col-sm-6 pet-status text-center p-2">
           <%= image_tag(@pet.image.attached? ? @pet.image.variant(resize_to_limit: [300, 300]) : "petbase.png", class: "pet-image") %>
           <div class="text-center d-flex justify-content-center align-items-center mt-1">
-            <%= @pet.status&.name || "Non défini" %>
+            <%= @pet.pet_statuses.includes(:status).map { |ps| ps.status.name }.join(", ") || "Non défini" %>
             <% if current_user.pet_id == @pet.id %>
               <div class="text-center mx-2">
-                <%= button_to "Medipack", heal_pet_path(@pet), 
-                  method: :post, 
-                  class: "btn btn-outline-primary", 
-                  data: { confirm: "Êtes-vous sûr de vouloir utiliser un Medipack pour soigner ce familier ?" } %>
+                <%= form_with url: heal_pet_path(@pet), method: :post, local: true, class: "d-flex align-items-center" do |f| %>
+                  <%= f.select :item_id, 
+                    current_user.user_inventory_objects.joins(:inventory_object)
+                    .where(inventory_objects: { category: 'soins' })
+                    .map { |uio| ["#{uio.inventory_object.name} (#{uio.quantity})", uio.inventory_object.id] },
+                    prompt: "Choisissez un objet de soin",
+                    class: "form-select mx-2" %>
+                    
+                  <%= f.submit "Utiliser", class: "btn btn-outline-primary" %>
+                <% end %>
               </div>
             <% end %>
           </div>

@@ -163,14 +163,6 @@ class UsersController < ApplicationController
     end
   end
 
-  def medipack
-    render :medipack
-  end
-
-  def healobjects
-    @heal_objects = InventoryObject.where(category: 'soins').where(rarity: ['Commun', 'Unco'])
-  end
-
   def buy_inventory_object
     inventory_object = InventoryObject.find(params[:inventory_object_id])
     user_inventory_object = @user.user_inventory_objects.find_or_initialize_by(inventory_object: inventory_object)
@@ -194,12 +186,20 @@ class UsersController < ApplicationController
   end
 
   def medipack
+    render :medipack
+  end
+
+  def healobjects
+    @heal_objects = InventoryObject.where(category: 'soins').where(rarity: ['Commun', 'Unco'])
+  end
+
+  def medipack
     @users = User.joins(:group).where(groups: { name: "PJ" }).order(:username).to_a
     @users.delete(current_user)
     @users.unshift(current_user)
 
     @pets = @users.map(&:pet).compact
-    
+
     @user_inventory_objects = current_user.user_inventory_objects.includes(:inventory_object)
   end
 
@@ -209,14 +209,19 @@ class UsersController < ApplicationController
     begin
       Rails.logger.debug "Params reçus: #{params.inspect}"
   
-      # Chargement de l'utilisateur cible
-      user = User.find(params[:player_id])
-      Rails.logger.debug "👤 Joueur chargé: #{user.inspect}"
+      # Identifier si la cible est un joueur ou un pet
+      target = if params[:target_type] == "pet"
+                 Pet.find(params[:target_id])
+               else
+                 User.find(params[:target_id])
+               end
   
-      # Chargement de l'objet de soin
+      Rails.logger.debug "🎯 Cible chargée: #{target.inspect}"
+  
+      # Charger l'objet de soin
       heal_item = current_user.user_inventory_objects.find_by(inventory_object_id: params[:item_id])
       inventory_object = heal_item&.inventory_object || InventoryObject.find_by(id: params[:item_id])
-      Rails.logger.debug "📦 Objet d'inventaire : #{inventory_object.inspect}"
+      Rails.logger.debug "📦 Objet de soin : #{inventory_object.inspect}"
   
       if inventory_object.nil?
         Rails.logger.debug "❌ Objet de soin introuvable."
@@ -224,28 +229,21 @@ class UsersController < ApplicationController
         return
       end
   
-      # Gestion spécifique pour "Homéopathie"
-      if inventory_object.name == "Homéopathie"
-        Rails.logger.debug "💊 Homéopathie détectée. Ignorer les vérifications de quantité."
-  
-        if user.hp_current < user.hp_max - 5
-          render json: { error_message: "Homéopathie ne peut être utilisée que si le personnage a perdu 5 PV ou moins." }, status: :unprocessable_entity
-          return
-        end
-      elsif heal_item.nil? || heal_item.quantity <= 0
+      # Vérifier la validité et la quantité de l’objet de soin
+      if heal_item.nil? || heal_item.quantity <= 0
         Rails.logger.debug "❌ Objet de soin invalide ou quantité insuffisante."
         render json: { error: "Objet de soin invalide ou quantité insuffisante." }, status: :unprocessable_entity
         return
       end
   
-      # Vérification des PV actuels
-      if user.hp_current >= user.hp_max
-        render json: { error_message: "Les PV de ce personnage sont déjà au maximum !" }, status: :unprocessable_entity
+      # Vérifier si la cible est déjà au max de ses PV
+      if target.hp_current >= target.hp_max
+        render json: { error_message: "#{target.name} a déjà tous ses PV !" }, status: :unprocessable_entity
         return
       end
   
       # Application des effets
-      healed_points, new_status = inventory_object.apply_effects(user, current_user)
+      healed_points, new_status = inventory_object.apply_effects(target, current_user)
       Rails.logger.debug "❤️ Points de soin : #{healed_points}, Nouveau statut : #{new_status.inspect}"
   
       if healed_points <= 0 && new_status.nil?
@@ -253,14 +251,14 @@ class UsersController < ApplicationController
         return
       end
   
-      new_hp = [user.hp_current + healed_points, user.hp_max].min
+      new_hp = [target.hp_current + healed_points, target.hp_max].min
       Rails.logger.debug "🔄 Nouveau PV : #{new_hp}"
   
-      # Transaction
+      # Transaction pour appliquer les soins
       ActiveRecord::Base.transaction do
         Rails.logger.debug "🔄 Début de la transaction"
   
-        # Mise à jour de la quantité sauf pour "Homéopathie"
+        # Mettre à jour la quantité sauf pour "Homéopathie"
         if inventory_object.name != "Homéopathie" && healed_points > 0
           heal_item.quantity -= 1
           heal_item.save!
@@ -268,14 +266,23 @@ class UsersController < ApplicationController
         end
   
         # Mise à jour des PV
-        user.update!(hp_current: new_hp)
-        user.broadcast_hp_update
+        target.update!(hp_current: new_hp)
+  
+        # Diffuser la mise à jour des PV
+        if target.is_a?(User)
+          target.broadcast_hp_update
+        end
+  
         Rails.logger.debug "👤 PV mis à jour"
   
         # Mise à jour du statut si nécessaire
         if new_status
-          user.set_status(new_status)
-          user.broadcast_status_update
+          target.set_status(new_status)
+  
+          if target.is_a?(User)
+            target.broadcast_status_update
+          end
+  
           Rails.logger.debug "🔄 Statut mis à jour : #{new_status}"
         end
       end
@@ -284,11 +291,11 @@ class UsersController < ApplicationController
   
       # Réponse JSON
       render json: {
-        user_id: user.id,
+        target_id: target.id,
         new_hp: new_hp,
         item_quantity: heal_item&.quantity || "illimité",
         healed_points: healed_points,
-        player_name: user.username,
+        target_name: target.name,
         new_status: new_status
       }
       Rails.logger.debug "📤 JSON rendu avec succès"

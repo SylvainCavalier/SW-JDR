@@ -2,9 +2,20 @@ class PetsController < ApplicationController
   before_action :set_pet, only: %i[show edit update destroy perform_action]
 
   def index
-    @humanoids = Pet.where(category: "humanoïde").order(:name).where.not(status: Status.find_by(name: "Mort"))
-    @animals = Pet.where(category: "animal").order(:name).where.not(status: Status.find_by(name: "Mort"))
-    @droids = Pet.where(category: "droïde").order(:name).where.not(status: Status.find_by(name: "Mort"))
+    dead_status = Status.find_by(name: "Mort")
+  
+    @humanoids = Pet.joins(:pet_statuses).where(category: "humanoïde").where.not(pet_statuses: { status_id: dead_status.id }).order(:name)
+    @animals   = Pet.joins(:pet_statuses).where(category: "animal").where.not(pet_statuses: { status_id: dead_status.id }).order(:name)
+    @droids    = Pet.joins(:pet_statuses).where(category: "droïde").where.not(pet_statuses: { status_id: dead_status.id }).order(:name)
+  end
+  
+  def graveyard
+    dead_status = Status.find_by(name: "Mort")
+  
+    @dead_humanoids   = Pet.joins(:pet_statuses).where(category: "humanoïde", pet_statuses: { status_id: dead_status.id }).order(:name)
+    @dead_animals     = Pet.joins(:pet_statuses).where(category: "animal", pet_statuses: { status_id: dead_status.id }).order(:name)
+    @dead_droids      = Pet.joins(:pet_statuses).where(category: "droïde", pet_statuses: { status_id: dead_status.id }).order(:name)
+    @dead_bio_armors  = Pet.joins(:pet_statuses).where(category: "bio-armure", pet_statuses: { status_id: dead_status.id }).order(:name)
   end
 
   def new
@@ -79,44 +90,49 @@ class PetsController < ApplicationController
     end
   end
 
-  def graveyard
-    @dead_humanoids = Pet.where(category: "humanoïde", status: Status.find_by(name: "Mort"))
-    @dead_animals = Pet.where(category: "animal", status: Status.find_by(name: "Mort"))
-    @dead_droids = Pet.where(category: "droïde", status: Status.find_by(name: "Mort"))
-    @dead_bio_armors = Pet.where(category: "bio-armure", status: Status.find_by(name: "Mort"))
-  end
-
   def heal
     @pet = Pet.find(params[:id])
   
-    # Recherche d'un medipack dans l'inventaire de l'utilisateur
-    medipack = current_user.user_inventory_objects.joins(:inventory_object)
-                       .find_by(inventory_objects: { name: "Medipack" })
-
-    # Vérification si le pet est "Mort"
-    if @pet.status.name == "Mort"
-      redirect_to pet_path(@pet), alert: "Vous ne pouvez pas soigner un familier mort !" and return
+    # Vérifier si un item a été sélectionné
+    item_id = params[:item_id]
+    if item_id.blank?
+      redirect_to pet_path(@pet), alert: "Veuillez sélectionner un objet de soin !" and return
     end
   
-    # Vérification si l'utilisateur possède un medipack
-    if medipack.nil? || medipack.quantity <= 0
-      redirect_to pet_path(@pet), alert: "Vous n'avez plus de Medipack !" and return
+    # Trouver l'objet de soin dans l'inventaire du joueur
+    heal_item = current_user.user_inventory_objects.find_by(inventory_object_id: item_id)
+    inventory_object = heal_item&.inventory_object || InventoryObject.find_by(id: item_id)
+  
+    if inventory_object.nil?
+      redirect_to pet_path(@pet), alert: "Objet de soin introuvable !" and return
     end
   
-    # Vérification si le familier est déjà au maximum de ses PV
+    # Vérifier si l'objet est utilisable et a une quantité suffisante
+    if heal_item.nil? || heal_item.quantity <= 0
+      redirect_to pet_path(@pet), alert: "Vous n'avez plus cet objet de soin !" and return
+    end
+  
+    # Vérifier si le pet est déjà au max de ses PV
     if @pet.hp_current >= @pet.hp_max
-      redirect_to pet_path(@pet), alert: "Il a déjà ses points de vie au maximum !" and return
+      redirect_to pet_path(@pet), alert: "Ce familier a déjà tous ses PV !" and return
     end
   
-    # Calcul des points de soin et mise à jour des PV
-    heal_points = calculate_heal_points(current_user, @pet)
-    new_hp = [@pet.hp_current + heal_points, @pet.hp_max].min
-    @pet.update!(hp_current: new_hp)
+    # Application des effets de l'objet de soin
+    healed_points, new_status = inventory_object.apply_effects(@pet, current_user)
+    new_hp = [@pet.hp_current + healed_points, @pet.hp_max].min
   
-    # Mise à jour de la quantité de medipacks
-    medipack.decrement!(:quantity)
+    # Transaction pour appliquer les soins et mettre à jour l’inventaire
+    ActiveRecord::Base.transaction do
+      heal_item.decrement!(:quantity) if healed_points > 0
+      @pet.update!(hp_current: new_hp)
   
-    redirect_to pet_path(@pet), notice: "Votre familier a été soigné de #{heal_points} PV !"
+      # Mise à jour du statut du pet si nécessaire
+      if new_status
+        @pet.set_status(new_status)
+      end
+    end
+  
+    redirect_to pet_path(@pet), notice: "Votre familier a été soigné de #{healed_points} PV avec #{inventory_object.name} !"
   end
 
   def perform_action
