@@ -23,12 +23,19 @@
       <%= f.input :race, label: "Race", input_html: { maxlength: 12, id: "pet_race" } %>
     </div>
 
+    <!-- Taille -->
     <div class="mb-3">
       <%= f.input :size, label: "Taille (en centimètres)", input_html: { id: "pet_size" } %>
     </div>
 
+    <!-- Poids -->
     <div class="mb-3">
       <%= f.input :weight, label: "Poids (en kg)", input_html: { id: "pet_weight" } %>
+    </div>
+
+    <!-- Sensibilité à la Force -->
+    <div class="mb-3">
+      <%= f.input :force, label: "Sensibilité à la Force", as: :boolean, input_html: { id: "pet_force" } %>
     </div>
 
     <!-- Points de vie maximum -->

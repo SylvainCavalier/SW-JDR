@@ -3,6 +3,8 @@ class InventoryObject < ApplicationRecord
   has_many :users, through: :user_inventory_objects
   validates :name, presence: true, uniqueness: true
 
+  include Healable
+
   def apply_effects(user, healer)
     heal_points = 0
     new_status = user.current_status&.name

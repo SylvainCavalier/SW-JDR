@@ -22,51 +22,75 @@
             <li class="list-group-item">
               <strong>Poids :</strong> <%= @pet.weight %> kg
             </li>
-            <li class="list-group-item">
-              <strong>Résistance Corporelle :</strong>
+            <% if @pet.force == true %>
+              <li class="list-group-item">
+                <strong>Sensible à la Force</strong>
+              </li>
+            <% end %>
+            <li class="list-group-item d-flex">
+              <strong>Res. Corp. :</strong>
               <% pet_skill = @pet.pet_skills.find_by(skill: Skill.find_by(name: "Résistance Corporelle")) %>
               <% base_stat = pet_skill&.mastery || 0 %>
               <% bonus = pet_skill&.bonus || 0 %> <!-- Bonus -->
               <% modifier = @pet.stat_modifiers[:resistance_corporelle] || 0 %> <!-- Modificateur -->
               <%= base_stat %>D + <%= bonus %>
-              <% if modifier != 0 %> (<%= modifier.positive? ? "+#{modifier}" : modifier %>) <% end %>
+              <div>
+                <!-- Icône de dé déclenchant la modale -->
+                <i class="fa-solid fa-dice" data-bs-toggle="modal" data-bs-target="#diceModal"
+                  data-dice-bonus-value="<%= bonus %>" data-dice-count="<%= base_stat %>"
+                  data-action="click->dice#prepareRoll"></i>
+              </div>
             </li>
 
-            <li class="list-group-item">
+            <li class="list-group-item d-flex">
               <strong>Vitesse :</strong>
               <% pet_skill = @pet.pet_skills.find_by(skill: Skill.find_by(name: "Vitesse")) %>
               <% base_stat = pet_skill&.mastery || 0 %>
               <% bonus = pet_skill&.bonus || 0 %> <!-- Bonus -->
               <% modifier = @pet.stat_modifiers[:vitesse] || 0 %> <!-- Modificateur -->
               <%= base_stat %>D + <%= bonus %>
-              <% if modifier != 0 %> (<%= modifier.positive? ? "+#{modifier}" : modifier %>) <% end %>
+              <div>
+                <!-- Icône de dé déclenchant la modale -->
+                <i class="fa-solid fa-dice" data-bs-toggle="modal" data-bs-target="#diceModal"
+                  data-dice-bonus-value="<%= bonus %>" data-dice-count="<%= base_stat %>"
+                  data-action="click->dice#prepareRoll"></i>
+              </div>
             </li>
 
-            <li class="list-group-item">
+            <li class="list-group-item d-flex">
               <strong>Précision :</strong>
               <% pet_skill = @pet.pet_skills.find_by(skill: Skill.find_by(name: "Précision")) %>
               <% base_stat = pet_skill&.mastery || 0 %>
               <% bonus = pet_skill&.bonus || 0 %> <!-- Bonus -->
               <% modifier = @pet.stat_modifiers[:accuracy] || 0 %> <!-- Modificateur -->
               <%= base_stat %>D + <%= bonus %>
-              <% if modifier != 0 %> (<%= modifier.positive? ? "+#{modifier}" : modifier %>) <% end %>
+              <div>
+                <!-- Icône de dé déclenchant la modale -->
+                <i class="fa-solid fa-dice" data-bs-toggle="modal" data-bs-target="#diceModal"
+                  data-dice-bonus-value="<%= bonus %>" data-dice-count="<%= base_stat %>"
+                  data-action="click->dice#prepareRoll"></i>
+              </div>
             </li>
 
-            <li class="list-group-item">
+            <li class="list-group-item d-flex">
               <strong>Esquive :</strong>
               <% pet_skill = @pet.pet_skills.find_by(skill: Skill.find_by(name: "Esquive")) %>
               <% base_stat = pet_skill&.mastery || 0 %>
               <% bonus = pet_skill&.bonus || 0 %> <!-- Bonus -->
               <% modifier = @pet.stat_modifiers[:esquive] || 0 %> <!-- Modificateur -->
               <%= base_stat %>D + <%= bonus %>
-              <% if modifier != 0 %> (<%= modifier.positive? ? "+#{modifier}" : modifier %>) <% end %>
+              <div>
+                <!-- Icône de dé déclenchant la modale -->
+                <i class="fa-solid fa-dice" data-bs-toggle="modal" data-bs-target="#diceModal"
+                  data-dice-bonus-value="<%= bonus %>" data-dice-count="<%= base_stat %>"
+                  data-action="click->dice#prepareRoll"></i>
+              </div>
             </li>
           </ul>
         </div>
         <div class="col-12 col-sm-6 pet-status text-center p-2">
           <%= image_tag(@pet.image.attached? ? @pet.image.variant(resize_to_limit: [300, 300]) : "petbase.png", class: "pet-image") %>
           <div class="text-center d-flex justify-content-center align-items-center mt-1">
-            <%= @pet.pet_statuses.includes(:status).map { |ps| ps.status.name }.join(", ") || "Non défini" %>
             <% if current_user.pet_id == @pet.id %>
               <div class="text-center mx-2">
                 <%= form_with url: heal_pet_path(@pet), method: :post, local: true, class: "d-flex align-items-center" do |f| %>
@@ -74,16 +98,16 @@
                     current_user.user_inventory_objects.joins(:inventory_object)
                     .where(inventory_objects: { category: 'soins' })
                     .map { |uio| ["#{uio.inventory_object.name} (#{uio.quantity})", uio.inventory_object.id] },
-                    prompt: "Choisissez un objet de soin",
+                    prompt: "Objet de soin",
                     class: "form-select mx-2" %>
                     
-                  <%= f.submit "Utiliser", class: "btn btn-outline-primary" %>
+                  <%= f.submit "Utiliser", class: "btn btn-outline-primary btn-sm ms-1" %>
                 <% end %>
               </div>
             <% end %>
           </div>
           <div class="hp-bar-wrapper">
-            <div class="pet-hp-bar-container mt-5" data-controller="hp-bar" data-max-hp="<%= @pet.hp_max %>" data-current-hp="<%= @pet.hp_current %>">
+            <div class="pet-hp-bar-container" data-controller="hp-bar" data-max-hp="<%= @pet.hp_max %>" data-current-hp="<%= @pet.hp_current %>">
               <img src="<%= asset_path('bottom-bar.svg') %>" alt="Fond de la barre de vie" class="hp-bar-background">
               <svg class="hp-bar-svg" viewBox="0 0 1001.46 140.26">
                 <defs>
@@ -106,7 +130,7 @@
               </div>
             </div>
             <% if @pet.shield_max > 0 %>
-              <div class="shield-text-container d-flex mt-1" data-controller="shield-recharge-pet">
+              <div class="shield-text-container d-flex" data-controller="shield-recharge-pet">
                 <div class="shield-text" data-shield-bar-target="shieldText">
                   🛡️ Bouclier : <span id="shield-value"><%= @pet.shield_current %></span> / <%= @pet.shield_max %>
                 </div>
@@ -123,6 +147,7 @@
               </div>
             <% end %>
           </div>
+          <%= @pet.pet_statuses.includes(:status).map { |ps| ps.status.name }.join(", ") || "Non défini" %>
         </div>
       </div>
 
@@ -136,18 +161,28 @@
             <% base_damage = @pet.damage_1 || 0 %>
             <% modifier = @pet.stat_modifiers[:damage] || 0 %>
             <%= base_damage %>DD + <%= @pet.damage_1_bonus || 0 %>
-            <% if modifier != 0 %> (<%= modifier.positive? ? "+#{modifier}" : modifier %>) <% end %>
+            <div>
+              <!-- Icône de dé déclenchant la modale -->
+              <i class="fa-solid fa-dice" data-bs-toggle="modal" data-bs-target="#diceModal"
+                data-dice-count="<%= base_damage %>"
+                data-action="click->dice#prepareRoll"></i>
+            </div>
           </div>
         </div>
         <div class="col-12 col-sm-6">
           <div class="weapon-box">
             <strong>Arme 2 :</strong> <%= @pet.weapon_2 %>
             <br>
-            <strong>Dégâts 1 :</strong>
+            <strong>Dégâts 2 :</strong>
             <% base_damage = @pet.damage_2 || 0 %>
             <% modifier = @pet.stat_modifiers[:damage] || 0 %>
             <%= base_damage %>DD + <%= @pet.damage_2_bonus || 0 %>
-            <% if modifier != 0 %> (<%= modifier.positive? ? "+#{modifier}" : modifier %>) <% end %>
+            <div>
+              <!-- Icône de dé déclenchant la modale -->
+              <i class="fa-solid fa-dice" data-bs-toggle="modal" data-bs-target="#diceModal"
+                data-dice-count="<%= base_damage %>"
+                data-action="click->dice#prepareRoll"></i>
+            </div>
           </div>
         </div>
       </div>

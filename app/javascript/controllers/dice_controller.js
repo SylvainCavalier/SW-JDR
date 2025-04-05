@@ -2,6 +2,46 @@ import { Controller } from "@hotwired/stimulus";
 
 export default class extends Controller {
   static targets = ["d6", "d12", "resultD6", "resultD12", "diceCount", "details"];
+  static values = { luck: Number, bonus: Number, diceCount: Number };
+
+  connect() {
+    console.log("✅ Controller 'dice' connecté.");
+
+    // On écoute l'ouverture de la modale via Bootstrap
+    const modalElement = document.getElementById("diceModal");
+    if (modalElement) {
+      modalElement.addEventListener('shown.bs.modal', (event) => {
+        this.prepareRoll(event);
+      });
+    }
+  }
+
+  prepareRoll(event) {
+    const element = event.relatedTarget; // L'élément qui a déclenché l'ouverture de la modale (icône de dé)
+  
+    if (!element) {
+      console.error("❌ Aucun élément déclencheur trouvé.");
+      return;
+    }
+
+    // Récupération des valeurs
+    this.bonusValue = parseInt(element.getAttribute("data-dice-bonus-value")) || 0;
+    this.diceCountValue = parseInt(element.getAttribute("data-dice-count")) || 1; 
+  
+    console.log(`📊 Jet préparé : ${this.diceCountValue}D + ${this.bonusValue}`);
+  
+    if (!this.hasDiceCountTarget) {
+      console.error("❌ Aucune cible 'diceCount' trouvée. Vérifie que le data-target='dice.diceCount' est bien placé.");
+      return;
+    }
+  
+    console.log("🎯 Cible 'diceCount' trouvée :", this.diceCountTarget);
+    console.log("📌 Valeur actuelle de l'input avant modification :", this.diceCountTarget.value);
+
+    // Modification de l'input
+    this.diceCountTarget.value = this.diceCountValue;
+    console.log("✅ Valeur modifiée de l'input :", this.diceCountTarget.value);
+  }
 
   async rollD6() {
     const MAX_DICE = 20;
@@ -15,6 +55,11 @@ export default class extends Controller {
         rollResults.push(roll);
         total += roll;
       }
+    }
+
+    // Ajout du bonus (si défini)
+    if (this.bonusValue) {
+      total += this.bonusValue;
     }
 
     this.resultD6Target.value = ""; // Réinitialise le champ du total

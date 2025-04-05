@@ -76,6 +76,54 @@ span {
 //   z-index: -1;
 // }
 
+/* Tom Select dark override (adapté à ton design Star Wars) */
+.ts-wrapper {
+  font-family: inherit;
+  background-color: #111;
+  color: #eee;
+  border-radius: 8px;
+}
+
+.ts-control {
+  background-color: #111 !important;
+  color: #eee !important;
+  border: 2px solid #00ffcc;
+  padding: 8px;
+}
+
+.ts-dropdown,
+.ts-dropdown .option {
+  background-color: #111 !important;
+  color: #eee !important;
+  border: 2px solid #00ffcc;
+  border-radius: 0 0 8px 8px;
+  overflow: hidden;
+  margin-top: -2px;
+}
+
+.ts-dropdown .option {
+  padding: 8px;
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid #222;
+  cursor: pointer;
+}
+
+.ts-dropdown .option:hover {
+  background-color: #00ffcc22;
+}
+
+.ts-dropdown .active {
+  background-color: #00ffcc44;
+}
+
+.ts-dropdown img {
+  margin-right: 10px;
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+}
+
 .frame-container {
   position: relative;
   width: 100vw;  /* 100% de la largeur de l'écran */
@@ -1080,6 +1128,7 @@ input.dice-count-input {
 .pet-hp-bar-container {
   position: absolute;
   width: 40vw;
+  margin-top: 20vh;
   height: auto;
   z-index: 2;
 }

@@ -348,11 +348,15 @@ class Pet < ApplicationRecord
   end
 
   def set_default_values
-    self.mood ||= 2
-    self.loyalty ||= 2
+    self.mood ||= 4
+    self.loyalty ||= 3
     self.hunger ||= 4
     self.fatigue ||= 4
-    self.status ||= Status.find_by(name: "En forme")
+    
+    if self.pet_statuses.empty?
+      status_en_forme = Status.find_by(name: "En forme")
+      self.pet_statuses.build(status: status_en_forme) if status_en_forme
+    end
   end
 
   def random_comment(messages)

@@ -3,6 +3,9 @@ class TransactionsController < ApplicationController
 
   def new
     @transaction = Transaction.new
+    @transfer_users = User.where.not(id: current_user.id)
+                          .includes(avatar_attachment: :blob)
+                          .order(:username)
   end
 
   def create

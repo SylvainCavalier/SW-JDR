@@ -16,7 +16,10 @@
     <link href="https://fonts.googleapis.com/css2?family=Audiowide&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.1.2/css/all.css">
     <link rel="manifest" href="/manifest.json">
+    <link href="https://cdn.jsdelivr.net/npm/tom-select@2.4.3/dist/css/tom-select.css" rel="stylesheet">
 
+    <!-- Tom Select CDN JS -->
+    <script src="https://cdn.jsdelivr.net/npm/tom-select@2.4.3/dist/js/tom-select.complete.min.js"></script>
     <script>
       document.addEventListener("DOMContentLoaded", () => {
         if (screen.orientation && screen.orientation.lock) {
@@ -35,6 +38,7 @@
       <%= render "layouts/flash" %>
     </div>
     <%= render 'shared/generic_modal' %>
+    <%= render 'shared/dice_modal' %>
     <%= turbo_frame_tag "group-luck-popup", class: "hidden-popup" %>
     <div id="background" class="container-fluid justify-content-center align-items-center p-0">
       <%= yield %>

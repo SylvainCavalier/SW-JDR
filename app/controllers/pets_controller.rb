@@ -4,6 +4,14 @@ class PetsController < ApplicationController
   def index
     dead_status = Status.find_by(name: "Mort")
   
+    # Récupère l'identifiant du pet associé au current_user, s'il existe
+    user_pet_id = current_user.pet_id
+  
+    # Si un pet associé est trouvé, on le récupère
+    @associated_pet = Pet.joins(:pet_statuses)
+                         .where.not(pet_statuses: { status_id: dead_status.id })
+                         .where(id: user_pet_id)
+  
     @humanoids = Pet.joins(:pet_statuses).where(category: "humanoïde").where.not(pet_statuses: { status_id: dead_status.id }).order(:name)
     @animals   = Pet.joins(:pet_statuses).where(category: "animal").where.not(pet_statuses: { status_id: dead_status.id }).order(:name)
     @droids    = Pet.joins(:pet_statuses).where(category: "droïde").where.not(pet_statuses: { status_id: dead_status.id }).order(:name)

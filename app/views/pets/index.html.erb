@@ -2,6 +2,31 @@
   <div class="pet-container mt-3">
     <h2 class="text-success text-center mb-4">Liste des Familiers</h2>
 
+    <%# Pet associé %>
+    <% if @associated_pet.present? %>
+      <div class="pet-category-box mb-5">
+        <h3 class="text-center text-info">Associé</h3>
+        <ul class="list-group">
+          <% @associated_pet.each do |pet| %>
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+              <div>
+                <% if pet.image.attached? %>
+                  <strong></strong><%= image_tag pet.image.variant(resize_to_fill: [30, 30]), class: "rounded-circle me-2" %> | 
+                <% end %>
+                <strong></strong> <%= pet.name %> | 
+                <strong></strong> <%= pet.race %> | 
+                <strong>PV :</strong> <%= "#{pet.hp_current} / #{pet.hp_max}" %> | 
+                <strong> <%= User.find_by(pet_id: pet.id)&.username %> </strong>
+              </div>
+              <div>
+                <%= link_to "Voir", pet_path(pet), class: "btn btn-outline-primary btn-sm" %>
+              </div>
+            </li>
+          <% end %>
+        </ul>
+      </div>
+    <% end %>
+
     <%# Liste des Humanoïdes %>
     <div class="pet-category-box mb-5">
       <h3 class="text-center text-info">Humanoïdes</h3>

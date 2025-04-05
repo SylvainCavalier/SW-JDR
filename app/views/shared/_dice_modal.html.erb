@@ -1,0 +1,26 @@
+<!-- app/views/shared/_dice_modal.html.erb -->
+<div class="modal fade" id="diceModal" tabindex="-1" aria-labelledby="diceModalLabel" aria-hidden="true"
+  data-controller="dice">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="diceModalLabel">Lancer de dés</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body" data-dice-luck="<%= current_user.luck %>">
+        <div class="dice-container">
+          <img src="<%= asset_path('de6.png') %>" alt="Dé à 6 faces" class="dice" data-dice-target="d6" data-action="click->dice#rollD6">
+          <div class="dice-controls">
+            <input type="text" readonly placeholder="Résultat" class="dice-result" data-dice-target="resultD6">
+            <div class="increment-buttons" data-controller="increment">
+              <button class="btn btn-outline-secondary btn-sm" data-action="click->increment#decrement">-</button>
+              <input type="number" value="1" min="1" class="dice-count-input" data-dice-target="diceCount" data-increment-target="input" readonly>
+              <button class="btn btn-outline-secondary btn-sm" data-action="click->increment#increment">+</button>
+            </div>
+          </div>
+          <div class="dice-details" data-dice-target="details"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
