@@ -7,7 +7,7 @@
         <h5 class="modal-title" id="diceModalLabel">Lancer de dés</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
-      <div class="modal-body" data-dice-luck="<%= current_user.luck %>">
+      <div class="modal-body" data-dice-luck="<%= current_user&.luck || 0 %>">
         <div class="dice-container">
           <img src="<%= asset_path('de6.png') %>" alt="Dé à 6 faces" class="dice" data-dice-target="d6" data-action="click->dice#rollD6">
           <div class="dice-controls">
