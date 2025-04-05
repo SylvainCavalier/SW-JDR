@@ -145,7 +145,7 @@
               <% if participant.is_a?(User) %>
                 <%= participant.statuses.last&.name || "Aucun statut" %>
               <% elsif participant.is_a?(Pet) %>
-                <%= participant.status&.name || "Aucun statut" %>
+                <%= "Aucun statut" %>
               <% else %>
                 <%= participant.status %>
               <% end %>
