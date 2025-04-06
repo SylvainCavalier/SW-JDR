@@ -968,18 +968,18 @@ Lors de la phase d'engagement, à moins qu'il ne s'agisse d'une attaque surprise
 
 **2 – Déroulement du tour du pilote**
 Le pilote dispose de 2 types d'actions possibles lors de son tour : action offensive et action de mouvement.  
-<br/>Actions offensives :  
+Actions offensives :  
 \- Utiliser les canons du vaisseau pour tirer  
 \- Utiliser le rayon tracteur  
 \- Utiliser une arme spéciale du vaisseau (missiles, torpilles...)  
-<br/>Actions de mouvement :  
+Actions de mouvement :  
 \- Tenter de se mettre en position de poursuite d'un vaisseau adverse
 \- Se mettre hors de portée des vaisseaux poursuivants
 \- Se mettre à portée des vaisseaux poursuivis  
 \- Tenter de fuir et passer en hyperespace  
 Le pilote peut effectuer une action de mouvement et une action offensive par tour, et dans n'importe quel ordre.
 Les membres de son équipage peuvent effectuer pendant son tour d'autres actions telles qu'activer un droïde astromec, réparer le vaisseau, utiliser le rayon tracteur, utiliser des armes spéciales, utiliser les tourelles... Les membres de l'équipage ne peuvent pas faire d'action de mouvement spatial. Ils peuvent s’occuper des canons du vaisseau à la place du pilote, mais cela n’occasionne ni bonus ni malus ni pour l’un ni pour l’autre.
-Bien entendu, au cours de son tour ou à n'importe quel moment du combat, le pilote peut effectuer des actions en défense comme une esquive spatiale ou l'utilisation de contre-mesures ou d'un autre objet défensif. C'est le seul type d'action qu'il peut effectuer plusieurs fois dans le tour, cependant à chaque nouvelle action en défense effectuée il gagne un malus supplémentaire de -1D. Les malus s'accumulent puis sont remis à zéro au début du tour suivant du pilote.  
+Bien entendu, au cours de son tour ou à n'importe quel moment du combat, le pilote peut effectuer des actions en défense comme une esquive spatiale ou l'utilisation de contre-mesures ou d'un autre objet défensif. C'est le seul type d'action qu'il peut effectuer plusieurs fois dans le tour, cependant à chaque nouvelle action en défense effectuée il gagne un malus supplémentaire de -1D. Les malus s'accumulent puis sont remis à zéro au début du tour suivant du pilote.
 
 **3 – Le positionnement du vaisseau**  
 Le vaisseau peut avoir 5 positionnements possibles par rapport au vaisseau ennemi :  

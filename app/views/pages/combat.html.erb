@@ -37,7 +37,12 @@
               <% if participant.is_a?(User) %>
                 <%= participant.username.capitalize %>
               <% elsif participant.is_a?(Pet) %>
-                <%= participant.name %> (<%= User.find_by(pet_id: participant.id)&.username %>)
+                <% owner = User.find_by(pet_id: participant.id) %>
+                <% if owner %>
+                  <%= link_to participant.name, pet_path(participant), class: "text-info fw-bold" %> (<%= owner.username %>)
+                <% else %>
+                  <%= participant.name %>
+                <% end %>
               <% else %>
                 <%= "#{participant.enemy_type} #{participant.number}" %>
               <% end %>
