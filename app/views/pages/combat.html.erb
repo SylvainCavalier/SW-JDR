@@ -45,7 +45,7 @@
               <% elsif participant.is_a?(Pet) %>
                 <% owner = User.find_by(pet_id: participant.id) %>
                 <% if owner %>
-                  <%= link_to participant.name, pet_path(participant), class: "text-info fw-bold" %> (<%= owner.username %>)
+                  <%= link_to participant.name, pet_path(participant), class: "text-info fw-bold mx-2" %> (<%= owner.username %>)
                 <% else %>
                   <%= participant.name %>
                 <% end %>
@@ -94,7 +94,7 @@
         <h4>Ajouter le Compagnon</h4>
         <%= form_with url: add_pet_to_combat_path, method: :post, local: true, class: "d-flex align-items-center gap-2" do |f| %>
           <%= f.hidden_field :pet_id, value: current_user.pet_id %>
-          <%= f.number_field :vitesse, class: "form-control", min: 1, placeholder: "Vitesse du pet", required: true %>
+          <%= f.number_field :vitesse, class: "form-control", min: 1, placeholder: "Vitesse du compagnon", required: true %>
           <%= f.submit "Ajouter", class: "btn btn-outline-success" %>
         <% end %>
       </div>

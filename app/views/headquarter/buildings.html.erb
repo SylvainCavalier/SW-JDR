@@ -9,7 +9,7 @@
     <% @buildings.group_by(&:category).each do |category, buildings| %>
       <% current_building = buildings.max_by(&:level) %>
 
-      <div class="col-12 col-md-6 mb-2">
+      <div class="col-6 mb-2">
         <div class="card bg-dark text-light p-3 shadow-lg rounded building-card">
           <h3 class="text-success text-center"><%= current_building.name %> (Niveau <%= current_building.level %>)</h3>
           
