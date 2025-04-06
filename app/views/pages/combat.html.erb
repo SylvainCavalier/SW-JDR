@@ -45,7 +45,7 @@
               <% elsif participant.is_a?(Pet) %>
                 <% owner = User.find_by(pet_id: participant.id) %>
                 <% if owner %>
-                  <%= link_to participant.name, pet_path(participant), class: "text-info fw-bold mx-2" %> (<%= owner.username %>)
+                  <%= link_to participant.name, pet_path(participant), class: "text-info fw-bold me-2" %> (<%= owner.username %>)
                 <% else %>
                   <%= participant.name %>
                 <% end %>
