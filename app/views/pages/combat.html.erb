@@ -33,7 +33,13 @@
         <% (User.where.not(vitesse: nil) + Enemy.all + Pet.where.not(vitesse: nil)).sort_by(&:vitesse).reverse.each do |participant| %>
           <tr>
             <!-- Colonne Participant -->
-            <td class="fw-bold">
+            <td class="fw-bold d-flex align-items-center">
+              <% if participant.is_a?(User) && participant.avatar.attached? %>
+                <%= image_tag participant.avatar.variant(resize_to_fill: [30, 30]), class: "rounded-circle me-2 ms-2", alt: "Avatar de #{participant.username}" %>
+              <% elsif participant.is_a?(Pet) && participant.image.attached? %>
+                <%= image_tag participant.image.variant(resize_to_fill: [30, 30]), class: "rounded-circle me-2 ms-2", alt: "Image de #{participant.name}" %>
+              <% end %>
+
               <% if participant.is_a?(User) %>
                 <%= participant.username.capitalize %>
               <% elsif participant.is_a?(Pet) %>
