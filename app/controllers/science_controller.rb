@@ -190,7 +190,12 @@ class ScienceController < ApplicationController
   end
 
   def bestiaire
-    @animals = Pet.where(creature: true).where.not(status: Status.find_by(name: "Mort")).order(:name)
+    dead_status = Status.find_by(name: "Mort")
+  
+    # Récupère l'identifiant du pet associé au current_user, s'il existe
+    user_pet_id = current_user.pet_id
+
+    @animals = Pet.joins(:pet_statuses).where(category: "animal").where.not(pet_statuses: { status_id: dead_status.id }).order(:name)
   end
 
   def showbestiaire

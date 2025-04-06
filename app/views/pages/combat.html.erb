@@ -57,7 +57,7 @@
               <% if participant.is_a?(User) %>
                 <%= participant.statuses.last&.name || "Aucun statut" %>
               <% elsif participant.is_a?(Pet) %>
-                <%= "Aucun statut" %>
+                <%= participant.statuses.last&.name || "Aucun statut" %>
               <% else %>
                 <%= participant.status %>
               <% end %>
@@ -80,7 +80,7 @@
     <!-- Formulaire pour ajouter la vitesse du pet si le joueur en a un -->
     <% if current_user.pet_id.present? %>
       <div class="card bg-dark text-white p-3 mb-4">
-        <h4>Ajouter votre pet au combat</h4>
+        <h4>Ajouter le Compagnon</h4>
         <%= form_with url: add_pet_to_combat_path, method: :post, local: true, class: "d-flex align-items-center gap-2" do |f| %>
           <%= f.hidden_field :pet_id, value: current_user.pet_id %>
           <%= f.number_field :vitesse, class: "form-control", min: 1, placeholder: "Vitesse du pet", required: true %>

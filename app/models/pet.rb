@@ -311,17 +311,25 @@ class Pet < ApplicationRecord
   end
 
   def set_status_based_on_hp
-    new_status_name = case hp_current
-                      when 1..Float::INFINITY then "En forme"
-                      when 0 then "Inconscient"
-                      when -9..-1 then "Agonisant"
-                      else "Mort"
-                      end
+    status_map = {
+      (1..Float::INFINITY) => "En forme",
+      0 => "Inconscient",
+      (-9..-1) => "Agonisant",
+      (-Float::INFINITY..-10) => "Mort"
+    }
+  
+    new_status_name = status_map.find { |range, _| range === hp_current }&.last
+    return unless new_status_name
   
     new_status = Status.find_by(name: new_status_name)
     return unless new_status
   
-    # Vérifie si le pet a déjà ce statut
+    automatic_status_names = ["En forme", "Inconscient", "Agonisant", "Mort"]
+  
+    # Supprimer tous les statuts automatiques existants (sauf celui qu'on veut ajouter)
+    pet_statuses.joins(:status).where(statuses: { name: automatic_status_names - [new_status_name] }).destroy_all
+  
+    # Ajouter le nouveau statut automatique uniquement s’il n’existe pas déjà
     unless pet_statuses.exists?(status: new_status)
       pet_statuses.create!(status: new_status)
       Rails.logger.debug "🔄 Le pet #{name} a maintenant un nouveau statut : #{new_status.name}"

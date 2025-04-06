@@ -12,9 +12,13 @@ class PetsController < ApplicationController
                          .where.not(pet_statuses: { status_id: dead_status.id })
                          .where(id: user_pet_id)
   
-    @humanoids = Pet.joins(:pet_statuses).where(category: "humanoïde").where.not(pet_statuses: { status_id: dead_status.id }).order(:name)
-    @animals   = Pet.joins(:pet_statuses).where(category: "animal").where.not(pet_statuses: { status_id: dead_status.id }).order(:name)
-    @droids    = Pet.joins(:pet_statuses).where(category: "droïde").where.not(pet_statuses: { status_id: dead_status.id }).order(:name)
+    @humanoids = Pet.joins(:pet_statuses)
+                .where(category: "humanoïde")
+                .where.not(pet_statuses: { status_id: dead_status.id })
+                .yield_self { |q| user_pet_id.present? ? q.where.not(id: user_pet_id) : q }
+                .order(:name)
+    @animals   = Pet.joins(:pet_statuses).where(category: "animal").where.not(pet_statuses: { status_id: dead_status.id }).yield_self { |q| user_pet_id.present? ? q.where.not(id: user_pet_id) : q }.order(:name)
+    @droids    = Pet.joins(:pet_statuses).where(category: "droïde").where.not(pet_statuses: { status_id: dead_status.id }).yield_self { |q| user_pet_id.present? ? q.where.not(id: user_pet_id) : q }.order(:name)
   end
   
   def graveyard
