@@ -311,29 +311,23 @@ class Pet < ApplicationRecord
   end
 
   def set_status_based_on_hp
-    status_map = {
-      (1..Float::INFINITY) => "En forme",
-      0 => "Inconscient",
-      (-9..-1) => "Agonisant",
-      (-Float::INFINITY..-10) => "Mort"
-    }
+    auto_statuses = ["En forme", "Inconscient", "Agonisant", "Mort"]
   
-    new_status_name = status_map.find { |range, _| range === hp_current }&.last
-    return unless new_status_name
+    new_status_name = case hp_current
+                      when 1..Float::INFINITY then "En forme"
+                      when 0 then "Inconscient"
+                      when -9..-1 then "Agonisant"
+                      else "Mort"
+                      end
   
     new_status = Status.find_by(name: new_status_name)
     return unless new_status
   
-    automatic_status_names = ["En forme", "Inconscient", "Agonisant", "Mort"]
+    # Supprime tous les anciens statuts automatiques
+    pet_statuses.joins(:status).where(statuses: { name: auto_statuses - [new_status_name] }).destroy_all
   
-    # Supprimer tous les statuts automatiques existants (sauf celui qu'on veut ajouter)
-    pet_statuses.joins(:status).where(statuses: { name: automatic_status_names - [new_status_name] }).destroy_all
-  
-    # Ajouter le nouveau statut automatique uniquement s’il n’existe pas déjà
-    unless pet_statuses.exists?(status: new_status)
-      pet_statuses.create!(status: new_status)
-      Rails.logger.debug "🔄 Le pet #{name} a maintenant un nouveau statut : #{new_status.name}"
-    end
+    # Ajoute le nouveau statut s’il n’est pas déjà là
+    pet_statuses.find_or_create_by(status: new_status)
   end
 
   def roll_dice(number, sides)

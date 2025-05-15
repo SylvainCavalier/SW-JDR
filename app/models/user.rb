@@ -14,6 +14,8 @@ class User < ApplicationRecord
   has_many :inventory_objects, through: :user_inventory_objects
   has_many :user_skills
   has_many :skills, through: :user_skills
+  has_many :user_caracs
+  has_many :caracs, through: :user_caracs
   has_many :user_statuses, dependent: :destroy
   has_many :statuses, through: :user_statuses
   has_many :spheros, dependent: :destroy
@@ -21,6 +23,7 @@ class User < ApplicationRecord
   has_many :received_holonews, class_name: "Holonew", foreign_key: "target_user", primary_key: "id"
   has_many :holonew_reads, dependent: :destroy
   has_many :read_holonews, through: :holonew_reads, source: :holonew
+  has_many :equipments, dependent: :destroy
   has_one_attached :avatar
 
   validates :username, presence: true, uniqueness: true

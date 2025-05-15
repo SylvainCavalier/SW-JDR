@@ -1,35 +1,95 @@
 puts "Adding new skills..."
 
-# Liste actuelle des compétences
-new_skills = [
-  { name: "Vitesse", description: "Augmente les déplacements rapides." },
-  { name: "Précision", description: "Améliore les tirs à distance." },
-  { name: "Esquive", description: "Réduit les chances d'être touché." },
-  { name: "Ingénierie", description: "Permet de fabriquer et d'améliorer des objets techniques." },
-  { name: "Médecine", description: "Compétence pour soigner les autres." },
-  { name: "Résistance Corporelle", description: "Réduit les dégâts subis en fonction du jet de résistance corporelle." }
-]
+puts "🛠️ Création des caractéristiques..."
 
-# Liste des nouvelles compétences à ajouter
-additional_skills = [
+carac_names = %w[Force Dextérité Perception Savoir Technique Mécanique]
+carac_names.each do |name|
+  Carac.find_or_create_by!(name: name)
+end
+
+puts "✅ Caractéristiques créées."
+
+puts "📌 Création et mise à jour des compétences..."
+
+# Liste des compétences sans duplication
+skills_list = [
+  "Vitesse", "Précision", "Esquive", "Ingénierie", "Médecine", "Résistance Corporelle",
   "Sabre-laser", "Arts martiaux", "Armes blanches", "Lancer", "Tir", "Discrétion", "Habileté",
   "Observation", "Intuition", "Imitation", "Psychologie", "Commandement", "Marchandage",
   "Persuasion", "Dressage", "Saut", "Escalade", "Endurance", "Intimidation", "Natation",
   "Survie", "Nature", "Substances", "Savoir jedi", "Langage", "Astrophysique", "Planètes",
   "Evaluation", "Illégalité", "Pilotage", "Esquive spatiale", "Astrogation", "Tourelles",
-  "Jetpack", "Réparation", "Sécurité", "Démolition", "Systèmes", "Contrôle",
-  "Sens", "Altération"
+  "Jetpack", "Réparation", "Sécurité", "Démolition", "Systèmes", "Contrôle", "Sens", "Altération"
 ]
 
-# Ajouter les nouvelles compétences à la liste existante
-additional_skills.each do |skill_name|
-  new_skills << { name: skill_name, description: "Description à définir pour #{skill_name}." }
+skills_list.each do |skill_name|
+  Skill.find_or_create_by!(name: skill_name) do |s|
+    s.description = "" # Description vide pour l'instant
+  end
 end
 
-# Créer ou mettre à jour les compétences dans la base de données
-new_skills.each do |skill|
-  Skill.find_or_create_by!(name: skill[:name]) do |s|
-    s.description = skill[:description]
+puts "✅ Compétences créées ou mises à jour."
+
+puts "🔗 Association des compétences aux caractéristiques..."
+
+skills_caracs = {
+  "Vitesse" => "Dextérité",
+  "Précision" => "Dextérité",
+  "Esquive" => "Dextérité",
+  "Sabre-laser" => "Dextérité",
+  "Arts martiaux" => "Dextérité",
+  "Armes blanches" => "Dextérité",
+  "Lancer" => "Dextérité",
+  "Tir" => "Dextérité",
+  "Discrétion" => "Dextérité",
+  "Habileté" => "Dextérité",
+
+  "Observation" => "Perception",
+  "Intuition" => "Perception",
+  "Imitation" => "Perception",
+  "Psychologie" => "Perception",
+  "Commandement" => "Perception",
+  "Marchandage" => "Perception",
+  "Persuasion" => "Perception",
+  "Dressage" => "Perception",
+
+  "Saut" => "Force",
+  "Escalade" => "Force",
+  "Endurance" => "Force",
+  "Intimidation" => "Force",
+  "Natation" => "Force",
+  "Survie" => "Force",
+
+  "Nature" => "Savoir",
+  "Substances" => "Savoir",
+  "Savoir jedi" => "Savoir",
+  "Langage" => "Savoir",
+  "Astrophysique" => "Savoir",
+  "Planètes" => "Savoir",
+  "Evaluation" => "Savoir",
+  "Illégalité" => "Savoir",
+  "Médecine" => "Savoir",
+
+  "Pilotage" => "Mécanique",
+  "Esquive spatiale" => "Mécanique",
+  "Astrogation" => "Mécanique",
+  "Tourelles" => "Mécanique",
+  "Jetpack" => "Mécanique",
+
+  "Ingénierie" => "Technique",
+  "Réparation" => "Technique",
+  "Sécurité" => "Technique",
+  "Démolition" => "Technique",
+  "Systèmes" => "Technique",
+}
+
+skills_caracs.each do |skill_name, carac_name|
+  skill = Skill.find_by(name: skill_name)
+  carac = Carac.find_by(name: carac_name)
+  if skill && carac
+    skill.update!(carac: carac)
+  else
+    puts "❌ Problème d'association : #{skill_name} → #{carac_name}" unless skill && carac
   end
 end
 
@@ -315,3 +375,4 @@ defenses.each do |defense|
 end
 
 puts "✅ Systèmes de défense ajoutés avec succès."
+

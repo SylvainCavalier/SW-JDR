@@ -3,8 +3,9 @@ Rails.application.routes.draw do
 
   get "/service-worker.js", to: "pwa#service_worker", as: :pwa_service_worker, format: :js
   get "manifest" => "pwa#manifest", as: :pwa_manifest
+  get "team" => "pages#team", as: :team
 
-  resources :users, only: [] do
+  resources :users, only: [:show] do
     resources :inventory_objects, only: [:index, :create, :destroy]
     
     member do
@@ -20,22 +21,23 @@ Rails.application.routes.draw do
       get :healobjects
       post :buy_inventory_object
       post :heal_player
-      get :patch
       post :equip_patch
       post :use_patch
-      get :inventory
       post :sell_item
       post :give_item
-      get :injections
       post :equip_injection
       post :deactivate_injection
-      get :implants
       post :equip_implant
       post :unequip_implant
       get :sphero
       get :edit_notes
       patch :update_notes
       patch :avatar_upload
+      patch :update_skills
+      post :add_equipment
+      patch :equip_equipment
+      delete "equipment/:slot", to: "users#remove_equipment", as: :remove_equipment
+      delete "equipment/delete/:equipment_id", to: "users#delete_equipment", as: :delete_equipment
     end
 
     collection do
@@ -59,18 +61,6 @@ Rails.application.routes.draw do
       delete "remove_personnel/:id", to: "headquarter#remove_personnel", as: :remove_personnel
       get :defenses
       post "buy_defense/:id", to: "headquarter#buy_defense", as: :buy_defense
-    end
-  
-    member do
-      patch 'update_quantity/:id', to: 'headquarter#update_quantity', as: :update_quantity
-      delete 'remove_item/:id', to: 'headquarter#remove_item', as: :remove_item
-      get :buildings
-      get :personnel
-      get :shop
-      get :defense
-      get :credits
-      post :transfer_credits
-      get :observation
     end
   end
 
@@ -147,6 +137,7 @@ Rails.application.routes.draw do
   get 'mj/fixer_pv_max', to: 'mj#fixer_pv_max', as: 'fixer_pv_max'
   post 'mj/fixer_pv_max', to: 'mj#update_pv_max'
   post 'mj/apply_hp_bonus', to: 'mj#apply_hp_bonus'
+  patch "/mj/users/:id/update_caracs", to: "mj#update_user_caracs", as: :mj_update_user_caracs
 
   get 'mj/donner_xp', to: 'mj#donner_xp', as: 'donner_xp'
   post 'mj/donner_xp', to: 'mj#attribution_xp', defaults: { format: :turbo_stream }

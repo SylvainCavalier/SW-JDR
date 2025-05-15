@@ -77,12 +77,12 @@ Rails.application.configure do
   config.action_controller.raise_on_missing_callback_actions = true
 
   config.after_initialize do
-    Bullet.enable = true                     # Active Bullet
-    Bullet.alert = true                      # Alerte via popups dans le navigateur
-    Bullet.console = true                    # Alerte via la console JS
-    Bullet.rails_logger = true               # Logs dans les logs Rails
-    Bullet.add_footer = true                 # Ajoute un message dans le footer des pages
-    Bullet.bullet_logger = true              # Logs dans un fichier Bullet log
+    Bullet.enable = false                    # Désactive Bullet
+    # Bullet.alert = true                    # Alerte via popups dans le navigateur
+    # Bullet.console = true                  # Alerte via la console JS
+    # Bullet.rails_logger = true             # Logs dans les logs Rails
+    # Bullet.add_footer = true               # Ajoute un message dans le footer des pages
+    # Bullet.bullet_logger = true            # Logs dans un fichier Bullet log
     Bullet.add_safelist type: :unused_eager_loading, class_name: "Building", association: :building_pets
     Bullet.add_safelist type: :unused_eager_loading, class_name: "Building", association: :pets
     Bullet.add_safelist type: :n_plus_one_query, class_name: "Building", association: :pets

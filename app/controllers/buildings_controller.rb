@@ -94,8 +94,14 @@ class BuildingsController < ApplicationController
       return
     end
   
+    # Vérifie si le pet est chef du bâtiment
+    if @building.chief_pet_id == pet.id
+      @building.update!(chief_pet_id: nil)
+    end
+  
     # Retirer le pet du bâtiment
     @building.pets.delete(pet)
+  
     redirect_to buildings_headquarter_path, notice: "#{pet.name} a été retiré du bâtiment."
   end
 

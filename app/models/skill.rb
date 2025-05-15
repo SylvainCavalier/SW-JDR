@@ -8,5 +8,7 @@ class Skill < ApplicationRecord
   has_many :enemy_skills, dependent: :destroy
   has_many :enemies, through: :enemy_skills
 
+  belongs_to :carac, optional: true
+
   validates :name, presence: true, uniqueness: true
 end

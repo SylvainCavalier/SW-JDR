@@ -9,8 +9,8 @@
     <% @buildings.group_by(&:category).each do |category, buildings| %>
       <% current_building = buildings.max_by(&:level) %>
 
-      <div class="col-6 mb-2">
-        <div class="card bg-dark text-light p-3 shadow-lg rounded building-card">
+      <div class="col-12 col-sd-12 col-md-6 mb-2">
+        <div class="card bg-dark text-light p-2 mb-2 shadow-lg rounded building-card">
           <h3 class="text-success text-center"><%= current_building.name %> (Niveau <%= current_building.level %>)</h3>
           
           <% if current_building.level == 0 %>
@@ -68,6 +68,9 @@
                       <% current_building.pets.each do |pet| %>
                         <li class="list-group-item bg-transparent text-light d-flex justify-content-between align-items-center">
                           <div>
+                            <% if pet.image.attached? %>
+                              <%= image_tag pet.image.variant(resize_to_fill: [30, 30]), class: "rounded-circle me-1", alt: "Avatar de #{pet.name}" %>
+                            <% end %>
                             <strong><%= pet.name %></strong> - <%= pet.race %>
                           </div>
                           <div class="d-flex align-items-center">
@@ -88,10 +91,12 @@
 
                   <!-- Formulaire pour ajouter un personnel -->
                   <%= form_with url: assign_pet_building_path(current_building), method: :patch, local: true do |f| %>
-                    <div class="d-flex align-items-center mt-3">
+                    <div class="align-items-center mt-3">
                       <%= f.label :pet_id, "Choisir un personnel :", class: "me-2 text-success" %>
-                      <%= f.select :pet_id, options_from_collection_for_select(Pet.all, "id", "name"), { prompt: "Sélectionner un pet" }, class: "form-select bg-dark text-light border-success me-2" %>
-                      <%= f.submit "Assigner", class: "btn btn-outline-success btn-sm" %>
+                      <div class="d-flex">
+                        <%= f.select :pet_id, options_from_collection_for_select(Pet.order(:name), "id", "name"), { prompt: "Sélectionner un pet" }, class: "form-select bg-dark text-light border-success me-2" %>
+                        <%= f.submit "Assigner", class: "btn btn-outline-success btn-sm" %>
+                      </div>
                     </div>
                   <% end %>
 

@@ -73,31 +73,8 @@
         <div>
           <%= button_tag "Dépenser 1 XP", class: "btn btn-outline-primary btn-sm", data: { action: "xp-spend#decrement" } %>
         </div>
-        <%= link_to edit_notes_user_path(current_user), class: "btn btn-outline-success mt-3" do %>
-          <i class="fa-regular fa-note-sticky"></i>
-        <% end %>
       </div>
     </div>
-  </div>
-
-  <!-- Boutons en bas de la page -->
-  <div class="transaction-bottom-buttons d-flex">
-    <!-- Gestion de l'Inventaire -->
-    <%= link_to inventory_user_path(current_user), class: "btn btn-outline-success inventory-home" do %>
-      <i class="fa-solid fa-briefcase mx-1 p-1"></i>
-    <% end %>
-    <%= link_to injections_user_path(current_user), class: "btn btn-outline-success inventory-home" do %>
-      <i class="fa-solid fa-syringe mx-1 p-1"></i>
-    <% end %>
-    <%= link_to patch_user_path(current_user), class: "btn btn-outline-success inventory-home" do %>
-      <i class="fa-regular fa-circle-down mx-1 p-1"></i>
-    <% end %>
-    <%= link_to implants_user_path(current_user), class: "btn btn-outline-success inventory-home" do %>
-      <i class="fa-solid fa-microchip mx-1 p-1"></i>
-    <% end %>
-    <%= link_to sphero_user_path(current_user), class: "btn btn-outline-success inventory-home" do %>
-      <i class="fa-brands fa-discord"></i>
-    <% end %>
   </div>
 
   <%= link_to "Retour", current_user.group.name == "MJ" ? mj_dashboard_path : root_path, class: "btn btn-outline-secondary go-back" %>

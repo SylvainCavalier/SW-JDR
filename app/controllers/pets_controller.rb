@@ -47,6 +47,10 @@ class PetsController < ApplicationController
 
   def show
     @pet = Pet.find(params[:id])
+    # Stocker la page d'origine seulement si on vient d'une autre page
+    if request.referer.present? && !request.referer.include?(pet_path(@pet))
+      session[:return_to] = request.referer
+    end
   end
 
   def edit
@@ -133,7 +137,7 @@ class PetsController < ApplicationController
     healed_points, new_status = inventory_object.apply_effects(@pet, current_user)
     new_hp = [@pet.hp_current + healed_points, @pet.hp_max].min
   
-    # Transaction pour appliquer les soins et mettre à jour l’inventaire
+    # Transaction pour appliquer les soins et mettre à jour l'inventaire
     ActiveRecord::Base.transaction do
       heal_item.decrement!(:quantity) if healed_points > 0
       @pet.update!(hp_current: new_hp)

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_03_15_214713) do
+ActiveRecord::Schema[7.1].define(version: 2025_05_10_142403) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -78,6 +78,13 @@ ActiveRecord::Schema[7.1].define(version: 2025_03_15_214713) do
     t.index ["headquarter_id"], name: "index_buildings_on_headquarter_id"
   end
 
+  create_table "caracs", force: :cascade do |t|
+    t.string "name"
+    t.text "description"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "classe_persos", force: :cascade do |t|
     t.string "name"
     t.text "description"
@@ -124,6 +131,17 @@ ActiveRecord::Schema[7.1].define(version: 2025_03_15_214713) do
     t.datetime "updated_at", null: false
     t.index ["enemy_id"], name: "index_enemy_skills_on_enemy_id"
     t.index ["skill_id"], name: "index_enemy_skills_on_skill_id"
+  end
+
+  create_table "equipments", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.string "slot"
+    t.string "name"
+    t.text "effect"
+    t.boolean "equipped", default: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_equipments_on_user_id"
   end
 
   create_table "groups", force: :cascade do |t|
@@ -266,6 +284,8 @@ ActiveRecord::Schema[7.1].define(version: 2025_03_15_214713) do
     t.text "description"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "carac_id"
+    t.index ["carac_id"], name: "index_skills_on_carac_id"
   end
 
   create_table "sphero_skills", force: :cascade do |t|
@@ -319,6 +339,17 @@ ActiveRecord::Schema[7.1].define(version: 2025_03_15_214713) do
     t.integer "amount"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "user_caracs", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.bigint "carac_id", null: false
+    t.integer "mastery"
+    t.integer "bonus"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["carac_id"], name: "index_user_caracs_on_carac_id"
+    t.index ["user_id"], name: "index_user_caracs_on_user_id"
   end
 
   create_table "user_inventory_objects", force: :cascade do |t|
@@ -404,6 +435,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_03_15_214713) do
   add_foreign_key "defenses", "headquarters"
   add_foreign_key "enemy_skills", "enemies"
   add_foreign_key "enemy_skills", "skills"
+  add_foreign_key "equipments", "users"
   add_foreign_key "headquarter_inventory_objects", "headquarters"
   add_foreign_key "headquarter_inventory_objects", "inventory_objects"
   add_foreign_key "headquarter_objects", "users"
@@ -417,10 +449,13 @@ ActiveRecord::Schema[7.1].define(version: 2025_03_15_214713) do
   add_foreign_key "pet_statuses", "pets"
   add_foreign_key "pet_statuses", "statuses"
   add_foreign_key "pets", "statuses"
+  add_foreign_key "skills", "caracs"
   add_foreign_key "sphero_skills", "skills"
   add_foreign_key "sphero_skills", "spheros"
   add_foreign_key "spheros", "users"
   add_foreign_key "subscriptions", "users"
+  add_foreign_key "user_caracs", "caracs"
+  add_foreign_key "user_caracs", "users"
   add_foreign_key "user_inventory_objects", "inventory_objects"
   add_foreign_key "user_inventory_objects", "users"
   add_foreign_key "user_skills", "skills"

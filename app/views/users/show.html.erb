@@ -1,0 +1,91 @@
+<div class="container-fluid mt-4">
+  <!-- Titre -->
+  <h1 class="text-success text-center mb-4">Profil de <%= @user.username %></h1>
+
+  <!-- Boutons en haut à droite (visibles uniquement pour le propriétaire du profil) -->
+  <% if @user == current_user %>
+    <div class="d-flex justify-content-end mb-3">
+      <%= link_to edit_notes_user_path(@user), class: "btn btn-outline-success me-2" do %>
+        <i class="fa-regular fa-note-sticky"></i> Notes
+      <% end %>
+      <%= link_to settings_user_path(@user), class: "btn btn-outline-success" do %>
+        <i class="fa-solid fa-gears"></i> Réglages
+      <% end %>
+    </div>
+  <% end %>
+
+  <!-- Avatar -->
+  <div class="text-center mb-4" data-controller="avatar">
+    <% if @user == current_user %>
+      <%= form_with(model: @user, url: avatar_upload_user_path(@user), method: :patch, local: true, html: { multipart: true, data: { direct_upload_url: rails_direct_uploads_path } }) do |form| %>
+        <label for="avatar-upload" class="avatar-label">
+          <% if @user.avatar.attached? %>
+            <%= image_tag(@user.avatar, class: "avatar-preview", data: { avatar_target: "preview" }) %>
+          <% else %>
+            <div class="avatar-placeholder" data-avatar-target: "preview">+</div>
+          <% end %>
+        </label>
+        <%= form.file_field :avatar, id: "avatar-upload", class: "d-none", accept: "image/*", data: { action: "change->avatar#preview" } %>
+      <% end %>
+    <% else %>
+      <div class="avatar-label">
+        <% if @user.avatar.attached? %>
+          <%= image_tag(@user.avatar, class: "avatar-preview") %>
+        <% else %>
+          <div class="avatar-placeholder"></div>
+        <% end %>
+      </div>
+    <% end %>
+  </div>
+
+  <!-- Section Compétences -->
+  <section class="mb-5">
+    <h2 class="text-success text-center mb-4" role="button" data-bs-toggle="collapse" data-bs-target="#skillsSection" aria-expanded="true" aria-controls="skillsSection" style="cursor: pointer;">
+      <i class="fa-solid fa-chevron-down me-2"></i>Compétences
+    </h2>
+    <div class="collapse show" id="skillsSection">
+      <%= render "users/skills_section", editable: @user == current_user %>
+    </div>
+  </section>
+
+  <!-- Section Équipement -->
+  <section class="mb-5">
+    <h2 class="text-success text-center mb-4" role="button" data-bs-toggle="collapse" data-bs-target="#equipmentSection" aria-expanded="true" aria-controls="equipmentSection" style="cursor: pointer;">
+      <i class="fa-solid fa-chevron-down me-2"></i>Équipement
+    </h2>
+    <div class="collapse show" id="equipmentSection">
+      <%= render "users/equipment_section", editable: @user == current_user %>
+      <% if @user == current_user %>
+        <div class="text-center mb-3">
+          <%= link_to sphero_user_path(@user), class: "btn btn-outline-success btn-lg px-4" do %>
+            <%= image_tag("sphero.png", height: 80, class: "me-2") %> Sphéro
+          <% end %>
+        </div>
+      <% end %>
+    </div>
+  </section>
+
+  <!-- Section Inventaire -->
+  <section class="mb-5">
+    <h2 class="text-success text-center mb-4" role="button" data-bs-toggle="collapse" data-bs-target="#inventorySection" aria-expanded="true" aria-controls="inventorySection" style="cursor: pointer;">
+      <i class="fa-solid fa-chevron-down me-2"></i>Inventaire
+    </h2>
+    <div class="collapse show" id="inventorySection">
+      <%= render "users/inventory_section", editable: @user == current_user %>
+    </div>
+  </section>
+
+  <%= back_link(root_path) %>
+</div>
+
+<% content_for :head do %>
+  <style>
+    [data-bs-toggle="collapse"] .fa-chevron-down {
+      transition: transform 0.2s ease-in-out;
+    }
+    
+    [data-bs-toggle="collapse"][aria-expanded="false"] .fa-chevron-down {
+      transform: rotate(-90deg);
+    }
+  </style>
+<% end %>

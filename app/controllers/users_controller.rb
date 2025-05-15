@@ -1,7 +1,113 @@
 class UsersController < ApplicationController
   before_action :authenticate_user!
-  before_action :set_user, only: [:medipack, :healobjects, :buy_inventory_object, :inventory, :sell_item, :give_item]
+  before_action :set_user, only: [:medipack, :healobjects, :buy_inventory_object, :inventory, :sell_item, :give_item, :show]
+  
+  def show
+    @user = User.find(params[:id])
+    # Stocker la page d'origine seulement si on vient d'une autre page
+    if request.referer.present? && !request.referer.include?(user_path(@user))
+      session[:return_to] = request.referer
+    end
+    
+    # Variables pour les compétences
+    @skills = Skill.includes(:carac).order(:name)
+    @user_skills = @skills.map do |skill|
+      @user.user_skills.find_or_initialize_by(skill: skill) do |us|
+        us.mastery = 0
+        us.bonus = 0
+      end
+    end
+    @user_caracs = @user.user_caracs.includes(:carac).index_by { |uc| uc.carac.name }
+    @grouped_skills = @user_skills.reject { |us| ["Contrôle", "Sens", "Altération", "Résistance Corporelle"].include?(us.skill.name) }
+                                .group_by { |us| us.skill.carac&.name }
+    @jedi_skills = @user_skills.select { |us| ["Contrôle", "Sens", "Altération"].include?(us.skill.name) }
+    @corporelle_skill = @user_skills.find { |us| us.skill.name == "Résistance Corporelle" }
 
+    # Variables pour l'équipement
+    @equipment_slots = EQUIPMENT_SLOTS
+    @equipments_by_slot = @user.equipments.group_by(&:slot)
+    @user_implants = @user.user_inventory_objects
+                         .includes(:inventory_object)
+                         .where("quantity > 0")
+                         .where(inventory_objects: { category: "implant" })
+    @user_inventory_objects = @user.user_inventory_objects
+                                 .includes(:inventory_object)
+                                 .where("quantity > 0")
+                                 .where(inventory_objects: { category: "patch" })
+    @user_injections = @user.user_inventory_objects
+                           .includes(:inventory_object)
+                           .where("quantity > 0")
+                           .where(inventory_objects: { category: "injection" })
+
+    # Variables pour l'inventaire
+    @inventory_items = @user.user_inventory_objects.includes(:inventory_object)
+  end
+
+  def equip_equipment
+    @user = User.find(params[:id])
+    item = @user.equipments.find(params[:equipment_id])
+    @user.equipments.where(slot: item.slot).update_all(equipped: false)
+    item.update!(equipped: true)
+  end
+  
+  def add_equipment
+    @user = User.find(params[:id])
+    new_item = @user.equipments.create!(
+      slot: params[:slot],
+      name: params[:name],
+      effect: params[:effect],
+      equipped: true
+    )
+    # déséquipe les autres dans le même slot
+    @user.equipments.where(slot: params[:slot]).where.not(id: new_item.id).update_all(equipped: false)
+  end
+  
+  def remove_equipment
+    @user = User.find(params[:id])
+    item = @user.equipments.find_by(slot: params[:slot], equipped: true)
+    item.update!(equipped: false) if item
+  end
+  
+  def delete_equipment
+    @user = User.find(params[:id])
+    item = @user.equipments.find(params[:equipment_id])
+
+    ActiveRecord::Base.transaction do
+      item.update!(equipped: false) if item.equipped?
+      item.destroy!
+    end
+  end
+
+  def skills
+    @user = User.find(params[:id])
+    @skills = Skill.includes(:carac).order(:name)
+    @user_skills = @skills.map do |skill|
+      @user.user_skills.find_or_initialize_by(skill: skill) do |us|
+        us.mastery = 0
+        us.bonus = 0
+      end
+    end
+  
+    @user_caracs = @user.user_caracs.includes(:carac).index_by { |uc| uc.carac.name }
+  
+    # Regrouper les skills par carac sauf les spéciaux
+    @grouped_skills = @user_skills.reject { |us| ["Contrôle", "Sens", "Altération", "Résistance Corporelle"].include?(us.skill.name) }
+                                  .group_by { |us| us.skill.carac&.name }
+  
+    @jedi_skills = @user_skills.select { |us| ["Contrôle", "Sens", "Altération"].include?(us.skill.name) }
+    @corporelle_skill = @user_skills.find { |us| us.skill.name == "Résistance Corporelle" }
+  end
+
+  def update_skills
+    @user = User.find(params[:id])
+  
+    params[:user_skills].each do |skill_id, attrs|
+      user_skill = @user.user_skills.find_or_initialize_by(skill_id: skill_id)
+      user_skill.update(mastery: attrs[:mastery], bonus: attrs[:bonus])
+    end
+  
+    redirect_to user_path(@user), notice: 'Compétences mises à jour !'
+  end
   def toggle_shield
     shield_type = params[:shield_type]
     user = current_user
@@ -107,23 +213,10 @@ class UsersController < ApplicationController
 
   def settings
     @user = current_user
-    @medicine_skill = @user.user_skills.find_or_initialize_by(skill: Skill.find_by(name: "Médecine"))
-    @res_corp_skill = @user.user_skills.find_or_initialize_by(skill: Skill.find_by(name: "Résistance Corporelle"))
-    @vitesse_skill = @user.user_skills.find_or_initialize_by(skill: Skill.find_by(name: "Vitesse"))
-    @reparation_skill = current_user.user_skills.find_by(skill: Skill.find_by(name: "Réparation"))
   end
   
   def update_settings
     @user = current_user
-  
-    @user.medicine_mastery = params[:user][:medicine_mastery].to_i
-    @user.medicine_bonus = params[:user][:medicine_bonus].to_i
-    @user.res_corp_mastery = params[:user][:res_corp_mastery].to_i
-    @user.res_corp_bonus = params[:user][:res_corp_bonus].to_i
-    @user.vitesse_mastery = params[:user][:vitesse_mastery].to_i
-    @user.vitesse_bonus = params[:user][:vitesse_bonus].to_i
-    @user.reparation_mastery = params[:user][:reparation_mastery].to_i
-    @user.reparation_bonus = params[:user][:reparation_bonus].to_i
   
     # Gestion du don "Homéopathie"
     if params[:user].key?(:homeopathie)
@@ -143,24 +236,18 @@ class UsersController < ApplicationController
     end
   
     # Gestion de la "Chance du Contrebandier"
-    if params[:user][:luck] == "1"
-      @user.luck = true
-      Rails.logger.debug "✅ 'Chance du Contrebandier' activée pour #{@user.username}."
-    else
-      @user.luck = false
-      Rails.logger.debug "❌ 'Chance du Contrebandier' désactivée pour #{@user.username}."
+    if params[:user].key?(:luck)
+      @user.update(luck: params[:user][:luck] == "1")
+      Rails.logger.debug "✅ 'Chance du Contrebandier' #{@user.luck ? 'activée' : 'désactivée'} pour #{@user.username}."
+    end
+
+    # Gestion de la "Robustesse"
+    if params[:user].key?(:robustesse)
+      @user.update(robustesse: params[:user][:robustesse] == "1")
+      Rails.logger.debug "✅ 'Robustesse' #{@user.robustesse ? 'activée' : 'désactivée'} pour #{@user.username}."
     end
   
-    if @user.update(user_params)
-      update_skill("Médecine", @user.medicine_mastery, @user.medicine_bonus)
-      update_skill("Résistance Corporelle", @user.res_corp_mastery, @user.res_corp_bonus)
-      update_skill("Vitesse", @user.vitesse_mastery, @user.vitesse_bonus)
-      update_skill("Réparation", @user.reparation_mastery, @user.reparation_bonus) # ✅ Sécurisation de "Réparation"
-  
-      redirect_to settings_user_path(@user), notice: "Réglages mis à jour avec succès."
-    else
-      render :settings, alert: "Erreur lors de la mise à jour des réglages."
-    end
+    redirect_to settings_user_path(@user), notice: 'Réglages mis à jour avec succès.'
   end
 
   def buy_inventory_object
@@ -229,7 +316,7 @@ class UsersController < ApplicationController
         return
       end
   
-      # Vérifier la validité et la quantité de l’objet de soin
+      # Vérifier la validité et la quantité de l'objet de soin
       if heal_item.nil? || heal_item.quantity <= 0
         Rails.logger.debug "❌ Objet de soin invalide ou quantité insuffisante."
         render json: { error: "Objet de soin invalide ou quantité insuffisante." }, status: :unprocessable_entity
@@ -309,67 +396,117 @@ class UsersController < ApplicationController
     end
   end
 
-  def patch
-    @user_inventory_objects = current_user.user_inventory_objects
-                                          .includes(:inventory_object)
-                                          .where("quantity > 0")
-                                          .where(inventory_objects: { category: "patch" })
-  end
-
   def equip_patch
     patch_id = params[:patch_id]
-  
-    if current_user.user_inventory_objects.exists?(inventory_object_id: patch_id)
-      current_user.equip_patch(patch_id)
-      redirect_to patch_user_path(current_user), notice: "Patch équipé avec succès."
+    inventory_object = InventoryObject.find_by(id: patch_id)
+
+    unless current_user.user_inventory_objects.exists?(inventory_object_id: patch_id)
+      return render json: { error: "Patch non disponible." }, status: :unprocessable_entity
+    end
+
+    current_user.equip_patch(patch_id)
+    render json: { success: "Patch équipé : #{inventory_object.name}." }
+  end
+
+  def unequip_patch
+    if current_user.patch.present?
+      current_user.unequip_patch
+      render json: { success: "Patch déséquipé." }
     else
-      redirect_to patch_user_path(current_user), alert: "Patch non disponible."
+      render json: { error: "Aucun patch équipé." }, status: :unprocessable_entity
+    end
+  end
+  
+  def use_patch
+    if current_user.patch.blank?
+      return render json: { error: "Aucun patch actuellement équipé." }, status: :unprocessable_entity
+    end
+  
+    equipped_patch = current_user.equipped_patch
+    inventory_object = current_user.user_inventory_objects.find_by(inventory_object_id: equipped_patch.id)
+  
+    ActiveRecord::Base.transaction do
+      case equipped_patch.name
+      when "Poisipatch"
+        unless current_user.statuses.exists?(name: "Empoisonné")
+          return render json: { error: "Le Poisipatch ne peut être utilisé que si vous êtes empoisonné." }, status: :unprocessable_entity
+        end
+        current_user.set_status("En forme")
+  
+      when "Traumapatch"
+        healed_points = rand(1..6)
+        new_hp = [current_user.hp_current + healed_points, current_user.hp_max].min
+        current_user.update!(hp_current: new_hp)
+  
+      when "Stimpatch"
+        unless current_user.statuses.exists?(name: "Sonné")
+          return render json: { error: "Le Stimpatch ne peut être utilisé que si vous êtes sonné." }, status: :unprocessable_entity
+        end
+        current_user.set_status("En forme")
+      end
+  
+      inventory_object&.decrement!(:quantity)
+      current_user.update!(patch: nil)
+    end
+  
+    render json: { success: "Patch « #{equipped_patch.name} » utilisé avec succès." }
+  
+  rescue => e
+    Rails.logger.error "Erreur lors de l'utilisation du patch : #{e.message}"
+    render json: { error: "Erreur lors de l'utilisation du patch." }, status: :internal_server_error
+  end
+
+  def equip_implant
+    implant_id = params[:implant_id]
+    implant = InventoryObject.find_by(id: implant_id)
+
+    unless current_user.user_inventory_objects.exists?(inventory_object_id: implant_id)
+      return render json: { error: "Implant non disponible." }, status: :unprocessable_entity
+    end
+
+    current_user.equip_implant(implant_id)
+    current_user.apply_implant_effects
+
+    render json: { success: "Implant équipé : #{implant.name}." }
+  end
+
+  def unequip_implant
+    if current_user.active_implant_object
+      current_user.remove_implant_effects
+      current_user.update!(active_implant: nil)
+      render json: { success: "Implant déséquipé." }
+    else
+      render json: { error: "Aucun implant équipé." }, status: :unprocessable_entity
     end
   end
 
-  def use_patch
-    if current_user.patch.present?
-      equipped_patch = current_user.equipped_patch
-      inventory_object = current_user.user_inventory_objects.find_by(inventory_object_id: equipped_patch.id)
-  
-      ActiveRecord::Base.transaction do
-        if equipped_patch.name == "Poisipatch"
-          if current_user.statuses.exists?(name: "Empoisonné")
-            current_user.set_status("En forme")
-            Rails.logger.info "✔️ Poisipatch activé : statut Empoisonné guéri."
-          else
-            redirect_to patch_user_path(current_user), alert: "Le Poisipatch ne peut être utilisé que si vous êtes empoisonné."
-            return
-          end
-        elsif equipped_patch.name == "Traumapatch"
-          healed_points = rand(1..6)
-          new_hp = [current_user.hp_current + healed_points, current_user.hp_max].min
-          current_user.update!(hp_current: new_hp)
-          Rails.logger.info "✔️ Traumapatch activé : +#{healed_points} PV récupérés."
-        elsif equipped_patch.name == "Stimpatch"
-          if current_user.statuses.exists?(name: "Sonné")
-            current_user.set_status("En forme")
-            Rails.logger.info "✔️ Stimpatch activé : statut Sonné guéri."
-          else
-            redirect_to patch_user_path(current_user), alert: "Le Stimpatch ne peut être utilisé que si vous êtes sonné."
-            return
-          end
-        end
-  
-        # Gestion de la quantité et déséquipement du patch
-        if inventory_object.present? && inventory_object.quantity > 0
-          inventory_object.decrement!(:quantity)
-        end
-        current_user.update!(patch: nil)
-      end
-  
-      redirect_to patch_user_path(current_user), notice: "Patch « #{equipped_patch.name} » utilisé avec succès."
-    else
-      redirect_to patch_user_path(current_user), alert: "Aucun patch actuellement équipé."
+  def equip_injection
+    injection_id = params[:injection_id]
+    injection = InventoryObject.find_by(id: injection_id)
+
+    unless current_user.user_inventory_objects.exists?(inventory_object_id: injection_id)
+      return render json: { error: "Injection non disponible." }, status: :unprocessable_entity
     end
-  rescue => e
-    Rails.logger.error "Erreur lors de l'utilisation du patch : #{e.message}"
-    redirect_to patch_user_path(current_user), alert: "Une erreur est survenue lors de l'utilisation du patch."
+
+    current_user.equip_injection(injection_id)
+    current_user.decrement_inventory!(injection_id)
+    current_user.apply_injection_effects
+
+    unless %w[Injection de trinitine Injection de bio-rage].include?(injection.name)
+      current_user.decrement!(:hp_current, 2)
+    end
+
+    render json: { success: "Injection active : #{injection.name}." }
+  end
+
+  def deactivate_injection
+    if current_user.active_injection_object
+      current_user.remove_injection_effects
+      current_user.update!(active_injection: nil)
+      render json: { success: "Injection terminée." }
+    else
+      render json: { error: "Aucune injection active." }, status: :unprocessable_entity
+    end
   end
 
   def dice
@@ -466,90 +603,6 @@ class UsersController < ApplicationController
     end
   
     redirect_back(fallback_location: inventory_user_path(current_user))
-  end
-
-  def injections
-    @user_injections = current_user.user_inventory_objects
-                                   .includes(:inventory_object)
-                                   .where("quantity > 0")
-                                   .where(inventory_objects: { category: "injection" })
-  end
-  
-  def equip_injection
-    injection_id = params[:injection_id]
-    injection = InventoryObject.find_by(id: injection_id)
-    
-    if current_user.user_inventory_objects.exists?(inventory_object_id: injection_id)
-      current_user.equip_injection(injection_id)
-      current_user.decrement_inventory!(injection_id)
-      current_user.apply_injection_effects
-
-      unless %w[Injection de trinitine Injection de bio-rage].include?(injection.name)
-        current_user.decrement!(:hp_current, 2)
-      end
-      
-      redirect_to injections_user_path(current_user), notice: "Injection active : #{current_user.active_injection_object&.name}."
-    else
-      redirect_to injections_user_path(current_user), alert: "Injection non disponible."
-    end
-  end
-
-  def deactivate_injection
-    if current_user.active_injection
-      current_user.remove_injection_effects
-      current_user.unequip_injection
-
-      redirect_to injections_user_path(current_user), notice: "Injection désactivée avec succès."
-    else
-      redirect_to injections_user_path(current_user), alert: "Aucune injection active à désactiver."
-    end
-  end
-
-  def use_trinitine
-    session[:trinitine_uses] ||= 0
-    session[:trinitine_uses] += 1
-  
-    if session[:trinitine_uses] <= 3
-      current_user.increment!(:hp_current, rand(1..6))
-      flash[:notice] = "Vous avez utilisé la Trinitine (#{session[:trinitine_uses]}/3)."
-    end
-  
-    if session[:trinitine_uses] >= 3
-      session.delete(:trinitine_uses)
-      current_user.unequip_injection
-      flash[:alert] = "Injection de Trinitine désactivée après 3 utilisations."
-    end
-  
-    redirect_to injections_user_path(current_user)
-  end
-
-  def implants
-    @user_implants = current_user.user_inventory_objects
-                                 .includes(:inventory_object)
-                                 .where("quantity > 0")
-                                 .where(inventory_objects: { category: "implant" })
-  end
-
-  def equip_implant
-    implant_id = params[:implant_id]
-  
-    if current_user.user_inventory_objects.exists?(inventory_object_id: implant_id)
-      current_user.equip_implant(implant_id)
-      current_user.apply_implant_effects
-      redirect_to implants_user_path(current_user), notice: "Implant équipé : #{current_user.active_implant_object&.name}."
-    else
-      redirect_to implants_user_path(current_user), alert: "Implant non disponible."
-    end
-  end
-  
-  def unequip_implant
-    if current_user.active_implant
-      current_user.remove_implant_effects
-      current_user.unequip_implant
-      redirect_to implants_user_path(current_user), notice: "Implant déséquipé avec succès."
-    else
-      redirect_to implants_user_path(current_user), alert: "Aucun implant actif à déséquiper."
-    end
   end
 
   def sphero

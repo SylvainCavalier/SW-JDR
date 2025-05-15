@@ -1,0 +1,46 @@
+<!-- Modale pour équiper un patch -->
+<div class="modal fade" id="equipPatchModal" tabindex="-1" aria-labelledby="equipPatchModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="equipPatchModalLabel">Équiper un Patch</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body"
+           data-controller="implant-patch-injection"
+           data-implant-patch-injection-user-id-value="<%= current_user.id %>">
+        <table class="table table-hover">
+          <thead>
+            <tr>
+              <th>Nom</th>
+              <th>Description</th>
+              <th>Quantité</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% user_inventory_objects.each do |uio| %>
+              <tr>
+                <td><%= uio.inventory_object.name %></td>
+                <td><%= uio.inventory_object.description %></td>
+                <td><%= uio.quantity %></td>
+                <td>
+                  <% if current_user.patch == uio.inventory_object.id %>
+                    <span>Équipé</span>
+                  <% else %>
+                    <button type="button"
+                            class="btn btn-outline-primary btn-sm"
+                            data-action="implant-patch-injection#equipPatch"
+                            data-patch-id="<%= uio.inventory_object.id %>">
+                      Équiper
+                    </button>
+                  <% end %>
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

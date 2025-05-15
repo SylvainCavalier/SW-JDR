@@ -1,5 +1,5 @@
 <div class="frame-container" style="position: relative; width: 100%; height: 100vh; overflow-y: auto; overflow-x: hidden;">
-  <%= link_to "Retour", request.referer || pets_path, class: "btn btn-outline-secondary m-3" %>
+  <%= back_link(pets_path) %>
   <div class="pet-container">
     <!-- Box principale -->
     <div class="pet-box">
@@ -228,7 +228,7 @@
                 <%= button_to "Câlin", perform_action_pet_path(@pet, action_type: "cuddle"), method: :post, class: "btn btn-outline-success mb-2" %>
                 <%= button_to "Jouer", perform_action_pet_path(@pet, action_type: "play"), method: :post, class: "btn btn-outline-success mb-2" %>
                 <%= button_to "Gronder", perform_action_pet_path(@pet, action_type: "scold"), method: :post, class: "btn btn-outline-success mb-2" %>
-                <%= button_to "Entrainer", perform_action_pet_path(@pet, action_type: "train"), method: :post, class: "btn btn-outline-primary mb-2" %>
+                <%#= button_to "Entrainer", perform_action_pet_path(@pet, action_type: "train"), method: :post, class: "btn btn-outline-primary mb-2" %>
               <% when "droïde" %>
                 <%= button_to "Huiler", perform_action_pet_path(@pet, action_type: "oil"), method: :post, class: "btn btn-outline-success mb-2" %>
                 <%= button_to "Vider Mémoire", perform_action_pet_path(@pet, action_type: "wipe_memory"), method: :post, class: "btn btn-outline-success mb-2" %>
@@ -237,7 +237,7 @@
                 <%= button_to "Complimenter", perform_action_pet_path(@pet, action_type: "compliment"), method: :post, class: "btn btn-outline-success mb-2" %>
                 <%= button_to "Discuter", perform_action_pet_path(@pet, action_type: "chat"), method: :post, class: "btn btn-outline-success mb-2" %>
                 <%= button_to "Frapper", perform_action_pet_path(@pet, action_type: "hit"), method: :post, class: "btn btn-outline-success mb-2" %>
-                <%= button_to "Entrainer", perform_action_pet_path(@pet, action_type: "train"), method: :post, class: "btn btn-outline-primary mb-2" %>
+                <%#= button_to "Entrainer", perform_action_pet_path(@pet, action_type: "train"), method: :post, class: "btn btn-outline-primary mb-2" %>
                 <% if @pet.force? && @pet.apprentice.nil? %>
                   <%= button_to "Prendre comme apprenti", create_apprentice_path(pet_id: @pet.id), method: :post, class: "btn btn-primary", data: { confirm: "Voulez-vous vraiment prendre ce pet comme apprenti ?" } %>
                 <% end %>

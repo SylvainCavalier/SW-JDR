@@ -28,91 +28,9 @@
         </div>
       <% end %>
 
-      <!-- Réglage de compétence : Médecine -->
-      <div class="skill-section mt-2">
-        <div class="d-flex align-items-center flex-wrap mb-2">
-          <!-- Input pour le nombre de D -->
-          <p class="me-2 mt-3">Médecine</p>
-          <div class="input-group custom-input-group me-2" style="width: auto;" data-controller="increment">
-            <%= button_tag "-", type: "button", class: "btn btn-outline-secondary btn-sm", data: { action: "click->increment#decrement" } %>
-            <%= f.number_field :medicine_mastery, value: @medicine_skill&.mastery || 0, min: 0, class: "form-control form-control-sm text-center", style: "width: 45px;", data: { "increment-target" => "input" } %>
-            <%= button_tag "+", type: "button", class: "btn btn-outline-secondary btn-sm", data: { action: "click->increment#increment" } %>
-          </div>
-          <span class="mx-1">D +</span>
-          <!-- Input pour le bonus -->
-          <div class="input-group custom-input-group ms-2" style="width: auto;" data-controller="increment">
-            <%= button_tag "-", type: "button", class: "btn btn-outline-secondary btn-sm", data: { action: "click->increment#decrement" } %>
-            <%= f.number_field :medicine_bonus, value: @medicine_skill&.bonus || 0, min: 0, class: "form-control form-control-sm text-center", style: "width: 45px;", data: { "increment-target" => "input" } %>
-            <%= button_tag "+", type: "button", class: "btn btn-outline-secondary btn-sm", data: { action: "click->increment#increment" } %>
-          </div>
-          <p class="ms-2 mt-3">Actuel : <%= @medicine_skill&.mastery || 0 %>D + <%= @medicine_skill&.bonus || 0 %></p>
-        </div>
-      </div>
-
-      <!-- Réglage de compétence : Résistance Corporelle -->
-      <div class="skill-section mt-2">
-        <div class="d-flex align-items-center flex-wrap mb-2">
-          <!-- Input pour le nombre de D -->
-          <p class="me-2 mt-3">Res Corp</p>
-          <div class="input-group custom-input-group me-2" style="width: auto;" data-controller="increment">
-            <%= button_tag "-", type: "button", class: "btn btn-outline-secondary btn-sm", data: { action: "click->increment#decrement" } %>
-            <%= f.number_field :res_corp_mastery, value: @res_corp_skill&.mastery || 0, min: 0, class: "form-control form-control-sm text-center", style: "width: 45px;", data: { "increment-target" => "input" } %>
-            <%= button_tag "+", type: "button", class: "btn btn-outline-secondary btn-sm", data: { action: "click->increment#increment" } %>
-          </div>
-          <span class="mx-1">D +</span>
-          <!-- Input pour le bonus -->
-          <div class="input-group custom-input-group ms-2" style="width: auto;" data-controller="increment">
-            <%= button_tag "-", type: "button", class: "btn btn-outline-secondary btn-sm", data: { action: "click->increment#decrement" } %>
-            <%= f.number_field :res_corp_bonus, value: @res_corp_skill&.bonus || 0, min: 0, class: "form-control form-control-sm text-center", style: "width: 45px;", data: { "increment-target" => "input" } %>
-            <%= button_tag "+", type: "button", class: "btn btn-outline-secondary btn-sm", data: { action: "click->increment#increment" } %>
-          </div>
-          <p class="ms-2 mt-3">Actuel : <%= @res_corp_skill&.mastery || 0 %>D + <%= @res_corp_skill&.bonus || 0 %></p>
-        </div>
-      </div>
-
-      <!-- Réglage de compétence : Vitesse -->
-      <div class="skill-section mt-2">
-        <div class="d-flex align-items-center flex-wrap mb-2">
-          <!-- Input pour le nombre de D -->
-          <p class="me-2 mt-3">Vitesse</p>
-          <div class="input-group custom-input-group me-2" style="width: auto;" data-controller="increment">
-            <%= button_tag "-", type: "button", class: "btn btn-outline-secondary btn-sm", data: { action: "click->increment#decrement" } %>
-            <%= f.number_field :vitesse_mastery, value: @vitesse_skill&.mastery || 0, min: 0, class: "form-control form-control-sm text-center", style: "width: 45px;", data: { "increment-target" => "input" } %>
-            <%= button_tag "+", type: "button", class: "btn btn-outline-secondary btn-sm", data: { action: "click->increment#increment" } %>
-          </div>
-          <span class="mx-1">D +</span>
-          <!-- Input pour le bonus -->
-          <div class="input-group custom-input-group ms-2" style="width: auto;" data-controller="increment">
-            <%= button_tag "-", type: "button", class: "btn btn-outline-secondary btn-sm", data: { action: "click->increment#decrement" } %>
-            <%= f.number_field :vitesse_bonus, value: @vitesse_skill&.bonus || 0, min: 0, class: "form-control form-control-sm text-center", style: "width: 45px;", data: { "increment-target" => "input" } %>
-            <%= button_tag "+", type: "button", class: "btn btn-outline-secondary btn-sm", data: { action: "click->increment#increment" } %>
-          </div>
-          <p class="ms-2 mt-3">Actuel : <%= @vitesse_skill&.mastery || 0 %>D + <%= @vitesse_skill&.bonus || 0 %></p>
-        </div>
-      </div>
-
-      <!-- Réglage de compétence : Réparation -->
-      <div class="skill-section mt-2">
-        <div class="d-flex align-items-center flex-wrap mb-2">
-          <p class="me-2 mt-3">Réparation</p>
-          <div class="input-group custom-input-group me-2" style="width: auto;" data-controller="increment">
-            <%= button_tag "-", type: "button", class: "btn btn-outline-secondary btn-sm", data: { action: "click->increment#decrement" } %>
-            <%= f.number_field :reparation_mastery, value: @reparation_skill&.mastery || 0, min: 0, class: "form-control form-control-sm text-center", style: "width: 45px;", data: { "increment-target" => "input" } %>
-            <%= button_tag "+", type: "button", class: "btn btn-outline-secondary btn-sm", data: { action: "click->increment#increment" } %>
-          </div>
-          <span class="mx-1">D +</span>
-          <div class="input-group custom-input-group ms-2" style="width: auto;" data-controller="increment">
-            <%= button_tag "-", type: "button", class: "btn btn-outline-secondary btn-sm", data: { action: "click->increment#decrement" } %>
-            <%= f.number_field :reparation_bonus, value: @reparation_skill&.bonus || 0, min: 0, class: "form-control form-control-sm text-center", style: "width: 45px;", data: { "increment-target" => "input" } %>
-            <%= button_tag "+", type: "button", class: "btn btn-outline-secondary btn-sm", data: { action: "click->increment#increment" } %>
-          </div>
-          <p class="ms-2 mt-3">Actuel : <%= @reparation_skill&.mastery || 0 %>D + <%= @reparation_skill&.bonus || 0 %></p>
-        </div>
-      </div>
-
-      <%= f.submit "Enregistrer", class: "btn btn-outline-primary btn-sm ms-1 p-1" %>
+      <%= f.submit "Enregistrer", class: "btn btn-outline-primary btn-sm mt-3" %>
     <% end %>
   </div>
 
-  <%= link_to "Retour", current_user.group.name == "MJ" ? mj_dashboard_path : root_path, class: "btn btn-outline-secondary go-back" %>
+  <%= link_to "Retour", user_path(current_user), class: "btn btn-outline-secondary go-back" %>
 </div>

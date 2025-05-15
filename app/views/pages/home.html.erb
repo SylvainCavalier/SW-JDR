@@ -42,6 +42,9 @@
     <% if current_user.active_implant_object %>
       <i class="fa-solid fa-microchip implant-icon"></i>
     <% end %>
+    <% if current_user.spheros.exists?(active: true) %>
+      <i class="fa-brands fa-discord sphero-icon"></i>
+    <% end %>
   </div>
 
   <!-- Elements en haut à gauche -->
@@ -74,16 +77,13 @@
   </div>
 
   <!-- Avatar -->
-  <div class="avatar-container" data-controller="avatar">
-    <%= form_with(model: current_user, url: avatar_upload_user_path(current_user), method: :patch, local: true, html: { multipart: true, data: { direct_upload_url: rails_direct_uploads_path } }) do |form| %>
-      <label for="avatar-upload" class="avatar-label">
-        <% if current_user.avatar.attached? %>
-          <%= image_tag(current_user.avatar, class: "avatar-preview", data: { avatar_target: "preview" }) %>
-        <% else %>
-          <div class="avatar-placeholder" data-avatar-target="preview">+</div>
-        <% end %>
-      </label>
-      <%= form.file_field :avatar, id: "avatar-upload", class: "d-none", accept: "image/*", data: { action: "change->avatar#preview" } %>
+  <div class="avatar-container">
+    <%= link_to user_path(current_user), class: "avatar-label" do %>
+      <% if current_user.avatar.attached? %>
+        <%= image_tag(current_user.avatar, class: "avatar-preview") %>
+      <% else %>
+        <div class="avatar-placeholder">+</div>
+      <% end %>
     <% end %>
   </div>
 
@@ -99,9 +99,9 @@
       <i class="fa-solid fa-paw"></i>
     <% end %>
 
-    <!-- Règles du jeu -->
-    <%= link_to rules_path, class: "btn btn-outline-success rules-home" do %>
-      <i class="fa-solid fa-file-invoice"></i>
+    <!-- Équipe -->
+    <%= link_to team_path, class: "btn btn-outline-success team-home" do %>
+      <i class="fa-solid fa-people-group"></i>
     <% end %>
 
     <!-- Gestion de la base -->
@@ -109,9 +109,9 @@
       <i class="fa-solid fa-building-flag"></i>
     <% end %>
 
-    <!-- Gestion des Réglages -->
-    <%= link_to settings_user_path(current_user), class: "btn btn-outline-success settings-home" do %>
-      <i class="fa-solid fa-gears"></i>
+    <!-- Règles du jeu -->
+    <%= link_to rules_path, class: "btn btn-outline-success rules-home" do %>
+      <i class="fa-solid fa-file-invoice"></i>
     <% end %>
   </div>
 

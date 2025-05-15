@@ -382,6 +382,16 @@ span {
   z-index: 3;
 }
 
+.sphero-icon {
+  position: absolute;
+  top: 40%;
+  left: 70%;
+  transform: translate(-40%, -40%);
+  font-size: 1.3em;
+  color: white;
+  z-index: 3;
+}
+
 /* Barre en bas à gauche (bottom-bar.svg) 
 .ui-bottom-bar {
   position: absolute;
@@ -506,7 +516,8 @@ span {
 }
 
 .holonews-icon {
-  width: 11vw;
+  margin-top: 3vh;
+  width: 9vw;
 }
 
 .holonews-count {
@@ -1444,7 +1455,6 @@ input.dice-count-input {
   box-shadow: 0px 0px 20px rgba(0, 255, 0, 0.8);
 }
 
-// Ajout d'un effet lumineux aux crédits
 .credits {
   font-size: 1.4rem;
   color: #0f0;
@@ -1462,7 +1472,6 @@ input.dice-count-input {
   transition: all 0.3s ease;
 }
 
-// Amélioration de la description
 .description {
   font-style: italic;
   opacity: 0.9;
@@ -1501,3 +1510,101 @@ input.dice-count-input {
 .table-hover tbody tr:hover {
   background-color: rgba(40, 167, 69, 0.3);
 }
+
+/* ------------- PROFIL -------------- */
+
+.skill-section {
+  transition: all 0.3s ease;
+  margin-bottom: 2rem !important;
+}
+
+.skill-section:hover {
+  box-shadow: 0 0 20px rgba(25, 135, 84, 0.4) !important;
+  transform: translateY(-2px);
+}
+
+.skill-section.border-info:hover {
+  box-shadow: 0 0 20px rgba(13, 202, 240, 0.4) !important;
+}
+
+.skill-section.border-warning:hover {
+  box-shadow: 0 0 20px rgba(255, 193, 7, 0.4) !important;
+}
+
+.skill-section .table.table-dark.rounded-3 {
+  border-collapse: separate !important;
+  border-spacing: 0;
+  background: rgba(33, 37, 41, 0.95) !important;
+  margin: 0;
+  border-radius: 0.5rem !important;
+  overflow: hidden;
+}
+
+.skill-section .table.table-dark th {
+  background: rgba(25, 135, 84, 0.1) !important;
+  padding: 1rem !important;
+  font-size: 1.1em;
+}
+
+.skill-section .table.table-dark td {
+  padding: 0.8rem 1rem !important;
+  vertical-align: middle;
+}
+
+.skill-section .table.table-dark tbody tr:hover {
+  background: rgba(25, 135, 84, 0.1) !important;
+}
+
+.skill-section .input-group {
+  background: transparent !important;
+}
+
+.skill-section .form-control {
+  background: rgba(33, 37, 41, 0.8) !important;
+  border-color: #28a745 !important;
+  color: white !important;
+}
+
+.skill-section .btn-outline-success {
+  padding: 0.25rem 0.5rem !important;
+  margin: 0 0.25rem !important;
+}
+
+/* Styles spécifiques pour la section Jedi */
+.skill-section.border-info .table.table-dark th {
+  background: rgba(13, 202, 240, 0.1) !important;
+}
+
+.skill-section.border-info .table.table-dark tbody tr:hover {
+  background: rgba(13, 202, 240, 0.1) !important;
+}
+
+/* Styles spécifiques pour la section Résistance Corporelle */
+.skill-section.border-warning .table.table-dark th {
+  background: rgba(255, 193, 7, 0.1) !important;
+}
+
+.skill-section.border-warning .table.table-dark tbody tr:hover {
+  background: rgba(255, 193, 7, 0.1) !important;
+}
+
+.table.rounded-3 {
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+.table.rounded-3 thead th:first-child {
+  border-top-left-radius: 0.5rem;
+}
+
+.table.rounded-3 thead th:last-child {
+  border-top-right-radius: 0.5rem;
+}
+
+.table.rounded-3 tbody tr:last-child td:first-child {
+  border-bottom-left-radius: 0.5rem;
+}
+
+.table.rounded-3 tbody tr:last-child td:last-child {
+  border-bottom-right-radius: 0.5rem;
+} 

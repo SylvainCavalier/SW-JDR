@@ -1,0 +1,239 @@
+<% if editable %>
+  <%= form_with url: update_skills_user_path(@user), method: :patch, local: true do |f| %>
+    <% @grouped_skills.each_with_index do |(carac_name, user_skills), index| %>
+      <% user_carac = @user_caracs[carac_name] %>
+      <div class="mb-2 p-4 skill-section">
+        <h3 class="text-white mb-2" role="button" data-bs-toggle="collapse" data-bs-target="#carac<%= index %>" aria-expanded="true" aria-controls="carac<%= index %>" style="cursor: pointer;">
+          <i class="fa-solid fa-chevron-down me-2"></i><%= carac_name %> : <%= user_carac&.mastery || 0 %>D
+        </h3>
+
+        <div class="collapse show" id="carac<%= index %>">
+          <table class="table table-dark table-hover rounded-3 overflow-hidden">
+            <thead>
+              <tr class="text-success">
+                <th class="px-4">Compétence</th>
+                <th class="text-center px-4">Maîtrise (D)</th>
+                <th class="text-center px-4">Bonus (+)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% user_skills.each do |user_skill| %>
+                <tr>
+                  <td class="px-4"><%= user_skill.skill.name %></td>
+                  <td class="text-center px-4">
+                    <% if editable %>
+                      <div class="input-group justify-content-center" data-controller="increment">
+                        <%= button_tag "-", type: "button", class: "btn btn-outline-success btn-sm", data: { action: "click->increment#decrement" } %>
+                        <%= number_field_tag "user_skills[#{user_skill.skill.id}][mastery]", user_skill.mastery, min: 0, class: "form-control form-control-sm text-center", style: "width: 45px;", data: { "increment-target": "input" } %>
+                        <%= button_tag "+", type: "button", class: "btn btn-outline-success btn-sm", data: { action: "click->increment#increment" } %>
+                      </div>
+                    <% else %>
+                      <span class="text-light"><%= user_skill.mastery %></span>
+                    <% end %>
+                  </td>
+                  <td class="text-center px-4">
+                    <% if editable %>
+                      <div class="input-group justify-content-center" data-controller="increment">
+                        <%= button_tag "-", type: "button", class: "btn btn-outline-success btn-sm", data: { action: "click->increment#decrement" } %>
+                        <%= number_field_tag "user_skills[#{user_skill.skill.id}][bonus]", user_skill.bonus, min: 0, class: "form-control form-control-sm text-center", style: "width: 45px;", data: { "increment-target": "input" } %>
+                        <%= button_tag "+", type: "button", class: "btn btn-outline-success btn-sm", data: { action: "click->increment#increment" } %>
+                      </div>
+                    <% else %>
+                      <span class="text-light"><%= user_skill.bonus %></span>
+                    <% end %>
+                  </td>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    <% end %>
+
+    <% if @jedi_skills.any? %>
+      <div class="mb-2 p-4 skill-section">
+        <h3 class="text-info mb-2" role="button" data-bs-toggle="collapse" data-bs-target="#jediSkills" aria-expanded="true" aria-controls="jediSkills" style="cursor: pointer;">
+          <i class="fa-solid fa-chevron-down me-2"></i>Jedi
+        </h3>
+        <div class="collapse show" id="jediSkills">
+          <table class="table table-dark table-hover rounded-3 overflow-hidden">
+            <thead>
+              <tr class="text-info">
+                <th class="px-4">Compétence</th>
+                <th class="text-center px-4">Maîtrise (D)</th>
+                <th class="text-center px-4">Bonus (+)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% @jedi_skills.each do |user_skill| %>
+                <tr>
+                  <td class="px-4"><%= user_skill.skill.name %></td>
+                  <td class="text-center px-4">
+                    <% if editable %>
+                      <div class="input-group justify-content-center" data-controller="increment">
+                        <%= button_tag "-", type: "button", class: "btn btn-outline-info btn-sm", data: { action: "click->increment#decrement" } %>
+                        <%= number_field_tag "user_skills[#{user_skill.skill.id}][mastery]", user_skill.mastery, min: 0, class: "form-control form-control-sm text-center", style: "width: 45px;", data: { "increment-target": "input" } %>
+                        <%= button_tag "+", type: "button", class: "btn btn-outline-info btn-sm", data: { action: "click->increment#increment" } %>
+                      </div>
+                    <% else %>
+                      <span class="text-light"><%= user_skill.mastery %></span>
+                    <% end %>
+                  </td>
+                  <td class="text-center px-4">
+                    <% if editable %>
+                      <div class="input-group justify-content-center" data-controller="increment">
+                        <%= button_tag "-", type: "button", class: "btn btn-outline-info btn-sm", data: { action: "click->increment#decrement" } %>
+                        <%= number_field_tag "user_skills[#{user_skill.skill.id}][bonus]", user_skill.bonus, min: 0, class: "form-control form-control-sm text-center", style: "width: 45px;", data: { "increment-target": "input" } %>
+                        <%= button_tag "+", type: "button", class: "btn btn-outline-info btn-sm", data: { action: "click->increment#increment" } %>
+                      </div>
+                    <% else %>
+                      <span class="text-light"><%= user_skill.bonus %></span>
+                    <% end %>
+                  </td>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    <% end %>
+
+    <div class="mb-2 p-4 skill-section">
+      <h3 class="text-warning mb-2" role="button" data-bs-toggle="collapse" data-bs-target="#corporelleSkills" aria-expanded="true" aria-controls="corporelleSkills" style="cursor: pointer;">
+        <i class="fa-solid fa-chevron-down me-2"></i>Résistance Corporelle
+      </h3>
+
+      <div class="collapse show" id="corporelleSkills">
+        <div class="row justify-content-start">
+          <div class="col-auto">
+            <span class="text-light">Maîtrise :</span>
+          </div>
+          <div class="col-auto">
+            <% if editable %>
+              <div class="input-group input-group-sm" data-controller="increment">
+                <%= button_tag "-", type: "button", class: "btn btn-outline-warning btn-sm", data: { action: "click->increment#decrement" } %>
+                <%= number_field_tag "user_skills[#{@corporelle_skill.skill.id}][mastery]", @corporelle_skill.mastery, min: 0,
+                      class: "form-control form-control-sm text-center",
+                      style: "width: 45px;", data: { "increment-target" => "input" } %>
+                <%= button_tag "+", type: "button", class: "btn btn-outline-warning btn-sm", data: { action: "click->increment#increment" } %>
+              </div>
+            <% else %>
+              <span class="text-light ms-2"><%= @corporelle_skill.mastery %></span>
+            <% end %>
+          </div>
+
+          <div class="col-auto">
+            <span class="text-light ms-2">Bonus :</span>
+          </div>
+          <div class="col-auto">
+            <% if editable %>
+              <div class="input-group input-group-sm" data-controller="increment">
+                <%= button_tag "-", type: "button", class: "btn btn-outline-warning btn-sm", data: { action: "click->increment#decrement" } %>
+                <%= number_field_tag "user_skills[#{@corporelle_skill.skill.id}][bonus]", @corporelle_skill.bonus, min: 0,
+                      class: "form-control form-control-sm text-center",
+                      style: "width: 45px;", data: { "increment-target" => "input" } %>
+                <%= button_tag "+", type: "button", class: "btn btn-outline-warning btn-sm", data: { action: "click->increment#increment" } %>
+              </div>
+            <% else %>
+              <span class="text-light ms-2"><%= @corporelle_skill.bonus %></span>
+            <% end %>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="text-center mb-2">
+      <%= f.submit "Enregistrer les modifications", class: "btn btn-outline-success btn-lg px-4" %>
+    </div>
+  <% end %>
+<% else %>
+  <% @grouped_skills.each_with_index do |(carac_name, user_skills), index| %>
+    <% user_carac = @user_caracs[carac_name] %>
+    <div class="mb-2 p-4 skill-section">
+      <h3 class="text-white mb-2" role="button" data-bs-toggle="collapse" data-bs-target="#carac<%= index %>" aria-expanded="true" aria-controls="carac<%= index %>" style="cursor: pointer;">
+        <i class="fa-solid fa-chevron-down me-2"></i><%= carac_name %> : <%= user_carac&.mastery || 0 %>D
+      </h3>
+
+      <div class="collapse show" id="carac<%= index %>">
+        <table class="table table-dark table-hover rounded-3 overflow-hidden">
+          <thead>
+            <tr class="text-success">
+              <th class="px-4">Compétence</th>
+              <th class="text-center px-4">Maîtrise (D)</th>
+              <th class="text-center px-4">Bonus (+)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% user_skills.each do |user_skill| %>
+              <tr>
+                <td class="px-4"><%= user_skill.skill.name %></td>
+                <td class="text-center px-4">
+                  <span class="text-light"><%= user_skill.mastery %></span>
+                </td>
+                <td class="text-center px-4">
+                  <span class="text-light"><%= user_skill.bonus %></span>
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  <% end %>
+
+  <% if @jedi_skills.any? %>
+    <div class="mb-2 p-4 skill-section">
+      <h3 class="text-info mb-2" role="button" data-bs-toggle="collapse" data-bs-target="#jediSkills" aria-expanded="true" aria-controls="jediSkills" style="cursor: pointer;">
+        <i class="fa-solid fa-chevron-down me-2"></i>Jedi
+      </h3>
+      <div class="collapse show" id="jediSkills">
+        <table class="table table-dark table-hover rounded-3 overflow-hidden">
+          <thead>
+            <tr class="text-info">
+              <th class="px-4">Compétence</th>
+              <th class="text-center px-4">Maîtrise (D)</th>
+              <th class="text-center px-4">Bonus (+)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% @jedi_skills.each do |user_skill| %>
+              <tr>
+                <td class="px-4"><%= user_skill.skill.name %></td>
+                <td class="text-center px-4">
+                  <span class="text-light"><%= user_skill.mastery %></span>
+                </td>
+                <td class="text-center px-4">
+                  <span class="text-light"><%= user_skill.bonus %></span>
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  <% end %>
+
+  <div class="mb-2 p-4 skill-section">
+    <h3 class="text-warning mb-2" role="button" data-bs-toggle="collapse" data-bs-target="#corporelleSkills" aria-expanded="true" aria-controls="corporelleSkills" style="cursor: pointer;">
+      <i class="fa-solid fa-chevron-down me-2"></i>Résistance Corporelle
+    </h3>
+
+    <div class="collapse show" id="corporelleSkills">
+      <div class="row justify-content-start">
+        <div class="col-auto">
+          <span class="text-light">Maîtrise :</span>
+        </div>
+        <div class="col-auto">
+          <span class="text-light ms-2"><%= @corporelle_skill.mastery %></span>
+        </div>
+
+        <div class="col-auto">
+          <span class="text-light ms-2">Bonus :</span>
+        </div>
+        <div class="col-auto">
+          <span class="text-light ms-2"><%= @corporelle_skill.bonus %></span>
+        </div>
+      </div>
+    </div>
+  </div>
+<% end %> 

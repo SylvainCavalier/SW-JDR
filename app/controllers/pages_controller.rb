@@ -8,6 +8,12 @@ class PagesController < ApplicationController
     @headquarter = Headquarter.first
   end
 
+  def team
+    @players = User.includes(:race, :classe_perso, :pet, :statuses, :avatar_attachment)
+                   .joins(:group).where(groups: { name: "PJ" })
+                   .order(:username)
+  end
+
   def mj
   end
 

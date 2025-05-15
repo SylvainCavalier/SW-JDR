@@ -291,7 +291,8 @@ class MjController < ApplicationController
   end
 
   def fixer_pv_max
-    @users = User.where(group_id: Group.find_by(name: "PJ").id)
+    @users = User.where(group_id: Group.find_by(name: "PJ").id).includes(:user_caracs => :carac)
+    @carac_names = Carac.pluck(:name)
   end
 
   def update_pv_max
@@ -330,6 +331,19 @@ class MjController < ApplicationController
     redirect_to fixer_pv_max_path, notice: "PV Max et Boucliers mis à jour dynamiquement"
   end
 
+  def update_user_caracs
+    user = User.find(params[:id])
+    params[:user_caracs]&.each do |carac_id, values|
+      user_carac = user.user_caracs.find_by(carac_id: carac_id)
+      if user_carac
+        user_carac.update(
+          mastery: values[:mastery].to_i,
+          bonus: values[:bonus].to_i
+        )
+      end
+    end
+    redirect_back fallback_location: fixer_pv_max_path, notice: "Caractéristiques mises à jour pour #{user.username}"
+  end
   def donner_xp
     @players = User.where(group: Group.find_by(name: "PJ"))
   end

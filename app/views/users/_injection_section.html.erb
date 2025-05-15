@@ -1,0 +1,46 @@
+<!-- Modale pour sélectionner une injection -->
+<div class="modal fade" id="equipInjectionModal" tabindex="-1" aria-labelledby="equipInjectionModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="equipInjectionModalLabel">Sélectionner une Injection</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body"
+           data-controller="implant-patch-injection"
+           data-implant-patch-injection-user-id-value="<%= current_user.id %>">
+        <table class="table table-hover">
+          <thead>
+            <tr>
+              <th>Nom</th>
+              <th>Quantité</th>
+              <th>Description</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% user_injections.each do |injection| %>
+              <tr>
+                <td><%= injection.inventory_object.name %></td>
+                <td><%= injection.quantity %></td>
+                <td><%= injection.inventory_object.description %></td>
+                <td>
+                  <% if current_user.active_injection == injection.inventory_object.id %>
+                    <span>Active</span>
+                  <% else %>
+                    <button type="button"
+                            class="btn btn-outline-primary btn-sm"
+                            data-action="implant-patch-injection#equipInjection"
+                            data-injection-id="<%= injection.inventory_object.id %>">
+                      S'injecter
+                    </button>
+                  <% end %>
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

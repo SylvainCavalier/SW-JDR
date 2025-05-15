@@ -1,0 +1,157 @@
+<div class="equipment-layout text-light" style="display: flex; flex-wrap: wrap; justify-content: center; gap: 20px;" data-controller="equipment-toggle" data-equipment-toggle-user-id-value="<%= @user.id %>">
+  <% @equipment_slots.each do |slot| %>
+    <div class="border border-success p-3 rounded text-center" style="width: 200px;" data-equipment-toggle-slot-value="<%= slot %>">
+      <% image_path = equipment_slot_image_path(slot) %>
+      <%= image_tag image_path, class: "img-fluid mb-2", style: "max-height: 80px; object-fit: contain;" if asset_exists?(image_path) %><br>
+      <strong class="text-white"><%= slot %></strong>
+
+      <% equipped_item = (@equipments_by_slot[slot] || []).find(&:equipped?) %>
+      <% if equipped_item %>
+        <div class="d-flex align-items-center justify-content-center">
+          <p class="mt-2 mb-0"><strong><%= equipped_item.name %></strong></p>
+          <% if editable %>
+            <button type="button"
+                    class="btn btn-outline-warning btn-sm mx-1"
+                    data-action="equipment-toggle#remove"
+                    data-equipment-toggle-slot-value="<%= slot %>">
+              ⏷
+            </button>
+          <% end %>
+        </div>
+        <p style="font-size: 0.8em;"><%= equipped_item.effect %></p>
+      <% else %>
+        <p class="text-warning">Aucun objet équipé</p>
+      <% end %>
+
+      <% if @equipments_by_slot[slot].present? && editable %>
+        <ul class="list-group mt-2">
+          <% @equipments_by_slot[slot].each do |item| %>
+            <li class="list-group-item bg-dark text-light d-flex justify-content-between align-items-center p-1">
+              <div class="d-flex align-items-center">
+                <button type="button"
+                        class="btn btn-outline-success btn-sm me-2"
+                        data-action="equipment-toggle#equip"
+                        data-equipment-toggle-equipment-id-value="<%= item.id %>"
+                        data-equipment-toggle-slot-value="<%= slot %>">
+                  Eq.
+                </button>
+                <span><small><%= item.name %></small></span>
+              </div>
+              <button type="button"
+                      class="btn btn-sm btn-outline-danger p-0 px-2"
+                      data-action="equipment-toggle#delete"
+                      data-equipment-toggle-equipment-id-value="<%= item.id %>">
+                ❌
+              </button>
+            </li>
+          <% end %>
+        </ul>
+      <% end %>
+
+      <!-- Formulaire d'ajout -->
+      <% if editable %>
+        <h6 class="mt-3 text-light">Ajouter un objet :</h6>
+        <form class="equipment-add-form"
+              data-action="submit->equipment-toggle#add"
+              data-equipment-toggle-slot-value="<%= slot %>">
+          <input type="text"
+                 name="name"
+                 placeholder="Nom"
+                 class="form-control form-control-sm mb-1"
+                 required>
+          <input type="text"
+                 name="effect"
+                 placeholder="Effet"
+                 class="form-control form-control-sm mb-1">
+          <button type="submit" class="btn btn-outline-primary btn-sm">Ajouter</button>
+        </form>
+      <% end %>
+    </div>
+  <% end %>
+</div>
+
+<!-- CONTAINERS IMPLANTS / PATCHS / INJECTIONS -->
+<div class="d-flex flex-wrap justify-content-center gap-3 m-3 text-light">
+  <!-- Implant -->
+  <div class="border border-success rounded p-3 text-center" 
+       style="width: 27vw;"
+       data-controller="implant-patch-injection"
+       data-implant-patch-injection-user-id-value="<%= @user.id %>">
+    <h4 class="text-info"><i class="fa-solid fa-microchip me-2"></i>Implant</h4>
+    <p class="mt-2"><strong><%= @user.active_implant_object&.name || "Aucun implant actif" %></strong></p>
+    <p style="font-size: 0.85em;"><%= @user.active_implant_object&.description || "" %></p>
+
+    <% if editable %>
+      <% if @user.active_implant %>
+        <button type="button"
+                class="btn btn-outline-danger btn-sm mt-2"
+                data-action="implant-patch-injection#unequipImplant">
+          Déséquiper
+        </button>
+      <% end %>
+
+      <button type="button" class="btn btn-outline-success btn-sm mt-3"
+              data-bs-toggle="modal" data-bs-target="#equipImplantModal">
+        Équiper un implant
+      </button>
+
+      <%= render partial: "users/implant_section", locals: { user: @user, user_implants: @user_implants } %>
+    <% end %>
+  </div>
+
+  <!-- Patch -->
+  <div class="border border-success rounded p-3 text-center" 
+       style="width: 27vw;"
+       data-controller="implant-patch-injection"
+       data-implant-patch-injection-user-id-value="<%= @user.id %>">
+    <h4 class="text-info"><i class="fa-regular fa-circle-down me-2"></i>Patch</h4>
+    <p class="mt-2"><strong><%= @user.equipped_patch&.name || "Aucun patch équipé" %></strong></p>
+    <p style="font-size: 0.85em;"><%= @user.equipped_patch&.description || "" %></p>
+
+    <% if editable %>
+      <% if @user.patch.present? %>
+        <button type="button"
+                class="btn btn-outline-danger btn-sm"
+                data-action="implant-patch-injection#usePatch"
+                data-patch-name="<%= @user.equipped_patch&.name %>"
+                data-patch-description="<%= @user.equipped_patch&.description %>">
+          Utiliser Patch
+        </button>
+      <% end %>
+
+      <button type="button" class="btn btn-outline-success btn-sm mt-3"
+              data-bs-toggle="modal" data-bs-target="#equipPatchModal">
+        Équiper un patch
+      </button>
+
+      <%= render partial: "users/patch_section", locals: { user_inventory_objects: @user_inventory_objects } %>
+    <% end %>
+  </div>
+
+  <!-- Injection -->
+  <div class="border border-success rounded p-3 text-center" 
+       style="width: 27vw;"
+       data-controller="implant-patch-injection"
+       data-implant-patch-injection-user-id-value="<%= @user.id %>">
+    <h4 class="text-info"><i class="fa-solid fa-syringe me-2"></i>Injection</h4>
+    <p class="mt-2"><strong><%= @user.active_injection_object&.name || "Aucune injection active" %></strong></p>
+    <p style="font-size: 0.85em;"><%= @user.active_injection_object&.description || "" %></p>
+
+    <% if editable %>
+      <% if @user.active_injection %>
+        <button type="button"
+                class="btn btn-outline-danger btn-sm"
+                data-action="implant-patch-injection#deactivateInjection">
+          Injection terminée
+        </button>
+      <% end %>
+
+      <button type="button" class="btn btn-outline-success btn-sm mt-3"
+              data-bs-toggle="modal" data-bs-target="#equipInjectionModal">
+        S'injecter un produit
+      </button>
+
+      <%= render partial: "users/injection_section", locals: { user: @user, user_injections: @user_injections } %>
+    <% end %>
+  </div>
+</div> 
