@@ -1,6 +1,7 @@
+<%# Section Info du profil utilisateur %>
 <div class="info-section">
   <div class="info-grid">
-    <!-- Colonne gauche : identité -->
+    <!-- Colonne gauche -->
     <div class="info-column left-column">
       <div class="info-box character-info mt-3">
         <h3><i class="fa-solid fa-user text-info"></i> Identité</h3>
@@ -11,39 +12,82 @@
         <p>
           <strong>Classe :</strong> <%= @user.classe_perso&.name || "Non définie" %>
         </p>
-        <div class="editable-fields" data-controller="info-edit">
-          <p>
-            <strong>Sexe :</strong> <span data-info-edit-target="display"><%= @user.sex || "Non défini" %></span>
-            <% if @user == current_user %>
-              <i class="fa-solid fa-pen edit-icon" data-action="click->info-edit#toggleEdit"></i>
-              <input type="text" class="form-control d-none" data-info-edit-target="input" 
-                     data-url="<%= user_path(@user) %>" data-field="sex" value="<%= @user.sex %>">
-            <% end %>
-          </p>
-          <p>
-            <strong>Âge :</strong> <span data-info-edit-target="display"><%= @user.age ? "#{@user.age} ans" : "Non défini" %></span>
-            <% if @user == current_user %>
-              <i class="fa-solid fa-pen edit-icon" data-action="click->info-edit#toggleEdit"></i>
-              <input type="number" class="form-control d-none" data-info-edit-target="input" 
-                     data-url="<%= user_path(@user) %>" data-field="age" value="<%= @user.age %>">
-            <% end %>
-          </p>
-          <p>
-            <strong>Taille :</strong> <span data-info-edit-target="display"><%= @user.height ? "#{@user.height} cm" : "Non définie" %></span>
-            <% if @user == current_user %>
-              <i class="fa-solid fa-pen edit-icon" data-action="click->info-edit#toggleEdit"></i>
-              <input type="number" class="form-control d-none" data-info-edit-target="input" 
-                     data-url="<%= user_path(@user) %>" data-field="height" value="<%= @user.height %>">
-            <% end %>
-          </p>
-          <p>
-            <strong>Poids :</strong> <span data-info-edit-target="display"><%= @user.weight ? "#{@user.weight} kg" : "Non défini" %></span>
-            <% if @user == current_user %>
-              <i class="fa-solid fa-pen edit-icon" data-action="click->info-edit#toggleEdit"></i>
-              <input type="number" class="form-control d-none" data-info-edit-target="input" 
-                     data-url="<%= user_path(@user) %>" data-field="weight" value="<%= @user.weight %>">
-            <% end %>
-          </p>
+        <div class="editable-fields">
+          <div class="editable-field" data-controller="info-edit">
+            <p class="d-flex align-items-center">
+              <span class="field-label"><strong>Sexe :</strong></span>
+              <span class="d-flex align-items-center">
+                <span data-info-edit-target="display" class="text-success"><%= @user.sex || "Non défini" %></span>
+                <% if @user == current_user %>
+                  <i class="fa-solid fa-pen edit-icon mx-2" data-action="click->info-edit#toggleEdit" data-info-edit-target="editIcon"></i>
+                  <div class="d-none d-flex align-items-center mx-2" data-info-edit-target="editForm">
+                    <input type="text" class="form-control form-control-sm" data-info-edit-target="input" 
+                           data-url="<%= update_info_user_path(@user) %>" data-field="sex" value="<%= @user.sex %>">
+                    <button class="btn btn-sm btn-success mx-2" data-action="click->info-edit#saveEdit">
+                      <i class="fa-solid fa-check"></i>
+                    </button>
+                  </div>
+                <% end %>
+              </span>
+            </p>
+          </div>
+
+          <div class="editable-field" data-controller="info-edit">
+            <p class="d-flex align-items-center">
+              <span class="field-label"><strong>Âge :</strong></span>
+              <span class="d-flex align-items-center">
+                <span data-info-edit-target="display" class="text-success"><%= @user.age ? "#{@user.age} ans" : "Non défini" %></span>
+                <% if @user == current_user %>
+                  <i class="fa-solid fa-pen edit-icon mx-2" data-action="click->info-edit#toggleEdit" data-info-edit-target="editIcon"></i>
+                  <div class="d-none d-flex align-items-center mx-2" data-info-edit-target="editForm">
+                    <input type="number" class="form-control form-control-sm" data-info-edit-target="input" 
+                           data-url="<%= update_info_user_path(@user) %>" data-field="age" value="<%= @user.age %>">
+                    <button class="btn btn-sm btn-success mx-2" data-action="click->info-edit#saveEdit">
+                      <i class="fa-solid fa-check"></i>
+                    </button>
+                  </div>
+                <% end %>
+              </span>
+            </p>
+          </div>
+
+          <div class="editable-field" data-controller="info-edit">
+            <p class="d-flex align-items-center">
+              <span class="field-label"><strong>Taille :</strong></span>
+              <span class="d-flex align-items-center">
+                <span data-info-edit-target="display" class="text-success"><%= @user.height ? "#{@user.height} cm" : "Non définie" %></span>
+                <% if @user == current_user %>
+                  <i class="fa-solid fa-pen edit-icon mx-2" data-action="click->info-edit#toggleEdit" data-info-edit-target="editIcon"></i>
+                  <div class="d-none d-flex align-items-center mx-2" data-info-edit-target="editForm">
+                    <input type="number" class="form-control form-control-sm" data-info-edit-target="input" 
+                           data-url="<%= update_info_user_path(@user) %>" data-field="height" value="<%= @user.height %>">
+                    <button class="btn btn-sm btn-success mx-2" data-action="click->info-edit#saveEdit">
+                      <i class="fa-solid fa-check"></i>
+                    </button>
+                  </div>
+                <% end %>
+              </span>
+            </p>
+          </div>
+
+          <div class="editable-field" data-controller="info-edit">
+            <p class="d-flex align-items-center">
+              <span class="field-label"><strong>Poids :</strong></span>
+              <span class="d-flex align-items-center">
+                <span data-info-edit-target="display" class="text-success"><%= @user.weight ? "#{@user.weight} kg" : "Non défini" %></span>
+                <% if @user == current_user %>
+                  <i class="fa-solid fa-pen edit-icon mx-2" data-action="click->info-edit#toggleEdit" data-info-edit-target="editIcon"></i>
+                  <div class="d-none d-flex align-items-center mx-2" data-info-edit-target="editForm">
+                    <input type="number" class="form-control form-control-sm" data-info-edit-target="input" 
+                           data-url="<%= update_info_user_path(@user) %>" data-field="weight" value="<%= @user.weight %>">
+                    <button class="btn btn-sm btn-success mx-2" data-action="click->info-edit#saveEdit">
+                      <i class="fa-solid fa-check"></i>
+                    </button>
+                  </div>
+                <% end %>
+              </span>
+            </p>
+          </div>
         </div>
       </div>
     </div>
@@ -128,4 +172,28 @@
       </div>
     </div>
   </div>
-</div> 
+</div>
+
+<style>
+.edit-icon {
+  cursor: pointer;
+  color: #0d6efd;
+  transition: color 0.2s;
+}
+
+.edit-icon:hover {
+  color: #0a58ca;
+}
+
+.editable-fields .editable-field {
+  margin-bottom: 0.5rem;
+}
+
+.editable-fields input {
+  width: 80px;
+}
+
+.field-label {
+  min-width: 70px;
+}
+</style> 
