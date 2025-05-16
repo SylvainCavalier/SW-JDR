@@ -1,0 +1,32 @@
+.info-section {
+  @apply p-4;
+
+  .cyber-points-bar {
+    @apply bg-blue-500 h-full transition-all duration-300 ease-in-out;
+    background: linear-gradient(45deg, #00f2fe 0%, #4facfe 100%);
+  }
+
+  .avatar-container {
+    position: relative;
+    
+    &:hover {
+      .avatar-upload-overlay {
+        opacity: 1;
+      }
+    }
+  }
+
+  .avatar-upload-overlay {
+    @apply absolute inset-0 bg-black bg-opacity-50 rounded-full flex items-center justify-center opacity-0 transition-opacity duration-300;
+    
+    i {
+      @apply text-white text-2xl;
+    }
+  }
+
+  button {
+    &:focus {
+      @apply outline-none ring-2 ring-blue-500;
+    }
+  }
+} 

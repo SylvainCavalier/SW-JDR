@@ -635,6 +635,34 @@ class UsersController < ApplicationController
     end
   end
   
+  def update
+    @user = User.find(params[:id])
+    
+    if @user == current_user && @user.update(user_params)
+      respond_to do |format|
+        format.html { redirect_to @user, notice: "Profil mis à jour avec succès." }
+        format.json { render json: { success: true } }
+      end
+    else
+      respond_to do |format|
+        format.html { render :show }
+        format.json { render json: { success: false }, status: :unprocessable_entity }
+      end
+    end
+  end
+
+  def update_info
+    @user = current_user
+    field = params[:user].keys.first
+    value = params[:user][field]
+
+    if @user.update(field => value)
+      render json: { success: true, value: value }
+    else
+      render json: { success: false, errors: @user.errors.full_messages }, status: :unprocessable_entity
+    end
+  end
+
   private
   
   def avatar_params
@@ -661,7 +689,11 @@ class UsersController < ApplicationController
       :reparation_mastery,
       :reparation_bonus,
       :active_injection,
-      :active_implant
+      :active_implant,
+      :sex,
+      :age,
+      :height,
+      :weight
     )
   end
   

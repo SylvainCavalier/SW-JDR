@@ -1,6 +1,4 @@
 <div class="container-fluid mt-4">
-  <!-- Titre -->
-  <h1 class="text-success text-center mb-4">Profil de <%= @user.username %></h1>
 
   <!-- Boutons en haut à droite (visibles uniquement pour le propriétaire du profil) -->
   <% if @user == current_user %>
@@ -37,6 +35,12 @@
       </div>
     <% end %>
   </div>
+
+  <!-- Titre -->
+  <h1 class="text-success text-center mb-4">Profil de <%= @user.username.capitalize %></h1>
+
+  <!-- Section Info -->
+  <%= render "users/info_section" %>
 
   <!-- Section Compétences -->
   <section class="mb-5">

@@ -1,0 +1,131 @@
+<div class="info-section">
+  <div class="info-grid">
+    <!-- Colonne gauche : identité -->
+    <div class="info-column left-column">
+      <div class="info-box character-info mt-3">
+        <h3><i class="fa-solid fa-user text-info"></i> Identité</h3>
+        <p><strong>Nom :</strong> <%= @user.username.capitalize %></p>
+        <p>
+          <strong>Race :</strong> <%= @user.race&.name || "Non définie" %>
+        </p>
+        <p>
+          <strong>Classe :</strong> <%= @user.classe_perso&.name || "Non définie" %>
+        </p>
+        <div class="editable-fields" data-controller="info-edit">
+          <p>
+            <strong>Sexe :</strong> <span data-info-edit-target="display"><%= @user.sex || "Non défini" %></span>
+            <% if @user == current_user %>
+              <i class="fa-solid fa-pen edit-icon" data-action="click->info-edit#toggleEdit"></i>
+              <input type="text" class="form-control d-none" data-info-edit-target="input" 
+                     data-url="<%= user_path(@user) %>" data-field="sex" value="<%= @user.sex %>">
+            <% end %>
+          </p>
+          <p>
+            <strong>Âge :</strong> <span data-info-edit-target="display"><%= @user.age ? "#{@user.age} ans" : "Non défini" %></span>
+            <% if @user == current_user %>
+              <i class="fa-solid fa-pen edit-icon" data-action="click->info-edit#toggleEdit"></i>
+              <input type="number" class="form-control d-none" data-info-edit-target="input" 
+                     data-url="<%= user_path(@user) %>" data-field="age" value="<%= @user.age %>">
+            <% end %>
+          </p>
+          <p>
+            <strong>Taille :</strong> <span data-info-edit-target="display"><%= @user.height ? "#{@user.height} cm" : "Non définie" %></span>
+            <% if @user == current_user %>
+              <i class="fa-solid fa-pen edit-icon" data-action="click->info-edit#toggleEdit"></i>
+              <input type="number" class="form-control d-none" data-info-edit-target="input" 
+                     data-url="<%= user_path(@user) %>" data-field="height" value="<%= @user.height %>">
+            <% end %>
+          </p>
+          <p>
+            <strong>Poids :</strong> <span data-info-edit-target="display"><%= @user.weight ? "#{@user.weight} kg" : "Non défini" %></span>
+            <% if @user == current_user %>
+              <i class="fa-solid fa-pen edit-icon" data-action="click->info-edit#toggleEdit"></i>
+              <input type="number" class="form-control d-none" data-info-edit-target="input" 
+                     data-url="<%= user_path(@user) %>" data-field="weight" value="<%= @user.weight %>">
+            <% end %>
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Colonne centrale (Avatar) -->
+    <div class="info-column center-column">
+      <div class="info-box">
+        <h3><i class="fa-solid fa-heart text-danger"></i> Santé</h3>
+        <div class="hp-bar-wrapper mt-1">
+          <div class="user-hp-bar-container" data-controller="hp-bar" data-max-hp="<%= @user.hp_max %>" data-current-hp="<%= @user.hp_current %>">
+            <img src="<%= asset_path('bottom-bar.svg') %>" alt="Fond de la barre de vie" class="hp-bar-background">
+            <svg class="hp-bar-svg" viewBox="0 0 1001.46 140.26">
+              <defs>
+                <clipPath id="hp-clip">
+                  <rect x="0" y="0" data-hp-bar-target="hpFill" width="<%= (1001.46 * [(@user.hp_current.to_f / @user.hp_max), 0].max).round %>" height="140.26" />
+                </clipPath>
+              </defs>
+              <g id="hp-bar-layer" clip-path="url(#hp-clip)">
+                <path class="hp-fill" d="M955.63,43.09l-10.4,7.77c-3.19,2.38-7.42,3.69-11.93,3.69h-161.43c-6.85,0-12.96-3.05-15.58-7.78-.29-.53-.52-1.06-.72-1.6l-7.61,5.69c-3.19,2.38-7.42,3.69-11.93,3.69h-161.43c-6.85,0-12.97-3.05-15.59-7.78-.2-.36-.36-.72-.52-1.08l-6.92,5.17c-3.19,2.38-7.42,3.69-11.93,3.69h-81.14c-6.85,0-12.97-3.05-15.59-7.78-.98-1.76-1.39-3.62-1.27-5.44-1.96-.58-3.77-1.44-5.34-2.55l-33.66-23.79h-207.95l-73.2,54.7c-7.9,5.9-18.4,9.15-29.58,9.15h-9.04l17.28,12.91c5.48,4.1,7.11,10.21,4.14,15.56-2.53,4.57-7.95,7.76-14.31,8.6l12.5,9.34h100.91l4.99-3.73c6.74-5.04,15.71-7.82,25.25-7.82h71.14c2.35,0,4.66-.71,6.32-1.96l13.03-9.74c6.75-5.04,15.71-7.81,25.25-7.81h321.46c1.21-.05,2.32-.08,3.36-.08h272.44c19.16,0,34.74-11.65,34.74-25.96,0-12-10.95-22.11-25.77-25.08l.03.02Z" fill="#dd2f2f"/>
+              </g>
+            </svg>
+            <div class="hp-text-container">
+              <div class="hp-text" data-hp-bar-target="hpText">
+                PV : <span id="hp-value"><%= @user.hp_current %></span> / <%= @user.hp_max %>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="mt-5">
+          <span class="badge rounded-pill" style="background-color: <%= @user.user_statuses.first&.status&.color || '#6c757d' %>">
+            <%= @user.user_statuses.first&.status&.name || "Statut inconnu" %>
+          </span>
+        </div>
+      </div>
+
+      <div class="info-box">
+        <h3><i class="fa-solid fa-jedi text-info"></i> Force</h3>
+        <div class="dark-side-meter">
+          <% (-5..5).each do |i| %>
+            <div class="dark-side-point <%= 'active' if @user.dark_side_points == i %>"
+                 style="background-color: <%= i < 0 ? "rgba(#{30 + (i.abs * 45)}, #{144 + (i.abs * 22)}, 255, #{i == @user.dark_side_points ? 1 : 0.5})" :
+                                                     i == 0 ? "rgba(255, 255, 255, #{i == @user.dark_side_points ? 1 : 0.5})" :
+                                                     "rgba(255, #{144 - (i * 22)}, #{30 - (i * 6)}, #{i == @user.dark_side_points ? 1 : 0.5})" %>">
+            </div>
+          <% end %>
+        </div>
+      </div>
+
+      <div class="info-box">
+        <h3><i class="fa-solid fa-robot text-primary"></i> Cyber</h3>
+        <div class="cyber-points">
+          <% 3.times do |i| %>
+            <div class="cyber-point <%= i < @user.cyber_points ? 'active' : '' %>"></div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+
+    <!-- Colonne droite -->
+    <div class="info-column right-column">
+      <div class="info-box">
+        <h3><i class="fa-solid fa-coins text-warning"></i> Ressources</h3>
+        <p>Crédits : <%= @user.credits %></p>
+        <p>XP : <%= @user.xp %> / <%= @user.total_xp %></p>
+      </div>
+
+      <div class="info-box">
+        <h3><i class="fa-solid fa-paw text-success"></i> Familier associé</h3>
+        <% if @user.pet.present? %>
+          <%= link_to pet_path(@user.pet), class: "pet-link" do %>
+            <div class="d-flex align-items-center">
+              <%= image_tag(@user.pet.image.attached? ? @user.pet.image.variant(resize_to_limit: [50, 50]) : "petbase.png", class: "pet-thumbnail me-2") %>
+              <div>
+                <p class="mb-0"><%= @user.pet.name %></p>
+                <small class="text-white"><%= @user.pet.race %></small>
+              </div>
+            </div>
+          <% end %>
+        <% else %>
+          <p>Aucun familier associé</p>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div> 

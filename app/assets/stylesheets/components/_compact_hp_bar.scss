@@ -1,0 +1,13 @@
+.compact-hp-bar {
+  @apply w-full max-w-xs mx-auto;
+
+  .hp-value {
+    @apply text-white;
+  }
+
+  .status-indicator {
+    span {
+      @apply text-white font-medium;
+    }
+  }
+} 

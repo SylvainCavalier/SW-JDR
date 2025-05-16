@@ -473,7 +473,7 @@ span {
   position: absolute;
   top: 9px;
   left: 15%;
-  font-size: 0.9em;
+  font-size: 0.8em;
   color: white;
   font-weight: bold;
   pointer-events: auto;
@@ -1607,4 +1607,135 @@ input.dice-count-input {
 
 .table.rounded-3 tbody tr:last-child td:last-child {
   border-bottom-right-radius: 0.5rem;
+}
+
+.info-section {
+  margin-bottom: 2rem;
+  padding: 1rem;
+  background: rgba(10, 20, 30, 0.8);
+  border-radius: 15px;
+  box-shadow: 0 0 20px rgba(40, 167, 69, 0.2);
+}
+
+.info-grid {
+  display: grid;
+  grid-template-columns: 1fr 1.2fr 1fr;
+  gap: 1rem;
+  align-items: start;
+}
+
+.info-column {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.info-box {
+  background: rgba(20, 30, 40, 0.9);
+  border: 1px solid rgba(40, 167, 69, 0.3);
+  border-radius: 10px;
+  padding: 0.5rem;
+  box-shadow: 0 0 10px rgba(40, 167, 69, 0.1);
+  transition: all 0.3s ease;
+}
+
+.info-box:hover {
+  box-shadow: 0 0 15px rgba(40, 167, 69, 0.3);
+  transform: translateY(-2px);
+}
+
+.info-box h3 {
+  color: #28a745;
+  font-size: 1.2rem;
+  margin-bottom: 0.5rem;
+  border-bottom: 1px solid rgba(40, 167, 69, 0.2);
+  padding-bottom: 0.5rem;
+}
+/* Editable fields */
+.editable-fields p {
+  position: relative;
+  padding-right: 2rem;
+}
+
+.edit-icon {
+  position: absolute;
+  right: 0.5rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #28a745;
+  cursor: pointer;
+  opacity: 0.5;
+  transition: opacity 0.3s ease;
+}
+
+.edit-icon:hover {
+  opacity: 1;
+}
+
+.user-hp-bar-container {
+  position: absolute;
+  width: 32vw;
+  height: auto;
+  z-index: 2;
+}
+
+/* Dark Side Meter */
+.dark-side-meter {
+  display: flex;
+  justify-content: center;
+  gap: 4px;
+  padding: 1rem 0;
+}
+
+.dark-side-point {
+  width: 2vw;
+  height: 2vw;
+  border-radius: 4px;
+  transition: all 0.3s ease;
+}
+
+.dark-side-point.active {
+  transform: scale(1.2);
+  box-shadow: 0 0 10px currentColor;
+}
+
+/* Cyber Points */
+.cyber-points {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  padding: 1rem 0;
+}
+
+.cyber-point {
+  width: 3vw;
+  height: 3vw;
+  border: 2px solid #007bff;
+  border-radius: 6px;
+  background: rgba(0, 123, 255, 0.1);
+  transition: all 0.3s ease;
+}
+
+.cyber-point.active {
+  background: #007bff;
+  box-shadow: 0 0 15px #007bff;
+}
+
+/* Pet thumbnail */
+.pet-thumbnail {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #28a745;
+}
+
+.pet-link {
+  text-decoration: none;
+  color: inherit;
+  transition: all 0.3s ease;
+}
+
+.pet-link:hover {
+  color: #28a745;
 } 

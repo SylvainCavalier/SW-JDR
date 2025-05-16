@@ -37,7 +37,8 @@ Rails.application.routes.draw do
       post :add_equipment
       patch :equip_equipment
       delete "equipment/:slot", to: "users#remove_equipment", as: :remove_equipment
-      delete "equipment/delete/:equipment_id", to: "users#delete_equipment", as: :delete_equipment
+      delete "equipment/delete/:equipment_id", to: "users#delete_equipment"
+      patch :update_info
     end
 
     collection do
