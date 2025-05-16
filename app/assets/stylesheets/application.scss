@@ -690,6 +690,20 @@ input[type="submit"] {
   color: #00ffcc;
 }
 
+.holonew-image {
+  max-width: 100%;
+  margin: 10px 0;
+  
+  img {
+    max-height: 300px;
+    width: auto;
+    display: block;
+    margin: 0 auto;
+    border: 1px solid rgba(40, 167, 69, 0.3);
+    box-shadow: 0 0 10px rgba(40, 167, 69, 0.2);
+  }
+}
+
 .mj-container {
   position: absolute;
   top: 50%;   /* Centre verticalement */

@@ -9,7 +9,10 @@
         <div class="holonew-item p-1 mb-1 <%= current_user.has_read?(holonew) ? 'bg-light' : 'bg-warning' %> rounded">
           <h3><%= holonew.title %></h3>
           <p>
-            <strong>Expéditeur :</strong> <%= holonew.sender.username %><br>
+            <strong>Expéditeur :</strong> <%= holonew.sender_alias.presence || holonew.sender.username %>
+            <%= link_to new_holonew_path(reply_to: holonew.id), class: "ms-2 text-success", title: "Répondre" do %>
+              <i class="fas fa-reply"></i>
+            <% end %><br>
             <small class="text-muted text-success">
               Envoyé le <%= l(holonew.created_at, format: "%d/%m/%Y à %H:%M") %>
             </small>
@@ -24,6 +27,12 @@
             </button>
           <% else %>
             <p><%= holonew.content %></p>
+          <% end %>
+
+          <% if holonew.image.attached? %>
+            <div class="holonew-image mt-2">
+              <%= image_tag holonew.image, class: "img-fluid rounded" %>
+            </div>
           <% end %>
 
         </div>

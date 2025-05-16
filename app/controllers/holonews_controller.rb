@@ -25,6 +25,13 @@ class HolonewsController < ApplicationController
     @holonew = Holonew.new
     @users = User.all
     @groups = Group.all
+
+    if params[:reply_to].present?
+      original_holonew = Holonew.find(params[:reply_to])
+      @holonew.title = "Re: #{original_holonew.title}"
+      @holonew.target_user = original_holonew.sender.id
+      @reply_to_username = original_holonew.sender.username
+    end
   end
 
   def create
@@ -54,6 +61,6 @@ class HolonewsController < ApplicationController
   private
 
   def holonew_params
-    params.require(:holonew).permit(:title, :content).merge(user_id: current_user.id)
+    params.require(:holonew).permit(:title, :content, :image, :sender_alias).merge(user_id: current_user.id)
   end
 end

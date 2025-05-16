@@ -8,22 +8,39 @@
   <!-- Formulaire -->
   <div class="custom-form">
     <%= simple_form_for @holonew, local: true do |f| %>
+      <% if @reply_to_username.present? %>
+        <div class="alert alert-info">
+          Réponse à <%= @reply_to_username %>
+        </div>
+      <% end %>
+
       <div class="form-group">
         <%= f.input :title, label: "Titre", input_html: { class: 'form-control' } %>
       </div>
+
+      <% if current_user.group.name == "MJ" %>
+        <div class="form-group">
+          <%= f.input :sender_alias, 
+              label: "Nom de l'expéditeur (optionnel)", 
+              placeholder: "Laissez vide pour utiliser votre nom",
+              input_html: { class: 'form-control' } %>
+        </div>
+      <% end %>
 
       <div class="form-group">
         <%= f.input :content, label: "Contenu", input_html: { class: 'form-control' } %>
       </div>
 
       <div class="form-group">
-        <label>Envoyer à des utilisateurs :</label>
-        <%= select_tag 'target_user', options_from_collection_for_select(@users, 'id', 'username'), prompt: "Sélectionner un utilisateur", class: "form-control" %>
+        <%= f.input :image, as: :file, label: "Image (max 5MB)", input_html: { class: 'form-control', accept: 'image/*' } %>
       </div>
 
       <div class="form-group">
-        <label>Envoyer à des groupes :</label>
-        <%= select_tag 'target_group', options_from_collection_for_select(@groups, 'id', 'name'), prompt: "Sélectionner un groupe", class: "form-control" %>
+        <label>Envoyer à des utilisateurs :</label>
+        <%= select_tag 'target_user', 
+            options_from_collection_for_select(@users, 'id', 'username', @holonew.target_user), 
+            prompt: "Sélectionner un utilisateur", 
+            class: "form-control" %>
       </div>
 
       <div class="form-check">

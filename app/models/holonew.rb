@@ -3,9 +3,11 @@ class Holonew < ApplicationRecord
   belongs_to :receiver, class_name: "User", foreign_key: "target_user", optional: true
   has_many :readers, through: :holonew_reads, source: :user
   has_many :holonew_reads, dependent: :destroy
+  has_one_attached :image
 
   validates :title, presence: true
   validates :content, presence: true
+  validate :image_size_validation
 
   scope :unread, -> { where(read: false) }
 
@@ -65,6 +67,12 @@ class Holonew < ApplicationRecord
       rescue StandardError => e
         puts "⚠️ Erreur WebPush pour #{user.username} : #{e.message}"
       end
+    end
+  end
+
+  def image_size_validation
+    if image.attached? && image.blob.byte_size > 5.megabytes
+      errors.add(:image, "doit être inférieure à 5MB")
     end
   end
 end
