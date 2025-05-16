@@ -57,6 +57,9 @@ Rails.application.routes.draw do
     collection do
       get :inventory
       get :observation
+      get :credits
+      get :buildings
+      get :personnel
       patch :inventory
       post :add_item
       delete "remove_personnel/:id", to: "headquarter#remove_personnel", as: :remove_personnel
