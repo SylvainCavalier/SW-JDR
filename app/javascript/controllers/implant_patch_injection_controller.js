@@ -59,7 +59,10 @@ export default class extends Controller {
       return
     }
 
-    const confirmation = confirm("Cette injection va vous coûter 2 PV. Êtes-vous sûr ?")
+    const isJunkie = event.currentTarget.closest('[data-junkie]')?.dataset.junkie === 'true'
+    const confirmation = isJunkie ? 
+      confirm("Êtes-vous sûr de vouloir utiliser cette injection ?") :
+      confirm("Cette injection va vous coûter 2 PV. Êtes-vous sûr ?")
     if (!confirmation) return
 
     this._post(`/users/${this.userIdValue}/equip_injection`, { injection_id: injectionId })

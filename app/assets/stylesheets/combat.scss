@@ -1,0 +1,212 @@
+// Styles pour la page de combat
+.combat-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+
+  .enemy-form-box {
+    background: rgba(33, 37, 41, 0.95);
+    border-radius: 0.5rem;
+    border: 1px solid rgba(40, 167, 69, 0.3);
+    box-shadow: 0 0 20px rgba(40, 167, 69, 0.2);
+    margin-bottom: 2rem;
+    transition: all 0.3s ease;
+
+    &:hover {
+      box-shadow: 0 0 20px rgba(40, 167, 69, 0.4);
+      transform: translateY(-2px);
+    }
+  }
+
+  .table {
+    border-collapse: separate !important;
+    border-spacing: 0;
+    background: rgba(33, 37, 41, 0.95) !important;
+    margin: 2rem 0;
+    border-radius: 0.5rem !important;
+    overflow: hidden;
+    box-shadow: 0 0 20px rgba(40, 167, 69, 0.2);
+
+    th {
+      background: rgba(25, 135, 84, 0.1) !important;
+      padding: 1rem !important;
+      font-size: 1.1em;
+      border-color: rgba(40, 167, 69, 0.3);
+      color: #28a745;
+      text-shadow: 0 0 10px rgba(40, 167, 69, 0.5);
+      white-space: nowrap;
+    }
+
+    td {
+      padding: 0.8rem 1rem !important;
+      vertical-align: middle;
+      border-color: rgba(40, 167, 69, 0.3);
+
+      // Style pour la colonne des participants
+      &:first-child {
+        min-width: 200px;
+        
+        .d-flex {
+          gap: 0.5rem;
+        }
+
+        img {
+          width: 30px;
+          height: 30px;
+          object-fit: cover;
+        }
+
+        small {
+          display: block;
+          font-size: 0.85em;
+          opacity: 0.8;
+          margin-top: 0.2rem;
+        }
+      }
+
+      // Style pour les colonnes de stats
+      &:not(:first-child) {
+        text-align: center;
+        white-space: nowrap;
+      }
+    }
+
+    tbody tr {
+      transition: all 0.3s ease;
+
+      &:hover {
+        background: rgba(25, 135, 84, 0.1) !important;
+        transform: translateY(-2px);
+      }
+    }
+
+    // Style pour les participants
+    .text-info {
+      text-shadow: 0 0 10px rgba(23, 162, 184, 0.5);
+    }
+
+    .text-danger {
+      text-shadow: 0 0 10px rgba(220, 53, 69, 0.5);
+    }
+
+    .text-warning {
+      text-shadow: 0 0 10px rgba(255, 193, 7, 0.5);
+    }
+  }
+
+  // Amélioration de la lisibilité des statuts
+  .status-badge {
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.25rem;
+    font-size: 0.875rem;
+    background-color: rgba(0, 0, 0, 0.2);
+    border: 1px solid;
+    text-shadow: 0 0 10px currentColor;
+    
+    &.status-normal {
+      color: #1EDD88;
+      border-color: #1EDD88;
+    }
+    
+    &.status-warning {
+      background-color: rgba(255, 193, 7, 0.2);
+      border: 1px solid rgba(255, 193, 7, 0.4);
+      color: #ffc107;
+      text-shadow: 0 0 10px rgba(255, 193, 7, 0.5);
+    }
+    
+    &.status-danger {
+      background-color: rgba(220, 53, 69, 0.2);
+      border: 1px solid rgba(220, 53, 69, 0.4);
+      color: #dc3545;
+      text-shadow: 0 0 10px rgba(220, 53, 69, 0.5);
+    }
+  }
+
+  // Style pour le sélecteur de statut
+  .status-select-container {
+    .status-select {
+      background-color: rgba(33, 37, 41, 0.95);
+      border: 1px solid rgba(40, 167, 69, 0.3);
+      color: #fff;
+      font-size: 0.875rem;
+      padding: 0.25rem 0.5rem;
+      cursor: pointer;
+      width: auto;
+      min-width: 120px;
+
+      &:focus {
+        box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25);
+        border-color: rgba(40, 167, 69, 0.5);
+      }
+
+      option {
+        background-color: rgba(33, 37, 41, 0.95);
+        padding: 0.5rem;
+        
+        &:hover {
+          background-color: rgba(40, 167, 69, 0.2);
+        }
+      }
+    }
+  }
+
+  // Style pour les cartes d'initiative
+  .card {
+    background: rgba(33, 37, 41, 0.95) !important;
+    border: 1px solid rgba(40, 167, 69, 0.3);
+    box-shadow: 0 0 20px rgba(40, 167, 69, 0.2);
+    transition: all 0.3s ease;
+
+    &:hover {
+      box-shadow: 0 0 20px rgba(40, 167, 69, 0.4);
+      transform: translateY(-2px);
+    }
+
+    h4 {
+      color: #28a745;
+      text-shadow: 0 0 10px rgba(40, 167, 69, 0.5);
+    }
+  }
+
+  // Style pour les boutons
+  .btn-outline-success {
+    text-shadow: 0 0 5px #28a745;
+    box-shadow: 0 0 10px rgba(40, 167, 69, 0.5);
+    transition: all 0.3s ease;
+
+    &:hover {
+      box-shadow: 0 0 20px rgba(40, 167, 69, 0.8);
+      transform: translateY(-1px);
+    }
+  }
+
+  .btn-outline-secondary {
+    text-shadow: 0 0 5px #6c757d;
+    box-shadow: 0 0 10px rgba(108, 117, 125, 0.5);
+    transition: all 0.3s ease;
+
+    &:hover {
+      box-shadow: 0 0 20px rgba(108, 117, 125, 0.8);
+      transform: translateY(-1px);
+    }
+  }
+
+  .btn-outline-warning {
+    text-shadow: 0 0 5px #ffc107;
+    box-shadow: 0 0 10px rgba(255, 193, 7, 0.5);
+    transition: all 0.3s ease;
+
+    &:hover {
+      box-shadow: 0 0 20px rgba(255, 193, 7, 0.8);
+      transform: translateY(-1px);
+    }
+  }
+
+  // Style pour les inputs
+  .form-control {
+    background: rgba(33, 37, 41, 0.8) !important;
+    border-color: #28a745 !important;
+    color: white !important;
+  }
+} 

@@ -1,16 +1,11 @@
 class CombatController < ApplicationController
+  before_action :authenticate_user!
 
-  def new
+  def index
     @enemy = Enemy.new
     @enemy.enemy_skills.build(skill: Skill.find_by(name: "Résistance Corporelle"))
-  end
-
-  # Page de gestion du combat (MJ)
-  def index
-    @combat_active = Rails.cache.fetch("combat_active") || false
     @enemies = Enemy.order(:enemy_type, :number)
-    new # <-- Appelle la méthode `new` pour préremplir les skills !
-    render "mj/combat"
+    render "pages/combat"
   end
 
   # Ajouter un ennemi
@@ -36,7 +31,7 @@ class CombatController < ApplicationController
       flash[:alert] = "Erreur lors de l'ajout de l'ennemi : #{@enemy.errors.full_messages.join(', ')}"
     end
   
-    redirect_to mj_combat_path
+    redirect_to combat_path
   end
 
   # Supprimer un ennemi
@@ -47,7 +42,7 @@ class CombatController < ApplicationController
     else
       flash[:alert] = "Erreur lors de la suppression de l'ennemi."
     end
-    redirect_to mj_combat_path
+    redirect_to combat_path
   end
 
   def update_stat
@@ -98,7 +93,7 @@ class CombatController < ApplicationController
       flash[:alert] = "Impossible de retirer #{participant.is_a?(User) ? 'le joueur' : 'le pet'} du combat."
     end
     
-    redirect_to mj_combat_path
+    redirect_to combat_path
   end
 
   def increment_turn
@@ -114,6 +109,46 @@ class CombatController < ApplicationController
     combat_state.update(turn: new_turn)
     
     render json: { success: true, turn: new_turn }
+  end
+
+  def update_player_stat
+    Rails.logger.debug "📌 Paramètres reçus pour update_player_stat : #{params.inspect}"
+    @participant = params[:type].constantize.find(params[:id])
+    
+    # Vérification que l'utilisateur ne peut modifier que ses propres stats ou celles de son pet
+    if @participant.is_a?(User) && @participant != current_user
+      render json: { success: false, error: "Vous ne pouvez pas modifier les statistiques d'un autre joueur" }, status: :unauthorized
+      return
+    elsif @participant.is_a?(Pet) && @participant.id != current_user.pet_id
+      render json: { success: false, error: "Vous ne pouvez pas modifier les statistiques d'un pet qui ne vous appartient pas" }, status: :unauthorized
+      return
+    end
+
+    field = params.keys.find { |key| ["hp_current", "shield_current"].include?(key) }
+    
+    if field && @participant.update(field => params[field].to_i)
+      render json: { success: true, hp_current: @participant.hp_current, shield_current: @participant.shield_current }
+    else
+      render json: { success: false, errors: @participant.errors.full_messages }, status: :unprocessable_entity
+    end
+  end
+
+  def update_status
+    participant_type = params[:participant_type]
+    participant = participant_type.constantize.find(params[:participant_id])
+    status = Status.find(params[:status_id])
+
+    if participant.is_a?(Enemy)
+      participant.update(status: status.name)
+      render json: { success: true }
+    else
+      # Pour User et Pet, on utilise la table de jointure
+      participant.user_statuses.destroy_all # On supprime les anciens statuts
+      participant.user_statuses.create(status: status) # On ajoute le nouveau statut
+      render json: { success: true }
+    end
+  rescue => e
+    render json: { success: false, error: e.message }, status: :unprocessable_entity
   end
 
   private

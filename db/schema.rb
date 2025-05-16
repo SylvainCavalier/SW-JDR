@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_05_16_131450) do
+ActiveRecord::Schema[7.1].define(version: 2025_05_16_143805) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -424,6 +424,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_05_16_131450) do
     t.integer "weight"
     t.integer "dark_side_points", default: 0
     t.integer "cyber_points", default: 0
+    t.boolean "junkie", default: false
     t.index ["classe_perso_id"], name: "index_users_on_classe_perso_id"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["group_id"], name: "index_users_on_group_id"

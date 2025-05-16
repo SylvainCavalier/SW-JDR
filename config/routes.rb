@@ -162,17 +162,17 @@ Rails.application.routes.draw do
   get "mj/sphero", to: "mj#sphero", as: "mj_sphero"
   post "mj/sphero/create", to: "mj#create_sphero", as: "mj_create_sphero"
 
-  get "mj/combat", to: "combat#index", as: :mj_combat
-  post "mj/combat/start", to: "combat#start_combat", as: :start_combat
-  post "mj/combat/end", to: "combat#end_combat", as: :end_combat
-  post "mj/combat/add_enemy", to: "combat#add_enemy", as: :add_enemy
-  delete "mj/combat/remove_enemy/:id", to: "combat#remove_enemy", as: :remove_enemy
-  patch "mj/combat/update_enemy_stat/:id", to: "combat#update_stat", as: :update_enemy_stat
-  patch "mj/combat/remove_participant/:type/:id", to: "combat#remove_participant", as: :remove_participant
-  patch "mj/combat/increment_turn", to: "combat#increment_turn", as: :increment_turn
-  patch "mj/combat/decrement_turn", to: "combat#decrement_turn", as: :decrement_turn
-
-  get 'combat', to: 'pages#combat', as: 'combat'
+  get 'combat', to: 'combat#index', as: 'combat'
+  get 'mj/combat', to: 'combat#index', as: 'mj_combat'
+  
+  post "combat/add_enemy", to: "combat#add_enemy", as: :add_enemy
+  delete "combat/remove_enemy/:id", to: "combat#remove_enemy", as: :remove_enemy
+  patch "combat/update_enemy_stat/:id", to: "combat#update_stat", as: :update_enemy_stat
+  patch "combat/update_player_stat/:id", to: "combat#update_player_stat", as: :update_player_stat
+  patch "combat/update_status", to: "combat#update_status", as: :update_combat_status
+  patch "combat/remove_participant/:type/:id", to: "combat#remove_participant", as: :remove_participant
+  patch "combat/increment_turn", to: "combat#increment_turn", as: :increment_turn
+  patch "combat/decrement_turn", to: "combat#decrement_turn", as: :decrement_turn
   post "combat/add_pj", to: "combat#add_pj_to_combat", as: :add_pj_to_combat
   post "combat/add_pet", to: "combat#add_pet_to_combat", as: :add_pet_to_combat
 

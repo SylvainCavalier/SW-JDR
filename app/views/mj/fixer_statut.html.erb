@@ -32,7 +32,7 @@
         <% @users.each do |user| %>
           <div class="d-flex align-items-center justify-content-between mb-2">
             <p class="mb-0" style="font-size: 0.9rem;">
-              <%= user.username %> - Statut actuel : <%= user.statuses.last&.name || "En forme" %>
+              <%= user.username.titleize %> - Statut actuel : <%= user.statuses.last&.name || "En forme" %>
             </p>
             <%= form_with url: mj_fixer_statut_path, method: :post, local: true do |form| %>
               <div class="d-flex align-items-center">

@@ -497,19 +497,19 @@ class MjController < ApplicationController
   end
 
   def reset_health
-    # Soigner tous les joueurs du groupe PJ
+    # Soigner tous les joueurs du groupe PJ qui ont des PV inférieurs à leur maximum
     players = User.where(group: Group.find_by(name: "PJ"))
     players.each do |player|
-      player.update(hp_current: player.hp_max)
+      player.update(hp_current: player.hp_max) if player.hp_current < player.hp_max
     end
 
-    # Soigner tous les pets sauf ceux qui sont morts
+    # Soigner tous les pets sauf ceux qui sont morts ou qui ont déjà des PV supérieurs ou égaux à leur maximum
     pets = Pet.where("hp_current > ?", -10)
     pets.each do |pet|
-      pet.update(hp_current: pet.hp_max)
+      pet.update(hp_current: pet.hp_max) if pet.hp_current < pet.hp_max
     end
 
-    flash[:success] = "Tous les joueurs et leurs familiers ont été soignés !"
+    flash[:success] = "Tous les joueurs et leurs familiers blessés ont été soignés !"
     redirect_to infliger_degats_path
   end
 

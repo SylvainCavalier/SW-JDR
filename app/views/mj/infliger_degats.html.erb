@@ -111,7 +111,7 @@
           <%= hidden_field_tag :user_id, user.id %>
           <div class="player-damage" data-controller="degats">
             <p>
-              <%= user.username %> - PV : <span class="pv-current"><%= user.hp_current %></span> |
+              <%= user.username.titleize %> - PV : <span class="pv-current"><%= user.hp_current %></span> |
               B : <span class="shield-energy-current"><%= user.shield_current %></span> / <%= user.shield_max %> |
               BE : <span class="shield-echani-current"><%= user.echani_shield_current %></span> / <%= user.echani_shield_max %>
             </p>

@@ -20,6 +20,10 @@
           <%= f.check_box :homeopathie, class: "form-check-input" %>
           <%= f.label :homeopathie, "Homéopathie", class: "form-check-label ms-1" %>
         </div>
+        <div class="input-group custom-input-group">
+          <%= f.check_box :junkie, class: "form-check-input" %>
+          <%= f.label :junkie, "Junkie", class: "form-check-label ms-1" %>
+        </div>
       <% end %>
       <% if ["Contrebandier", "Autodidacte"].include?(current_user.classe_perso&.name) %>
         <div class="input-group custom-input-group">

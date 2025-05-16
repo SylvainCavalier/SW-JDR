@@ -234,6 +234,12 @@ class UsersController < ApplicationController
         end
       end
     end
+
+    # Gestion de l'attribut "Junkie"
+    if params[:user].key?(:junkie)
+      @user.update(junkie: params[:user][:junkie] == "1")
+      Rails.logger.debug "✅ 'Junkie' #{@user.junkie ? 'activé' : 'désactivé'} pour #{@user.username}."
+    end
   
     # Gestion de la "Chance du Contrebandier"
     if params[:user].key?(:luck)
@@ -492,7 +498,7 @@ class UsersController < ApplicationController
     current_user.decrement_inventory!(injection_id)
     current_user.apply_injection_effects
 
-    unless %w[Injection de trinitine Injection de bio-rage].include?(injection.name)
+    unless %w[Injection de trinitine Injection de bio-rage].include?(injection.name) || current_user.junkie
       current_user.decrement!(:hp_current, 2)
     end
 
@@ -681,6 +687,7 @@ class UsersController < ApplicationController
     params.require(:user).permit(
       :robustesse,
       :homeopathie,
+      :junkie,
       :luck,
       :medicine_mastery,
       :medicine_bonus,

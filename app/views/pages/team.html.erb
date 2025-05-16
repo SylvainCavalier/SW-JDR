@@ -23,7 +23,7 @@
             
             <div>
               <%= link_to user_path(player), class: "text-decoration-none" do %>
-                <h3 class="text-success mb-0"><%= player.username %></h3>
+                <h3 class="text-success mb-0"><%= player.username.titleize %></h3>
               <% end %>
               <div class="text-light" style="font-size: 0.9em;">
                 <%= player.race&.name %> • <%= player.classe_perso&.name %>

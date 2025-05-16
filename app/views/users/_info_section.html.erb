@@ -5,7 +5,7 @@
     <div class="info-column left-column">
       <div class="info-box character-info mt-3">
         <h3><i class="fa-solid fa-user text-info"></i> Identité</h3>
-        <p><strong>Nom :</strong> <%= @user.username.capitalize %></p>
+        <p><strong>Nom :</strong> <%= @user.username.titleize %></p>
         <p>
           <strong>Race :</strong> <%= @user.race&.name || "Non définie" %>
         </p>
