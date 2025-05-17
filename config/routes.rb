@@ -133,6 +133,10 @@ Rails.application.routes.draw do
 
   get 'mj', to: 'pages#mj', as: 'mj_dashboard'
 
+  get 'mj/fixer-points', to: 'mj#fixer_points', as: 'fixer_points'
+  patch 'mj/update_points/:id', to: 'mj#update_points', as: 'update_points'
+  patch 'mj/reset_points/:id', to: 'mj#reset_points', as: 'reset_points'
+
   get 'mj/infliger_degats', to: 'mj#infliger_degats', as: 'infliger_degats'
   post 'mj/infliger_degats', to: 'mj#apply_damage'
   post 'apply_damage_pets', to: 'mj#apply_damage_pets'

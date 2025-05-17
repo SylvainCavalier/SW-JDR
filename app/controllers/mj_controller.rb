@@ -549,6 +549,33 @@ class MjController < ApplicationController
     end
   end
   
+  def fixer_points
+    @users = User.joins(:group).where(groups: { name: "PJ" })
+  end
+
+  def update_points
+    user = User.find(params[:id])
+    
+    case params[:type]
+    when 'force'
+      new_value = params[:value].to_i
+      new_value = [[-5, new_value].max, 5].min # Limiter entre -5 et 5
+      user.update(dark_side_points: new_value)
+    when 'cyber'
+      new_value = params[:value].to_i
+      new_value = [[0, new_value].max, 3].min # Limiter entre 0 et 3
+      user.update(cyber_points: new_value)
+    end
+
+    redirect_to fixer_points_path
+  end
+
+  def reset_points
+    user = User.find(params[:id])
+    user.update(dark_side_points: 0, cyber_points: 0)
+    redirect_to fixer_points_path
+  end
+  
   private
   
   def sphero_params

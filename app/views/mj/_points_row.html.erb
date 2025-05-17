@@ -1,0 +1,41 @@
+<%= turbo_frame_tag dom_id(user, :points) do %>
+  <tr>
+    <td><%= user.username %></td>
+    <td class="text-center">
+      <div class="d-flex align-items-center justify-content-center">
+        <%= button_tag "-", type: "button", class: "btn btn-outline-info btn-sm me-2",
+              data: { points_target: "button",
+                     action: "click->points#decrementForce",
+                     user_id_param: user.id } %>
+        <span class="fw-bold mx-2" style="min-width: 30px; text-align: center;" data-points-target="forceValue">
+          <%= user.dark_side_points %>
+        </span>
+        <%= button_tag "+", type: "button", class: "btn btn-outline-info btn-sm ms-2",
+              data: { points_target: "button",
+                     action: "click->points#incrementForce",
+                     user_id_param: user.id } %>
+      </div>
+    </td>
+    <td class="text-center">
+      <div class="d-flex align-items-center justify-content-center">
+        <%= button_tag "-", type: "button", class: "btn btn-outline-primary btn-sm me-2",
+              data: { points_target: "button",
+                     action: "click->points#decrementCyber",
+                     user_id_param: user.id } %>
+        <span class="fw-bold mx-2" style="min-width: 30px; text-align: center;" data-points-target="cyberValue">
+          <%= user.cyber_points %>
+        </span>
+        <%= button_tag "+", type: "button", class: "btn btn-outline-primary btn-sm ms-2",
+              data: { points_target: "button",
+                     action: "click->points#incrementCyber",
+                     user_id_param: user.id } %>
+      </div>
+    </td>
+    <td class="text-end">
+      <%= button_tag "Réinitialiser", type: "button", class: "btn btn-outline-danger btn-sm",
+            data: { points_target: "button",
+                   action: "click->points#reset",
+                   user_id_param: user.id } %>
+    </td>
+  </tr>
+<% end %> 

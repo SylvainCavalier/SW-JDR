@@ -2,7 +2,7 @@ puts "Adding new skills..."
 
 puts "🛠️ Création des caractéristiques..."
 
-carac_names = %w[Force Dextérité Perception Savoir Technique Mécanique]
+carac_names = %w[Vigueur Dextérité Perception Savoir Technique Mécanique]
 carac_names.each do |name|
   Carac.find_or_create_by!(name: name)
 end
@@ -53,12 +53,12 @@ skills_caracs = {
   "Persuasion" => "Perception",
   "Dressage" => "Perception",
 
-  "Saut" => "Force",
-  "Escalade" => "Force",
-  "Endurance" => "Force",
-  "Intimidation" => "Force",
-  "Natation" => "Force",
-  "Survie" => "Force",
+  "Saut" => "Vigueur",
+  "Escalade" => "Vigueur",
+  "Endurance" => "Vigueur",
+  "Intimidation" => "Vigueur",
+  "Natation" => "Vigueur",
+  "Survie" => "Vigueur",
 
   "Nature" => "Savoir",
   "Substances" => "Savoir",
