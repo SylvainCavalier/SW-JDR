@@ -361,6 +361,10 @@ class User < ApplicationRecord
     end
   end
 
+  def name
+    username
+  end
+
   private
 
   def resize_image_if_needed

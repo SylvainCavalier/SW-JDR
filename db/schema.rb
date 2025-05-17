@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_05_16_143805) do
+ActiveRecord::Schema[7.1].define(version: 2025_05_16_164412) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -90,6 +90,19 @@ ActiveRecord::Schema[7.1].define(version: 2025_05_16_143805) do
     t.text "description"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "combat_actions", force: :cascade do |t|
+    t.string "actor_type", null: false
+    t.bigint "actor_id", null: false
+    t.string "target_type", null: false
+    t.bigint "target_id", null: false
+    t.string "action_type"
+    t.string "value"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["actor_type", "actor_id"], name: "index_combat_actions_on_actor"
+    t.index ["target_type", "target_id"], name: "index_combat_actions_on_target"
   end
 
   create_table "combat_states", force: :cascade do |t|

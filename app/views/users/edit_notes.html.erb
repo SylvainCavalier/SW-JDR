@@ -10,5 +10,5 @@
     <% end %>
   </div>
 
-  <%= link_to "Retour", current_user.group.name == "MJ" ? mj_dashboard_path : new_transaction_path, class: "btn btn-outline-secondary go-back-two" %>
+  <%= link_to "Retour", user_path(current_user), class: "btn btn-outline-secondary go-back-two" %>
 </div>

@@ -11,6 +11,10 @@ class Enemy < ApplicationRecord
 
   after_initialize :set_defaults, if: :new_record?
 
+  def name
+    "#{enemy_type} #{number}"
+  end
+
   private
 
   def set_defaults

@@ -1,10 +1,13 @@
 class CombatController < ApplicationController
+  include ActionView::RecordIdentifier
   before_action :authenticate_user!
+  before_action :set_current_user
 
   def index
     @enemy = Enemy.new
     @enemy.enemy_skills.build(skill: Skill.find_by(name: "Résistance Corporelle"))
     @enemies = Enemy.order(:enemy_type, :number)
+    @combat_actions = CombatAction.order(created_at: :desc).limit(50)
     render "pages/combat"
   end
 
@@ -25,6 +28,7 @@ class CombatController < ApplicationController
     puts "📌 Type: #{@enemy.enemy_type}, Number: #{@enemy.number}, HP: #{@enemy.hp_max}, Status: #{@enemy.status}"
   
     if @enemy.save
+      broadcast_participant_update(@enemy)
       flash[:notice] = "Ennemi ajouté avec succès."
     else
       puts "❌ Erreurs lors de l'ajout de l'ennemi : #{@enemy.errors.full_messages}"
@@ -38,6 +42,10 @@ class CombatController < ApplicationController
   def remove_enemy
     enemy = Enemy.find(params[:id])
     if enemy.destroy
+      Turbo::StreamsChannel.broadcast_remove_to(
+        "combat_updates",
+        target: enemy
+      )
       flash[:notice] = "Ennemi supprimé."
     else
       flash[:alert] = "Erreur lors de la suppression de l'ennemi."
@@ -47,13 +55,57 @@ class CombatController < ApplicationController
 
   def update_stat
     Rails.logger.debug "📌 Paramètres reçus : #{params.inspect}"
-    @enemy = Enemy.find(params[:id])
+    
+    # Vérification des paramètres requis
+    unless params[:id].present? && params[:type].present?
+      render json: { success: false, error: "Paramètres manquants" }, status: :bad_request
+      return
+    end
+
+    begin
+      @participant = params[:type].constantize.find(params[:id])
+    rescue NameError, ActiveRecord::RecordNotFound
+      render json: { success: false, error: "Participant non trouvé" }, status: :not_found
+      return
+    end
+    
+    # Vérification des permissions
+    unless can_modify_participant?(@participant)
+      render json: { success: false, error: "Vous n'avez pas les permissions nécessaires" }, status: :unauthorized
+      return
+    end
+
     field = params.keys.find { |key| ["hp_current", "shield_current"].include?(key) }
-  
-    if field && @enemy.update(field => params[field].to_i)
-      render json: { success: true, hp_current: @enemy.hp_current, shield_current: @enemy.shield_current }
+    unless field
+      render json: { success: false, error: "Champ invalide" }, status: :bad_request
+      return
+    end
+
+    old_value = @participant.send(field)
+    new_value = params[field].to_i
+    
+    if @participant.update(field => new_value)
+      # Création de l'action de combat
+      action_type = case field
+                   when "hp_current"
+                     new_value > old_value ? "heal" : "damage"
+                   when "shield_current"
+                     "shield"
+                   end
+                   
+      CombatAction.create!(
+        actor: current_user,
+        target: @participant,
+        action_type: action_type,
+        value: (new_value - old_value).abs
+      )
+      
+      # Broadcast unifié pour les mises à jour
+      broadcast_value_update(@participant, field)
+      
+      render json: { success: true }
     else
-      render json: { success: false, errors: @enemy.errors.full_messages }, status: :unprocessable_entity
+      render json: { success: false, errors: @participant.errors.full_messages }, status: :unprocessable_entity
     end
   end
 
@@ -100,7 +152,14 @@ class CombatController < ApplicationController
     combat_state = CombatState.first_or_create(turn: 1)
     combat_state.update(turn: combat_state.turn + 1)
     
-    render json: { success: true, turn: combat_state.turn }
+    Turbo::StreamsChannel.broadcast_replace_to(
+      "combat_updates",
+      target: "turn_counter",
+      partial: "pages/turn_counter",
+      locals: { combat_state: combat_state, current_user: current_user }
+    )
+    
+    render json: { success: true }
   end
   
   def decrement_turn
@@ -108,18 +167,25 @@ class CombatController < ApplicationController
     new_turn = [1, combat_state.turn - 1].max
     combat_state.update(turn: new_turn)
     
-    render json: { success: true, turn: new_turn }
+    Turbo::StreamsChannel.broadcast_replace_to(
+      "combat_updates",
+      target: "turn_counter",
+      partial: "pages/turn_counter",
+      locals: { combat_state: combat_state, current_user: current_user }
+    )
+    
+    render json: { success: true }
   end
 
   def update_player_stat
     Rails.logger.debug "📌 Paramètres reçus pour update_player_stat : #{params.inspect}"
     @participant = params[:type].constantize.find(params[:id])
     
-    # Vérification que l'utilisateur ne peut modifier que ses propres stats ou celles de son pet
-    if @participant.is_a?(User) && @participant != current_user
+    # Vérification des permissions
+    if @participant.is_a?(User) && @participant != current_user && current_user.group.name != "MJ"
       render json: { success: false, error: "Vous ne pouvez pas modifier les statistiques d'un autre joueur" }, status: :unauthorized
       return
-    elsif @participant.is_a?(Pet) && @participant.id != current_user.pet_id
+    elsif @participant.is_a?(Pet) && @participant.id != current_user.pet_id && current_user.group.name != "MJ"
       render json: { success: false, error: "Vous ne pouvez pas modifier les statistiques d'un pet qui ne vous appartient pas" }, status: :unauthorized
       return
     end
@@ -127,7 +193,20 @@ class CombatController < ApplicationController
     field = params.keys.find { |key| ["hp_current", "shield_current"].include?(key) }
     
     if field && @participant.update(field => params[field].to_i)
-      render json: { success: true, hp_current: @participant.hp_current, shield_current: @participant.shield_current }
+      # Broadcast de la mise à jour des valeurs uniquement
+      Turbo::StreamsChannel.broadcast_replace_to(
+        "combat_updates",
+        target: "#{dom_id(@participant)}_#{field == 'hp_current' ? 'hp' : 'shield'}_value",
+        partial: "pages/combat_value",
+        locals: { 
+          participant: @participant, 
+          field: field,
+          current: @participant.send(field),
+          max: field == 'hp_current' ? @participant.hp_max : @participant.shield_max
+        }
+      )
+
+      render json: { success: true }
     else
       render json: { success: false, errors: @participant.errors.full_messages }, status: :unprocessable_entity
     end
@@ -139,24 +218,100 @@ class CombatController < ApplicationController
     status = Status.find(params[:status_id])
 
     if participant.is_a?(Enemy)
-      participant.update(status: status.name)
-      render json: { success: true }
+      old_status = participant.status
+      if participant.update(status: status.name)
+        # Création de l'action de combat pour le changement de statut
+        CombatAction.create!(
+          actor: current_user,
+          target: participant,
+          action_type: "status",
+          value: status.name
+        )
+        
+        broadcast_participant_update(participant)
+        render json: { success: true }
+      else
+        render json: { success: false, error: participant.errors.full_messages }, status: :unprocessable_entity
+      end
     else
-      # Pour User et Pet, on utilise la table de jointure
-      participant.user_statuses.destroy_all # On supprime les anciens statuts
-      participant.user_statuses.create(status: status) # On ajoute le nouveau statut
-      render json: { success: true }
+      old_status = participant.statuses.last&.name
+      participant.user_statuses.destroy_all
+      if participant.user_statuses.create(status: status)
+        # Création de l'action de combat pour le changement de statut
+        CombatAction.create!(
+          actor: current_user,
+          target: participant,
+          action_type: "status",
+          value: status.name
+        )
+        
+        broadcast_participant_update(participant)
+        render json: { success: true }
+      else
+        render json: { success: false, error: "Erreur lors de la mise à jour du statut" }, status: :unprocessable_entity
+      end
     end
-  rescue => e
-    render json: { success: false, error: e.message }, status: :unprocessable_entity
   end
 
   private
+
+  def set_current_user
+    Current.user = current_user
+  end
 
   def enemy_params
     params.require(:enemy).permit(
       :enemy_type, :hp_max, :shield_max, :vitesse,
       enemy_skills_attributes: [:id, :mastery, :bonus, :skill_id, :_destroy]
+    )
+  end
+
+  def broadcast_participant_update(participant)
+    # On envoie une seule mise à jour avec les données appropriées
+    Turbo::StreamsChannel.broadcast_update_to(
+      "combat_updates",
+      targets: ["#{dom_id(participant)}_hp", "#{dom_id(participant)}_shield"],
+      partial: "pages/combat_stats",
+      locals: { participant: participant, current_user: Current.user }
+    )
+  end
+
+  def broadcast_turn_update(combat_state)
+    # On envoie une seule mise à jour du tour
+    Turbo::StreamsChannel.broadcast_replace_to(
+      "combat_updates",
+      target: "turn_counter",
+      partial: "pages/turn_counter",
+      locals: { combat_state: combat_state, current_user: Current.user }
+    )
+  end
+
+  def can_modify_participant?(participant)
+    return true if current_user.group.name == "MJ"
+    
+    case participant
+    when User
+      participant == current_user
+    when Pet
+      participant.id == current_user.pet_id
+    when Enemy
+      current_user.group.name == "MJ"
+    else
+      false
+    end
+  end
+
+  def broadcast_value_update(participant, field)
+    Turbo::StreamsChannel.broadcast_replace_to(
+      "combat_updates",
+      target: "#{dom_id(participant)}_#{field == 'hp_current' ? 'hp' : 'shield'}_value",
+      partial: "pages/combat_value",
+      locals: { 
+        participant: participant, 
+        field: field,
+        current: participant.send(field),
+        max: field == 'hp_current' ? participant.hp_max : participant.shield_max
+      }
     )
   end
 end

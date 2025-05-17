@@ -1,0 +1,135 @@
+<tr data-combat-target="participantRow" 
+    data-participant-id="<%= participant.id %>" 
+    data-user-role="<%= current_user&.group&.name %>"
+    id="<%= dom_id(participant) %>_row">
+  <!-- Colonne Participant -->
+  <td class="<%= participant.is_a?(Enemy) ? 'text-danger' : 'text-info' %>">
+    <div class="d-flex align-items-start">
+      <% if participant.is_a?(User) && participant.avatar.attached? %>
+        <%= image_tag url_for(participant.avatar.variant(resize_to_fill: [30, 30])), class: "rounded-circle me-2", alt: "Avatar de #{participant.username}" %>
+      <% elsif participant.is_a?(Pet) && participant.image.attached? %>
+        <%= image_tag url_for(participant.image.variant(resize_to_fill: [30, 30])), class: "rounded-circle me-2", alt: "Image de #{participant.name}" %>
+      <% end %>
+
+      <div class="d-flex flex-column">
+        <% if participant.is_a?(User) %>
+          <%= participant.username.capitalize %>
+        <% elsif participant.is_a?(Pet) %>
+          <% owner = User.find_by(pet_id: participant.id) %>
+          <% if owner %>
+            <%= link_to participant.name, pet_path(participant), class: "text-warning fw-bold" %>
+            <small class="text-white">(<%= owner.username %>)</small>
+          <% else %>
+            <%= participant.name %>
+          <% end %>
+        <% else %>
+          <%= "#{participant.enemy_type} #{participant.number}" %>
+        <% end %>
+      </div>
+    </div>
+  </td>
+
+  <!-- PV -->
+  <td>
+    <div class="d-flex align-items-center justify-content-center">
+      <% can_modify = (participant.is_a?(Enemy) && current_user&.group&.name == "MJ") || 
+                     (participant.is_a?(User) && participant.id == current_user&.id) || 
+                     (participant.is_a?(Pet) && participant.id == current_user&.pet_id) %>
+      <%= turbo_frame_tag "#{dom_id(participant)}_hp_value" do %>
+        <%= render "pages/combat_value", 
+              participant: participant, 
+              field: "hp_current",
+              current: participant.hp_current,
+              max: participant.hp_max,
+              can_modify: can_modify,
+              current_user: current_user %>
+      <% end %>
+    </div>
+  </td>
+
+  <!-- Bouclier -->
+  <td>
+    <div class="d-flex align-items-center justify-content-center">
+      <% can_modify = (participant.is_a?(Enemy) && current_user&.group&.name == "MJ") || 
+                     (participant.is_a?(User) && participant.id == current_user&.id) || 
+                     (participant.is_a?(Pet) && participant.id == current_user&.pet_id) %>
+      <%= turbo_frame_tag "#{dom_id(participant)}_shield_value" do %>
+        <%= render "pages/combat_value", 
+              participant: participant, 
+              field: "shield_current",
+              current: participant.shield_current,
+              max: participant.shield_max,
+              can_modify: can_modify,
+              current_user: current_user %>
+      <% end %>
+    </div>
+  </td>
+
+  <!-- Vitesse -->
+  <td><%= participant.vitesse %></td>
+
+  <!-- Statut -->
+  <td>
+    <% if current_user&.group&.name == "MJ" %>
+      <div class="status-select-container" data-controller="combat">
+        <select class="form-select form-select-sm status-select" 
+               data-action="change->combat#updateStatus"
+               data-participant-id="<%= participant.id %>"
+               data-participant-type="<%= participant.class.name %>">
+          <% Status.all.each do |status| %>
+            <option value="<%= status.id %>" 
+                    style="color: <%= status.color %>;"
+                    <%= participant.is_a?(User) && participant.statuses.last&.id == status.id ? 'selected' : '' %>
+                    <%= participant.is_a?(Enemy) && participant.status == status.name ? 'selected' : '' %>>
+              <%= status.name %>
+            </option>
+          <% end %>
+        </select>
+      </div>
+    <% else %>
+      <% if participant.is_a?(User) %>
+        <% status = participant.statuses.last %>
+        <% if status %>
+          <span class="status-badge" style="color: <%= status.color %>; border-color: <%= status.color %>;">
+            <%= status.name %>
+          </span>
+        <% else %>
+          <span class="status-badge status-normal">En forme</span>
+        <% end %>
+      <% elsif participant.is_a?(Pet) %>
+        <% status = participant.statuses.last %>
+        <% if status %>
+          <span class="status-badge" style="color: <%= status.color %>; border-color: <%= status.color %>;">
+            <%= status.name %>
+          </span>
+        <% else %>
+          <span class="status-badge status-normal">En forme</span>
+        <% end %>
+      <% else %>
+        <% status = Status.find_by(name: participant.status) %>
+        <% if status %>
+          <span class="status-badge" style="color: <%= status.color %>; border-color: <%= status.color %>;">
+            <%= status.name %>
+          </span>
+        <% else %>
+          <span class="status-badge status-normal">En forme</span>
+        <% end %>
+      <% end %>
+    <% end %>
+  </td>
+
+  <!-- Actions (MJ uniquement) -->
+  <% if current_user&.group&.name == "MJ" %>
+    <td>
+      <% if participant.is_a?(Enemy) %>
+        <%= button_to "Supprimer", remove_enemy_path(participant), method: :delete, 
+              class: "btn btn-outline-danger btn-sm", 
+              data: { confirm: "Supprimer cet ennemi ?" } %>
+      <% elsif participant.is_a?(User) || participant.is_a?(Pet) %>
+        <%= button_to "Enlever", remove_participant_path(type: participant.class.name, id: participant.id), 
+              method: :patch, class: "btn btn-outline-warning btn-sm", 
+              data: { confirm: "Retirer ce participant du combat ?" } %>
+      <% end %>
+    </td>
+  <% end %>
+</tr> 

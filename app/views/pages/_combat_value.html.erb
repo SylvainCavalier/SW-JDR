@@ -1,0 +1,25 @@
+<%# Affichage des valeurs de PV ou bouclier %>
+<%= turbo_frame_tag "#{dom_id(participant)}_#{field == 'hp_current' ? 'hp' : 'shield'}_value" do %>
+  <div class="d-flex align-items-center justify-content-center"
+       data-participant-id="<%= participant.id %>"
+       data-participant-type="<%= participant.class.name %>"
+       data-controller="combat-permissions">
+    <span class="combat-controls">
+      <%= button_tag "-", type: "button", class: "btn btn-outline-success btn-sm me-1",
+            data: { action: "click->combat#decrement#{field == 'hp_current' ? 'Hp' : 'Shield'}", 
+                   participant_id: participant.id, 
+                   participant_type: participant.class.name } %>
+    </span>
+    
+    <span class="fw-bold mx-1" data-combat-target="<%= field == 'hp_current' ? 'hp' : 'shield' %>">
+      <%= current %>/<%= max %>
+    </span>
+    
+    <span class="combat-controls">
+      <%= button_tag "+", type: "button", class: "btn btn-outline-success btn-sm ms-1",
+            data: { action: "click->combat#increment#{field == 'hp_current' ? 'Hp' : 'Shield'}", 
+                   participant_id: participant.id, 
+                   participant_type: participant.class.name } %>
+    </span>
+  </div>
+<% end %> 

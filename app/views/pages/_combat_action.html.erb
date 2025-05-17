@@ -1,0 +1,13 @@
+<div class="combat-action mb-2" style="color: <%= action_color(combat_action) %>;">
+  <small class="text-muted"><%= combat_action.created_at.strftime("%H:%M:%S") %></small>
+  <% case combat_action.action_type %>
+  <% when "damage" %>
+    <%= "#{combat_action.actor.name} inflige #{combat_action.value} dégâts à #{combat_action.target.name}" %>
+  <% when "heal" %>
+    <%= "#{combat_action.actor.name} soigne #{combat_action.value} PV à #{combat_action.target.name}" %>
+  <% when "shield" %>
+    <%= "#{combat_action.actor.name} modifie le bouclier de #{combat_action.target.name} de #{combat_action.value}" %>
+  <% when "status" %>
+    <%= "#{combat_action.actor.name} change le statut de #{combat_action.target.name} en #{combat_action.value}" %>
+  <% end %>
+</div> 

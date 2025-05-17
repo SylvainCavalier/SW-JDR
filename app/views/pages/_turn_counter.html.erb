@@ -1,0 +1,25 @@
+<%# Affichage du compteur de tours %>
+<%= turbo_frame_tag "turn_counter" do %>
+  <div class="mb-4">
+    <div class="d-flex align-items-center justify-content-center">
+      <h2 class="me-3 text-success">Tour actuel :</h2>
+      <div class="d-flex align-items-center" 
+           data-controller="combat-permissions turn-counter"
+           data-participant-type="turn">
+        <span class="combat-controls">
+          <%= button_tag "-", type: "button", class: "btn btn-outline-success btn-sm me-2", 
+                data: { action: "turn-counter#decrementTurn" } %>
+        </span>
+        
+        <span class="fw-bold mx-2 text-success" style="font-size: 1.5rem;" data-turn-counter-target="counter">
+          <%= combat_state.turn %>
+        </span>
+        
+        <span class="combat-controls">
+          <%= button_tag "+", type: "button", class: "btn btn-outline-success btn-sm ms-2", 
+                data: { action: "turn-counter#incrementTurn" } %>
+        </span>
+      </div>
+    </div>
+  </div>
+<% end %> 

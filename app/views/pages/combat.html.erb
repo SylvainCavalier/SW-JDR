@@ -1,3 +1,11 @@
+<% content_for :body_data do %>
+  data-user-role="<%= current_user.group.name %>"
+  data-user-id="<%= current_user.id %>"
+  data-user-pet-id="<%= current_user.pet_id %>"
+<% end %>
+
+<%= turbo_stream_from "combat_updates" %>
+
 <div class="combat-container">
   <h1 class="text-center mb-4 text-success">Assistant de Combat</h1>
   
@@ -72,196 +80,32 @@
     <div class="alert alert-warning text-center">⚠️ Aucun combat en cours.</div>
   <% else %>
     <!-- Compteur de tours -->
-    <div class="mb-4">
-      <% if current_user.group.name == "MJ" %>
-        <div class="d-flex align-items-center justify-content-center" data-controller="combat">
-          <h2 class="me-3 text-success">Tour actuel :</h2>
-          <div class="d-flex align-items-center">
-            <%= button_tag "-", type: "button", class: "btn btn-outline-success btn-sm me-2", 
-                  data: { action: "click->combat#decrementTurn" } %>
-            <span class="fw-bold mx-2 text-success" style="font-size: 1.5rem;" data-combat-target="turnCounter">
-              <%= CombatState.first&.turn || 1 %>
-            </span>
-            <%= button_tag "+", type: "button", class: "btn btn-outline-success btn-sm ms-2", 
-                  data: { action: "click->combat#incrementTurn" } %>
-          </div>
-        </div>
-      <% else %>
-        <h2 class="text-center text-success">Tour actuel : <span class="fw-bold"><%= CombatState.first&.turn || 1 %></span></h2>
-      <% end %>
-    </div>
+    <%= render "pages/turn_counter", combat_state: CombatState.first || CombatState.create(turn: 1), current_user: current_user %>
 
     <!-- Tableau des participants -->
     <div class="table-responsive">
       <h2 class="text-success mb-3">Ordre d'Initiative</h2>
-      <table class="table table-dark table-hover" data-controller="combat">
-        <thead>
-          <tr>
-            <th>Participant</th>
-            <th>PV</th>
-            <th>Bouclier</th>
-            <th>Vit</th>
-            <th>Statut</th>
-            <% if current_user.group.name == "MJ" %>
-              <th>Actions</th>
-            <% end %>
-          </tr>
-        </thead>
-        <tbody>
-          <% participants.sort_by(&:vitesse).reverse.each do |participant| %>
-            <tr data-combat-target="participantRow" data-participant-id="<%= participant.id %>">
-              <!-- Colonne Participant -->
-              <td class="<%= participant.is_a?(Enemy) ? 'text-danger' : 'text-info' %>">
-                <div class="d-flex align-items-start">
-                  <% if participant.is_a?(User) && participant.avatar.attached? %>
-                    <%= image_tag participant.avatar.variant(resize_to_fill: [30, 30]), class: "rounded-circle me-2", alt: "Avatar de #{participant.username}" %>
-                  <% elsif participant.is_a?(Pet) && participant.image.attached? %>
-                    <%= image_tag participant.image.variant(resize_to_fill: [30, 30]), class: "rounded-circle me-2", alt: "Image de #{participant.name}" %>
-                  <% end %>
-
-                  <div class="d-flex flex-column">
-                    <% if participant.is_a?(User) %>
-                      <%= participant.username.capitalize %>
-                    <% elsif participant.is_a?(Pet) %>
-                      <% owner = User.find_by(pet_id: participant.id) %>
-                      <% if owner %>
-                        <%= link_to participant.name, pet_path(participant), class: "text-warning fw-bold" %>
-                        <small class="text-white">(<%= owner.username %>)</small>
-                      <% else %>
-                        <%= participant.name %>
-                      <% end %>
-                    <% else %>
-                      <%= "#{participant.enemy_type} #{participant.number}" %>
-                    <% end %>
-                  </div>
-                </div>
-              </td>
-
-              <!-- PV -->
-              <td>
-                <% if participant.is_a?(Enemy) && current_user.group.name == "MJ" %>
-                  <div class="d-flex align-items-center justify-content-center">
-                    <%= button_tag "-", type: "button", class: "btn btn-outline-success btn-sm me-1",
-                          data: { action: "combat#decrementHp", participant_id: participant.id, participant_type: "Enemy" } %>
-                    <span class="fw-bold mx-1" data-combat-target="hp"><%= participant.hp_current %></span>
-                    <span>/</span>
-                    <span class="fw-bold"><%= participant.hp_max %></span>
-                    <%= button_tag "+", type: "button", class: "btn btn-outline-success btn-sm ms-1",
-                          data: { action: "combat#incrementHp", participant_id: participant.id, participant_type: "Enemy" } %>
-                  </div>
-                <% elsif (participant.is_a?(User) && participant == current_user) || (participant.is_a?(Pet) && participant.id == current_user.pet_id) %>
-                  <div class="d-flex align-items-center justify-content-center">
-                    <%= button_tag "-", type: "button", class: "btn btn-outline-success btn-sm me-1",
-                          data: { action: "combat#decrementHp", participant_id: participant.id, participant_type: participant.class.name } %>
-                    <span class="fw-bold mx-1" data-combat-target="hp"><%= participant.hp_current %></span>
-                    <span>/</span>
-                    <span class="fw-bold"><%= participant.hp_max %></span>
-                    <%= button_tag "+", type: "button", class: "btn btn-outline-success btn-sm ms-1",
-                          data: { action: "combat#incrementHp", participant_id: participant.id, participant_type: participant.class.name } %>
-                  </div>
-                <% else %>
-                  <%= participant.hp_current %>/<%= participant.hp_max %>
-                <% end %>
-              </td>
-
-              <!-- Bouclier -->
-              <td>
-                <% if participant.is_a?(Enemy) && current_user.group.name == "MJ" %>
-                  <div class="d-flex align-items-center justify-content-center">
-                    <%= button_tag "-", type: "button", class: "btn btn-outline-success btn-sm me-1",
-                          data: { action: "combat#decrementShield", participant_id: participant.id, participant_type: "Enemy" } %>
-                    <span class="fw-bold mx-1" data-combat-target="shield"><%= participant.shield_current %></span>
-                    <span>/</span>
-                    <span class="fw-bold"><%= participant.shield_max %></span>
-                    <%= button_tag "+", type: "button", class: "btn btn-outline-success btn-sm ms-1",
-                          data: { action: "combat#incrementShield", participant_id: participant.id, participant_type: "Enemy" } %>
-                  </div>
-                <% elsif (participant.is_a?(User) && participant == current_user) || (participant.is_a?(Pet) && participant.id == current_user.pet_id) %>
-                  <div class="d-flex align-items-center justify-content-center">
-                    <%= button_tag "-", type: "button", class: "btn btn-outline-success btn-sm me-1",
-                          data: { action: "combat#decrementShield", participant_id: participant.id, participant_type: participant.class.name } %>
-                    <span class="fw-bold mx-1" data-combat-target="shield"><%= participant.shield_current %></span>
-                    <span>/</span>
-                    <span class="fw-bold"><%= participant.shield_max %></span>
-                    <%= button_tag "+", type: "button", class: "btn btn-outline-success btn-sm ms-1",
-                          data: { action: "combat#incrementShield", participant_id: participant.id, participant_type: participant.class.name } %>
-                  </div>
-                <% else %>
-                  <%= participant.shield_current %>/<%= participant.shield_max %>
-                <% end %>
-              </td>
-
-              <!-- Vitesse -->
-              <td><%= participant.vitesse %></td>
-
-              <!-- Statut -->
-              <td>
-                <% if current_user.group.name == "MJ" %>
-                  <div class="status-select-container" data-controller="combat">
-                    <select class="form-select form-select-sm status-select" 
-                           data-action="change->combat#updateStatus"
-                           data-participant-id="<%= participant.id %>"
-                           data-participant-type="<%= participant.class.name %>">
-                      <% Status.all.each do |status| %>
-                        <option value="<%= status.id %>" 
-                                style="color: <%= status.color %>;"
-                                <%= participant.is_a?(User) && participant.statuses.last&.id == status.id ? 'selected' : '' %>
-                                <%= participant.is_a?(Enemy) && participant.status == status.name ? 'selected' : '' %>>
-                          <%= status.name %>
-                        </option>
-                      <% end %>
-                    </select>
-                  </div>
-                <% else %>
-                  <% if participant.is_a?(User) %>
-                    <% status = participant.statuses.last %>
-                    <% if status %>
-                      <span class="status-badge" style="color: <%= status.color %>; border-color: <%= status.color %>;">
-                        <%= status.name %>
-                      </span>
-                    <% else %>
-                      <span class="status-badge status-normal">En forme</span>
-                    <% end %>
-                  <% elsif participant.is_a?(Pet) %>
-                    <% status = participant.statuses.last %>
-                    <% if status %>
-                      <span class="status-badge" style="color: <%= status.color %>; border-color: <%= status.color %>;">
-                        <%= status.name %>
-                      </span>
-                    <% else %>
-                      <span class="status-badge status-normal">En forme</span>
-                    <% end %>
-                  <% else %>
-                    <% status = Status.find_by(name: participant.status) %>
-                    <% if status %>
-                      <span class="status-badge" style="color: <%= status.color %>; border-color: <%= status.color %>;">
-                        <%= status.name %>
-                      </span>
-                    <% else %>
-                      <span class="status-badge status-normal">En forme</span>
-                    <% end %>
-                  <% end %>
-                <% end %>
-              </td>
-
-              <!-- Actions (MJ uniquement) -->
+      <%= turbo_frame_tag "combat_participants" do %>
+        <table class="table table-dark table-hover" data-controller="combat">
+          <thead>
+            <tr>
+              <th>Participant</th>
+              <th>PV</th>
+              <th>Bouclier</th>
+              <th>Vit</th>
+              <th>Statut</th>
               <% if current_user.group.name == "MJ" %>
-                <td>
-                  <% if participant.is_a?(Enemy) %>
-                    <%= button_to "Supprimer", remove_enemy_path(participant), method: :delete, 
-                          class: "btn btn-outline-danger btn-sm", 
-                          data: { confirm: "Supprimer cet ennemi ?" } %>
-                  <% elsif participant.is_a?(User) || participant.is_a?(Pet) %>
-                    <%= button_to "Enlever", remove_participant_path(type: participant.class.name, id: participant.id), 
-                          method: :patch, class: "btn btn-outline-warning btn-sm", 
-                          data: { confirm: "Retirer ce participant du combat ?" } %>
-                  <% end %>
-                </td>
+                <th>Actions</th>
               <% end %>
             </tr>
-          <% end %>
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            <% participants.each do |participant| %>
+              <%= render "pages/combat_participant_row", participant: participant, current_user: current_user %>
+            <% end %>
+          </tbody>
+        </table>
+      <% end %>
     </div>
   <% end %>
 
@@ -295,5 +139,13 @@
     </div>
   <% end %>
 
-  <%= link_to "Retour", current_user.group.name == "MJ" ? mj_dashboard_path : root_path, class: "btn btn-outline-secondary mt-4" %>
+  <!-- Historique des actions -->
+  <!--<div class="combat-log-container mt-4">
+    <h3 class="text-success mb-3">Historique du Combat</h3>
+    <div id="combat_log" class="combat-log p-3 bg-dark" style="max-height: 300px; overflow-y: auto;">
+      <%#= render partial: "pages/combat_action", collection: @combat_actions %>-->
+<!--    </div>
+  </div>-->
+
+  <%= link_to "Retour", current_user.group.name == "MJ" ? mj_dashboard_path : root_path, class: "btn btn-outline-secondary go-back" %>
 </div>

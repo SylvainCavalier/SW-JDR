@@ -1,0 +1,35 @@
+<%# Cette partial est utilisée pour le rendu des stats HP et Shield dans les broadcasts %>
+<% can_modify = (participant.is_a?(Enemy) && current_user.group.name == "MJ") || 
+                (participant.is_a?(User) && participant.id == current_user.id) || 
+                (participant.is_a?(Pet) && participant.id == current_user.pet_id) || 
+                current_user.group.name == "MJ" %>
+
+<%# HP %>
+<span id="<%= dom_id(participant) %>_hp" data-combat-target="hp">
+  <% if can_modify %>
+    <div class="d-flex align-items-center justify-content-center">
+      <%= button_tag "-", type: "button", class: "btn btn-outline-success btn-sm me-1",
+            data: { action: "click->combat#decrementHp", participant_id: participant.id, participant_type: participant.class.name } %>
+      <span class="fw-bold mx-1"><%= participant.hp_current %>/<%= participant.hp_max %></span>
+      <%= button_tag "+", type: "button", class: "btn btn-outline-success btn-sm ms-1",
+            data: { action: "click->combat#incrementHp", participant_id: participant.id, participant_type: participant.class.name } %>
+    </div>
+  <% else %>
+    <span><%= participant.hp_current %>/<%= participant.hp_max %></span>
+  <% end %>
+</span>
+
+<%# Shield %>
+<span id="<%= dom_id(participant) %>_shield" data-combat-target="shield">
+  <% if can_modify %>
+    <div class="d-flex align-items-center justify-content-center">
+      <%= button_tag "-", type: "button", class: "btn btn-outline-success btn-sm me-1",
+            data: { action: "click->combat#decrementShield", participant_id: participant.id, participant_type: participant.class.name } %>
+      <span class="fw-bold mx-1"><%= participant.shield_current %>/<%= participant.shield_max %></span>
+      <%= button_tag "+", type: "button", class: "btn btn-outline-success btn-sm ms-1",
+            data: { action: "click->combat#incrementShield", participant_id: participant.id, participant_type: participant.class.name } %>
+    </div>
+  <% else %>
+    <span><%= participant.shield_current %>/<%= participant.shield_max %></span>
+  <% end %>
+</span> 

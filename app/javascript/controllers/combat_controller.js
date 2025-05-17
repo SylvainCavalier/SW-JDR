@@ -1,159 +1,109 @@
 import { Controller } from "@hotwired/stimulus";
 
 export default class extends Controller {
-  static targets = ["participantRow", "hp", "shield", "turnCounter"];
+  static targets = ["participantRow", "hp", "shield"];
 
-  updateEnemyStat(participantId, field, value) {
-    fetch(`/combat/update_enemy_stat/${participantId}`, {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json", "X-CSRF-Token": document.querySelector("meta[name='csrf-token']").content },
-      body: JSON.stringify({ [field]: value })
-    })
-    .then(response => response.json())
-    .then(data => {
-      if (data.success) {
-        let participantRow = this.participantRowTargets.find(row => row.dataset.participantId == participantId);
-        if (participantRow) {
-          if (field === "hp_current") participantRow.querySelector("[data-combat-target='hp']").textContent = data.hp_current;
-          if (field === "shield_current") participantRow.querySelector("[data-combat-target='shield']").textContent = data.shield_current;
-        }
-      }
-    })
-    .catch(error => console.error("Erreur de mise à jour :", error));
+  connect() {
+    console.log("Combat controller connected");
   }
 
-  updatePlayerStat(participantId, type, field, value) {
-    fetch(`/combat/update_player_stat/${participantId}`, {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json", "X-CSRF-Token": document.querySelector("meta[name='csrf-token']").content },
-      body: JSON.stringify({ [field]: value, type: type })
-    })
-    .then(response => response.json())
-    .then(data => {
-      if (data.success) {
-        let participantRow = this.participantRowTargets.find(row => row.dataset.participantId == participantId);
-        if (participantRow) {
-          if (field === "hp_current") participantRow.querySelector("[data-combat-target='hp']").textContent = data.hp_current;
-          if (field === "shield_current") participantRow.querySelector("[data-combat-target='shield']").textContent = data.shield_current;
-        }
-      } else {
-        console.error("Erreur:", data.error);
-      }
-    })
-    .catch(error => console.error("Erreur de mise à jour :", error));
+  canModifyParticipant(participantId, type) {
+    const userRole = document.body.dataset.userRole;
+    const userId = document.body.dataset.userId;
+    const userPetId = document.body.dataset.userPetId;
+
+    if (userRole === "MJ") return true;
+    if (type === "Enemy") return false;
+    if (type === "User") return participantId === userId;
+    if (type === "Pet") return participantId === userPetId;
+    return false;
   }
-  
-  incrementHp(event) {
-    let participantId = event.currentTarget.dataset.participantId;
-    let participantType = event.currentTarget.dataset.participantType;
-    let currentHp = parseInt(this.hpTargets.find(el => el.closest("tr").dataset.participantId == participantId).textContent, 10);
+
+  getCurrentValue(participantId, type) {
+    const valueElement = document.querySelector(`[data-participant-id="${participantId}"] [data-combat-target="${type}"]`)
+    if (!valueElement) return null
     
-    if (participantType === "Enemy") {
-      this.updateEnemyStat(participantId, "hp_current", currentHp + 1);
-    } else {
-      this.updatePlayerStat(participantId, participantType, "hp_current", currentHp + 1);
+    const [current] = valueElement.textContent.split('/').map(num => parseInt(num.trim(), 10))
+    return current
+  }
+
+  async updateStat(participantId, participantType, type, increment) {
+    if (!this.canModifyParticipant(participantId, participantType)) {
+      console.error("Vous n'avez pas les permissions nécessaires")
+      return
     }
-  }
-  
-  decrementHp(event) {
-    let participantId = event.currentTarget.dataset.participantId;
-    let participantType = event.currentTarget.dataset.participantType;
-    let currentHp = parseInt(this.hpTargets.find(el => el.closest("tr").dataset.participantId == participantId).textContent, 10);
-    
-    if (participantType === "Enemy") {
-      this.updateEnemyStat(participantId, "hp_current", currentHp - 1);
-    } else {
-      this.updatePlayerStat(participantId, participantType, "hp_current", currentHp - 1);
-    }
-  }
-  
-  incrementShield(event) {
-    let participantId = event.currentTarget.dataset.participantId;
-    let participantType = event.currentTarget.dataset.participantType;
-    let currentShield = parseInt(this.shieldTargets.find(el => el.closest("tr").dataset.participantId == participantId).textContent, 10);
-    
-    if (participantType === "Enemy") {
-      this.updateEnemyStat(participantId, "shield_current", currentShield + 1);
-    } else {
-      this.updatePlayerStat(participantId, participantType, "shield_current", currentShield + 1);
-    }
-  }
-  
-  decrementShield(event) {
-    let participantId = event.currentTarget.dataset.participantId;
-    let participantType = event.currentTarget.dataset.participantType;
-    let currentShield = parseInt(this.shieldTargets.find(el => el.closest("tr").dataset.participantId == participantId).textContent, 10);
-    
-    if (participantType === "Enemy") {
-      this.updateEnemyStat(participantId, "shield_current", currentShield - 1);
-    } else {
-      this.updatePlayerStat(participantId, participantType, "shield_current", currentShield - 1);
-    }
-  }
 
-  incrementTurn() {
-    console.log("🟢 IncrementTurn déclenché");
-    
-    fetch("/combat/increment_turn", { 
-      method: "PATCH", 
-      headers: { "X-CSRF-Token": document.querySelector('meta[name="csrf-token"]').content } 
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            console.log(`✅ Tour après mise à jour : ${data.turn}`);
-            this.turnCounterTarget.innerText = data.turn;
-        } else {
-            console.error("🔴 Erreur serveur :", data.error);
-        }
-    })
-    .catch(error => console.error("🔴 Erreur dans incrementTurn :", error));
-  }
+    const currentValue = this.getCurrentValue(participantId, type)
+    if (currentValue === null) return
 
-  decrementTurn() {
-    console.log("🟢 DecrementTurn déclenché");
+    const newValue = increment ? currentValue + 1 : Math.max(0, currentValue - 1)
+    const field = type === 'hp' ? 'hp_current' : 'shield_current'
 
-    fetch("/combat/decrement_turn", { 
-      method: "PATCH", 
-      headers: { "X-CSRF-Token": document.querySelector('meta[name="csrf-token"]').content } 
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            console.log(`✅ Tour après mise à jour : ${data.turn}`);
-            this.turnCounterTarget.innerText = data.turn;
-        } else {
-            console.error("🔴 Erreur serveur :", data.error);
-        }
-    })
-    .catch(error => console.error("🔴 Erreur dans decrementTurn :", error));
-  }
-
-  updateStatus(event) {
-    const participantId = event.target.dataset.participantId;
-    const participantType = event.target.dataset.participantType;
-    const statusId = event.target.value;
-
-    fetch(`/combat/update_status`, {
-      method: 'PATCH',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-CSRF-Token': document.querySelector("meta[name='csrf-token']").content
-      },
-      body: JSON.stringify({
-        participant_id: participantId,
-        participant_type: participantType,
-        status_id: statusId
+    try {
+      const response = await fetch('/combat/update_stat', {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRF-Token': document.querySelector("meta[name='csrf-token']").content
+        },
+        body: JSON.stringify({
+          id: participantId,
+          type: participantType,
+          [field]: newValue
+        })
       })
-    })
-    .then(response => response.json())
-    .then(data => {
-      if (!data.success) {
-        console.error('Erreur lors de la mise à jour du statut:', data.error);
+
+      if (!response.ok) {
+        console.error('Erreur lors de la mise à jour des stats')
       }
-    })
-    .catch(error => {
-      console.error('Erreur:', error);
-    });
+    } catch (error) {
+      console.error('Erreur réseau:', error)
+    }
+  }
+
+  incrementHp(event) {
+    const { participantId, participantType } = event.currentTarget.dataset
+    this.updateStat(participantId, participantType, 'hp', true)
+  }
+
+  decrementHp(event) {
+    const { participantId, participantType } = event.currentTarget.dataset
+    this.updateStat(participantId, participantType, 'hp', false)
+  }
+
+  incrementShield(event) {
+    const { participantId, participantType } = event.currentTarget.dataset
+    this.updateStat(participantId, participantType, 'shield', true)
+  }
+
+  decrementShield(event) {
+    const { participantId, participantType } = event.currentTarget.dataset
+    this.updateStat(participantId, participantType, 'shield', false)
+  }
+
+  async updateStatus(event) {
+    const { participantId, participantType } = event.currentTarget.dataset
+    const statusId = event.currentTarget.value
+
+    try {
+      const response = await fetch('/combat/update_status', {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRF-Token': document.querySelector("meta[name='csrf-token']").content
+        },
+        body: JSON.stringify({
+          participant_id: participantId,
+          participant_type: participantType,
+          status_id: statusId
+        })
+      })
+
+      if (!response.ok) {
+        console.error('Erreur lors de la mise à jour du statut')
+      }
+    } catch (error) {
+      console.error('Erreur réseau:', error)
+    }
   }
 }

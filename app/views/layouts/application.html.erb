@@ -32,7 +32,7 @@
     </script>
   </head>
 
-  <body>
+  <body <%= yield :body_data %>>
     <div data-controller="push" data-push-vapid-public-key="<%= Rails.application.config.vapid_keys[:public_key] %>"></div>
     <div id="flash-container">
       <%= render "layouts/flash" %>

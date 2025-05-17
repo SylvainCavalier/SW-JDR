@@ -167,8 +167,7 @@ Rails.application.routes.draw do
   
   post "combat/add_enemy", to: "combat#add_enemy", as: :add_enemy
   delete "combat/remove_enemy/:id", to: "combat#remove_enemy", as: :remove_enemy
-  patch "combat/update_enemy_stat/:id", to: "combat#update_stat", as: :update_enemy_stat
-  patch "combat/update_player_stat/:id", to: "combat#update_player_stat", as: :update_player_stat
+  patch "combat/update_stat", to: "combat#update_stat", as: :update_stat
   patch "combat/update_status", to: "combat#update_status", as: :update_combat_status
   patch "combat/remove_participant/:type/:id", to: "combat#remove_participant", as: :remove_participant
   patch "combat/increment_turn", to: "combat#increment_turn", as: :increment_turn
