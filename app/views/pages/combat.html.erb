@@ -72,9 +72,18 @@
     </div>
   </div>
 
-  <% participants = User.where.not(vitesse: nil).order(vitesse: :desc) + 
-                    Enemy.order(vitesse: :desc, enemy_type: :asc, number: :asc) + 
-                    Pet.where.not(vitesse: nil) %>
+  <% participants = (
+       User.where.not(vitesse: nil).to_a +
+       Enemy.where.not(vitesse: nil).to_a +
+       Pet.where.not(vitesse: nil).to_a
+     ).sort_by { |p| 
+       [
+         -(p.vitesse || 0),  # Tri décroissant par vitesse, avec gestion des nil
+         p.class.name,       # Tri par type de participant
+         p.try(:enemy_type) || '',  # Tri par type d'ennemi si applicable
+         p.try(:number) || 0        # Tri par numéro si applicable
+       ]
+     } %>
 
   <% if participants.empty? %>
     <div class="alert alert-warning text-center">⚠️ Aucun combat en cours.</div>
