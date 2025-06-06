@@ -1,0 +1,326 @@
+<div class="frame-container" style="position: relative; width: 100%; min-height: 100vh; overflow-y: auto; overflow-x: hidden;">
+  <%= link_to 'Retour', ships_path, class: 'btn btn-outline-secondary mt-3 mb-2' %>
+
+  <div class="pet-container neon-container">
+    <div class="row">
+      <!-- Colonne Gauche : Image & Actions -->
+      <div class="col-md-5 text-center">
+        <div class="image-box">
+          <% if @ship.image.attached? %>
+            <%= image_tag @ship.image, class: "ship-image rounded shadow" %>
+          <% else %>
+            <div class="image-placeholder rounded bg-dark">
+              <i class="fa-solid fa-rocket neon-icon"></i>
+            </div>
+          <% end %>
+        </div>
+        <div class="actions-box d-flex flex-column gap-2 mt-3">
+          <%= link_to 'Éditer', edit_ship_path(@ship), class: 'btn btn-outline-warning btn-sm' %>
+          <%= link_to 'Supprimer', ship_path(@ship), method: :delete, data: { confirm: 'Supprimer ce vaisseau ?' }, class: 'btn btn-outline-danger btn-sm' %>
+          <% unless @ship.active? %>
+            <%= button_to 'Définir comme principal', set_active_ship_path(@ship), method: :patch, class: 'btn btn-outline-success btn-sm' %>
+          <% end %>
+        </div>
+        <!-- SECTION SENSEURS -->
+        <div class="sensors-container mt-4">
+          <h3 class="section-title mb-0">SENSEURS</h3>
+          <div class="align-items-center">
+            <%= image_tag 'senseurs.png', class: 'img-fluid', style: 'max-width: 100%; height: auto; background: transparent;' %>
+            <div class="sensors-illustration">
+              <div class="sensor-row">
+                <span>Passifs</span>
+                <% senseur = @skills.find { |s| s.skill.name == 'Senseurs passifs' } %>
+                <span class="sensor-value ms-1"><%= senseur&.mastery %>D + <%= senseur&.bonus %></span>
+              </div>
+              <div class="sensor-row">
+                <span>Détection</span>
+                <% senseur = @skills.find { |s| s.skill.name == 'Senseurs détection' } %>
+                <span class="sensor-value ms-1"><%= senseur&.mastery %>D + <%= senseur&.bonus %></span>
+              </div>
+              <div class="sensor-row">
+                <span>Recherche</span>
+                <% senseur = @skills.find { |s| s.skill.name == 'Senseurs recherche' } %>
+                <span class="sensor-value ms-1"><%= senseur&.mastery %>D + <%= senseur&.bonus %></span>
+              </div>
+              <div class="sensor-row">
+                <span>Focalisation</span>
+                <% senseur = @skills.find { |s| s.skill.name == 'Senseurs focalisation' } %>
+                <span class="sensor-value ms-1"><%= senseur&.mastery %>D + <%= senseur&.bonus %></span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Colonne Droite : Infos -->
+      <div class="col-md-7">
+        <h1 class="ship-title"><%= @ship.name %></h1>
+        <div class="mb-3">
+          <div class="d-flex justify-content-between text-light mb-1">
+            <small>PV</small>
+            <small><%= @ship.hp_current %>/<%= @ship.hp_max %></small>
+          </div>
+          <div class="progress" style="height: 14px; background-color: rgba(0,0,0,0.2); border-radius: 10px; overflow: hidden;">
+            <div class="progress-bar bg-success" role="progressbar" style="width: <%= (@ship.hp_max && @ship.hp_max > 0) ? (((@ship.hp_current.to_f / @ship.hp_max) * 100).round) : 0 %>%" aria-valuenow="<%= @ship.hp_current %>" aria-valuemin="0" aria-valuemax="<%= @ship.hp_max %>"></div>
+          </div>
+          <div class="mt-2">
+            <span class="badge <%= @ship.status_labels == ["Intact"] ? 'bg-success' : 'bg-danger' %>" style="font-size: 1em;">
+              <%= @ship.status_labels.join(' | ') %>
+            </span>
+          </div>
+        </div>
+        <ul class="list-group neon-list">
+          <li class="list-group-item"><strong>Modèle :</strong> <%= @ship.model %></li>
+          <li class="list-group-item"><strong>Marque :</strong> <%= @ship.brand %></li>
+          <li class="list-group-item"><strong>Taille :</strong> <%= @ship.size %></li>
+          <li class="list-group-item"><strong>Passagers max :</strong> <%= @ship.max_passengers %></li>
+          <li class="list-group-item"><strong>Équipage min :</strong> <%= @ship.min_crew %></li>
+          <li class="list-group-item"><strong>Armes :</strong> <%= @ship.main_weapon %>, <%= @ship.secondary_weapon %>, Tourelle : <%= @ship.turret&.humanize %></li>
+          <li class="list-group-item"><strong>Hyperpropulseur :</strong> <%= @ship.hyperdrive_rating %> (Secours : <%= @ship.backup_hyperdrive ? 'Oui' : 'Non' %>)</li>
+        </ul>
+
+        <div class="description-box mt-3">
+          <strong>Description :</strong>
+          <p><%= @ship.description %></p>
+        </div>
+
+        <div class="skills-box mt-3">
+          <h4 class="section-title">Compétences du vaisseau</h4>
+          <div class="card bg-dark text-light shadow-sm">
+            <div class="card-body">
+              <div class="row">
+                <% main_skills = [
+                  'Coque',
+                  'Ecrans',
+                  'Maniabilité',
+                  'Vitesse'
+                ] %>
+                <div class="col-12 d-flex flex-wrap justify-content-between align-items-center">
+                  <% main_skills.each do |skill_name| %>
+                    <% skill = @skills.find { |s| s.skill.name == skill_name } %>
+                    <div class="skill-item me-3 mb-2">
+                      <span><strong><%= skill_name %> :</strong> <%= skill&.mastery %>D<% if skill&.bonus.to_i > 0 %> + <%= skill.bonus %><% end %></span>
+                      <i class="fa-solid fa-dice neon-icon ms-2" data-bs-toggle="modal" data-bs-target="#diceModal" data-dice-count="<%= skill&.mastery %>" data-dice-bonus-value="<%= skill&.bonus %>" data-action="click->dice#prepareRoll"></i>
+                    </div>
+                  <% end %>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="inventory-box mt-3">
+      <h4 class="section-title">Inventaire</h4>
+      <div class="card bg-dark text-light shadow-sm">
+        <div class="card-body">
+          <%= render 'ships/inventory', objects: @objects, ship: @ship %>
+        </div>
+      </div>
+    </div>
+
+    <div class="child-ships-box mt-3">
+      <h4 class="section-title">Soute (vaisseaux embarqués)</h4>
+      <div class="card bg-dark text-light shadow-sm">
+        <div class="card-body">
+          <% if @child_ships.any? %>
+            <ul>
+              <% @child_ships.each do |child| %>
+                <li><%= link_to child.name, ship_path(child), class: 'neon-link' %> (<%= child.model %>)</li>
+              <% end %>
+            </ul>
+          <% else %>
+            <p>Aucun vaisseau embarqué.</p>
+          <% end %>
+        </div>
+      </div>
+    </div>
+
+    <div class="ship-weapons-box mt-3">
+      <h4 class="section-title">Armes du vaisseau</h4>
+      <div class="card bg-dark text-light shadow-sm">
+        <div class="card-body">
+          <% if @ship.ship_weapons.any? %>
+            <table class="table table-dark table-bordered align-middle mb-0">
+              <thead>
+                <tr>
+                  <th>Nom</th>
+                  <th>Type</th>
+                  <th>Quantité</th>
+                  <th>Dégâts</th>
+                  <th>Visée</th>
+                  <th>Spécial</th>
+                  <th>Description</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% @ship.ship_weapons.each do |weapon| %>
+                  <tr>
+                    <td><%= weapon.name %></td>
+                    <td><%= weapon.weapon_type %></td>
+                    <td>
+                      <% if weapon.quantity_max.present? %>
+                        <%= weapon.quantity_current %> / <%= weapon.quantity_max %>
+                      <% else %>
+                        -
+                      <% end %>
+                    </td>
+                    <td><%= weapon.damage_mastery %>D<% if weapon.damage_bonus.to_i > 0 %> + <%= weapon.damage_bonus %><% end %></td>
+                    <td><%= weapon.aim_mastery %>D<% if weapon.aim_bonus.to_i > 0 %> + <%= weapon.aim_bonus %><% end %></td>
+                    <td><%= weapon.special %></td>
+                    <td><%= weapon.description %></td>
+                  </tr>
+                <% end %>
+              </tbody>
+            </table>
+          <% else %>
+            <p>Aucune arme enregistrée pour ce vaisseau.</p>
+          <% end %>
+        </div>
+      </div>
+    </div>
+
+    <% torpille = @ship.ship_weapons.find_by(weapon_type: 'torpille') %>
+    <% missile = @ship.ship_weapons.find_by(weapon_type: 'missile') %>
+    <div class="row mt-3">
+      <% if @ship.torpilles && torpille %>
+        <div class="col-md-6 mb-3">
+          <div class="ammo-box bg-dark text-light p-3 rounded shadow">
+            <h5 class="ammo-title">Torpilles à protons</h5>
+            <div><strong>Dégâts :</strong> <%= torpille.damage_mastery %>D<% if torpille.damage_bonus.to_i > 0 %> + <%= torpille.damage_bonus %><% end %></div>
+            <div><strong>Restant :</strong> <%= torpille.quantity_current %> / <%= torpille.quantity_max %></div>
+            <div class="ammo-icons mt-2">
+              <% torpille.quantity_current.to_i.times do %>
+                <%= image_tag 'torpilles.png', style: 'height: 32px; width: auto; margin-right: 2px;' %>
+              <% end %>
+            </div>
+          </div>
+        </div>
+      <% end %>
+      <% if @ship.missiles && missile %>
+        <div class="col-md-6 mb-3">
+          <div class="ammo-box bg-dark text-light p-3 rounded shadow">
+            <h5 class="ammo-title">Missiles à concussion</h5>
+            <div><strong>Dégâts :</strong> <%= missile.damage_mastery %>D<% if missile.damage_bonus.to_i > 0 %> + <%= missile.damage_bonus %><% end %></div>
+            <div><strong>Restant :</strong> <%= missile.quantity_current %> / <%= missile.quantity_max %></div>
+            <div class="ammo-icons mt-2">
+              <% missile.quantity_current.to_i.times do %>
+                <%= image_tag 'missiles.png', style: 'height: 32px; width: auto; margin-right: 2px;' %>
+              <% end %>
+            </div>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>
+
+<style>
+.neon-container {
+  background-color: rgba(0, 0, 0, 0.9);
+  border: 2px solid #0f0;
+  box-shadow: 0 0 15px #0f0;
+  border-radius: 15px;
+  padding: 20px;
+  color: #0f0;
+}
+
+.ship-image {
+  width: 100%;
+  max-height: 300px;
+  object-fit: cover;
+  border-radius: 10px;
+  border: 1px solid #0f0;
+  box-shadow: 0 0 10px #0f0;
+}
+
+.image-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 220px;
+  font-size: 2rem;
+  color: #0f0;
+}
+
+.neon-icon {
+  color: #0f0;
+  text-shadow: 0 0 10px #0f0;
+}
+
+.neon-list .list-group-item {
+  background: rgba(0,0,0,0.8);
+  border: 1px solid #0f0;
+  border-radius: 8px;
+  box-shadow: 0 0 10px #0f0;
+  margin-bottom: 8px;
+  transition: transform 0.2s;
+}
+
+.neon-list .list-group-item:hover {
+  transform: scale(1.03);
+  box-shadow: 0 0 15px #0f0;
+}
+
+.section-title {
+  color: #0f0;
+  text-shadow: 0 0 10px #0f0;
+}
+
+.neon-link {
+  color: #0ff;
+  text-decoration: none;
+  transition: color 0.3s;
+}
+
+.neon-link:hover {
+  color: #fff;
+  text-shadow: 0 0 10px #0ff;
+}
+
+.sensors-container {
+  background: rgba(0,0,0,0.95);
+  border: 2px solid #0f0;
+  border-radius: 15px;
+  box-shadow: 0 0 15px #0f0;
+  padding: 20px;
+  margin-bottom: 2em;
+  color: #0f0;
+}
+.sensors-illustration {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.sensor-row {
+  display: flex;
+  align-items: center;
+  font-size: 1.2em;
+  margin-bottom: 0.5em;
+}
+.sensor-value {
+  font-weight: bold;
+  color: #fff;
+  text-shadow: 0 0 5px #0f0;
+  min-width: 60px;
+  text-align: right;
+}
+.sensor-dice {
+  margin-left: 0.5em;
+}
+
+.ammo-box {
+  border: 2px solid #0ff;
+  box-shadow: 0 0 10px #0ff;
+  min-height: 120px;
+}
+.ammo-title {
+  color: #0ff;
+  text-shadow: 0 0 8px #0ff;
+  font-size: 1.2em;
+  margin-bottom: 0.5em;
+}
+.ammo-icons img {
+  filter: drop-shadow(0 0 4px #0ff);
+}
+</style>

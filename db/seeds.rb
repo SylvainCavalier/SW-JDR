@@ -16,15 +16,24 @@ skills_list = [
   "Vitesse", "Précision", "Esquive", "Ingénierie", "Médecine", "Résistance Corporelle",
   "Sabre-laser", "Arts martiaux", "Armes blanches", "Lancer", "Tir", "Discrétion", "Habileté",
   "Observation", "Intuition", "Imitation", "Psychologie", "Commandement", "Marchandage",
-  "Persuasion", "Dressage", "Saut", "Escalade", "Endurance", "Intimidation", "Natation",
+  "Persuasion", "Sang Froid", "Dressage", "Saut", "Escalade", "Endurance", "Intimidation", "Natation",
   "Survie", "Nature", "Substances", "Savoir jedi", "Langage", "Astrophysique", "Planètes",
   "Evaluation", "Illégalité", "Pilotage", "Esquive spatiale", "Astrogation", "Tourelles",
-  "Jetpack", "Réparation", "Sécurité", "Démolition", "Systèmes", "Contrôle", "Sens", "Altération"
+  "Jetpack", "Réparation", "Sécurité", "Démolition", "Systèmes", "Contrôle", "Sens", "Altération",
+  "Coque", "Ecrans", "Maniabilité"
 ]
 
 skills_list.each do |skill_name|
   Skill.find_or_create_by!(name: skill_name) do |s|
     s.description = "" # Description vide pour l'instant
+  end
+end
+
+# Ajout des senseurs comme compétences sans carac associée
+['Senseurs passifs', 'Senseurs détection', 'Senseurs recherche', 'Senseurs focalisation'].each do |senseur|
+  Skill.find_or_create_by!(name: senseur) do |s|
+    s.description = "Senseur du vaisseau"
+    s.carac = nil
   end
 end
 
@@ -52,6 +61,7 @@ skills_caracs = {
   "Marchandage" => "Perception",
   "Persuasion" => "Perception",
   "Dressage" => "Perception",
+  "Sang Froid" => "Perception",
 
   "Saut" => "Vigueur",
   "Escalade" => "Vigueur",
@@ -236,7 +246,7 @@ end
 # Plants
 plants = [
   { name: "Cardamine", price: 30, description: "Une petite plante commune aux propriétés diurétiques, et toxique à haute dose", rarity: "Commun" },
-  { name: "Kava", price: 50, description: "Une plante hallucinogène, aux effets réactifs divers en mélange avec d’autres plantes", rarity: "Commun" },
+  { name: "Kava", price: 50, description: "Une plante hallucinogène, aux effets réactifs divers en mélange avec d'autres plantes", rarity: "Commun" },
   { name: "Passiflore", price: 100, description: "Une famille de plantes peu communes, à très haute toxicité", rarity: "Unco" },
   { name: "Nysillin", price: 100, description: "Une famille de plantes peu communes, à vertu thérapeuthique", rarity: "Unco" }
 ]
@@ -257,7 +267,7 @@ injections = [
   { name: "Injection de focusféron", price: 100, description: "Perd 2 PV mais augmente les compétences de perc de +1D pour 3 tours", rarity: "Unco", category: "injection" },
   { name: "Injection de trinitine", price: 50, description: "Regagne +1D PV par tour pour 3 tours, mais -2 toutes comp", rarity: "Unco", category: "injection" },
   { name: "Injection de stimulant", price: 50, description: "Perd 2 PV mais est immunisé au statut désorienté ou sonné 3 tours", rarity: "Unco", category: "injection" },
-  { name: "Injection de bio-rage", price: 400, description: "Folie 1D tours, +1DD au CaC, +1 action d’attaque par tour", rarity: "Rare", category: "injection" },
+  { name: "Injection de bio-rage", price: 400, description: "Folie 1D tours, +1DD au CaC, +1 action d'attaque par tour", rarity: "Rare", category: "injection" },
   { name: "Injection tétrasulfurée", price: 500, description: "Ne peut pas passer en statut sonné, inconscient ou agonisant 3 tours", rarity: "Rare", category: "injection" }
 ]
 
@@ -271,10 +281,10 @@ injections.each do |injection|
 end
 
 chemical_weapons = [
-  { name: "Gaz Lacrymogène", price: 50, description: "A le statut désorienté tant qu’il est exposé à l’arme", rarity: "Commun", category: "chimique" },
-  { name: "Gaz Souffre", price: 100, description: "Perd 1D PV Ignore def / tour tant qu’il est exposé", rarity: "Commun", category: "chimique" },
-  { name: "Gaz Empoisonné", price: 300, description: "Perd 2D PV Ignore def / tour tant qu’il est exposé + Empoisonné", rarity: "Unco", category: "chimique" },
-  { name: "Gaz Neurolax", price: 500, description: "Perd 2D PV Ign def / tour tant qu’il est exposé + Tue les -20PVmax", rarity: "Rare", category: "chimique" }
+  { name: "Gaz Lacrymogène", price: 50, description: "A le statut désorienté tant qu'il est exposé à l'arme", rarity: "Commun", category: "chimique" },
+  { name: "Gaz Souffre", price: 100, description: "Perd 1D PV Ignore def / tour tant qu'il est exposé", rarity: "Commun", category: "chimique" },
+  { name: "Gaz Empoisonné", price: 300, description: "Perd 2D PV Ignore def / tour tant qu'il est exposé + Empoisonné", rarity: "Unco", category: "chimique" },
+  { name: "Gaz Neurolax", price: 500, description: "Perd 2D PV Ign def / tour tant qu'il est exposé + Tue les -20PVmax", rarity: "Rare", category: "chimique" }
 ]
 
 chemical_weapons.each do |weapon|
@@ -354,8 +364,8 @@ puts "✅ Bâtiments créés avec succès."
 puts "📦 Création des systèmes de défense..."
 
 defenses = [
-  { name: "Système d'alarme", description: "Des systèmes d’alarme retentissant automatiquement en cas d’attaque. +1 défense", price: 1000, bonus: 1 },
-  { name: "Système de défense interne", description: "Tourelles automatiques et semi-automatiques pour protéger l’intérieur. +1 défense", price: 5000, bonus: 1 },
+  { name: "Système d'alarme", description: "Des systèmes d'alarme retentissant automatiquement en cas d'attaque. +1 défense", price: 1000, bonus: 1 },
+  { name: "Système de défense interne", description: "Tourelles automatiques et semi-automatiques pour protéger l'intérieur. +1 défense", price: 5000, bonus: 1 },
   { name: "Pièges internes", description: "Des pièges ingénieux parsèment la base. +1 défense", price: 3000, bonus: 1 },
   { name: "Pulso blaster sol/air", description: "Défense anti-aérienne contre les vaisseaux ennemis. +2 défense", price: 10000, bonus: 2 },
   { name: "Pulso blaster sol/sol", description: "Pulso-blaster pour contrer les troupes terrestres. +2 défense", price: 12000, bonus: 2 },

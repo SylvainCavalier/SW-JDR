@@ -1,0 +1,18 @@
+<table class="table table-bordered table-hover align-middle">
+  <thead>
+    <tr>
+      <th>Compétence</th>
+      <th>Maîtrise</th>
+      <th>Bonus</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% skills.each do |ships_skill| %>
+      <tr>
+        <td><%= ships_skill.skill.name %></td>
+        <td><%= ships_skill.mastery %></td>
+        <td><%= ships_skill.bonus %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table> 

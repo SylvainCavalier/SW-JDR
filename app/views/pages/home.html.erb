@@ -95,7 +95,7 @@
   <!-- Boutons de bas de page -->
   <div class="home-bottom-buttons d-flex">
     <!-- Gestion des Pets -->
-    <%= link_to pets_path, class: "btn btn-outline-success pets-home" do %>
+    <%= link_to pets_path, class: "btn btn-outline-success team-home" do %>
       <i class="fa-solid fa-paw"></i>
     <% end %>
 
@@ -105,12 +105,17 @@
     <% end %>
 
     <!-- Gestion de la base -->
-    <%= link_to headquarter_path(@headquarter), class: "btn btn-outline-success settings-home" do %>
+    <%= link_to headquarter_path(@headquarter), class: "btn btn-outline-success team-home" do %>
       <i class="fa-solid fa-building-flag"></i>
     <% end %>
 
+    <!-- Vaisseau -->
+    <%= link_to ships_path, class: "btn btn-outline-success team-home" do %>
+      <i class="fa-solid fa-shuttle-space"></i>
+    <% end %>
+
     <!-- Règles du jeu -->
-    <%= link_to rules_path, class: "btn btn-outline-success rules-home" do %>
+    <%= link_to rules_path, class: "btn btn-outline-success team-home" do %>
       <i class="fa-solid fa-file-invoice"></i>
     <% end %>
   </div>

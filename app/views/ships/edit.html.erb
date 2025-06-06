@@ -1,0 +1,129 @@
+<div class="container ship-edit-container mt-4">
+  <h1 class="text-success">Éditer le vaisseau</h1>
+  <%= form_for @ship, html: { multipart: true, class: "ship-form" } do |f| %>
+    <div class="form-group mb-2">
+      <%= f.label :name, "Nom du vaisseau *", class: "form-label" %>
+      <%= f.text_field :name, class: "form-control" %>
+    </div>
+    <div class="form-group mb-2">
+      <%= f.label :brand, "Marque", class: "form-label" %>
+      <%= f.text_field :brand, class: "form-control" %>
+    </div>
+    <div class="form-group mb-2">
+      <%= f.label :model, "Modèle *", class: "form-label" %>
+      <%= f.text_field :model, class: "form-control" %>
+    </div>
+    <div class="form-group mb-2">
+      <%= f.label :description, "Description", class: "form-label" %>
+      <%= f.text_area :description, class: "form-control", rows: 3 %>
+    </div>
+    <div class="form-group mb-2">
+      <%= f.label :size, "Taille", class: "form-label" %>
+      <%= f.text_field :size, class: "form-control" %>
+    </div>
+    <div class="form-group mb-2">
+      <%= f.label :max_passengers, "Passagers max", class: "form-label" %>
+      <%= f.number_field :max_passengers, class: "form-control" %>
+    </div>
+    <div class="form-group mb-2">
+      <%= f.label :min_crew, "Équipage min", class: "form-label" %>
+      <%= f.number_field :min_crew, class: "form-control" %>
+    </div>
+    <div class="form-group mb-2">
+      <%= f.label :hp_max, "Points de blindage max", class: "form-label" %>
+      <%= f.number_field :hp_max, class: "form-control" %>
+    </div>
+    <div class="form-group mb-2">
+      <%= f.label :main_weapon, "Armement principal", class: "form-label" %>
+      <%= f.text_field :main_weapon, class: "form-control" %>
+    </div>
+    <div class="form-group mb-2">
+      <%= f.label :secondary_weapon, "Armement secondaire", class: "form-label" %>
+      <%= f.text_field :secondary_weapon, class: "form-control" %>
+    </div>
+    <div class="form-group mb-2">
+      <%= f.label :turret, "Tourelle", class: "form-label" %>
+      <%= f.select :turret, Ship.turrets.keys.map { |k| [k.humanize, k] }, {}, class: "form-control" %>
+    </div>
+    <div class="form-group mb-2">
+      <%= f.label :hyperdrive_rating, "Hyperpropulseur (puissance)", class: "form-label" %>
+      <%= f.number_field :hyperdrive_rating, class: "form-control" %>
+    </div>
+    <div class="form-group mb-2">
+      <%= f.label :backup_hyperdrive, "Hyperpropulseur de secours", class: "form-label" %>
+      <%= f.check_box :backup_hyperdrive %>
+    </div>
+
+    <h3 class="mt-4">Compétences du vaisseau</h3>
+    <div class="row">
+      <% [
+        { name: 'Coque' },
+        { name: 'Ecrans' },
+        { name: 'Maniabilité' },
+        { name: 'Vitesse' },
+        { name: 'Senseurs passifs' },
+        { name: 'Senseurs détection' },
+        { name: 'Senseurs recherche' },
+        { name: 'Senseurs focalisation' }
+      ].each_with_index do |skill_info, idx| %>
+        <% skill = Skill.find_by(name: skill_info[:name]) %>
+        <div class="col-md-6 mb-3">
+          <%= label_tag "ships_skills_#{skill&.id}_mastery", skill_info[:name], class: "form-label" %>
+          <div class="d-flex align-items-center">
+            <div class="input-group custom-input-group me-2" style="width: auto;" data-controller="increment">
+              <%= button_tag "-", type: "button", class: "btn btn-outline-secondary btn-sm", data: { action: "click->increment#decrement" } %>
+              <%= number_field_tag "ships_skills[][mastery]", (@ship.ships_skills.find { |ss| ss.skill_id == skill&.id }&.mastery || 0), min: 0, class: "form-control form-control-sm text-center", style: "width: 45px;", data: { "increment-target" => "input" }, id: "ships_skills_#{skill&.id}_mastery" %>
+              <%= button_tag "+", type: "button", class: "btn btn-outline-secondary btn-sm", data: { action: "click->increment#increment" } %>
+            </div>
+            <span class="mx-1">D +</span>
+            <div class="input-group custom-input-group ms-2" style="width: auto;" data-controller="increment">
+              <%= button_tag "-", type: "button", class: "btn btn-outline-secondary btn-sm", data: { action: "click->increment#decrement" } %>
+              <%= number_field_tag "ships_skills[][bonus]", (@ship.ships_skills.find { |ss| ss.skill_id == skill&.id }&.bonus || 0), min: 0, class: "form-control form-control-sm text-center", style: "width: 45px;", data: { "increment-target" => "input" }, id: "ships_skills_#{skill&.id}_bonus" %>
+              <%= button_tag "+", type: "button", class: "btn btn-outline-secondary btn-sm", data: { action: "click->increment#increment" } %>
+            </div>
+            <%= hidden_field_tag "ships_skills[][skill_id]", skill&.id %>
+          </div>
+        </div>
+      <% end %>
+    </div>
+
+    <h3 class="mt-4">Armes du vaisseau</h3>
+    <div class="row" data-controller="toggle">
+      <div class="col-md-6 mb-3">
+        <%= label_tag 'main_weapon', 'Arme principale', class: 'form-label' %>
+        <%= text_field_tag 'main_weapon', '', class: 'form-control' %>
+      </div>
+      <div class="col-md-6 mb-3">
+        <%= label_tag 'secondary_weapon', 'Arme secondaire', class: 'form-label' %>
+        <%= text_field_tag 'secondary_weapon', '', class: 'form-control' %>
+      </div>
+      <div class="col-md-6 mb-3">
+        <%= hidden_field_tag 'tourelles', 0 %>
+        <%= check_box_tag 'tourelles', '1', false, id: 'tourelles-checkbox', data: { action: 'change->toggle#toggleTourelles' } %>
+        <%= label_tag 'tourelles-checkbox', 'Tourelles', class: 'form-label ms-2' %>
+        <%= select_tag 'tourelles_count', options_for_select((0..5).to_a), class: 'form-select ms-2', id: 'tourelles-count', disabled: true %>
+      </div>
+      <div class="col-md-6 mb-3">
+        <%= hidden_field_tag 'torpilles', 0 %>
+        <%= check_box_tag 'torpilles', '1', false, id: 'torpilles-checkbox', data: { action: 'change->toggle#toggleTorpilles' } %>
+        <%= label_tag 'torpilles-checkbox', 'Lance-Torpilles à protons', class: 'form-label ms-2' %>
+        <%= select_tag 'torpilles_count', options_for_select((1..5).to_a), class: 'form-select ms-2', id: 'torpilles-count', disabled: true %>
+      </div>
+      <div class="col-md-6 mb-3">
+        <%= hidden_field_tag 'missiles', 0 %>
+        <%= check_box_tag 'missiles', '1', false, id: 'missiles-checkbox', data: { action: 'change->toggle#toggleMissiles' } %>
+        <%= label_tag 'missiles-checkbox', 'Lance-Missiles à concussion', class: 'form-label ms-2' %>
+        <%= select_tag 'missiles_count', options_for_select((1..5).to_a), class: 'form-select ms-2', id: 'missiles-count', disabled: true %>
+      </div>
+    </div>
+
+    <div class="form-group mb-2">
+      <%= f.label :image, "Image du vaisseau", class: "form-label" %>
+      <%= f.file_field :image, class: "form-control" %>
+    </div>
+    <div class="form-group text-center mt-3">
+      <%= f.submit "Créer", class: "btn btn-outline_success btn-lg" %>
+      <%= link_to "Annuler", ships_path, class: "btn btn-secondary btn-lg" %>
+    </div>
+  <% end %>
+</div>

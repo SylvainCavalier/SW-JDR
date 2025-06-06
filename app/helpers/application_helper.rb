@@ -16,4 +16,25 @@ module ApplicationHelper
       content_tag(:i, "", class: "fa-solid fa-chevron-left me-2") + "Retour"
     end
   end
+
+  SKILL_ORDER = {
+    "Savoir" => [
+      "Nature", "Substances", "Médecine", "Langages", "Astrophysique", "Planètes", "Savoir Jedi", "Évaluation", "Illégalité"
+    ],
+    "Dextérité" => [
+      "Arts martiaux", "Armes blanches", "Tir", "Sabre-laser", "Lancer", "Esquive", "Discrétion", "Habileté", "Vitesse"
+    ],
+    "Perception" => [
+      "Observation", "Sang-Froid", "Intuition", "Imitation", "Psychologie", "Commandement", "Marchandage", "Persuasion", "Dressage"
+    ],
+    "Technique" => [
+      "Réparation", "Ingénierie", "Sécurité", "Démolition", "Systèmes"
+    ],
+    "Vigueur" => [
+      "Escalade", "Endurance", "Saut", "Survie", "Intimidation", "Natation"
+    ],
+    "Mécanique" => [
+      "Pilotage", "Esquive spatiale", "Astrogation", "Tourelles", "Jetpack"
+    ]
+  }.freeze
 end

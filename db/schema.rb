@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_05_16_164412) do
+ActiveRecord::Schema[7.1].define(version: 2025_06_06_231743) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -293,6 +293,79 @@ ActiveRecord::Schema[7.1].define(version: 2025_05_16_164412) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "ship_objects", force: :cascade do |t|
+    t.bigint "ship_id", null: false
+    t.string "name"
+    t.integer "quantity"
+    t.string "description"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["ship_id"], name: "index_ship_objects_on_ship_id"
+  end
+
+  create_table "ship_weapons", force: :cascade do |t|
+    t.string "name", null: false
+    t.string "weapon_type", null: false
+    t.integer "quantity_max"
+    t.integer "quantity_current"
+    t.integer "damage_mastery", default: 0
+    t.integer "damage_bonus", default: 0
+    t.integer "aim_mastery", default: 0
+    t.integer "aim_bonus", default: 0
+    t.string "special"
+    t.text "description"
+    t.bigint "ship_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["ship_id"], name: "index_ship_weapons_on_ship_id"
+  end
+
+  create_table "ships", force: :cascade do |t|
+    t.string "name"
+    t.integer "price"
+    t.string "brand"
+    t.string "model"
+    t.text "description"
+    t.string "size"
+    t.integer "max_passengers"
+    t.integer "min_crew"
+    t.integer "hp_max"
+    t.integer "hp_current"
+    t.string "main_weapon"
+    t.string "secondary_weapon"
+    t.integer "turret", default: 0
+    t.integer "hyperdrive_rating"
+    t.boolean "backup_hyperdrive", default: false
+    t.boolean "active", default: false
+    t.integer "parent_ship_id"
+    t.bigint "group_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.boolean "shields_disabled", default: false
+    t.boolean "controls_ionized", default: false
+    t.boolean "weapon_damaged", default: false
+    t.boolean "thrusters_damaged", default: false
+    t.boolean "hyperdrive_broken", default: false
+    t.boolean "depressurized", default: false
+    t.boolean "ship_destroyed", default: false
+    t.integer "tourelles"
+    t.boolean "torpilles"
+    t.boolean "missiles"
+    t.index ["group_id"], name: "index_ships_on_group_id"
+    t.index ["parent_ship_id"], name: "index_ships_on_parent_ship_id"
+  end
+
+  create_table "ships_skills", force: :cascade do |t|
+    t.bigint "ship_id", null: false
+    t.bigint "skill_id", null: false
+    t.integer "mastery"
+    t.integer "bonus"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["ship_id"], name: "index_ships_skills_on_ship_id"
+    t.index ["skill_id"], name: "index_ships_skills_on_skill_id"
+  end
+
   create_table "skills", force: :cascade do |t|
     t.string "name"
     t.text "description"
@@ -470,6 +543,12 @@ ActiveRecord::Schema[7.1].define(version: 2025_05_16_164412) do
   add_foreign_key "pet_statuses", "pets"
   add_foreign_key "pet_statuses", "statuses"
   add_foreign_key "pets", "statuses"
+  add_foreign_key "ship_objects", "ships"
+  add_foreign_key "ship_weapons", "ships"
+  add_foreign_key "ships", "groups"
+  add_foreign_key "ships", "ships", column: "parent_ship_id"
+  add_foreign_key "ships_skills", "ships"
+  add_foreign_key "ships_skills", "skills"
   add_foreign_key "skills", "caracs"
   add_foreign_key "sphero_skills", "skills"
   add_foreign_key "sphero_skills", "spheros"

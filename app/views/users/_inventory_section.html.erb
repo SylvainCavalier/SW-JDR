@@ -1,4 +1,4 @@
-<div class="accordion" id="inventoryAccordion">
+<div class="accordion" id="inventoryAccordion" data-controller="inventory-actions">
   <% @inventory_items.group_by { |item| item.inventory_object.category }.each_with_index do |(category, items), index| %>
     <div class="accordion-item">
       <h2 class="accordion-header" id="heading<%= index %>">
@@ -45,14 +45,17 @@
                               modal_confirm_action: "sell#confirm",
                               delete_path: sell_item_user_path(@user, item_id: item.id, quantity: 1)
                             } %>
-                        <%= button_to "Jeter",
-                            remove_item_user_path(@user, item.id),
-                            method: :patch,
+                        <%= button_tag "Jeter",
+                            type: "button",
                             class: "btn btn-outline-warning btn-sm",
-                            data: { confirm: "Voulez-vous vraiment supprimer 1 #{item.inventory_object.name} de votre inventaire ?" } %>
+                            data: {
+                              action: "inventory-actions#remove",
+                              url: remove_item_user_path(@user, item.id),
+                              confirm: "Voulez-vous vraiment supprimer 1 #{item.inventory_object.name} de votre inventaire ?"
+                            } %>
                       </div>
 
-                      <%= form_with url: give_item_user_path(@user), method: :post, local: true, class: "d-inline" do |f| %>
+                      <%= form_with url: give_item_user_path(@user), method: :post, local: false, data: { action: "submit->inventory-actions#give" } do |f| %>
                         <%= hidden_field_tag :item_id, item.id %>
                         <%= select_tag :recipient_id, options_from_collection_for_select(User.where(group_id: Group.find_by(name: "PJ")), :id, :username, prompt: "Choisir un joueur"), class: "form-select form-select-sm d-inline w-auto" %>
                         <%= number_field_tag :quantity, 1, class: "form-control form-control-sm d-inline w-auto", min: 1, max: item.quantity %>

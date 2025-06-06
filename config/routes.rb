@@ -183,5 +183,32 @@ Rails.application.routes.draw do
 
   get 'rules', to: 'pages#rules', as: 'rules'
 
+  get 'ship_objects/new'
+  get 'ship_objects/create'
+  get 'ship_objects/edit'
+  get 'ship_objects/update'
+  get 'ship_objects/destroy'
+  get 'ships/index'
+  get 'ships/show'
+  get 'ships/new'
+  get 'ships/create'
+  get 'ships/edit'
+  get 'ships/update'
+  get 'ships/destroy'
+  get 'ships/set_active'
+  get 'ships/dock'
+  get 'ships/undock'
+  get 'ships/inventory'
+
+  resources :ships do
+    member do
+      patch :set_active
+      get :inventory
+      patch :dock
+      patch :undock
+    end
+    resources :ship_objects, only: [:new, :create, :edit, :update, :destroy]
+  end
+
   root 'pages#home'
 end

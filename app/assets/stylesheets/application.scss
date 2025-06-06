@@ -1754,3 +1754,35 @@ input.dice-count-input {
 .pet-link:hover {
   color: #28a745;
 } 
+
+/* ------------- SHIPS -------------- */
+
+.ship-item {
+  background-color: rgba(10, 20, 30, 0.95);
+  border: 1px solid rgba(0, 255, 127, 0.6);
+  transition: all 0.3s ease-in-out;
+}
+
+.ship-item:hover {
+  background-color: rgba(10, 20, 30, 1);
+  box-shadow: 0 0 12px rgba(0, 255, 127, 0.9);
+  transform: scale(1.01);
+}
+
+.ship-thumbnail {
+  width: 100px;
+  height: 70px;
+  object-fit: cover;
+}
+
+.ship-placeholder {
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.audiowide-regular {
+  font-family: "Audiowide", sans-serif;
+}
+
+.badge {
+  font-size: 0.75em;
+}

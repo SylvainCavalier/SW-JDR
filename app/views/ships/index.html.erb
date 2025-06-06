@@ -1,0 +1,59 @@
+<div class="container ship-index-container mt-4">
+  <h1 class="text-success text-center audiowide-regular m-4">Vaisseaux du groupe</h1>
+
+  <div class="list-group">
+    <% @ships.each do |ship| %>
+      <div class="list-group-item ship-item rounded shadow mb-3 d-flex align-items-center bg-dark text-light">
+        <div class="ship-image-container me-3">
+          <% if ship.image.attached? %>
+            <%= image_tag ship.image, class: "ship-thumbnail rounded shadow-sm" %>
+          <% else %>
+            <div class="ship-placeholder bg-secondary rounded d-flex justify-content-center align-items-center" style="width: 150px; height: 100px;">
+              <i class="fa-solid fa-rocket fa-lg text-dark"></i>
+            </div>
+          <% end %>
+        </div>
+
+        <div class="ship-info flex-grow-1">
+          <div class="d-flex mb-1">
+            <h5 class="text-info mb-0"><%= ship.name %></h5>
+            <% if ship.active? %>
+              <span class="badge bg-success ms-2">Principal</span>
+            <% end %>
+          </div>
+          <div class="mb-2">
+            <div class="d-flex justify-content-between text-light mb-1">
+              <small>PB</small>
+              <small><%= ship.hp_current %>/<%= ship.hp_max %></small>
+            </div>
+            <div class="progress" style="height: 10px; background-color: rgba(0,0,0,0.2); border-radius: 10px; overflow: hidden;">
+              <div class="progress-bar bg-success" role="progressbar" style="width: <%= (ship.hp_max && ship.hp_max > 0) ? (((ship.hp_current.to_f / ship.hp_max) * 100).round) : 0 %>%" aria-valuenow="<%= ship.hp_current %>" aria-valuemin="0" aria-valuemax="<%= ship.hp_max %>"></div>
+            </div>
+            <div class="mt-1">
+              <span class="badge <%= ship.status_labels == ["Intact"] ? 'bg-success' : 'bg-danger' %>" style="font-size: 0.95em;">
+                <%= ship.status_labels.join(' | ') %>
+              </span>
+            </div>
+          </div>
+          <div class="small">
+            <span class="badge bg-dark border border-success">Modèle : <%= ship.model %></span>
+            <span class="badge bg-dark border border-secondary">Taille : <%= ship.size %></span>
+            <span class="badge bg-dark border border-secondary">Passagers : <%= ship.max_passengers %></span>
+          </div>
+        </div>
+
+        <div class="ship-actions d-flex flex-column gap-1 ms-2">
+          <%= link_to 'Voir', ship_path(ship), class: 'btn btn-sm btn-outline-primary' %>
+          <% unless ship.active? %>
+            <%= button_to 'Définir Principal', set_active_ship_path(ship), method: :patch, class: 'btn btn-sm btn-outline-success' %>
+          <% end %>
+        </div>
+      </div>
+    <% end %>
+  </div>
+
+  <div class="text-center mt-4">
+    <%= link_to 'Ajouter un vaisseau', new_ship_path, class: 'btn btn-success btn-lg shadow-sm' %>
+  </div>
+  <%= link_to "Retour", (current_user.group&.name == "MJ" ? mj_dashboard_path : root_path), class: "btn btn-outline-secondary go-back-two" %>
+</div>

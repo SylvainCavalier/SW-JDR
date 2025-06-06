@@ -10,7 +10,7 @@ class UsersController < ApplicationController
     end
     
     # Variables pour les compétences
-    @skills = Skill.includes(:carac).order(:name)
+    @skills = Skill.includes(:carac)
     @user_skills = @skills.map do |skill|
       @user.user_skills.find_or_initialize_by(skill: skill) do |us|
         us.mastery = 0
@@ -18,10 +18,21 @@ class UsersController < ApplicationController
       end
     end
     @user_caracs = @user.user_caracs.includes(:carac).index_by { |uc| uc.carac.name }
-    @grouped_skills = @user_skills.reject { |us| ["Contrôle", "Sens", "Altération", "Résistance Corporelle"].include?(us.skill.name) }
-                                .group_by { |us| us.skill.carac&.name }
-    @jedi_skills = @user_skills.select { |us| ["Contrôle", "Sens", "Altération"].include?(us.skill.name) }
-    @corporelle_skill = @user_skills.find { |us| us.skill.name == "Résistance Corporelle" }
+
+    # Exclure 'Précision' pour les utilisateurs
+    filtered_skills = @user_skills.reject { |us| us.skill.name == "Précision" }
+
+    # Grouper et trier selon SKILL_ORDER
+    @grouped_skills = {}
+    ApplicationHelper::SKILL_ORDER.each do |carac, skill_names|
+      skills_for_carac = filtered_skills.select { |us| us.skill.carac&.name == carac }
+      # Trier selon l'ordre défini
+      ordered = skill_names.map { |name| skills_for_carac.find { |us| us.skill.name == name } }.compact
+      @grouped_skills[carac] = ordered
+    end
+
+    @jedi_skills = filtered_skills.select { |us| ["Contrôle", "Sens", "Altération"].include?(us.skill.name) }
+    @corporelle_skill = filtered_skills.find { |us| us.skill.name == "Résistance Corporelle" }
 
     # Variables pour l'équipement
     @equipment_slots = EQUIPMENT_SLOTS
@@ -567,7 +578,7 @@ class UsersController < ApplicationController
     else
       flash[:error] = "Vous ne possédez pas assez d'objets pour effectuer cette vente."
     end
-    redirect_to inventory_user_path(@user)
+    redirect_to user_path(@user, anchor: "inventorySection")
   end
 
   def give_item
@@ -585,7 +596,7 @@ class UsersController < ApplicationController
     else
       flash[:error] = "Vous ne possédez pas assez d'objets pour effectuer ce don."
     end
-    redirect_to inventory_user_path(@user)
+    head :ok
   end
 
   def remove_item
@@ -608,7 +619,7 @@ class UsersController < ApplicationController
       flash[:alert] = "Objet introuvable."
     end
   
-    redirect_back(fallback_location: inventory_user_path(current_user))
+    head :ok
   end
 
   def sphero
