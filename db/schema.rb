@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_06_06_231743) do
+ActiveRecord::Schema[7.1].define(version: 2025_06_08_180459) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -326,7 +326,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_06_06_231743) do
     t.string "brand"
     t.string "model"
     t.text "description"
-    t.string "size"
+    t.integer "size"
     t.integer "max_passengers"
     t.integer "min_crew"
     t.integer "hp_max"
@@ -334,7 +334,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_06_06_231743) do
     t.string "main_weapon"
     t.string "secondary_weapon"
     t.integer "turret", default: 0
-    t.integer "hyperdrive_rating"
+    t.float "hyperdrive_rating"
     t.boolean "backup_hyperdrive", default: false
     t.boolean "active", default: false
     t.integer "parent_ship_id"
@@ -351,6 +351,9 @@ ActiveRecord::Schema[7.1].define(version: 2025_06_06_231743) do
     t.integer "tourelles"
     t.boolean "torpilles"
     t.boolean "missiles"
+    t.integer "scale", default: 0, null: false
+    t.integer "capacity", default: 0, null: false
+    t.integer "used_capacity", default: 0, null: false
     t.index ["group_id"], name: "index_ships_on_group_id"
     t.index ["parent_ship_id"], name: "index_ships_on_parent_ship_id"
   end

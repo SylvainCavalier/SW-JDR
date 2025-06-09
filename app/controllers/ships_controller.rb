@@ -3,7 +3,7 @@ class ShipsController < ApplicationController
   before_action :authenticate_user!
 
   def index
-    @ships = current_user.group.ships
+    @ships = current_user.group.ships.order(active: :desc, name: :asc)
   end
 
   def show
@@ -43,6 +43,12 @@ class ShipsController < ApplicationController
   end
 
   def destroy
+    # Si le vaisseau est principal, retirer le statut principal du groupe
+    if @ship.active?
+      @ship.update(active: false)
+    end
+    # Détacher tous les enfants (vaisseaux embarqués)
+    @ship.child_ships.update_all(parent_ship_id: nil)
     @ship.destroy
     redirect_to ships_path, notice: "Vaisseau supprimé."
   end
@@ -54,9 +60,22 @@ class ShipsController < ApplicationController
   end
 
   def dock
+    child = Ship.find(params[:child_id])
     parent = Ship.find(params[:parent_id])
-    @ship.update(parent_ship: parent)
-    redirect_to @ship, notice: "Vaisseau amarré dans la soute de #{parent.name}."
+    Rails.logger.debug "[DOCK] Tentative d'embarquement : #{child.name} (taille=#{child.size}, scale=#{child.scale}, capacité=#{child.embarked_capacity}) dans #{parent.name} (taille=#{parent.size}, scale=#{parent.scale}, capacité=#{parent.capacity}, utilisé=#{parent.used_capacity})"
+    if !child.can_be_embarked?
+      Rails.logger.debug "[DOCK] ECHEC : Le vaisseau ne peut pas être embarqué (déjà embarqué ou trop gros). parent_ship_id=#{child.parent_ship_id}, scale=#{child.scale}"
+      redirect_to parent, alert: "Ce vaisseau ne peut pas être embarqué (déjà embarqué ou trop gros)."
+      return
+    end
+    unless parent.can_embark_ship?(child)
+      Rails.logger.debug "[DOCK] ECHEC : Le parent ne peut pas embarquer ce vaisseau. used_capacity=#{parent.used_capacity}, child_embarked_capacity=#{child.embarked_capacity}, parent_capacity=#{parent.capacity}"
+      redirect_to parent, alert: "Le vaisseau #{parent.name} ne peut pas embarquer ce vaisseau (capacité insuffisante ou contraintes de taille)."
+      return
+    end
+    Rails.logger.debug "[DOCK] SUCCES : Embarquement possible."
+    child.update(parent_ship: parent)
+    redirect_to parent, notice: "Vaisseau amarré dans la soute de #{parent.name}."
   end
 
   def undock
@@ -77,8 +96,8 @@ class ShipsController < ApplicationController
   def ship_params
     params.require(:ship).permit(
       :name, :price, :brand, :model, :description, :size, :max_passengers, 
-      :min_crew, :hp_max, :hp_current, :main_weapon, :secondary_weapon, :turret, 
-      :hyperdrive_rating, :backup_hyperdrive, :image, :parent_ship_id
+      :min_crew, :hp_max, :hp_current, :hyperdrive_rating, :backup_hyperdrive, 
+      :image, :parent_ship_id
     )
   end
 
@@ -103,9 +122,9 @@ class ShipsController < ApplicationController
       ship.ship_weapons.create(
         name: params[:main_weapon],
         weapon_type: 'main',
-        damage_mastery: 5, # valeur par défaut
+        damage_mastery: 5,
         damage_bonus: 0,
-        aim_mastery: 5,
+        aim_mastery: 0,
         aim_bonus: 0
       )
     end
@@ -114,9 +133,9 @@ class ShipsController < ApplicationController
       ship.ship_weapons.create(
         name: params[:secondary_weapon],
         weapon_type: 'secondary',
-        damage_mastery: 4, # valeur par défaut
+        damage_mastery: 4,
         damage_bonus: 0,
-        aim_mastery: 4,
+        aim_mastery: 0,
         aim_bonus: 0
       )
     end
@@ -128,8 +147,8 @@ class ShipsController < ApplicationController
           weapon_type: 'tourelle',
           damage_mastery: 4,
           damage_bonus: 0,
-          aim_mastery: 4,
-          aim_bonus: 0
+          aim_mastery: 0,
+          aim_bonus: 2
         )
       end
       ship.update(tourelles: params[:tourelles_count].to_i)
@@ -145,7 +164,7 @@ class ShipsController < ApplicationController
         quantity_current: params[:torpilles_count].to_i,
         damage_mastery: 8,
         damage_bonus: 0,
-        aim_mastery: 6,
+        aim_mastery: 0,
         aim_bonus: 0
       )
       ship.update(torpilles: true)
@@ -161,7 +180,7 @@ class ShipsController < ApplicationController
         quantity_current: params[:missiles_count].to_i,
         damage_mastery: 6,
         damage_bonus: 0,
-        aim_mastery: 5,
+        aim_mastery: 0,
         aim_bonus: 0
       )
       ship.update(missiles: true)

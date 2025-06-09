@@ -16,7 +16,17 @@
         </div>
         <div class="actions-box d-flex flex-column gap-2 mt-3">
           <%= link_to 'Éditer', edit_ship_path(@ship), class: 'btn btn-outline-warning btn-sm' %>
-          <%= link_to 'Supprimer', ship_path(@ship), method: :delete, data: { confirm: 'Supprimer ce vaisseau ?' }, class: 'btn btn-outline-danger btn-sm' %>
+          <button type="button"
+                  class="btn btn-outline-danger btn-sm"
+                  data-bs-toggle="modal"
+                  data-bs-target="#genericModal"
+                  data-modal-title="Confirmation de suppression"
+                  data-modal-message="Voulez-vous vraiment supprimer le vaisseau <%= @ship.name %> ?"
+                  data-modal-confirm-button="Supprimer"
+                  data-modal-confirm-action="delete#confirm"
+                  data-delete-path="<%= ship_path(@ship) %>">
+            Supprimer
+          </button>
           <% unless @ship.active? %>
             <%= button_to 'Définir comme principal', set_active_ship_path(@ship), method: :patch, class: 'btn btn-outline-success btn-sm' %>
           <% end %>
@@ -72,10 +82,10 @@
         <ul class="list-group neon-list">
           <li class="list-group-item"><strong>Modèle :</strong> <%= @ship.model %></li>
           <li class="list-group-item"><strong>Marque :</strong> <%= @ship.brand %></li>
-          <li class="list-group-item"><strong>Taille :</strong> <%= @ship.size %></li>
+          <li class="list-group-item"><strong>Taille :</strong> <%= @ship.size %>m</li>
+          <li class="list-group-item"><strong>Capacité soute :</strong> <%= @ship.capacity %></li>
           <li class="list-group-item"><strong>Passagers max :</strong> <%= @ship.max_passengers %></li>
           <li class="list-group-item"><strong>Équipage min :</strong> <%= @ship.min_crew %></li>
-          <li class="list-group-item"><strong>Armes :</strong> <%= @ship.main_weapon %>, <%= @ship.secondary_weapon %>, Tourelle : <%= @ship.turret&.humanize %></li>
           <li class="list-group-item"><strong>Hyperpropulseur :</strong> <%= @ship.hyperdrive_rating %> (Secours : <%= @ship.backup_hyperdrive ? 'Oui' : 'Non' %>)</li>
         </ul>
 
@@ -95,7 +105,7 @@
                   'Maniabilité',
                   'Vitesse'
                 ] %>
-                <div class="col-12 d-flex flex-wrap justify-content-between align-items-center">
+                <div class="d-flex flex-column justify-content-between align-items-center">
                   <% main_skills.each do |skill_name| %>
                     <% skill = @skills.find { |s| s.skill.name == skill_name } %>
                     <div class="skill-item me-3 mb-2">
@@ -110,31 +120,43 @@
         </div>
       </div>
     </div>
-    <div class="inventory-box mt-3">
-      <h4 class="section-title">Inventaire</h4>
-      <div class="card bg-dark text-light shadow-sm">
-        <div class="card-body">
-          <%= render 'ships/inventory', objects: @objects, ship: @ship %>
-        </div>
-      </div>
-    </div>
 
-    <div class="child-ships-box mt-3">
-      <h4 class="section-title">Soute (vaisseaux embarqués)</h4>
-      <div class="card bg-dark text-light shadow-sm">
-        <div class="card-body">
-          <% if @child_ships.any? %>
-            <ul>
-              <% @child_ships.each do |child| %>
-                <li><%= link_to child.name, ship_path(child), class: 'neon-link' %> (<%= child.model %>)</li>
-              <% end %>
-            </ul>
-          <% else %>
-            <p>Aucun vaisseau embarqué.</p>
-          <% end %>
+    <% unless @ship.scale == "very_small" || @ship.scale == "small" %>
+      <div class="child-ships-box mt-3">
+        <h4 class="section-title">Vaisseaux embarqués</h4>
+        <div class="mb-2 text-info">
+          Capacité utilisée : <%= @ship.used_capacity %> / <%= @ship.capacity %>
+        </div>
+        <% available_ships = current_user.group.ships.where.not(id: @ship.child_ships.pluck(:id) + [@ship.id]).select { |s| s.parent_ship_id.nil? && s.can_be_embarked? } %>
+        <% if available_ships.any? && @ship.can_embark_ships? %>
+          <div class="mb-2">
+            <%= form_with url: dock_ship_path, method: :patch, local: true do |f| %>
+              <div class="input-group">
+                <%= select_tag :child_id, options_from_collection_for_select(available_ships, :id, :name), class: "form-select" %>
+                <%= hidden_field_tag :parent_id, @ship.id %>
+                <%= f.submit 'Embarquer', class: 'btn btn-outline-success' %>
+              </div>
+            <% end %>
+          </div>
+        <% end %>
+        <div class="card bg-dark text-light shadow-sm">
+          <div class="card-body">
+            <% if @child_ships.any? %>
+              <ul>
+                <% @child_ships.each do |child| %>
+                  <li class="d-flex justify-content-start align-items-center">
+                    <%= link_to child.name, ship_path(child), class: 'neon-link' %> (<%= child.model %>)
+                    <%= button_to 'Sortir', undock_ship_path(child), method: :patch, class: 'btn btn-sm btn-outline-warning ms-2', form: { data: { turbo_confirm: "Sortir ce vaisseau de la soute ?" } } %>
+                  </li>
+                <% end %>
+              </ul>
+            <% else %>
+              <p>Aucun vaisseau embarqué.</p>
+            <% end %>
+          </div>
         </div>
       </div>
-    </div>
+    <% end %>
 
     <div class="ship-weapons-box mt-3">
       <h4 class="section-title">Armes du vaisseau</h4>
@@ -145,30 +167,18 @@
               <thead>
                 <tr>
                   <th>Nom</th>
-                  <th>Type</th>
-                  <th>Quantité</th>
                   <th>Dégâts</th>
                   <th>Visée</th>
                   <th>Spécial</th>
-                  <th>Description</th>
                 </tr>
               </thead>
               <tbody>
                 <% @ship.ship_weapons.each do |weapon| %>
                   <tr>
                     <td><%= weapon.name %></td>
-                    <td><%= weapon.weapon_type %></td>
-                    <td>
-                      <% if weapon.quantity_max.present? %>
-                        <%= weapon.quantity_current %> / <%= weapon.quantity_max %>
-                      <% else %>
-                        -
-                      <% end %>
-                    </td>
                     <td><%= weapon.damage_mastery %>D<% if weapon.damage_bonus.to_i > 0 %> + <%= weapon.damage_bonus %><% end %></td>
                     <td><%= weapon.aim_mastery %>D<% if weapon.aim_bonus.to_i > 0 %> + <%= weapon.aim_bonus %><% end %></td>
                     <td><%= weapon.special %></td>
-                    <td><%= weapon.description %></td>
                   </tr>
                 <% end %>
               </tbody>
@@ -191,7 +201,7 @@
             <div><strong>Restant :</strong> <%= torpille.quantity_current %> / <%= torpille.quantity_max %></div>
             <div class="ammo-icons mt-2">
               <% torpille.quantity_current.to_i.times do %>
-                <%= image_tag 'torpilles.png', style: 'height: 32px; width: auto; margin-right: 2px;' %>
+                <%= image_tag 'torpilles.png', style: 'height: 28px; width: auto; margin-right: 2px;' %>
               <% end %>
             </div>
           </div>
@@ -211,6 +221,15 @@
           </div>
         </div>
       <% end %>
+    </div>
+
+    <div class="inventory-box mt-3">
+      <h4 class="section-title">Soute</h4>
+      <div class="card bg-dark text-light shadow-sm">
+        <div class="card-body">
+          <%= render 'ships/inventory', objects: @objects, ship: @ship %>
+        </div>
+      </div>
     </div>
   </div>
 </div>
@@ -295,7 +314,6 @@
 .sensor-row {
   display: flex;
   align-items: center;
-  font-size: 1.2em;
   margin-bottom: 0.5em;
 }
 .sensor-value {

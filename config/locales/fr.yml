@@ -1,0 +1,10 @@
+activerecord:
+  attributes:
+    ship:
+      scales:
+        very_small: "Très petit (1-9m)"
+        small: "Petit (10-19m)"
+        medium: "Moyen (20-49m)"
+        big: "Grand (50-99m)"
+        very_big: "Très grand (100-299m)"
+        gigantic: "Gigantesque (300m+)" 
