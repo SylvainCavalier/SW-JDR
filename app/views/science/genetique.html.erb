@@ -1,10 +1,12 @@
-<h1 class="text-center mt-4">Tableau de Bord Génétique</h1>
+<h1 class="container text-center mt-4">Tableau de Bord Génétique</h1>
 
-<div class="d-flex justify-content-center mt-4">
-  <button class="btn btn-success mx-2" id="cultiver-btn">🌱 Cultiver un embryon</button>
-  <button class="btn btn-success mx-2" id="traits-btn">🧬 Appliquer les traits</button>
-  <button class="btn btn-success mx-2" id="clonage-btn">🔬 Clonage</button>
-  <button class="btn btn-success mx-2" id="clonage-btn"> Statistiques</button>
+<div class="d-flex flex-column justify-content-center align-items-center mt-4">
+  <img src="<%= asset_path('genetiqueillus2.png') %>" alt="Génétique" class="img-fluid mb-4" style="max-width: 40vw;">
+  <%= link_to "🔬 Labo d'études génétiques", labo_genetique_path, class: "btn btn-success m-2" %>
+  <%= link_to "🧬 Cultiver un embryon", cultiver_embryon_path, class: "btn btn-success m-2" %>
+  <%= link_to "🧬 Appliquer les traits", appliquer_traits_path, class: "btn btn-success m-2" %>
+  <%= link_to "🧬 Clonage", clonage_path, class: "btn btn-success m-2" %>
+  <%= link_to "📋 Statistiques", genetique_stats_path, class: "btn btn-success m-2" %>
 </div>
 
 <!-- Conteneur pour afficher le contenu dynamique -->

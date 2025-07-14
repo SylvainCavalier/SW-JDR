@@ -25,6 +25,8 @@ class User < ApplicationRecord
   has_many :holonew_reads, dependent: :destroy
   has_many :read_holonews, through: :holonew_reads, source: :holonew
   has_many :equipments, dependent: :destroy
+  has_many :user_genes, dependent: :destroy
+  has_many :genes, through: :user_genes
   has_many :crew_members, as: :assignable, dependent: :destroy
   has_many :goods_crates, dependent: :destroy
   has_one_attached :avatar

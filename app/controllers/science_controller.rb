@@ -201,6 +201,63 @@ class ScienceController < ApplicationController
   def showbestiaire
     @pet = Pet.find(params[:id])
   end
+
+  def genetique
+  end
+
+  def labo
+    @genes = Gene.where(positive: true)
+    @user_genes = current_user.user_genes.includes(:gene).index_by(&:gene_id)
+    @study_points = current_user.study_points
+    @fioles = current_user.user_inventory_objects.joins(:inventory_object).find_by(inventory_objects: { name: "Fiole" })&.quantity || 0
+  end
+
+  def recherche_gene
+    if current_user.study_points <= 0
+      render json: { error: "Pas assez de points d’étude" }, status: :unprocessable_entity and return
+    end
+
+    fiole = current_user.user_inventory_objects.joins(:inventory_object).find_by(inventory_objects: { name: "Fiole" })
+    if fiole.nil? || fiole.quantity <= 0
+      render json: { error: "Pas de fiole disponible" }, status: :unprocessable_entity and return
+    end
+
+    # Consommation
+    current_user.update!(study_points: current_user.study_points - 1)
+    fiole.decrement!(:quantity)
+
+    # Tentative d’étude (40% de succès)
+    if rand < 0.4
+      gene = Gene.where(positive: true).sample
+      user_gene = current_user.user_genes.find_by(gene: gene)
+
+      if user_gene
+        if user_gene.level < 3
+          user_gene.increment!(:level)
+          render json: { success: true, upgrade: true, property: gene.property, level: user_gene.level }
+        else
+          render json: { success: false }
+        end
+      else
+        UserGene.create!(user: current_user, gene: gene, level: 1)
+        render json: { success: true, upgrade: false, property: gene.property, level: 1 }
+      end
+    else
+      render json: { success: false }
+    end
+  end
+
+  def cultiver
+  end
+
+  def traits
+  end
+
+  def clonage
+  end
+
+  def stats
+  end
   
   private
 

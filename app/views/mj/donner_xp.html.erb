@@ -28,5 +28,30 @@
       <%= f.submit "Donner", class: "btn btn-outline-success" %>
     </div>
   <% end %>
+
+  <hr class="my-4">
+
+  <h2 class="text-info">Donner des points d'étude</h2>
+
+  <%= form_with url: attribution_study_points_path, method: :post, local: true do |f| %>
+    <div class="xp-give-row" data-controller="increment">
+      <label for="study_points">Points d'étude à donner</label>
+      <div class="input-group custom-input-group">
+        <%= button_tag "-", type: "button", class: "btn btn-outline-secondary", data: { action: "click->increment#decrement" } %>
+        <%= number_field_tag :study_points, 1, min: 1, class: "form-control xp-input", data: { increment_target: "input" } %>
+        <%= button_tag "+", type: "button", class: "btn btn-outline-secondary", data: { action: "click->increment#increment" } %>
+      </div>
+    </div>
+
+    <!-- Sélection de joueur -->
+    <div class="player-select-row mt-3">
+      <label for="user_id">Choisissez un joueur</label>
+      <%= select_tag :user_id, options_from_collection_for_select(User.where(group: Group.find_by(name: "PJ")), :id, :username), prompt: "Sélectionner un joueur", class: "form-select" %>
+    </div>
+
+    <div class="mt-3">
+      <%= submit_tag "Donner", class: "btn btn-outline-info" %>
+    </div>
+  <% end %>
   <%= link_to "Retour", current_user.group.name == "MJ" ? mj_dashboard_path : root_path, class: "btn btn-outline-secondary go-back" %>
 </div>

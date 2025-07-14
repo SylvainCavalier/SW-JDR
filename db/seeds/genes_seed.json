@@ -1,0 +1,1200 @@
+[
+  {
+    "property": "Résistance corporelle",
+    "description": "Augmente la capacité à encaisser les dégâts physiques.",
+    "positive": true,
+    "category": 0,
+    "skill_bonuses": {
+      "res_corp": true
+    },
+    "stats_bonuses": {},
+    "special_traits": []
+  },
+  {
+    "property": "Résistance interne",
+    "description": "Renforce la résistance aux dégâts ignorant la défense.",
+    "positive": true,
+    "category": 0,
+    "skill_bonuses": {},
+    "stats_bonuses": {},
+    "special_traits": [
+      {
+        "base": "Résistance interne",
+        "type": "bonus",
+        "values": {
+          "1": "+1",
+          "2": "+2",
+          "3": "+1D"
+        }
+      }
+    ]
+  },
+  {
+    "property": "Résistance aux poisons",
+    "description": "Immunité partielle ou totale aux substances toxiques.",
+    "positive": true,
+    "category": 0,
+    "skill_bonuses": {},
+    "stats_bonuses": {},
+    "special_traits": [
+      {
+        "base": "résistance aux poisons",
+        "type": "adjective"
+      }
+    ]
+  },
+  {
+    "property": "Robustesse",
+    "description": "Absorption des impacts physiques, réduction des fractures.",
+    "positive": true,
+    "category": 0,
+    "skill_bonuses": {},
+    "stats_bonuses": {
+      "hp_max": true
+    },
+    "special_traits": []
+  },
+  {
+    "property": "Résistance à la Force",
+    "description": "Diminue les effets de pouvoirs de la Force, notamment ceux affectant l’esprit.",
+    "positive": true,
+    "category": 0,
+    "skill_bonuses": {},
+    "stats_bonuses": {},
+    "special_traits": [
+      {
+        "base": "Résistance à la Force",
+        "type": "bonus",
+        "values": {
+          "1": "+1",
+          "2": "+2",
+          "3": "+1D"
+        }
+      }
+    ]
+  },
+  {
+    "property": "Régénération",
+    "description": "Régénération légère des blessures sur une période de temps.",
+    "positive": true,
+    "category": 0,
+    "skill_bonuses": {},
+    "stats_bonuses": {},
+    "special_traits": [
+      {
+        "base": "régénération",
+        "type": "bonus",
+        "values": {
+          "1": "+1",
+          "2": "+2",
+          "3": "+1D"
+        }
+      }
+    ]
+  },
+  {
+    "property": "Epines",
+    "description": "Inflige des dégâts quand il est touché au corps à corps.",
+    "positive": true,
+    "category": 0,
+    "skill_bonuses": {},
+    "stats_bonuses": {},
+    "special_traits": [
+      {
+        "base": "Epines",
+        "type": "bonus",
+        "values": {
+          "1": "+1",
+          "2": "+2",
+          "3": "+1D"
+        }
+      }
+    ]
+  },
+  {
+    "property": "Résistance aux chutes",
+    "description": "Capacité naturelle à se réceptionner.",
+    "positive": true,
+    "category": 0,
+    "skill_bonuses": {},
+    "stats_bonuses": {},
+    "special_traits": [
+      {
+        "base": "Résistance aux chutes",
+        "type": "bonus",
+        "values": {
+          "1": "+1D",
+          "2": "+2D",
+          "3": "Insensible"
+        }
+      }
+    ]
+  },
+  {
+    "property": "Résistance aux séquelles",
+    "description": "Diminue le risque de blessures permanentes.",
+    "positive": true,
+    "category": 0,
+    "skill_bonuses": {},
+    "stats_bonuses": {},
+    "special_traits": [
+      {
+        "base": "Bonus au jet de séquelles",
+        "type": "bonus",
+        "values": {
+          "1": "+1",
+          "2": "+2",
+          "3": "+3"
+        }
+      }
+    ]
+  },
+  {
+    "property": "Morsure puissante",
+    "description": "Augmente les dégâts d’attaque de morsure",
+    "positive": true,
+    "category": 1,
+    "skill_bonuses": {},
+    "stats_bonuses": {
+      "damage": true,
+      "damage_bonus": true,
+      "weapon": "morsure"
+    },
+    "special_traits": []
+  },
+  {
+    "property": "Griffes acérées",
+    "description": "Augmente les dégâts d’attaque de griffes.",
+    "positive": true,
+    "category": 1,
+    "skill_bonuses": {},
+    "stats_bonuses": {
+      "damage": true,
+      "damage_bonus": true,
+      "weapon": "griffes"
+    },
+    "special_traits": []
+  },
+  {
+    "property": "Queue fouetteuse",
+    "description": "Attaque de queue infligeant des dégâts supplémentaires.",
+    "positive": true,
+    "category": 1,
+    "skill_bonuses": {},
+    "stats_bonuses": {
+      "damage": true,
+      "damage_bonus": true,
+      "weapon": "queue"
+    },
+    "special_traits": []
+  },
+  {
+    "property": "Corne percutante",
+    "description": "Attaque de corne infligeant des dégâts supplémentaires.",
+    "positive": true,
+    "category": 1,
+    "skill_bonuses": {},
+    "stats_bonuses": {
+      "damage": true,
+      "damage_bonus": true,
+      "weapon": "corne"
+    },
+    "special_traits": []
+  },
+  {
+    "property": "Ailes tranchantes",
+    "description": "Ailes utilisées comme armes, infligeant des dégâts.",
+    "positive": true,
+    "category": 1,
+    "skill_bonuses": {},
+    "stats_bonuses": {
+      "damage": true,
+      "damage_bonus": true,
+      "weapon": "ailes"
+    },
+    "special_traits": []
+  },
+  {
+    "property": "Dard venimeux",
+    "description": "Inflige des dégâts de poison, affaiblit avec le temps.",
+    "positive": true,
+    "category": 1,
+    "skill_bonuses": {},
+    "stats_bonuses": {
+      "damage": true,
+      "damage_bonus": true,
+      "weapon": "dard"
+    },
+    "special_traits": [
+      {
+        "base": "poison",
+        "type": "bonus",
+        "values": {
+          "1": "+1",
+          "2": "+2",
+          "3": "+1D"
+        }
+      }
+    ]
+  },
+  {
+    "property": "Jet d'acide",
+    "description": "Projette de l'acide infligeant des brûlures.",
+    "positive": true,
+    "category": 1,
+    "skill_bonuses": {},
+    "stats_bonuses": {
+      "damage": true,
+      "damage_bonus": true,
+      "weapon": "acide"
+    },
+    "special_traits": [
+      {
+        "base": "Brûlure 1D par tour",
+        "type": "adjective"
+      }
+    ]
+  },
+  {
+    "property": "Attaque paralysante",
+    "description": "Peut paralyser ou ralentir l'adversaire.",
+    "positive": true,
+    "category": 1,
+    "skill_bonuses": {},
+    "stats_bonuses": {
+      "damage": true,
+      "weapon": "paralysie"
+    },
+    "special_traits": [
+      {
+        "base": "effet paralysant",
+        "type": "bonus",
+        "values": {
+          "1": "Désorienté 1 tour",
+          "2": "Etourdi 1 tour",
+          "3": "Paralysé 1 tour"
+        }
+      }
+    ]
+  },
+  {
+    "property": "Charge",
+    "description": "Charge destructrice nécessitant un temps de préparation.",
+    "positive": true,
+    "category": 1,
+    "skill_bonuses": {},
+    "stats_bonuses": {
+      "damage": true,
+      "weapon": "charge"
+    },
+    "special_traits": [
+      {
+        "base": "Charge",
+        "type": "bonus",
+        "values": {
+          "1": "+1D dégâts,1 tour Préparation",
+          "2": "+2D dégâts,1 tour Préparation",
+          "3": "+3D dégâts,1 tour Préparation"
+        }
+      }
+    ]
+  },
+  {
+    "property": "Brise-armure",
+    "description": "Réduit la résistance corporelle de l’adversaire.",
+    "positive": true,
+    "category": 1,
+    "skill_bonuses": {},
+    "stats_bonuses": {},
+    "special_traits": [
+      {
+        "base": "brise-armure",
+        "type": "bonus",
+        "values": {
+          "1": "-2 res_corp",
+          "2": "-1D res_corp",
+          "3": "-1D+2 res_corp"
+        }
+      }
+    ]
+  },
+  {
+    "property": "Cri sonique",
+    "description": "Cri perçant désorientant ou effrayant les ennemis.",
+    "positive": true,
+    "category": 1,
+    "skill_bonuses": {},
+    "stats_bonuses": {
+      "damage": true,
+      "weapon": "cri"
+    },
+    "special_traits": [
+      {
+        "base": "cri sonique",
+        "type": "bonus",
+        "values": {
+          "1": "désorientation monocible 10m",
+          "2": "désorientation AOE 10m",
+          "3": "1D ignore def"
+        }
+      }
+    ]
+  },
+  {
+    "property": "Langue-projectile",
+    "description": "Attaque à distance via une langue rapide et puissante.",
+    "positive": true,
+    "category": 1,
+    "skill_bonuses": {},
+    "stats_bonuses": {
+      "damage": true,
+      "weapon": "langue"
+    },
+    "special_traits": [
+      {
+        "base": "Attraction avec la Langue",
+        "type": "adjective"
+      }
+    ]
+  },
+  {
+    "property": "Jets d’épines",
+    "description": "Projette des épines à distance, blessant les ennemis.",
+    "positive": true,
+    "category": 1,
+    "skill_bonuses": {},
+    "stats_bonuses": {
+      "damage": true,
+      "weapon": "épines"
+    },
+    "special_traits": []
+  },
+  {
+    "property": "Suceur de vie",
+    "description": "Attaque qui draine la vitalité de l'adversaire.",
+    "positive": true,
+    "category": 1,
+    "skill_bonuses": {},
+    "stats_bonuses": {
+      "damage": true,
+      "weapon": "drain vital"
+    },
+    "special_traits": [
+      {
+        "base": "vol de vie",
+        "type": "bonus",
+        "values": {
+          "1": "récupère 1 PV",
+          "2": "récupère 2 PV",
+          "3": "récupère 1D PV"
+        }
+      }
+    ]
+  },
+  {
+    "property": "Force physique",
+    "description": "Augmentation des dégâts de mêlée, capacité de porter plus de poids.",
+    "positive": true,
+    "category": 1,
+    "skill_bonuses": {},
+    "stats_bonuses": {
+      "damage_bonus": true
+    },
+    "special_traits": [
+      {
+        "base": "Force décuplée",
+        "type": "adjective"
+      }
+    ]
+  },
+  {
+    "property": "Vitesse accrue",
+    "description": "Augmentation de la vitesse de déplacement.",
+    "positive": true,
+    "category": 2,
+    "skill_bonuses": {
+      "vitesse": true
+    },
+    "stats_bonuses": {},
+    "special_traits": []
+  },
+  {
+    "property": "Précision redoutable",
+    "description": "Amélioration de la précision des attaques",
+    "positive": true,
+    "category": 2,
+    "skill_bonuses": { 
+      "precision": true
+    },
+    "stats_bonuses": {},
+    "special_traits": []
+  },
+  {
+    "property": "Agilité",
+    "description": "Améliore la capacité à esquiver ou à réaliser des acrobaties.",
+    "positive": true,
+    "category": 2,
+    "skill_bonuses": {
+      "esquive": true
+    },
+    "stats_bonuses": {},
+    "special_traits": []
+  },
+  {
+    "property": "Escalade",
+    "description": "Permet de grimper facilement sur des surfaces complexes.",
+    "positive": true,
+    "category": 3,
+    "skill_bonuses": {},
+    "stats_bonuses": {},
+    "special_traits": []
+  },
+  {
+    "property": "Nage rapide",
+    "description": "Améliore les mouvements sous l’eau.",
+    "positive": true,
+    "category": 3,
+    "skill_bonuses": {},
+    "stats_bonuses": {},
+    "special_traits": []
+  },
+  {
+    "property": "Capacité de vol",
+    "description": "Ailes ou membranes pour planer ou voler.",
+    "positive": true,
+    "category": 3,
+    "skill_bonuses": {},
+    "stats_bonuses": {},
+    "special_traits": []
+  },
+  {
+    "property": "Sauteurs",
+    "description": "Capacités pour effectuer des sauts de grande distance.",
+    "positive": true,
+    "category": 3,
+    "skill_bonuses": {},
+    "stats_bonuses": {},
+    "special_traits": []
+  },
+  {
+    "property": "Téléportation à courte distance",
+    "description": "Déplacement instantané sur quelques mètres.",
+    "positive": true,
+    "category": 3,
+    "skill_bonuses": {},
+    "stats_bonuses": {},
+    "special_traits": []
+  },
+  {
+    "property": "Déplacement souterrain",
+    "description": "Capacité à creuser des tunnels dans certains matériaux.",
+    "positive": true,
+    "category": 3,
+    "skill_bonuses": {},
+    "stats_bonuses": {},
+    "special_traits": []
+  },
+  {
+    "property": "Déplacement silencieux",
+    "description": "Permet de se mouvoir sans bruit, améliorant la discrétion.",
+    "positive": true,
+    "category": 3,
+    "skill_bonuses": {},
+    "stats_bonuses": {},
+    "special_traits": []
+  },
+  {
+    "property": "Vision nocturne",
+    "description": "Capacité à voir dans l’obscurité totale ou faible.",
+    "positive": true,
+    "category": 4,
+    "skill_bonuses": {},
+    "stats_bonuses": {},
+    "special_traits": [
+      {
+        "base": "vision nocturne",
+        "type": "adjective"
+      }
+    ]
+  },
+  {
+    "property": "Vision infrarouge",
+    "description": "Permet de détecter des sources de chaleur, utile pour repérer des ennemis cachés.",
+    "positive": true,
+    "category": 4,
+    "skill_bonuses": {},
+    "stats_bonuses": {},
+    "special_traits": [
+      {
+        "base": "vision infrarouge",
+        "type": "adjective"
+      }
+    ]
+  },
+  {
+    "property": "Vision télescopique",
+    "description": "Permet de voir des détails à grande distance.",
+    "positive": true,
+    "category": 4,
+    "skill_bonuses": {},
+    "stats_bonuses": {},
+    "special_traits": [
+      {
+        "base": "vision télescopique",
+        "type": "adjective"
+      }
+    ]
+  },
+  {
+    "property": "Vision à rayons X",
+    "description": "Permet de voir à travers certains matériaux, utile pour détecter des objets cachés.",
+    "positive": true,
+    "category": 4,
+    "skill_bonuses": {},
+    "stats_bonuses": {},
+    "special_traits": [
+      {
+        "base": "vision à rayons X",
+        "type": "adjective"
+      }
+    ]
+  },
+  {
+    "property": "Olfaction accrue",
+    "description": "Améliore la détection d’odeurs, repérage d’ennemis ou de traces.",
+    "positive": true,
+    "category": 4,
+    "skill_bonuses": {},
+    "stats_bonuses": {},
+    "special_traits": [
+      {
+        "base": "olfaction accrue",
+        "type": "adjective"
+      }
+    ]
+  },
+  {
+    "property": "Ouïe fine",
+    "description": "Permet de percevoir les bruits à grande distance ou faibles.",
+    "positive": true,
+    "category": 4,
+    "skill_bonuses": {},
+    "stats_bonuses": {},
+    "special_traits": [
+      {
+        "base": "ouïe fine",
+        "type": "adjective"
+      }
+    ]
+  },
+  {
+    "property": "Sixième sens",
+    "description": "Permet de pressentir des dangers immédiats (ex : attaques surprises).",
+    "positive": true,
+    "category": 4,
+    "skill_bonuses": {},
+    "stats_bonuses": {},
+    "special_traits": [
+      {
+        "base": "sixième sens",
+        "type": "adjective"
+      }
+    ]
+  },
+  {
+    "property": "Écholocation",
+    "description": "Perçoit les formes en produisant un son, utile dans l’obscurité totale.",
+    "positive": true,
+    "category": 4,
+    "skill_bonuses": {},
+    "stats_bonuses": {},
+    "special_traits": [
+      {
+        "base": "écholocation",
+        "type": "adjective"
+      }
+    ]
+  },
+  {
+    "property": "Intelligence accrue",
+    "description": "Bonus pour la résolution d’énigmes et la planification.",
+    "positive": true,
+    "category": 4,
+    "skill_bonuses": {},
+    "stats_bonuses": {},
+    "special_traits": [
+      {
+        "base": "intellect",
+        "type": "bonus",
+        "values": {
+          "1": "+1D",
+          "2": "+2D",
+          "3": "+3D"
+        }
+      }
+    ]
+  },
+  {
+    "property": "Empathie",
+    "description": "Capacité à détecter les émotions ou intentions d’autres êtres vivants.",
+    "positive": true,
+    "category": 5,
+    "skill_bonuses": {},
+    "stats_bonuses": {},
+    "special_traits": [
+      {
+        "base": "empathie",
+        "type": "adjective"
+      }
+    ]
+  },
+  {
+    "property": "Charisme",
+    "description": "Facilite les interactions sociales, persuasion et leadership.",
+    "positive": true,
+    "category": 5,
+    "skill_bonuses": {},
+    "stats_bonuses": {},
+    "special_traits": [
+      {
+        "base": "charisme",
+        "type": "adjective"
+      }
+    ]
+  },
+  {
+    "property": "Mimétisme vocal",
+    "description": "Imite les voix et les sons, utile pour tromper les ennemis.",
+    "positive": true,
+    "category": 5,
+    "skill_bonuses": {},
+    "stats_bonuses": {},
+    "special_traits": [
+      {
+        "base": "mimétisme vocal",
+        "type": "adjective"
+      }
+    ]
+  },
+  {
+    "property": "Communication animale",
+    "description": "Communique avec les animaux.",
+    "positive": true,
+    "category": 5,
+    "skill_bonuses": {},
+    "stats_bonuses": {},
+    "special_traits": [
+      {
+        "base": "communication animale",
+        "type": "adjective"
+      }
+    ]
+  },
+  {
+    "property": "Empathie végétale",
+    "description": "Communique avec les plantes.",
+    "positive": true,
+    "category": 5,
+    "skill_bonuses": {},
+    "stats_bonuses": {},
+    "special_traits": [
+      {
+        "base": "empathie végétale",
+        "type": "adjective"
+      }
+    ]
+  },
+  {
+    "property": "Communication avec les machines",
+    "description": "Capacité à interagir avec des systèmes informatiques ou mécaniques.",
+    "positive": true,
+    "category": 5,
+    "skill_bonuses": {},
+    "stats_bonuses": {},
+    "special_traits": [
+      {
+        "base": "communication avec les machines",
+        "type": "adjective"
+      }
+    ]
+  },
+  {
+    "property": "Contrôle des phéromones",
+    "description": "Influence légère sur l’état émotionnel d’autres êtres.",
+    "positive": true,
+    "category": 7,
+    "skill_bonuses": {},
+    "stats_bonuses": {},
+    "special_traits": [
+      {
+        "base": "contrôle des phéromones",
+        "type": "adjective"
+      }
+    ]
+  },
+  {
+    "property": "Adaptation aquatique",
+    "description": "Possibilité de respirer sous l’eau et de supporter des pressions profondes.",
+    "positive": true,
+    "category": 6,
+    "skill_bonuses": {},
+    "stats_bonuses": {},
+    "special_traits": [
+      {
+        "base": "adaptation aquatique",
+        "type": "adjective"
+      }
+    ]
+  },
+  {
+    "property": "Adaptation au vide spatial",
+    "description": "Tolérance temporaire aux conditions de vide spatial.",
+    "positive": true,
+    "category": 6,
+    "skill_bonuses": {},
+    "stats_bonuses": {},
+    "special_traits": [
+      {
+        "base": "adaptation au vide spatial",
+        "type": "adjective"
+      }
+    ]
+  },
+  {
+    "property": "Camouflage naturel",
+    "description": "Couleur de peau ou pelage s’adaptant à l’environnement, utile pour éviter la détection.",
+    "positive": true,
+    "category": 6,
+    "skill_bonuses": {},
+    "stats_bonuses": {},
+    "special_traits": [
+      {
+        "base": "camouflage naturel",
+        "type": "adjective"
+      }
+    ]
+  },
+  {
+    "property": "Résistance aux maladies",
+    "description": "Réduction des effets ou immunité contre les maladies.",
+    "positive": true,
+    "category": 0,
+    "skill_bonuses": {},
+    "stats_bonuses": {},
+    "special_traits": [
+      {
+        "base": "résistance aux maladies",
+        "type": "adjective"
+      }
+    ]
+  },
+  {
+    "property": "Résistance au feu",
+    "description": "Réduction des dégâts de sources brûlantes ou inflammables.",
+    "positive": true,
+    "category": 0,
+    "skill_bonuses": {},
+    "stats_bonuses": {},
+    "special_traits": [
+      {
+        "base": "résistance au feu",
+        "type": "adjective"
+      }
+    ]
+  },
+  {
+    "property": "Résistance au froid",
+    "description": "Tolérance accrue aux environnements froids et glacials.",
+    "positive": true,
+    "category": 0,
+    "skill_bonuses": {},
+    "stats_bonuses": {},
+    "special_traits": [
+      {
+        "base": "résistance au froid",
+        "type": "adjective"
+      }
+    ]
+  },
+  {
+    "property": "Résistance aux radiations",
+    "description": "Diminue l’impact des radiations dans des zones irradiées.",
+    "positive": true,
+    "category": 0,
+    "skill_bonuses": {},
+    "stats_bonuses": {},
+    "special_traits": [
+      {
+        "base": "résistance aux radiations",
+        "type": "adjective"
+      }
+    ]
+  },
+  {
+    "property": "Support de gravité élevée",
+    "description": "Capacité à se mouvoir normalement sous une gravité importante.",
+    "positive": true,
+    "category": 6,
+    "skill_bonuses": {},
+    "stats_bonuses": {},
+    "special_traits": [
+      {
+        "base": "support de gravité élevée",
+        "type": "adjective"
+      }
+    ]
+  },
+  {
+    "property": "Attaque psychique",
+    "description": "Utilise l'esprit comme arme, ignorée par les défenses physiques.",
+    "positive": true,
+    "category": 7,
+    "skill_bonuses": {},
+    "stats_bonuses": {
+      "damage": true,
+      "weapon": "psychique"
+    },
+    "special_traits": [
+      {
+        "base": "attaque psychique",
+        "type": "bonus",
+        "values": {
+          "1": "+1D",
+          "2": "+2D",
+          "3": "+3D"
+        }
+      }
+    ]
+  },
+  {
+    "property": "Sensibilité à la Force",
+    "description": "Prédisposition pour ressentir la Force, utile pour des interactions avec des objets ou des pouvoirs.",
+    "positive": true,
+    "category": 7,
+    "skill_bonuses": {},
+    "stats_bonuses": {
+      "force": true
+    },
+    "special_traits": [
+      {
+        "base": "sensibilité à la force",
+        "type": "adjective"
+      }
+    ]
+  },
+  {
+    "property": "Télépathie",
+    "description": "Capacité de communiquer mentalement avec d’autres.",
+    "positive": true,
+    "category": 7,
+    "skill_bonuses": {},
+    "stats_bonuses": {},
+    "special_traits": [
+      {
+        "base": "télépathie",
+        "type": "adjective"
+      }
+    ]
+  },
+  {
+    "property": "Télékinésie",
+    "description": "Peut déplacer des objets de faible poids par la pensée.",
+    "positive": true,
+    "category": 7,
+    "skill_bonuses": {},
+    "stats_bonuses": {},
+    "special_traits": [
+      {
+        "base": "télékinésie",
+        "type": "adjective"
+      }
+    ]
+  },
+  {
+    "property": "Influence mentale",
+    "description": "Aptitude à persuader ou à influencer des esprits faibles.",
+    "positive": true,
+    "category": 7,
+    "skill_bonuses": {},
+    "stats_bonuses": {},
+    "special_traits": [
+      {
+        "base": "influence mentale",
+        "type": "adjective"
+      }
+    ]
+  },
+  {
+    "property": "Immunité mentale",
+    "description": "Réduit l’effet des pouvoirs mentaux hostiles.",
+    "positive": true,
+    "category": 7,
+    "skill_bonuses": {},
+    "stats_bonuses": {},
+    "special_traits": [
+      {
+        "base": "immunité mentale",
+        "type": "adjective"
+      }
+    ]
+  },
+  {
+    "property": "Lévitation temporaire",
+    "description": "Permet de flotter à faible hauteur.",
+    "positive": true,
+    "category": 7,
+    "skill_bonuses": {},
+    "stats_bonuses": {},
+    "special_traits": [
+      {
+        "base": "lévitation",
+        "type": "adjective"
+      }
+    ]
+  },
+  {
+    "property": "Queue préhensile",
+    "description": "Agit comme un bras supplémentaire.",
+    "positive": true,
+    "category": 8,
+    "skill_bonuses": {
+      "precision": true
+    },
+    "stats_bonuses": {},
+    "special_traits": [
+      {
+        "base": "queue préhensile",
+        "type": "adjective"
+      }
+    ]
+  },
+  {
+    "property": "Changement de couleur de peau",
+    "description": "Camoufle ou communique selon la couleur.",
+    "positive": true,
+    "category": 8,
+    "skill_bonuses": {},
+    "stats_bonuses": {},
+    "special_traits": [
+      {
+        "base": "changement de couleur de peau",
+        "type": "adjective"
+      }
+    ]
+  },
+  {
+    "property": "Emanation de lumière",
+    "description": "Peau ou yeux brillent légèrement.",
+    "positive": true,
+    "category": 8,
+    "skill_bonuses": {},
+    "stats_bonuses": {},
+    "special_traits": [
+      {
+        "base": "emanation de lumière",
+        "type": "adjective"
+      }
+    ]
+  },
+  {
+    "property": "Mémoire hypermnésique",
+    "description": "Permet de se souvenir de toutes les informations vues, entendues, ressenties, etc.",
+    "positive": true,
+    "category": 8,
+    "skill_bonuses": {},
+    "stats_bonuses": {},
+    "special_traits": [
+      {
+        "base": "mémoire hypermnésique",
+        "type": "adjective"
+      }
+    ]
+  },
+  {
+    "property": "Absorption d’énergie solaire",
+    "description": "Régénère au soleil.",
+    "positive": true,
+    "category": 8,
+    "skill_bonuses": {},
+    "stats_bonuses": {},
+    "special_traits": [
+      {
+        "base": "absorption d’énergie solaire",
+        "type": "bonus",
+        "values": {
+          "1": "+2 PV par tour au soleil",
+          "2": "+1D PV par tour au soleil",
+          "3": "+2D PV par tour au soleil"
+        }
+      }
+    ]
+  },
+  {
+    "property": "Adaptation sonore",
+    "description": "Modifie sa voix ou son intensité.",
+    "positive": true,
+    "category": 8,
+    "skill_bonuses": {},
+    "stats_bonuses": {},
+    "special_traits": [
+      {
+        "base": "adaptation sonore",
+        "type": "adjective"
+      }
+    ]
+  },
+  {
+    "property": "Yeux luminescents",
+    "description": "Les yeux brillent d’une couleur spécifique.",
+    "positive": true,
+    "category": 9,
+    "skill_bonuses": {},
+    "stats_bonuses": {},
+    "special_traits": [
+      {
+        "base": "yeux luminescents",
+        "type": "adjective"
+      }
+    ]
+  },
+  {
+    "property": "Peau translucide",
+    "description": "Montre les organes internes, pratique pour étudier les signes vitaux.",
+    "positive": true,
+    "category": 9,
+    "skill_bonuses": {},
+    "stats_bonuses": {},
+    "special_traits": [
+      {
+        "base": "peau translucide",
+        "type": "adjective"
+      }
+    ]
+  },
+  {
+    "property": "Ailes décoratives",
+    "description": "Ailes inutiles pour voler, mais esthétiques.",
+    "positive": true,
+    "category": 9,
+    "skill_bonuses": {},
+    "stats_bonuses": {},
+    "special_traits": [
+      {
+        "base": "ailes décoratives",
+        "type": "adjective"
+      }
+    ]
+  },
+  {
+    "property": "Cornes ou excroissances",
+    "description": "Ajout décoratif à la tête ou au dos.",
+    "positive": true,
+    "category": 9,
+    "skill_bonuses": {},
+    "stats_bonuses": {},
+    "special_traits": [
+      {
+        "base": "cornes ou excroissances",
+        "type": "adjective"
+      }
+    ]
+  },
+  {
+    "property": "Plumes chatoyantes",
+    "description": "Plumes colorées qui réfléchissent la lumière.",
+    "positive": true,
+    "category": 9,
+    "skill_bonuses": {},
+    "stats_bonuses": {},
+    "special_traits": [
+      {
+        "base": "plumes chatoyantes",
+        "type": "adjective"
+      }
+    ]
+  },
+  {
+    "property": "Tatouages naturels",
+    "description": "Motifs colorés sur la peau.",
+    "positive": true,
+    "category": 9,
+    "skill_bonuses": {},
+    "stats_bonuses": {},
+    "special_traits": [
+      {
+        "base": "tatouages naturels",
+        "type": "adjective"
+      }
+    ]
+  },
+  {
+    "property": "Cils ou crinière irisée",
+    "description": "Teinte iridescente sur les poils ou cheveux.",
+    "positive": true,
+    "category": 9,
+    "skill_bonuses": {},
+    "stats_bonuses": {},
+    "special_traits": [
+      {
+        "base": "cils ou crinière irisée",
+        "type": "adjective"
+      }
+    ]
+  },
+  {
+    "property": "Peau douce au toucher",
+    "description": "Texture agréable, comparable à du velours.",
+    "positive": true,
+    "category": 9,
+    "skill_bonuses": {},
+    "stats_bonuses": {},
+    "special_traits": [
+      {
+        "base": "peau douce au toucher",
+        "type": "adjective"
+      }
+    ]
+  },
+  {
+    "property": "Griffes ou ongles colorés",
+    "description": "Griffes d’une couleur unique.",
+    "positive": true,
+    "category": 9,
+    "skill_bonuses": {},
+    "stats_bonuses": {},
+    "special_traits": [
+      {
+        "base": "griffes ou ongles colorés",
+        "type": "adjective"
+      }
+    ]
+  },
+  {
+    "property": "Odeur agréable naturelle",
+    "description": "Émet une légère fragrance.",
+    "positive": true,
+    "category": 9,
+    "skill_bonuses": {},
+    "stats_bonuses": {},
+    "special_traits": [
+      {
+        "base": "odeur agréable naturelle",
+        "type": "adjective"
+      }
+    ]
+  },
+  {
+    "property": "Lumière interne",
+    "description": "Brille faiblement sous la peau.",
+    "positive": true,
+    "category": 9,
+    "skill_bonuses": {},
+    "stats_bonuses": {},
+    "special_traits": [
+      {
+        "base": "lumière interne",
+        "type": "adjective"
+      }
+    ]
+  }
+]

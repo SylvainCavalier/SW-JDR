@@ -105,6 +105,14 @@ Rails.application.routes.draw do
   post '/science/attempt_transfer', to: 'science#attempt_transfer', as: 'attempt_transfer_science'
   get "/science/players", to: "science#players", as: :science_players
   get "science/showbestiaire/:id", to: "science#showbestiaire", as: :showbestiaire
+  get "science/genetique", to: "science#genetique", as: :genetique_dashboard
+  get "science/labo",      to: "science#labo",      as: :labo_genetique
+  get "science/cultiver",  to: "science#cultiver",  as: :cultiver_embryon
+  get "science/traits",    to: "science#traits",    as: :appliquer_traits
+  get "science/clonage",   to: "science#clonage",   as: :clonage
+  get "science/stats",     to: "science#stats",     as: :genetique_stats
+  get "science/labo", to: "science#labo", as: :science_labo
+  post "science/recherche_gene", to: "science#recherche_gene", as: :recherche_gene
 
   resources :science, only: [] do
     collection do
@@ -143,6 +151,7 @@ Rails.application.routes.draw do
   get 'mj/fixer-points', to: 'mj#fixer_points', as: 'fixer_points'
   patch 'mj/update_points/:id', to: 'mj#update_points', as: 'update_points'
   patch 'mj/reset_points/:id', to: 'mj#reset_points', as: 'reset_points'
+  post "mj/attribution_study_points", to: "mj#attribution_study_points", as: :attribution_study_points
 
   get 'mj/unlock_drink', to: 'mj#unlock_drink', as: 'mj_unlock_drink'
   post 'mj/unlock_drink', to: 'mj#update_unlock_drink', as: 'mj_update_unlock_drink'

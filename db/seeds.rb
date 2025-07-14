@@ -261,3 +261,9 @@ end
 
 puts "✅ Systèmes de défense ajoutés avec succès."
 
+puts "📦 Création des gènes..."
+
+require_relative "seeds/load_genes"
+
+puts "✔️ Tous les gènes ont été chargés avec succès."
+

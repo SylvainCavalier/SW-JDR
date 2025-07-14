@@ -1,0 +1,36 @@
+<h2 class="text-center mt-4">Labo de recherche génétique</h2>
+
+<p class="text-center">
+  Points d’étude : <strong><%= @study_points %></strong> | Fioles disponibles : <strong><%= @fioles %></strong>
+</p>
+
+<div class="text-center">
+  <button class="btn btn-primary my-3" data-controller="recherche" data-action="click->recherche#lancer">
+    🔍 Rechercher de nouveaux traits génétiques
+  </button>
+</div>
+
+<% Gene.categories.keys.each do |cat| %>
+  <h4 class="mt-4"><%= cat.titleize %></h4>
+  <div class="d-flex flex-wrap justify-content-center">
+    <% @genes.select { |gene| gene.category == cat }.each do |gene| %>
+      <% user_gene = @user_genes[gene.id] %>
+      <div class="card m-2 p-2" style="width: 200px; background-color: <%= user_gene ? '#fff' : '#ccc' %>;">
+        <strong><%= gene.property %></strong><br>
+        Niveau : <%= user_gene&.level || 0 %>
+      </div>
+    <% end %>
+  </div>
+<% end %>
+
+<!-- Modale de résultat -->
+<div class="modal fade" id="rechercheResultModal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content p-4">
+      <h5 id="recherche-result-title" class="text-center"></h5>
+      <div class="text-center mt-3">
+        <button class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+      </div>
+    </div>
+  </div>
+</div>

@@ -426,6 +426,18 @@ class MjController < ApplicationController
     end
   end
 
+  def attribution_study_points
+    user = User.find_by(id: params[:user_id])
+    points = params[:study_points].to_i
+
+    if user && points > 0
+      user.increment!(:study_points, points)
+      redirect_to donner_xp_path, notice: "Points d’étude ajoutés à #{user.username}."
+    else
+      redirect_to donner_xp_path, alert: "Erreur lors de l’attribution des points."
+    end
+  end
+
   def fixer_statut
     @users = User.where(group: Group.find_by(name: "PJ"))
     @pets = Pet.where(id: User.where.not(pet_id: nil).pluck(:pet_id))
