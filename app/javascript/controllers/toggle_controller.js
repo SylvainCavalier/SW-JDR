@@ -15,4 +15,13 @@ export default class extends Controller {
     const select = document.getElementById('missiles-count');
     select.disabled = !event.target.checked;
   }
+
+  toggleTurrets(event) {
+    const turretOptions = document.getElementById('turret-options');
+    if (event.target.checked) {
+      turretOptions.style.display = 'block';
+    } else {
+      turretOptions.style.display = 'none';
+    }
+  }
 } 

@@ -1,0 +1,398 @@
+<div class="container position-relative justify-content-center" style="width: 95%; min-height: 100vh; overflow-y: auto; overflow-x: hidden;" data-controller="ship-repair">
+  <%= link_to 'Retour au vaisseau', @ship, class: 'btn btn-outline-secondary mt-3 mb-2' %>
+
+  <!-- Flash messages -->
+  <div data-ship-repair-target="flashMessage"></div>
+
+  <div class="neon-container">
+    <div class="row">
+      <div class="col-12">
+        <h1 class="ship-title text-center mb-4">
+          <i class="fa-solid fa-wrench me-2"></i>
+          Réparation de <%= @ship.name %>
+        </h1>
+        
+        <div class="image-box">
+          <%= image_tag 'ships/SalleDesMachines.png', class: "ship-image rounded shadow", alt: "Salle des machines" %>
+        </div>
+
+        <% unless @can_repair %>
+          <!-- Message pour joueurs sans compétence suffisante -->
+          <div class="text-center mt-4">
+            <h2 class="text-danger mb-4" style="font-size: 2.5rem; text-shadow: 0 0 10px #ff0000;">
+              "Vous ne comprenez rien à tous ces trucs et ces machins !"
+            </h2>
+            <p class="text-muted">
+              <i class="fa-solid fa-exclamation-triangle me-2"></i>
+              Votre compétence en Technique (<%= @technique_mastery %>D) est insuffisante pour comprendre ces systèmes complexes.<br>
+              Minimum requis : 2D en Technique.
+            </p>
+          </div>
+        <% else %>
+          <!-- Interface normale pour joueurs qualifiés -->
+          <!-- Compétences et inventaire du joueur -->
+          <div class="text-center mt-3">
+            <div class="row">
+              <div class="col-md-3">
+                <div class="skill-info p-3 bg-primary bg-opacity-25 rounded">
+                  <h5>Compétence Réparation</h5>
+                  <p class="mb-0">
+                    <strong><%= @reparation_mastery %>D + <%= @reparation_bonus %></strong>
+                    <i class="fa-solid fa-dice neon-icon ms-2" 
+                       data-bs-toggle="modal" 
+                       data-bs-target="#diceModal" 
+                       data-dice-count="<%= @reparation_mastery %>" 
+                       data-dice-bonus-value="<%= @reparation_bonus %>"
+                       data-action="click->dice#prepareRoll"></i>
+                  </p>
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="inventory-info p-3 bg-primary bg-opacity-25 rounded">
+                  <h5>Kits de réparation</h5>
+                  <p class="mb-0">
+                    <i class="fa-solid fa-toolbox me-2"></i>
+                    <strong><span data-ship-repair-target="repairKitCount"><%= @repair_kit_count %></span></strong>
+                    <% if @repair_kit_cost > 1 %>
+                      <br><small class="text-warning">(<%= @repair_kit_cost %> requis)</small>
+                    <% end %>
+                  </p>
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="inventory-info p-3 bg-primary bg-opacity-25 rounded">
+                  <h5>Composants</h5>
+                  <p class="mb-0">
+                    <i class="fa-solid fa-microchip me-2"></i>
+                    <strong><span data-ship-repair-target="componentCount"><%= @component_count %></span></strong>
+                  </p>
+                </div>
+              </div>
+              <% if @can_use_astromech %>
+                <div class="col-md-3">
+                  <div class="inventory-info p-3 bg-primary bg-opacity-25 rounded">
+                    <h5>Droïdes Astromecs</h5>
+                    <p class="mb-0">
+                      <i class="fa-solid fa-robot me-2"></i>
+                      <strong><span data-ship-repair-target="astromechCount"><%= @astromech_count %></span> / 5</strong>
+                    </p>
+                  </div>
+                </div>
+              <% end %>
+            </div>
+          </div>
+
+          <!-- Section Liste des Avaries -->
+          <% if @ship_damages.any? %>
+            <div class="row mt-4">
+              <div class="col-12">
+                <div class="damage-card neon-border">
+                  <div class="damage-header text-center">
+                    <h4 class="damage-title">
+                      <i class="fa-solid fa-exclamation-triangle me-2"></i>
+                      Liste des Avaries Détectées
+                    </h4>
+                    <p class="text-muted small">
+                      <%= @ship_damages.count %> problème(s) identifié(s) - <%= @ship.hp_max - @ship.hp_current %> point(s) de blindage perdu(s)
+                    </p>
+                  </div>
+
+                  <div class="damage-body">
+                    <div class="row">
+                      <% @ship_damages.each_with_index do |damage, index| %>
+                        <div class="col-md-6 mb-2">
+                          <div class="damage-item p-2 bg-danger bg-opacity-15 rounded">
+                            <i class="fa-solid fa-triangle-exclamation text-danger me-2"></i>
+                            <span class="damage-text"><%= damage %></span>
+                          </div>
+                        </div>
+                      <% end %>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          <% end %>
+
+          <!-- Section Kit de Réparation -->
+          <div class="row mt-4">
+            <div class="col-12">
+              <div class="repair-card neon-border">
+                <div class="repair-header text-center">
+                  <h4 class="repair-title">
+                    <i class="fa-solid fa-toolbox me-2"></i>
+                    Kit de Réparation
+                  </h4>
+                </div>
+
+                <div class="repair-body">
+                  <div class="row justify-content-center">
+                    <div class="col-md-8">
+                      <div class="kit-repair-section p-4 bg-dark bg-opacity-50 rounded">
+                        <% if @repair_kit_count >= @repair_kit_cost %>
+                          <div class="text-center mb-3">
+                            <p class="mb-2">
+                              Utilisez <strong><%= @repair_kit_cost %></strong> kit(s) de réparation pour restaurer des points de blindage.<br>
+                              <small class="text-muted">
+                                Points restaurés = (Jet de Réparation ÷ 2) arrondi vers le bas
+                              </small>
+                            </p>
+                            <p>
+                              Jet attendu : <%= @reparation_mastery %>D + <%= @reparation_bonus %>
+                            </p>
+                          </div>
+
+                          <div class="d-grid">
+                            <%= form_with url: use_repair_kit_ship_path(@ship), method: :patch, data: { action: "submit->ship-repair#useRepairKit" } do |f| %>
+                              <%= f.submit "Utiliser #{@repair_kit_cost} Kit(s) de Réparation", class: "btn btn-outline-warning",
+                                  data: { confirm: "Utiliser #{@repair_kit_cost} kit(s) de réparation ?" } %>
+                            <% end %>
+                          </div>
+                        <% else %>
+                          <div class="text-center text-muted">
+                            <i class="fa-solid fa-exclamation-circle me-2"></i>
+                            Kits de réparation insuffisants (<%= @repair_kit_cost %> requis, <%= @repair_kit_count %> disponible(s))
+                          </div>
+                        <% end %>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Section Droïdes Astromecs (pour les gros vaisseaux uniquement) -->
+          <% if @can_use_astromech %>
+            <div class="row mt-4">
+              <div class="col-12">
+                <div class="astromech-card neon-border">
+                  <div class="astromech-header text-center">
+                    <h4 class="astromech-title">
+                      <i class="fa-solid fa-robot me-2"></i>
+                      Droïdes Astromecs
+                    </h4>
+                    <p class="text-muted small">
+                      Disponible uniquement pour les vaisseaux de classe importante (Scale 3+)
+                    </p>
+                  </div>
+
+                  <div class="astromech-body">
+                    <div class="row justify-content-center">
+                      <div class="col-md-6">
+                        <div class="astromech-image text-center mb-3">
+                          <%= image_tag 'ships/astromec.png', class: "astromech-img", alt: "Droïde Astromec" %>
+                        </div>
+                      </div>
+                      <div class="col-md-6">
+                        <div class="astromech-deploy-section p-4 bg-dark bg-opacity-50 rounded">
+                          <% if @astromech_count > 0 %>
+                            <div class="text-center mb-3">
+                              <p class="mb-2">
+                                <strong>Droïdes disponibles :</strong> <%= @astromech_count %> / 5
+                              </p>
+                              <p class="mb-2">
+                                Le droïde effectuera des réparations externes aléatoires :<br>
+                                <small class="text-success">• Restaure entre 10-30 HP (5 HP si composants insuffisants)</small><br>
+                                <small class="text-warning">• Coûte 1-3 composants aléatoirement</small><br>
+                                <small class="text-danger">• 10% de risque de destruction</small>
+                              </p>
+                            </div>
+
+                            <div class="d-grid">
+                              <%= form_with url: deploy_astromech_droid_ship_path(@ship), method: :patch, data: { action: "submit->ship-repair#deployAstromech" } do |f| %>
+                                <%= f.submit "Envoyer Droïde Astromec", class: "btn btn-outline-primary",
+                                    data: { confirm: "Envoyer un droïde astromec en mission ?" } %>
+                              <% end %>
+                            </div>
+                          <% else %>
+                            <div class="text-center text-muted">
+                              <i class="fa-solid fa-exclamation-circle me-2"></i>
+                              Aucun droïde astromec disponible
+                            </div>
+                          <% end %>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          <% end %>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal pour les dés -->
+<%= render 'shared/dice_modal' %>
+
+<style>
+.text-muted {
+  color: #a0a0a0 !important;
+}
+
+.repair-card {
+  background: rgba(0, 0, 0, 0.7);
+  border: 1px solid #00ffff;
+  border-radius: 10px;
+  padding: 20px;
+  transition: all 0.3s ease;
+}
+
+.repair-card:hover {
+  box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
+  transform: translateY(-2px);
+}
+
+.repair-title {
+  color: #00ffff;
+  margin-bottom: 10px;
+}
+
+.status-repair-item {
+  border: 1px solid rgba(220, 53, 69, 0.5);
+  transition: all 0.3s ease;
+}
+
+.status-repair-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(220, 53, 69, 0.3);
+}
+
+.ship-image {
+  width: 100%;
+  max-height: 300px;
+  object-fit: cover;
+  border: 1px solid #00ffff;
+  border-radius: 10px;
+  box-shadow: 0 0 10px #0f0;
+}
+
+.image-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 220px;
+  font-size: 2rem;
+  color: #0f0;
+}
+
+.progress {
+  background-color: rgba(0, 0, 0, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.progress-bar {
+  transition: width 0.3s ease;
+}
+
+input[type="number"] {
+  background: rgba(0, 0, 0, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #fff;
+}
+
+input[type="number"]:focus {
+  background: rgba(0, 0, 0, 0.7);
+  border-color: #00ffff;
+  color: #fff;
+  box-shadow: 0 0 0 0.25rem rgba(0, 255, 255, 0.25);
+}
+
+.skill-info, .inventory-info {
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  transition: all 0.3s ease;
+}
+
+.skill-info:hover, .inventory-info:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.kit-repair-section {
+  border: 1px solid rgba(255, 193, 7, 0.3);
+}
+
+.neon-icon {
+  color: #0f0;
+  text-shadow: 0 0 10px #0f0;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.neon-icon:hover {
+  transform: scale(1.2);
+  text-shadow: 0 0 15px #0f0;
+}
+
+.damage-card {
+  background: rgba(0, 0, 0, 0.7);
+  border: 1px solid #ff6b6b;
+  border-radius: 10px;
+  padding: 20px;
+  transition: all 0.3s ease;
+}
+
+.damage-card:hover {
+  box-shadow: 0 0 20px rgba(255, 107, 107, 0.3);
+  transform: translateY(-2px);
+}
+
+.damage-title {
+  color: #ff6b6b;
+  margin-bottom: 10px;
+}
+
+.damage-item {
+  border: 1px solid rgba(220, 53, 69, 0.3);
+  transition: all 0.3s ease;
+  font-size: 0.9rem;
+}
+
+.damage-item:hover {
+  transform: translateX(5px);
+  box-shadow: 0 2px 4px rgba(220, 53, 69, 0.2);
+}
+
+.damage-text {
+  color: #fff;
+}
+
+.astromech-card {
+  background: rgba(0, 0, 0, 0.7);
+  border: 1px solid #007bff;
+  border-radius: 10px;
+  padding: 20px;
+  transition: all 0.3s ease;
+}
+
+.astromech-card:hover {
+  box-shadow: 0 0 20px rgba(0, 123, 255, 0.3);
+  transform: translateY(-2px);
+}
+
+.astromech-title {
+  color: #007bff;
+  margin-bottom: 10px;
+}
+
+.astromech-img {
+  max-width: 200px;
+  height: auto;
+  border-radius: 10px;
+  border: 2px solid rgba(0, 123, 255, 0.3);
+  transition: all 0.3s ease;
+}
+
+.astromech-img:hover {
+  transform: scale(1.05);
+  border-color: #007bff;
+  box-shadow: 0 0 15px rgba(0, 123, 255, 0.5);
+}
+
+.astromech-deploy-section {
+  border: 1px solid rgba(0, 123, 255, 0.3);
+}
+</style>

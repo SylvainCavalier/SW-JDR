@@ -1,0 +1,231 @@
+<!-- Limitations selon la scale -->
+<div class="row mb-3">
+  <div class="col-12">
+    <div class="turret-info p-3 bg-info bg-opacity-10 rounded text-center">
+      <% if ship.max_turrets == 0 %>
+        <i class="fa-solid fa-exclamation-triangle text-warning me-2"></i>
+        <strong>Ce vaisseau ne peut pas avoir de tourelles (scale 0)</strong>
+      <% else %>
+        <strong>Tourelles installées: <%= ship.turret_count %>/<%= ship.max_turrets %></strong>
+      <% end %>
+    </div>
+  </div>
+</div>
+
+<% if ship.max_turrets > 0 %>
+  <div class="row">
+    <!-- Tourelles installées -->
+    <div class="col-md-4 mb-4">
+      <h5 class="text-center mb-3">Tourelles installées</h5>
+      
+      <% if ship.installed_turrets.any? %>
+        <% ship.installed_turrets.each do |turret| %>
+          <div class="weapon-slot mb-3 p-3 bg-warning bg-opacity-10 rounded">
+            <div class="d-flex justify-content-between align-items-start">
+              <div>
+                <strong><%= turret.name %></strong>
+                <small class="text-muted">
+                  <div class="weapon-stats-upgradeable">
+                    <span class="stat-line">
+                      <%= turret.damage_mastery %>D<% if turret.damage_bonus != 0 %>+<%= turret.damage_bonus %><% end %> dégâts
+                      <% if turret.can_upgrade_damage? %>
+                        <%= form_with url: upgrade_weapon_damage_ship_path(ship), method: :patch, local: false, class: "d-inline upgrade-btn-form", data: { action: "submit->ship-improve#upgradeWeaponDamage" } do |form| %>
+                          <%= form.hidden_field :weapon_id, value: turret.id %>
+                          <% if turret.can_afford_damage_upgrade?(user_credits) %>
+                            <%= form.submit "+", class: "btn btn-outline-success btn-xs upgrade-btn", title: "Améliorer dégâts (#{turret.damage_upgrade_description} pour #{turret.damage_upgrade_cost} crédits)" %>
+                            <span class="upgrade-cost"><%= number_with_delimiter(turret.damage_upgrade_cost) %> <i class="fa-solid fa-coins"></i></span>
+                          <% else %>
+                            <button class="btn btn-outline-secondary btn-xs upgrade-btn" disabled title="Crédits insuffisants (#{turret.damage_upgrade_cost})">+</button>
+                            <span class="upgrade-cost text-danger"><%= number_with_delimiter(turret.damage_upgrade_cost) %> <i class="fa-solid fa-coins"></i></span>
+                          <% end %>
+                        <% end %>
+                      <% end %>
+                    </span>
+                    <% if turret.aim_bonus != 0 || turret.can_upgrade_aim? %>
+                      <span class="stat-line">
+                        | <%= turret.aim_bonus > 0 ? '+' : '' %><%= turret.aim_bonus %>D précision
+                        <% if turret.can_upgrade_aim? %>
+                          <%= form_with url: upgrade_weapon_aim_ship_path(ship), method: :patch, local: false, class: "d-inline upgrade-btn-form", data: { action: "submit->ship-improve#upgradeWeaponAim" } do |form| %>
+                            <%= form.hidden_field :weapon_id, value: turret.id %>
+                            <% if turret.can_afford_aim_upgrade?(user_credits) %>
+                              <%= form.submit "+", class: "btn btn-outline-success btn-xs upgrade-btn", title: "Améliorer précision (#{turret.aim_upgrade_description} pour #{turret.aim_upgrade_cost} crédits)" %>
+                              <span class="upgrade-cost"><%= number_with_delimiter(turret.aim_upgrade_cost) %> <i class="fa-solid fa-coins"></i></span>
+                            <% else %>
+                              <button class="btn btn-outline-secondary btn-xs upgrade-btn" disabled title="Crédits insuffisants (#{turret.aim_upgrade_cost})">+</button>
+                              <span class="upgrade-cost text-danger"><%= number_with_delimiter(turret.aim_upgrade_cost) %> <i class="fa-solid fa-coins"></i></span>
+                            <% end %>
+                          <% end %>
+                        <% end %>
+                      </span>
+                    <% end %>
+                    <% if turret.special.present? %>
+                      <span class="stat-line">| <%= turret.special %></span>
+                    <% end %>
+                  </div>
+                </small>
+              </div>
+              <% if turret.price > 0 %>
+                <small class="text-success">
+                  Vente: <%= number_with_delimiter(turret.price / 2) %> <i class="fa-solid fa-coins"></i>
+                </small>
+              <% end %>
+            </div>
+            
+            <div class="mt-2">
+              <%= form_with url: uninstall_turret_ship_path(ship), method: :patch, local: false, data: { action: "submit->ship-improve#uninstallTurret" } do |form| %>
+                <%= form.hidden_field :turret_id, value: turret.id %>
+                <%= form.submit "Désinstaller", class: "btn btn-outline-warning btn-sm" %>
+              <% end %>
+              
+              <% if turret.price > 0 %>
+                <%= form_with url: sell_turret_ship_path(ship), method: :patch, local: false, data: { action: "submit->ship-improve#sellTurret" } do |form| %>
+                  <%= form.hidden_field :turret_id, value: turret.id %>
+                  <%= form.submit "Vendre", class: "btn btn-outline-success btn-sm", 
+                        data: { confirm: "Vendre cette tourelle pour #{number_with_delimiter(turret.price / 2)} crédits ?" } %>
+                <% end %>
+              <% end %>
+            </div>
+          </div>
+        <% end %>
+      <% else %>
+        <div class="text-center">
+          <small class="text-muted">Aucune tourelle installée</small>
+        </div>
+      <% end %>
+    </div>
+
+    <!-- Tourelles en stock -->
+    <div class="col-md-4 mb-4">
+      <h5 class="text-center mb-3">Tourelles en stock</h5>
+      
+      <% if ship.available_turrets.any? %>
+        <% ship.available_turrets.each do |turret| %>
+          <div class="available-weapon mb-3 p-3 bg-secondary bg-opacity-10 rounded">
+            <div class="d-flex justify-content-between align-items-start">
+              <div>
+                <strong><%= turret.name %></strong>
+                <small class="text-muted">
+                  <div class="weapon-stats-upgradeable">
+                    <span class="stat-line">
+                      <%= turret.damage_mastery %>D<% if turret.damage_bonus != 0 %>+<%= turret.damage_bonus %><% end %> dégâts
+                      <% if turret.can_upgrade_damage? %>
+                        <%= form_with url: upgrade_weapon_damage_ship_path(ship), method: :patch, local: false, class: "d-inline upgrade-btn-form", data: { action: "submit->ship-improve#upgradeWeaponDamage" } do |form| %>
+                          <%= form.hidden_field :weapon_id, value: turret.id %>
+                          <% if turret.can_afford_damage_upgrade?(user_credits) %>
+                            <%= form.submit "+", class: "btn btn-outline-success btn-xs upgrade-btn", title: "Améliorer dégâts (#{turret.damage_upgrade_description} pour #{turret.damage_upgrade_cost} crédits)" %>
+                          <% else %>
+                            <button class="btn btn-outline-secondary btn-xs upgrade-btn" disabled title="Crédits insuffisants (#{turret.damage_upgrade_cost})">+</button>
+                          <% end %>
+                        <% end %>
+                      <% end %>
+                    </span>
+                    <% if turret.aim_bonus != 0 || turret.can_upgrade_aim? %>
+                      <span class="stat-line">
+                        | <%= turret.aim_bonus > 0 ? '+' : '' %><%= turret.aim_bonus %>D précision
+                        <% if turret.can_upgrade_aim? %>
+                          <%= form_with url: upgrade_weapon_aim_ship_path(ship), method: :patch, local: false, class: "d-inline upgrade-btn-form", data: { action: "submit->ship-improve#upgradeWeaponAim" } do |form| %>
+                            <%= form.hidden_field :weapon_id, value: turret.id %>
+                            <% if turret.can_afford_aim_upgrade?(user_credits) %>
+                              <%= form.submit "+", class: "btn btn-outline-success btn-xs upgrade-btn", title: "Améliorer précision (#{turret.aim_upgrade_description} pour #{turret.aim_upgrade_cost} crédits)" %>
+                            <% else %>
+                              <button class="btn btn-outline-secondary btn-xs upgrade-btn" disabled title="Crédits insuffisants (#{turret.aim_upgrade_cost})">+</button>
+                            <% end %>
+                          <% end %>
+                        <% end %>
+                      </span>
+                    <% end %>
+                    <% if turret.special.present? %>
+                      <span class="stat-line">| <%= turret.special %></span>
+                    <% end %>
+                  </div>
+                </small>
+              </div>
+              <% if turret.price > 0 %>
+                <small class="text-success">
+                  Vente: <%= number_with_delimiter(turret.price / 2) %> <i class="fa-solid fa-coins"></i>
+                </small>
+              <% end %>
+            </div>
+            
+            <div class="mt-2">
+              <% if ship.can_install_turret? %>
+                <%= form_with url: install_turret_ship_path(ship), method: :patch, local: false, data: { action: "submit->ship-improve#installTurret" } do |form| %>
+                  <%= form.hidden_field :turret_id, value: turret.id %>
+                  <%= form.submit "Installer", class: "btn btn-outline-primary btn-sm" %>
+                <% end %>
+              <% else %>
+                <button class="btn btn-outline-warning btn-sm me-1" disabled>
+                  Maximum atteint
+                </button>
+              <% end %>
+              
+              <% if turret.price > 0 %>
+                <%= form_with url: sell_turret_ship_path(ship), method: :patch, local: false, data: { action: "submit->ship-improve#sellTurret" } do |form| %>
+                  <%= form.hidden_field :turret_id, value: turret.id %>
+                  <%= form.submit "Vendre", class: "btn btn-outline-success btn-sm", 
+                        data: { confirm: "Vendre cette tourelle pour #{number_with_delimiter(turret.price / 2)} crédits ?" } %>
+                <% end %>
+              <% end %>
+            </div>
+          </div>
+        <% end %>
+      <% else %>
+        <div class="text-center">
+          <small class="text-muted">Aucune tourelle disponible</small>
+        </div>
+      <% end %>
+    </div>
+
+    <!-- Tourelles à acheter -->
+    <div class="col-md-4 mb-4">
+      <h5 class="text-center mb-3">Tourelles à acheter</h5>
+      <div class="row">
+        <% Ship::PREDEFINED_WEAPONS.select { |name, config| config[:weapon_type] == 'tourelle' }.each do |turret_name, turret_data| %>
+          <div class="col-12 mb-3">
+            <div class="buyable-weapon p-3 bg-primary bg-opacity-10 rounded">
+              <div class="d-flex justify-content-between align-items-start mb-2">
+                <div>
+                  <p class="weapon-name mb-1"><%= turret_name %></p>
+                  <small class="text-muted">
+                    <%= turret_data[:damage_mastery] %>D<% if turret_data[:damage_bonus] != 0 %>+<%= turret_data[:damage_bonus] %><% end %> dégâts
+                    <% if turret_data[:aim_bonus] != 0 %>
+                      | <%= turret_data[:aim_bonus] > 0 ? '+' : '' %><%= turret_data[:aim_bonus] %>D précision
+                    <% end %>
+                    <% if turret_data[:special] %>
+                      | <%= turret_data[:special] %>
+                    <% end %>
+                  </small>
+                </div>
+                <div class="text-end">
+                  <strong class="text-warning">
+                    <%= number_with_delimiter(turret_data[:price]) %> <i class="fa-solid fa-coins"></i>
+                  </strong>
+                </div>
+              </div>
+              
+              <div class="buy-button">
+                <% if ship.can_buy_turret?(turret_name, user_credits) %>
+                  <%= form_with url: buy_turret_ship_path(ship), method: :patch, local: false, data: { action: "submit->ship-improve#buyTurret" } do |form| %>
+                    <%= form.hidden_field :turret_name, value: turret_name %>
+                    <%= form.submit "Acheter", class: "btn btn-outline-success btn-sm w-100",
+                          data: { confirm: "Acheter #{turret_name} pour #{number_with_delimiter(turret_data[:price])} crédits ?" } %>
+                  <% end %>
+                <% else %>
+                  <% if !ship.can_install_turret? %>
+                    <button class="btn btn-outline-warning btn-sm w-100" disabled>
+                      Nombre maximum atteint
+                    </button>
+                  <% else %>
+                    <button class="btn btn-outline-danger btn-sm w-100" disabled>
+                      Crédits insuffisants
+                    </button>
+                  <% end %>
+                <% end %>
+              </div>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+<% end %> 

@@ -1,0 +1,398 @@
+<div class="container-fluid mt-4">
+  <div class="row justify-content-center">
+    <div class="col-12">
+      <h1 class="text-center mb-4">
+        <i class="fa-solid fa-rocket me-2"></i>
+        Interface MJ - Gestion des Vaisseaux
+      </h1>
+
+      <%= link_to 'Retour au tableau de bord MJ', mj_dashboard_path, class: 'btn btn-outline-secondary mb-4' %>
+
+      <% if @ships.any? %>
+        <% @ships.each do |ship| %>
+          <div class="ship-card mb-5 p-4 border rounded" data-controller="accordion-persist" data-accordion-persist-key-value="ship_<%= ship.id %>">
+            <!-- En-tête du vaisseau -->
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <h2 class="mb-0">
+                <i class="fa-solid fa-rocket me-2"></i>
+                <%= ship.name %>
+                <small class="text-muted">(<%= ship.brand %> <%= ship.model %>)</small>
+              </h2>
+              <span class="badge bg-<%= ship.active? ? 'primary' : 'secondary' %> fs-6">
+                <%= ship.active? ? 'Vaisseau Principal' : 'Vaisseau Secondaire' %>
+              </span>
+            </div>
+
+            <!-- Accordéon pour les sections -->
+            <div class="accordion" id="shipAccordion<%= ship.id %>">
+              
+              <!-- Section 1: Informations de base -->
+              <div class="accordion-item">
+                <h2 class="accordion-header">
+                  <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                          data-bs-target="#basicInfo<%= ship.id %>" aria-expanded="false" 
+                          data-action="click->accordion-persist#toggle"
+                          data-accordion-persist-section-value="basicInfo">
+                    <i class="fa-solid fa-info-circle me-2"></i>
+                    Informations de base
+                  </button>
+                </h2>
+                <div id="basicInfo<%= ship.id %>" class="accordion-collapse collapse" 
+                     data-accordion-persist-target="section" 
+                     data-accordion-persist-section-name="basicInfo">
+                  <div class="accordion-body">
+                    <%= form_with model: ship, url: mj_update_ship_path(ship), method: :patch, local: true, class: "row g-3" do |f| %>
+                      <div class="col-md-6">
+                        <%= f.label :name, "Nom", class: "form-label" %>
+                        <%= f.text_field :name, class: "form-control" %>
+                      </div>
+                      <div class="col-md-3">
+                        <%= f.label :brand, "Marque", class: "form-label" %>
+                        <%= f.text_field :brand, class: "form-control" %>
+                      </div>
+                      <div class="col-md-3">
+                        <%= f.label :model, "Modèle", class: "form-label" %>
+                        <%= f.text_field :model, class: "form-control" %>
+                      </div>
+                      <div class="col-md-6">
+                        <%= f.label :description, "Description", class: "form-label" %>
+                        <%= f.text_area :description, rows: 3, class: "form-control" %>
+                      </div>
+                      <div class="col-md-6">
+                        <%= f.label :price, "Prix (crédits)", class: "form-label" %>
+                        <%= f.number_field :price, class: "form-control", min: 0 %>
+                      </div>
+                      <div class="col-12">
+                        <%= f.submit "Mettre à jour les infos", class: "btn btn-primary" %>
+                      </div>
+                    <% end %>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Section 2: Statistiques -->
+              <div class="accordion-item">
+                <h2 class="accordion-header">
+                  <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                          data-bs-target="#stats<%= ship.id %>" aria-expanded="false"
+                          data-action="click->accordion-persist#toggle"
+                          data-accordion-persist-section-value="stats">
+                    <i class="fa-solid fa-chart-bar me-2"></i>
+                    Statistiques
+                  </button>
+                </h2>
+                <div id="stats<%= ship.id %>" class="accordion-collapse collapse"
+                     data-accordion-persist-target="section" 
+                     data-accordion-persist-section-name="stats">
+                  <div class="accordion-body">
+                    <%= form_with model: ship, url: mj_update_ship_stats_path(ship), method: :patch, local: true, class: "row g-3" do |f| %>
+                      <div class="col-md-2">
+                        <%= f.label :size, "Taille", class: "form-label" %>
+                        <%= f.number_field :size, class: "form-control", min: 0, max: 6 %>
+                      </div>
+                      <div class="col-md-2">
+                        <%= f.label :max_passengers, "Passagers max", class: "form-label" %>
+                        <%= f.number_field :max_passengers, class: "form-control", min: 0 %>
+                      </div>
+                      <div class="col-md-2">
+                        <%= f.label :min_crew, "Équipage min", class: "form-label" %>
+                        <%= f.number_field :min_crew, class: "form-control", min: 0 %>
+                      </div>
+                      <div class="col-md-3">
+                        <%= f.label :hp_current, "HP Actuels", class: "form-label" %>
+                        <div class="input-group">
+                          <%= f.number_field :hp_current, class: "form-control" %>
+                          <span class="input-group-text">/ <%= ship.hp_max %></span>
+                        </div>
+                      </div>
+                      <div class="col-md-3">
+                        <%= f.label :hp_max, "HP Maximum", class: "form-label" %>
+                        <%= f.number_field :hp_max, class: "form-control", min: 1 %>
+                      </div>
+                      <div class="col-md-3">
+                        <%= f.label :hyperdrive_rating, "Hyperpropulsion", class: "form-label" %>
+                        <%= f.number_field :hyperdrive_rating, class: "form-control", step: 0.1 %>
+                      </div>
+                      <div class="col-md-3">
+                        <%= f.label :backup_hyperdrive, "Secours", class: "form-label" %>
+                        <%= f.number_field :backup_hyperdrive, class: "form-control", step: 0.1 %>
+                      </div>
+                      <div class="col-md-3">
+                        <%= f.label :astromech_droids, "Droïdes Astromecs", class: "form-label" %>
+                        <%= f.number_field :astromech_droids, class: "form-control", min: 0, max: 5 %>
+                      </div>
+                      <div class="col-md-3">
+                        <%= f.label :torpilles_count, "Torpilles", class: "form-label" %>
+                        <%= f.number_field :torpilles_count, class: "form-control", min: 0 %>
+                      </div>
+                      
+                      <!-- Niveaux d'amélioration -->
+                      <div class="col-12"><h6 class="text-primary mt-3">Niveaux d'amélioration</h6></div>
+                      <div class="col-md-3">
+                        <%= f.label :thruster_level, "Propulseurs", class: "form-label" %>
+                        <%= f.number_field :thruster_level, class: "form-control", min: 0, max: 3 %>
+                      </div>
+                      <div class="col-md-3">
+                        <%= f.label :hull_level, "Coque", class: "form-label" %>
+                        <%= f.number_field :hull_level, class: "form-control", min: 0, max: 3 %>
+                      </div>
+                      <div class="col-md-3">
+                        <%= f.label :circuits_level, "Circuits", class: "form-label" %>
+                        <%= f.number_field :circuits_level, class: "form-control", min: 0, max: 3 %>
+                      </div>
+                      <div class="col-md-3">
+                        <%= f.label :shield_system_level, "Boucliers", class: "form-label" %>
+                        <%= f.number_field :shield_system_level, class: "form-control", min: 0, max: 3 %>
+                      </div>
+                      
+                      <div class="col-12">
+                        <%= f.submit "Mettre à jour les stats", class: "btn btn-success" %>
+                      </div>
+                    <% end %>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Section 3: Compétences -->
+              <div class="accordion-item">
+                <h2 class="accordion-header">
+                  <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                          data-bs-target="#skills<%= ship.id %>" aria-expanded="false"
+                          data-action="click->accordion-persist#toggle"
+                          data-accordion-persist-section-value="skills">
+                    <i class="fa-solid fa-graduation-cap me-2"></i>
+                    Compétences du vaisseau
+                  </button>
+                </h2>
+                <div id="skills<%= ship.id %>" class="accordion-collapse collapse"
+                     data-accordion-persist-target="section" 
+                     data-accordion-persist-section-name="skills">
+                  <div class="accordion-body">
+                    <%= form_with url: mj_update_ship_skills_path(ship), method: :patch, local: true do |f| %>
+                      <div class="row g-3">
+                        <% @skills.each do |skill| %>
+                          <% ship_skill = ship.ships_skills.find_by(skill: skill) %>
+                          <div class="col-md-6">
+                            <div class="card">
+                              <div class="card-body">
+                                <h6 class="card-title"><%= skill.name %></h6>
+                                <div class="row">
+                                  <div class="col-6">
+                                    <%= label_tag "ship_skills[#{skill.id}][mastery]", "Maîtrise", class: "form-label" %>
+                                    <%= number_field_tag "ship_skills[#{skill.id}][mastery]", 
+                                        ship_skill&.mastery || 0, class: "form-control", min: 0 %>
+                                  </div>
+                                  <div class="col-6">
+                                    <%= label_tag "ship_skills[#{skill.id}][bonus]", "Bonus", class: "form-label" %>
+                                    <%= number_field_tag "ship_skills[#{skill.id}][bonus]", 
+                                        ship_skill&.bonus || 0, class: "form-control" %>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        <% end %>
+                        <div class="col-12">
+                          <%= f.submit "Mettre à jour les compétences", class: "btn btn-warning" %>
+                        </div>
+                      </div>
+                    <% end %>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Section 4: Armes -->
+              <div class="accordion-item">
+                <h2 class="accordion-header">
+                  <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                          data-bs-target="#weapons<%= ship.id %>" aria-expanded="false"
+                          data-action="click->accordion-persist#toggle"
+                          data-accordion-persist-section-value="weapons">
+                    <i class="fa-solid fa-crosshairs me-2"></i>
+                    Armes (<%= ship.ship_weapons.count %>)
+                  </button>
+                </h2>
+                <div id="weapons<%= ship.id %>" class="accordion-collapse collapse"
+                     data-accordion-persist-target="section" 
+                     data-accordion-persist-section-name="weapons">
+                  <div class="accordion-body">
+                    <% if ship.ship_weapons.any? %>
+                      <%= form_with url: mj_update_ship_weapons_path(ship), method: :patch, local: true do |f| %>
+                        <div class="row g-3">
+                          <% ship.ship_weapons.each do |weapon| %>
+                            <div class="col-12">
+                              <div class="card">
+                                <div class="card-header">
+                                  <h6 class="mb-0">
+                                    <%= weapon.name %> 
+                                    <span class="badge bg-info"><%= weapon.weapon_type.humanize %></span>
+                                  </h6>
+                                </div>
+                                <div class="card-body">
+                                  <div class="row">
+                                    <div class="col-md-3">
+                                      <%= label_tag "ship_weapons[#{weapon.id}][damage_mastery]", "Dégâts (D)", class: "form-label" %>
+                                      <%= number_field_tag "ship_weapons[#{weapon.id}][damage_mastery]", 
+                                          weapon.damage_mastery, class: "form-control", min: 0 %>
+                                    </div>
+                                    <div class="col-md-3">
+                                      <%= label_tag "ship_weapons[#{weapon.id}][damage_bonus]", "Dégâts (+)", class: "form-label" %>
+                                      <%= number_field_tag "ship_weapons[#{weapon.id}][damage_bonus]", 
+                                          weapon.damage_bonus, class: "form-control" %>
+                                    </div>
+                                    <div class="col-md-3">
+                                      <%= label_tag "ship_weapons[#{weapon.id}][aim_mastery]", "Visée (D)", class: "form-label" %>
+                                      <%= number_field_tag "ship_weapons[#{weapon.id}][aim_mastery]", 
+                                          weapon.aim_mastery, class: "form-control", min: 0 %>
+                                    </div>
+                                    <div class="col-md-3">
+                                      <%= label_tag "ship_weapons[#{weapon.id}][aim_bonus]", "Visée (+)", class: "form-label" %>
+                                      <%= number_field_tag "ship_weapons[#{weapon.id}][aim_bonus]", 
+                                          weapon.aim_bonus, class: "form-control" %>
+                                    </div>
+                                    <% if weapon.quantity_max %>
+                                      <div class="col-md-6">
+                                        <%= label_tag "ship_weapons[#{weapon.id}][quantity_current]", "Munitions actuelles", class: "form-label" %>
+                                        <%= number_field_tag "ship_weapons[#{weapon.id}][quantity_current]", 
+                                            weapon.quantity_current, class: "form-control", min: 0 %>
+                                      </div>
+                                      <div class="col-md-6">
+                                        <%= label_tag "ship_weapons[#{weapon.id}][quantity_max]", "Munitions max", class: "form-label" %>
+                                        <%= number_field_tag "ship_weapons[#{weapon.id}][quantity_max]", 
+                                            weapon.quantity_max, class: "form-control", min: 0 %>
+                                      </div>
+                                    <% end %>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          <% end %>
+                          <div class="col-12">
+                            <%= f.submit "Mettre à jour les armes", class: "btn btn-danger" %>
+                          </div>
+                        </div>
+                      <% end %>
+                    <% else %>
+                      <p class="text-muted">Aucune arme installée sur ce vaisseau.</p>
+                    <% end %>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Section 5: Statuts spéciaux -->
+              <div class="accordion-item">
+                <h2 class="accordion-header">
+                  <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                          data-bs-target="#status<%= ship.id %>" aria-expanded="false"
+                          data-action="click->accordion-persist#toggle"
+                          data-accordion-persist-section-value="status">
+                    <i class="fa-solid fa-exclamation-triangle me-2"></i>
+                    Statuts spéciaux
+                  </button>
+                </h2>
+                <div id="status<%= ship.id %>" class="accordion-collapse collapse"
+                     data-accordion-persist-target="section" 
+                     data-accordion-persist-section-name="status">
+                  <div class="accordion-body">
+                    <%= form_with model: ship, url: mj_update_ship_status_path(ship), method: :patch, local: true, class: "row g-3" do |f| %>
+                      <div class="col-md-4">
+                        <div class="form-check">
+                          <%= f.check_box :thrusters_damaged, class: "form-check-input" %>
+                          <%= f.label :thrusters_damaged, "Propulseurs endommagés", class: "form-check-label" %>
+                        </div>
+                      </div>
+                      <div class="col-md-4">
+                        <div class="form-check">
+                          <%= f.check_box :hyperdrive_damaged, class: "form-check-input" %>
+                          <%= f.label :hyperdrive_damaged, "Hyperpropulsion endommagée", class: "form-check-label" %>
+                        </div>
+                      </div>
+                      <div class="col-md-4">
+                        <div class="form-check">
+                          <%= f.check_box :depressurized, class: "form-check-input" %>
+                          <%= f.label :depressurized, "Dépressurisé", class: "form-check-label" %>
+                        </div>
+                      </div>
+                      <div class="col-md-4">
+                        <div class="form-check">
+                          <%= f.check_box :weapons_disabled, class: "form-check-input" %>
+                          <%= f.label :weapons_disabled, "Armes désactivées", class: "form-check-label" %>
+                        </div>
+                      </div>
+                      <div class="col-md-4">
+                        <div class="form-check">
+                          <%= f.check_box :sensors_damaged, class: "form-check-input" %>
+                          <%= f.label :sensors_damaged, "Senseurs endommagés", class: "form-check-label" %>
+                        </div>
+                      </div>
+                      <div class="col-md-4">
+                        <div class="form-check">
+                          <%= f.check_box :life_support_damaged, class: "form-check-input" %>
+                          <%= f.label :life_support_damaged, "Support vie endommagé", class: "form-check-label" %>
+                        </div>
+                      </div>
+                      <div class="col-md-4">
+                        <div class="form-check">
+                          <%= f.check_box :shields_down, class: "form-check-input" %>
+                          <%= f.label :shields_down, "Boucliers hors service", class: "form-check-label" %>
+                        </div>
+                      </div>
+                      <div class="col-md-4">
+                        <div class="form-check">
+                          <%= f.check_box :power_core_damaged, class: "form-check-input" %>
+                          <%= f.label :power_core_damaged, "Cœur énergétique endommagé", class: "form-check-label" %>
+                        </div>
+                      </div>
+                      <div class="col-12">
+                        <%= f.submit "Mettre à jour les statuts", class: "btn btn-outline-danger" %>
+                      </div>
+                    <% end %>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        <% end %>
+      <% else %>
+        <div class="text-center">
+          <h3>Aucun vaisseau trouvé</h3>
+          <p class="text-muted">Le groupe PJ ne possède actuellement aucun vaisseau.</p>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>
+
+<style>
+.ship-card {
+  background: rgba(0, 0, 0, 0.05);
+  border: 1px solid rgba(0, 255, 255, 0.3) !important;
+}
+
+.ship-card:hover {
+  box-shadow: 0 0 10px rgba(0, 255, 255, 0.2);
+}
+
+.accordion-button {
+  background-color: rgba(0, 0, 0, 0.1);
+}
+
+.accordion-button:not(.collapsed) {
+  background-color: rgba(0, 123, 255, 0.1);
+  border-color: rgba(0, 123, 255, 0.25);
+}
+
+.card {
+  border: 1px solid rgba(255, 255, 255, 0.125);
+}
+
+.form-control {
+  background-color: rgba(255, 255, 255, 0.9);
+}
+
+.form-control:focus {
+  border-color: #00ffff;
+  box-shadow: 0 0 0 0.25rem rgba(0, 255, 255, 0.25);
+}
+</style>

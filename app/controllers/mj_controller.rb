@@ -98,7 +98,7 @@ class MjController < ApplicationController
       message += " #{patch_message}" if patch_message
   
     when "ignore_defense"
-      # Dégâts directs aux PV sans réduction
+      # Dégâts ignorants la défense et les boucliers, allant directement aux PV
       new_hp_value = user.hp_current - damage
       new_hp_value = [new_hp_value, -10].max
       user.update(hp_current: new_hp_value)
@@ -575,6 +575,88 @@ class MjController < ApplicationController
     user.update(dark_side_points: 0, cyber_points: 0)
     redirect_to fixer_points_path
   end
+
+  def vaisseaux
+    @ships = Ship.joins(:group).where(groups: { name: "PJ" }).includes(:ships_skills, :ship_weapons)
+    @skills = Skill.all
+  end
+
+  def update_ship
+    @ship = Ship.find(params[:id])
+    
+    if @ship.update(ship_basic_params)
+      redirect_to mj_vaisseaux_path, notice: "Informations du vaisseau #{@ship.name} mises à jour avec succès."
+    else
+      redirect_to mj_vaisseaux_path, alert: "Erreur lors de la mise à jour : #{@ship.errors.full_messages.join(', ')}"
+    end
+  end
+
+  def update_ship_stats
+    @ship = Ship.find(params[:id])
+    
+    if @ship.update(ship_stats_params)
+      redirect_to mj_vaisseaux_path, notice: "Statistiques du vaisseau #{@ship.name} mises à jour avec succès."
+    else
+      redirect_to mj_vaisseaux_path, alert: "Erreur lors de la mise à jour : #{@ship.errors.full_messages.join(', ')}"
+    end
+  end
+
+  def update_ship_skills
+    @ship = Ship.find(params[:id])
+    
+    if params[:ship_skills].present?
+      params[:ship_skills].each do |skill_id, values|
+        ship_skill = @ship.ships_skills.find_by(skill_id: skill_id)
+        if ship_skill
+          ship_skill.update(
+            mastery: values[:mastery].to_i,
+            bonus: values[:bonus].to_i
+          )
+        elsif values[:mastery].to_i > 0 || values[:bonus].to_i > 0
+          # Créer une nouvelle compétence si elle n'existe pas et a des valeurs
+          @ship.ships_skills.create(
+            skill_id: skill_id,
+            mastery: values[:mastery].to_i,
+            bonus: values[:bonus].to_i
+          )
+        end
+      end
+    end
+    
+    redirect_to mj_vaisseaux_path, notice: "Compétences du vaisseau #{@ship.name} mises à jour avec succès."
+  end
+
+  def update_ship_weapons
+    @ship = Ship.find(params[:id])
+    
+    if params[:ship_weapons].present?
+      params[:ship_weapons].each do |weapon_id, values|
+        weapon = @ship.ship_weapons.find_by(id: weapon_id)
+        if weapon
+          weapon.update(
+            damage_mastery: values[:damage_mastery].to_i,
+            damage_bonus: values[:damage_bonus].to_i,
+            aim_mastery: values[:aim_mastery].to_i,
+            aim_bonus: values[:aim_bonus].to_i,
+            quantity_current: values[:quantity_current].present? ? values[:quantity_current].to_i : weapon.quantity_current,
+            quantity_max: values[:quantity_max].present? ? values[:quantity_max].to_i : weapon.quantity_max
+          )
+        end
+      end
+    end
+    
+    redirect_to mj_vaisseaux_path, notice: "Armes du vaisseau #{@ship.name} mises à jour avec succès."
+  end
+
+  def update_ship_status
+    @ship = Ship.find(params[:id])
+    
+    if @ship.update(ship_status_params)
+      redirect_to mj_vaisseaux_path, notice: "Statuts du vaisseau #{@ship.name} mis à jour avec succès."
+    else
+      redirect_to mj_vaisseaux_path, alert: "Erreur lors de la mise à jour : #{@ship.errors.full_messages.join(', ')}"
+    end
+  end
   
   private
   
@@ -639,5 +721,26 @@ class MjController < ApplicationController
     )
   
     Rails.logger.info "✔️ Patch automatique activé : #{equipped_patch.name} pour #{user.username}, statut '#{status_name}' annulé."
+  end
+
+  def ship_basic_params
+    params.require(:ship).permit(:name, :brand, :model, :description, :price)
+  end
+
+  def ship_stats_params
+    params.require(:ship).permit(
+      :size, :max_passengers, :min_crew, :hp_max, :hp_current, 
+      :hyperdrive_rating, :backup_hyperdrive, :astromech_droids,
+      :thruster_level, :hull_level, :circuits_level, :shield_system_level,
+      :torpilles_count, :missiles_count
+    )
+  end
+
+  def ship_status_params
+    params.require(:ship).permit(
+      :thrusters_damaged, :hyperdrive_damaged, :depressurized, 
+      :weapons_disabled, :sensors_damaged, :life_support_damaged,
+      :shields_down, :power_core_damaged
+    )
   end
 end

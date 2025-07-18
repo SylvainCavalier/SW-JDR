@@ -41,10 +41,7 @@
       <%= f.label :secondary_weapon, "Armement secondaire", class: "form-label" %>
       <%= f.text_field :secondary_weapon, class: "form-control" %>
     </div>
-    <div class="form-group mb-2">
-      <%= f.label :turret, "Tourelle", class: "form-label" %>
-      <%= f.select :turret, Ship.turrets.keys.map { |k| [k.humanize, k] }, {}, class: "form-control" %>
-    </div>
+
     <div class="form-group mb-2">
       <%= f.label :hyperdrive_rating, "Hyperpropulseur (puissance)", class: "form-label" %>
       <%= f.number_field :hyperdrive_rating, class: "form-control", step: 0.1, min: 0 %>
@@ -98,10 +95,20 @@
         <%= text_field_tag 'secondary_weapon', '', class: 'form-control' %>
       </div>
       <div class="col-md-6 mb-3">
-        <%= hidden_field_tag 'tourelles', 0 %>
-        <%= check_box_tag 'tourelles', '1', false, id: 'tourelles-checkbox', data: { action: 'change->toggle#toggleTourelles' } %>
-        <%= label_tag 'tourelles-checkbox', 'Tourelles', class: 'form-label ms-2' %>
-        <%= select_tag 'tourelles_count', options_for_select((0..5).to_a), class: 'form-select ms-2', id: 'tourelles-count', disabled: true %>
+        <%= hidden_field_tag 'turrets', 0 %>
+        <%= check_box_tag 'turrets', '1', false, id: 'turrets-checkbox', data: { action: 'change->toggle#toggleTurrets' } %>
+        <%= label_tag 'turrets-checkbox', 'Tourelles', class: 'form-label ms-2' %>
+        <div id="turret-options" style="display: none;">
+          <div class="mt-2">
+            <%= select_tag 'turret_count', options_for_select((1..5).to_a), { class: 'form-select mb-2', id: 'turret-count' } %>
+            <%= select_tag 'turret_type', options_for_select([
+              ['Tourelle pulso-blaster (1000 crédits)', 'Tourelle pulso-blaster'],
+              ['Tourelle lourde (2000 crédits)', 'Tourelle lourde'],
+              ['Tourelle plasmique (4000 crédits)', 'Tourelle plasmique'],
+              ['Tourelle à ions (1500 crédits)', 'Tourelle à ions']
+            ]), { class: 'form-select', id: 'turret-type' } %>
+          </div>
+        </div>
       </div>
       <div class="col-md-6 mb-3">
         <%= hidden_field_tag 'torpilles', 0 %>

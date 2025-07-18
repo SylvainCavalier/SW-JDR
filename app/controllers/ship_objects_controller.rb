@@ -47,6 +47,7 @@ class ShipObjectsController < ApplicationController
   private
 
   def set_ship
+    return render json: { error: "ID de vaisseau invalide" }, status: :bad_request if params[:ship_id] == "undefined"
     @ship = current_user.group.ships.find(params[:ship_id])
   end
 

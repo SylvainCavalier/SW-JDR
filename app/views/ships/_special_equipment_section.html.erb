@@ -1,0 +1,164 @@
+<!-- Équipements installés -->
+<div class="col-md-4 mb-4">
+  <h5 class="text-center mb-3">Équipements installés</h5>
+  
+  <% if ship.installed_special_equipment.any? %>
+    <% ship.installed_special_equipment.each do |equipment| %>
+      <div class="weapon-slot mb-3 p-3 bg-success bg-opacity-10 rounded">
+        <div class="d-flex justify-content-between align-items-start">
+          <div>
+            <strong><%= equipment.name %></strong><br>
+            <small class="text-muted">
+              <%= Ship::SPECIAL_EQUIPMENT[equipment.name][:description] %>
+              <% if equipment.special.present? %>
+                <br><strong>Effet:</strong> <%= equipment.special %>
+              <% end %>
+              <% if equipment.quantity_max && equipment.quantity_max > 1 %>
+                <br><strong>Quantité:</strong> <%= equipment.quantity_current %>/<%= equipment.quantity_max %>
+              <% end %>
+            </small>
+          </div>
+          <% if equipment.price > 0 %>
+            <small class="text-success">
+              Vente: <%= number_with_delimiter(ship.special_equipment_sell_price(equipment.id)) %> <i class="fa-solid fa-coins"></i>
+            </small>
+          <% end %>
+        </div>
+        
+        <div class="mt-2">
+          <%= form_with url: uninstall_special_equipment_ship_path(ship), method: :patch, local: false, data: { action: "submit->ship-improve#uninstallSpecialEquipment" } do |form| %>
+            <%= form.hidden_field :equipment_id, value: equipment.id %>
+            <%= form.submit "Désinstaller", class: "btn btn-outline-warning btn-sm" %>
+          <% end %>
+          
+          <% if equipment.price > 0 %>
+            <%= form_with url: sell_special_equipment_ship_path(ship), method: :patch, local: false, data: { action: "submit->ship-improve#sellSpecialEquipment" } do |form| %>
+              <%= form.hidden_field :equipment_id, value: equipment.id %>
+              <%= form.submit "Vendre", class: "btn btn-outline-success btn-sm", 
+                    data: { confirm: "Vendre cet équipement pour #{number_with_delimiter(ship.special_equipment_sell_price(equipment.id))} crédits ?" } %>
+            <% end %>
+          <% end %>
+        </div>
+      </div>
+    <% end %>
+  <% else %>
+    <div class="text-center">
+      <small class="text-muted">Aucun équipement installé</small>
+    </div>
+  <% end %>
+</div>
+
+<!-- Équipements en stock -->
+<div class="col-md-4 mb-4">
+  <h5 class="text-center mb-3">Équipements en stock</h5>
+  
+  <% if ship.available_special_equipment.any? %>
+    <% ship.available_special_equipment.each do |equipment| %>
+      <div class="available-weapon mb-3 p-3 bg-secondary bg-opacity-10 rounded">
+        <div class="d-flex justify-content-between align-items-start">
+          <div>
+            <strong><%= equipment.name %></strong><br>
+            <small class="text-muted">
+              <%= Ship::SPECIAL_EQUIPMENT[equipment.name][:description] %>
+              <% if equipment.special.present? %>
+                <br><strong>Effet:</strong> <%= equipment.special %>
+              <% end %>
+              <% if equipment.quantity_max && equipment.quantity_max > 1 %>
+                <br><strong>Quantité:</strong> <%= equipment.quantity_current %>/<%= equipment.quantity_max %>
+              <% end %>
+            </small>
+          </div>
+          <% if equipment.price > 0 %>
+            <small class="text-success">
+              Vente: <%= number_with_delimiter(ship.special_equipment_sell_price(equipment.id)) %> <i class="fa-solid fa-coins"></i>
+            </small>
+          <% end %>
+        </div>
+        
+        <div class="mt-2">
+          <%= form_with url: install_special_equipment_ship_path(ship), method: :patch, local: false, data: { action: "submit->ship-improve#installSpecialEquipment" } do |form| %>
+            <%= form.hidden_field :equipment_id, value: equipment.id %>
+            <%= form.submit "Installer", class: "btn btn-outline-primary btn-sm" %>
+          <% end %>
+          
+          <% if equipment.price > 0 %>
+            <%= form_with url: sell_special_equipment_ship_path(ship), method: :patch, local: false, data: { action: "submit->ship-improve#sellSpecialEquipment" } do |form| %>
+              <%= form.hidden_field :equipment_id, value: equipment.id %>
+              <%= form.submit "Vendre", class: "btn btn-outline-success btn-sm", 
+                    data: { confirm: "Vendre cet équipement pour #{number_with_delimiter(ship.special_equipment_sell_price(equipment.id))} crédits ?" } %>
+            <% end %>
+          <% end %>
+        </div>
+      </div>
+    <% end %>
+  <% else %>
+    <div class="text-center">
+      <small class="text-muted">Aucun équipement disponible</small>
+    </div>
+  <% end %>
+</div>
+
+<!-- Équipements à acheter -->
+<div class="col-md-4 mb-4">
+  <h5 class="text-center mb-3">Équipements à acheter</h5>
+  <div class="row">
+    <% Ship::SPECIAL_EQUIPMENT.each do |equipment_name, equipment_data| %>
+      <div class="col-12 mb-3">
+        <div class="buyable-weapon p-3 bg-primary bg-opacity-10 rounded">
+          <div class="d-flex justify-content-between align-items-start mb-2">
+            <div>
+              <p class="weapon-name mb-1"><%= equipment_name %></p>
+              <small class="text-muted">
+                <%= equipment_data[:description] %>
+                <% if equipment_data[:special] %>
+                  <br><strong>Effet:</strong> <%= equipment_data[:special] %>
+                <% end %>
+                <% if equipment_data[:quantity_max] && equipment_data[:quantity_max] > 1 %>
+                  <br><strong>Quantité max:</strong> <%= equipment_data[:quantity_max] %> unités
+                  <% current_qty = ship.total_equipment_quantity(equipment_name) %>
+                  <% if current_qty > 0 %>
+                    <br><strong>Possédé:</strong> <%= current_qty %>/<%= equipment_data[:quantity_max] %>
+                  <% end %>
+                <% end %>
+                <% if equipment_data[:usage_unique] %>
+                  <br><span class="badge bg-warning">Usage unique</span>
+                <% end %>
+              </small>
+            </div>
+            <div class="text-end">
+              <strong class="text-warning">
+                <%= number_with_delimiter(equipment_data[:price]) %> <i class="fa-solid fa-coins"></i>
+              </strong>
+            </div>
+          </div>
+          
+          <div class="buy-button">
+            <% if ship.can_buy_special_equipment?(equipment_name, user_credits) %>
+              <%= form_with url: buy_special_equipment_ship_path(ship), method: :patch, local: false, data: { action: "submit->ship-improve#buySpecialEquipment" } do |form| %>
+                <%= form.hidden_field :equipment_name, value: equipment_name %>
+                <% if equipment_data[:quantity_max] && equipment_data[:quantity_max] > 1 %>
+                  <%= form.submit "Acheter 1 unité", class: "btn btn-outline-success btn-sm w-100",
+                        data: { confirm: "Acheter 1 unité de #{equipment_name} pour #{number_with_delimiter(equipment_data[:price])} crédits ?" } %>
+                <% else %>
+                  <%= form.submit "Acheter", class: "btn btn-outline-success btn-sm w-100",
+                        data: { confirm: "Acheter #{equipment_name} pour #{number_with_delimiter(equipment_data[:price])} crédits ?" } %>
+                <% end %>
+              <% end %>
+            <% else %>
+              <% current_qty = ship.total_equipment_quantity(equipment_name) %>
+              <% if equipment_data[:quantity_max] && current_qty >= equipment_data[:quantity_max] %>
+                <button class="btn btn-outline-warning btn-sm w-100" disabled>
+                  Quantité maximum atteinte
+                </button>
+              <% else %>
+                <button class="btn btn-outline-danger btn-sm w-100" disabled>
+                  Crédits insuffisants
+                </button>
+              <% end %>
+            <% end %>
+          </div>
+        </div>
+      </div>
+    <% end %>
+  </div>
+</div> 

@@ -166,6 +166,13 @@ Rails.application.routes.draw do
   get "mj/sphero", to: "mj#sphero", as: "mj_sphero"
   post "mj/sphero/create", to: "mj#create_sphero", as: "mj_create_sphero"
 
+  get 'mj/vaisseaux', to: 'mj#vaisseaux', as: 'mj_vaisseaux'
+  patch 'mj/vaisseaux/:id/update_ship', to: 'mj#update_ship', as: 'mj_update_ship'
+  patch 'mj/vaisseaux/:id/update_ship_stats', to: 'mj#update_ship_stats', as: 'mj_update_ship_stats'
+  patch 'mj/vaisseaux/:id/update_ship_skills', to: 'mj#update_ship_skills', as: 'mj_update_ship_skills'
+  patch 'mj/vaisseaux/:id/update_ship_weapons', to: 'mj#update_ship_weapons', as: 'mj_update_ship_weapons'
+  patch 'mj/vaisseaux/:id/update_ship_status', to: 'mj#update_ship_status', as: 'mj_update_ship_status'
+
   get 'combat', to: 'combat#index', as: 'combat'
   get 'mj/combat', to: 'combat#index', as: 'mj_combat'
   
@@ -199,13 +206,41 @@ Rails.application.routes.draw do
   get 'ships/dock'
   get 'ships/undock'
   get 'ships/inventory'
+  get 'ships/improve'
+  get 'ships/repair'
 
   resources :ships do
     member do
       patch :set_active
       get :inventory
+      get :improve
+      patch :upgrade
+      patch :upgrade_sensor
+      patch :upgrade_hp_max
+      patch :buy_weapon
+      patch :install_weapon
+      patch :uninstall_weapon
+      patch :sell_weapon
+      patch :buy_launcher
+      patch :buy_ammunition
+      patch :buy_turret
+      patch :install_turret
+      patch :uninstall_turret
+      patch :sell_turret
+      patch :upgrade_weapon_damage
+      patch :upgrade_weapon_aim
+      patch :buy_special_equipment
+      patch :install_special_equipment
+      patch :uninstall_special_equipment
+      patch :sell_special_equipment
       patch :dock
       patch :undock
+      get :crew
+      patch :assign_crew
+      delete :remove_crew_member
+      get :repair
+      patch :use_repair_kit
+      patch :deploy_astromech_droid
     end
     resources :ship_objects, only: [:new, :create, :edit, :update, :destroy]
   end

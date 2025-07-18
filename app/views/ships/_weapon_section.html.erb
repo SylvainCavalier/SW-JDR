@@ -1,0 +1,387 @@
+<!-- Armes installées -->
+<div class="col-md-6 mb-4">
+  <h4 class="text-center mb-3">Armes installées</h4>
+  
+  <!-- Arme principale -->
+  <div class="weapon-slot mb-3 p-3 bg-primary bg-opacity-10 rounded">
+    <p class="weapon-slot-title">Arme principale</p>
+    <% if ship.main_weapon %>
+      <div class="installed-weapon">
+        <p><%= ship.main_weapon.name %></p>
+        <small class="text-muted">
+          <div class="weapon-stats-upgradeable">
+            <span class="stat-line">
+              <%= ship.main_weapon.damage_mastery %>D<% if ship.main_weapon.damage_bonus != 0 %>+<%= ship.main_weapon.damage_bonus %><% end %> dégâts
+              <% if ship.main_weapon.can_upgrade_damage? %>
+                <%= form_with url: upgrade_weapon_damage_ship_path(ship), method: :patch, local: false, class: "d-inline upgrade-btn-form", data: { action: "submit->ship-improve#upgradeWeaponDamage" } do |form| %>
+                  <%= form.hidden_field :weapon_id, value: ship.main_weapon.id %>
+                  <% if ship.main_weapon.can_afford_damage_upgrade?(user_credits) %>
+                    <%= form.submit "+", class: "btn btn-outline-success btn-xs upgrade-btn", title: "Améliorer dégâts (#{ship.main_weapon.damage_upgrade_description} pour #{ship.main_weapon.damage_upgrade_cost} crédits)" %>
+                    <span class="upgrade-cost"><%= number_with_delimiter(ship.main_weapon.damage_upgrade_cost) %> <i class="fa-solid fa-coins"></i></span>
+                  <% else %>
+                    <button class="btn btn-outline-secondary btn-xs upgrade-btn" disabled title="Crédits insuffisants (#{ship.main_weapon.damage_upgrade_cost})">+</button>
+                    <span class="upgrade-cost text-danger"><%= number_with_delimiter(ship.main_weapon.damage_upgrade_cost) %> <i class="fa-solid fa-coins"></i></span>
+                  <% end %>
+                <% end %>
+              <% end %>
+            </span>
+            <% if ship.main_weapon.aim_bonus != 0 || ship.main_weapon.can_upgrade_aim? %>
+              <span class="stat-line">
+                | <%= ship.main_weapon.aim_bonus > 0 ? '+' : '' %><%= ship.main_weapon.aim_bonus %>D précision
+                <% if ship.main_weapon.can_upgrade_aim? %>
+                  <%= form_with url: upgrade_weapon_aim_ship_path(ship), method: :patch, local: false, class: "d-inline upgrade-btn-form", data: { action: "submit->ship-improve#upgradeWeaponAim" } do |form| %>
+                    <%= form.hidden_field :weapon_id, value: ship.main_weapon.id %>
+                    <% if ship.main_weapon.can_afford_aim_upgrade?(user_credits) %>
+                      <%= form.submit "+", class: "btn btn-outline-success btn-xs upgrade-btn", title: "Améliorer précision (#{ship.main_weapon.aim_upgrade_description} pour #{ship.main_weapon.aim_upgrade_cost} crédits)" %>
+                      <span class="upgrade-cost"><%= number_with_delimiter(ship.main_weapon.aim_upgrade_cost) %> <i class="fa-solid fa-coins"></i></span>
+                    <% else %>
+                      <button class="btn btn-outline-secondary btn-xs upgrade-btn" disabled title="Crédits insuffisants (#{ship.main_weapon.aim_upgrade_cost})">+</button>
+                      <span class="upgrade-cost text-danger"><%= number_with_delimiter(ship.main_weapon.aim_upgrade_cost) %> <i class="fa-solid fa-coins"></i></span>
+                    <% end %>
+                  <% end %>
+                <% end %>
+              </span>
+            <% end %>
+            <% if ship.main_weapon.special.present? %>
+              <span class="stat-line">| <%= ship.main_weapon.special %></span>
+            <% end %>
+          </div>
+        </small>
+        <div class="mt-2">
+          <%= form_with url: uninstall_weapon_ship_path(ship), method: :patch, local: false, data: { action: "submit->ship-improve#uninstallWeapon" } do |form| %>
+            <%= form.hidden_field :slot, value: 'main' %>
+            <%= form.submit "Désinstaller", class: "btn btn-outline-warning btn-sm" %>
+          <% end %>
+        </div>
+      </div>
+    <% else %>
+      <div class="empty-slot text-center">
+        <small class="text-muted">Aucune arme installée</small>
+      </div>
+    <% end %>
+  </div>
+
+  <!-- Arme secondaire -->
+  <div class="weapon-slot mb-3 p-3 bg-primary bg-opacity-10 rounded">
+    <p class="weapon-slot-title">Arme secondaire</p>
+    <% if ship.secondary_weapon %>
+      <div class="installed-weapon">
+        <p><%= ship.secondary_weapon.name %></p>
+        <small class="text-muted">
+          <div class="weapon-stats-upgradeable">
+            <span class="stat-line">
+              <%= ship.secondary_weapon.damage_mastery %>D<% if ship.secondary_weapon.damage_bonus != 0 %>+<%= ship.secondary_weapon.damage_bonus %><% end %> dégâts
+              <% if ship.secondary_weapon.can_upgrade_damage? %>
+                <%= form_with url: upgrade_weapon_damage_ship_path(ship), method: :patch, local: false, class: "d-inline upgrade-btn-form", data: { action: "submit->ship-improve#upgradeWeaponDamage" } do |form| %>
+                  <%= form.hidden_field :weapon_id, value: ship.secondary_weapon.id %>
+                  <% if ship.secondary_weapon.can_afford_damage_upgrade?(user_credits) %>
+                    <%= form.submit "+", class: "btn btn-outline-success btn-xs upgrade-btn", title: "Améliorer dégâts (#{ship.secondary_weapon.damage_upgrade_description} pour #{ship.secondary_weapon.damage_upgrade_cost} crédits)" %>
+                    <span class="upgrade-cost"><%= number_with_delimiter(ship.secondary_weapon.damage_upgrade_cost) %> <i class="fa-solid fa-coins"></i></span>
+                  <% else %>
+                    <button class="btn btn-outline-secondary btn-xs upgrade-btn" disabled title="Crédits insuffisants (#{ship.secondary_weapon.damage_upgrade_cost})">+</button>
+                    <span class="upgrade-cost text-danger"><%= number_with_delimiter(ship.secondary_weapon.damage_upgrade_cost) %> <i class="fa-solid fa-coins"></i></span>
+                  <% end %>
+                <% end %>
+              <% end %>
+            </span>
+            <% if ship.secondary_weapon.aim_bonus != 0 || ship.secondary_weapon.can_upgrade_aim? %>
+              <span class="stat-line">
+                | <%= ship.secondary_weapon.aim_bonus > 0 ? '+' : '' %><%= ship.secondary_weapon.aim_bonus %>D précision
+                <% if ship.secondary_weapon.can_upgrade_aim? %>
+                  <%= form_with url: upgrade_weapon_aim_ship_path(ship), method: :patch, local: false, class: "d-inline upgrade-btn-form", data: { action: "submit->ship-improve#upgradeWeaponAim" } do |form| %>
+                    <%= form.hidden_field :weapon_id, value: ship.secondary_weapon.id %>
+                    <% if ship.secondary_weapon.can_afford_aim_upgrade?(user_credits) %>
+                      <%= form.submit "+", class: "btn btn-outline-success btn-xs upgrade-btn", title: "Améliorer précision (#{ship.secondary_weapon.aim_upgrade_description} pour #{ship.secondary_weapon.aim_upgrade_cost} crédits)" %>
+                      <span class="upgrade-cost"><%= number_with_delimiter(ship.secondary_weapon.aim_upgrade_cost) %> <i class="fa-solid fa-coins"></i></span>
+                    <% else %>
+                      <button class="btn btn-outline-secondary btn-xs upgrade-btn" disabled title="Crédits insuffisants (#{ship.secondary_weapon.aim_upgrade_cost})">+</button>
+                      <span class="upgrade-cost text-danger"><%= number_with_delimiter(ship.secondary_weapon.aim_upgrade_cost) %> <i class="fa-solid fa-coins"></i></span>
+                    <% end %>
+                  <% end %>
+                <% end %>
+              </span>
+            <% end %>
+            <% if ship.secondary_weapon.special.present? %>
+              <span class="stat-line">| <%= ship.secondary_weapon.special %></span>
+            <% end %>
+          </div>
+        </small>
+        <div class="mt-2">
+          <%= form_with url: uninstall_weapon_ship_path(ship), method: :patch, local: false, data: { action: "submit->ship-improve#uninstallWeapon" } do |form| %>
+            <%= form.hidden_field :slot, value: 'secondary' %>
+            <%= form.submit "Désinstaller", class: "btn btn-outline-warning btn-sm" %>
+          <% end %>
+        </div>
+      </div>
+    <% else %>
+      <div class="empty-slot text-center">
+        <small class="text-muted">Aucune arme installée</small>
+      </div>
+    <% end %>
+  </div>
+
+  <!-- Lance-Missiles -->
+  <div class="weapon-slot mb-3 p-3 bg-primary bg-opacity-10 rounded">
+    <% if ship.has_missile_launcher? %>
+      <div class="installed-weapon">
+        <p class="weapon-slot-title"><%= ship.missile_launcher.name %></p>
+        <small class="text-muted">
+          <%= ship.missile_launcher.damage_mastery %>D dégâts | 
+          Munitions: <%= ship.missile_launcher.quantity_current %>/<%= ship.missile_launcher.quantity_max %>
+          <% if ship.missile_launcher.special.present? %>
+            | <%= ship.missile_launcher.special %>
+          <% end %>
+        </small>
+        <div class="mt-2">
+          <% if ship.can_buy_ammunition?('missile', user_credits) %>
+            <%= form_with url: buy_ammunition_ship_path(ship), method: :patch, local: false, data: { action: "submit->ship-improve#buyAmmunition" } do |form| %>
+              <%= form.hidden_field :ammo_type, value: 'missile' %>
+              <%= form.submit "Acheter missile (#{ship.ammunition_price('missile')} crédits)", class: "btn btn-outline-success btn-sm" %>
+            <% end %>
+          <% end %>
+          <%= form_with url: uninstall_weapon_ship_path(ship), method: :patch, local: false, data: { action: "submit->ship-improve#uninstallWeapon" } do |form| %>
+            <%= form.hidden_field :slot, value: 'missile' %>
+            <%= form.submit "Désinstaller", class: "btn btn-outline-warning btn-sm" %>
+          <% end %>
+          <% if ship.missile_launcher.price > 0 %>
+            <%= form_with url: sell_weapon_ship_path(ship), method: :patch, local: false, data: { action: "submit->ship-improve#sellWeapon" } do |form| %>
+              <%= form.hidden_field :weapon_id, value: ship.missile_launcher.id %>
+              <%= form.submit "Vendre (#{ship.weapon_sell_price(ship.missile_launcher.id)} crédits)", 
+                    class: "btn btn-outline-success btn-sm", 
+                    data: { confirm: "Vendre le Lance-Missiles pour #{ship.weapon_sell_price(ship.missile_launcher.id)} crédits ?" } %>
+            <% end %>
+          <% end %>
+        </div>
+      </div>
+    <% else %>
+      <div class="empty-slot text-center">
+        <small class="text-muted">Aucun lance-missiles installé</small>
+        <% if ship.can_buy_launcher?('missile', user_credits) %>
+          <div class="mt-2">
+            <%= form_with url: buy_launcher_ship_path(ship), method: :patch, local: false, data: { action: "submit->ship-improve#buyLauncher" } do |form| %>
+              <%= form.hidden_field :launcher_type, value: 'missile' %>
+              <%= form.submit "Acheter", 
+                    class: "btn btn-outline-success btn-sm",
+                    data: { confirm: "Acheter Lance-Missiles à concussion pour 8000 crédits ?" } %>
+            <% end %>
+          </div>
+        <% else %>
+          <div class="mt-2">
+            <small class="text-warning">Crédits insuffisants (8000 req.)</small>
+          </div>
+        <% end %>
+      </div>
+    <% end %>
+  </div>
+
+  <!-- Lance-Torpilles -->
+  <div class="weapon-slot mb-3 p-3 bg-primary bg-opacity-10 rounded">
+    <% if ship.has_torpedo_launcher? %>
+      <div class="installed-weapon">
+        <p class="weapon-slot-title"><%= ship.torpedo_launcher.name %></p>
+        <small class="text-muted">
+          <%= ship.torpedo_launcher.damage_mastery %>D dégâts | 
+          Munitions: <%= ship.torpedo_launcher.quantity_current %>/<%= ship.torpedo_launcher.quantity_max %>
+          <% if ship.torpedo_launcher.special.present? %>
+            | <%= ship.torpedo_launcher.special %>
+          <% end %>
+        </small>
+        <div class="mt-2">
+          <% if ship.can_buy_ammunition?('torpille', user_credits) %>
+            <%= form_with url: buy_ammunition_ship_path(ship), method: :patch, local: false, data: { action: "submit->ship-improve#buyAmmunition" } do |form| %>
+              <%= form.hidden_field :ammo_type, value: 'torpille' %>
+              <%= form.submit "Acheter torpille (#{ship.ammunition_price('torpille')} crédits)", class: "btn btn-outline-success btn-sm" %>
+            <% end %>
+          <% end %>
+          <%= form_with url: uninstall_weapon_ship_path(ship), method: :patch, local: false, data: { action: "submit->ship-improve#uninstallWeapon" } do |form| %>
+            <%= form.hidden_field :slot, value: 'torpille' %>
+            <%= form.submit "Désinstaller", class: "btn btn-outline-warning btn-sm" %>
+          <% end %>
+          <% if ship.torpedo_launcher.price > 0 %>
+            <%= form_with url: sell_weapon_ship_path(ship), method: :patch, local: false, data: { action: "submit->ship-improve#sellWeapon" } do |form| %>
+              <%= form.hidden_field :weapon_id, value: ship.torpedo_launcher.id %>
+              <%= form.submit "Vendre (#{ship.weapon_sell_price(ship.torpedo_launcher.id)} crédits)", 
+                    class: "btn btn-outline-success btn-sm", 
+                    data: { confirm: "Vendre le Lance-Torpilles pour #{ship.weapon_sell_price(ship.torpedo_launcher.id)} crédits ?" } %>
+            <% end %>
+          <% end %>
+        </div>
+      </div>
+    <% else %>
+      <div class="empty-slot text-center">
+        <% if ship.can_install_torpedo_launcher? %>
+          <small class="text-muted">Aucun lance-torpilles installé</small>
+          <% if ship.can_buy_launcher?('torpille', user_credits) %>
+            <div class="mt-2">
+              <%= form_with url: buy_launcher_ship_path(ship), method: :patch, local: false, data: { action: "submit->ship-improve#buyLauncher" } do |form| %>
+                <%= form.hidden_field :launcher_type, value: 'torpille' %>
+                <%= form.submit "Acheter", 
+                      class: "btn btn-outline-success btn-sm",
+                      data: { confirm: "Acheter Lance-Torpilles à protons pour 10000 crédits ?" } %>
+              <% end %>
+            </div>
+          <% else %>
+            <div class="mt-2">
+              <small class="text-warning">Crédits insuffisants (10000 req.)</small>
+            </div>
+          <% end %>
+        <% else %>
+          <small class="text-warning">Vaisseau trop petit pour les torpilles</small>
+        <% end %>
+      </div>
+    <% end %>
+  </div>
+</div>
+
+<!-- Armes en stock -->
+<div class="col-md-6 mb-4">
+  <h5 class="text-center mb-3">Armes en stock</h5>
+  
+  <% if ship.available_weapons.any? %>
+    <% ship.available_weapons.each do |weapon| %>
+      <div class="available-weapon mb-3 p-3 bg-secondary bg-opacity-10 rounded">
+        <div class="d-flex justify-content-between align-items-start">
+          <div>
+            <strong><%= weapon.name %></strong>
+            <small class="text-muted">
+              <div class="weapon-stats-upgradeable">
+                <span class="stat-line">
+                  <%= weapon.damage_mastery %>D<% if weapon.damage_bonus != 0 %>+<%= weapon.damage_bonus %><% end %> dégâts
+                  <% if weapon.can_upgrade_damage? %>
+                    <%= form_with url: upgrade_weapon_damage_ship_path(ship), method: :patch, local: false, class: "d-inline upgrade-btn-form", data: { action: "submit->ship-improve#upgradeWeaponDamage" } do |form| %>
+                      <%= form.hidden_field :weapon_id, value: weapon.id %>
+                      <% if weapon.can_afford_damage_upgrade?(user_credits) %>
+                        <%= form.submit "+", class: "btn btn-outline-success btn-xs upgrade-btn", title: "Améliorer dégâts (#{weapon.damage_upgrade_description} pour #{weapon.damage_upgrade_cost} crédits)" %>
+                        <span class="upgrade-cost"><%= number_with_delimiter(weapon.damage_upgrade_cost) %> <i class="fa-solid fa-coins"></i></span>
+                      <% else %>
+                        <button class="btn btn-outline-secondary btn-xs upgrade-btn" disabled title="Crédits insuffisants (#{weapon.damage_upgrade_cost})">+</button>
+                        <span class="upgrade-cost text-danger"><%= number_with_delimiter(weapon.damage_upgrade_cost) %> <i class="fa-solid fa-coins"></i></span>
+                      <% end %>
+                    <% end %>
+                  <% end %>
+                </span>
+                <% if weapon.aim_bonus != 0 || weapon.can_upgrade_aim? %>
+                  <span class="stat-line">
+                    | <%= weapon.aim_bonus > 0 ? '+' : '' %><%= weapon.aim_bonus %>D précision
+                    <% if weapon.can_upgrade_aim? %>
+                      <%= form_with url: upgrade_weapon_aim_ship_path(ship), method: :patch, local: false, class: "d-inline upgrade-btn-form", data: { action: "submit->ship-improve#upgradeWeaponAim" } do |form| %>
+                        <%= form.hidden_field :weapon_id, value: weapon.id %>
+                        <% if weapon.can_afford_aim_upgrade?(user_credits) %>
+                          <%= form.submit "+", class: "btn btn-outline-success btn-xs upgrade-btn", title: "Améliorer précision (#{weapon.aim_upgrade_description} pour #{weapon.aim_upgrade_cost} crédits)" %>
+                          <span class="upgrade-cost"><%= number_with_delimiter(weapon.aim_upgrade_cost) %> <i class="fa-solid fa-coins"></i></span>
+                        <% else %>
+                          <button class="btn btn-outline-secondary btn-xs upgrade-btn" disabled title="Crédits insuffisants (#{weapon.aim_upgrade_cost})">+</button>
+                          <span class="upgrade-cost text-danger"><%= number_with_delimiter(weapon.aim_upgrade_cost) %> <i class="fa-solid fa-coins"></i></span>
+                        <% end %>
+                      <% end %>
+                    <% end %>
+                  </span>
+                <% end %>
+                <% if weapon.name.include?('Lance-') %>
+                  <span class="stat-line">| Munitions: <%= weapon.quantity_current %>/<%= weapon.quantity_max %></span>
+                <% end %>
+                <% if weapon.special.present? %>
+                  <span class="stat-line">| <%= weapon.special %></span>
+                <% end %>
+              </div>
+            </small>
+          </div>
+          <% if weapon.price > 0 %>
+            <small class="text-success">
+              Vente: <%= number_with_delimiter(ship.weapon_sell_price(weapon.id)) %> <i class="fa-solid fa-coins"></i>
+            </small>
+          <% end %>
+        </div>
+        
+        <div class="mt-2">
+          <% if weapon.name.include?('Lance-Missiles') %>
+            <%= form_with url: install_weapon_ship_path(ship), method: :patch, local: false, data: { action: "submit->ship-improve#installWeapon" } do |form| %>
+              <%= form.hidden_field :weapon_id, value: weapon.id %>
+              <%= form.hidden_field :slot, value: 'missile' %>
+              <%= form.submit "Installer Lance-Missiles", class: "btn btn-outline-success btn-sm" %>
+            <% end %>
+          <% elsif weapon.name.include?('Lance-Torpilles') %>
+            <% if ship.can_install_torpedo_launcher? %>
+              <%= form_with url: install_weapon_ship_path(ship), method: :patch, local: false, data: { action: "submit->ship-improve#installWeapon" } do |form| %>
+                <%= form.hidden_field :weapon_id, value: weapon.id %>
+                <%= form.hidden_field :slot, value: 'torpille' %>
+                <%= form.submit "Installer Lance-Torpilles", class: "btn btn-outline-danger btn-sm" %>
+              <% end %>
+            <% else %>
+              <small class="text-warning">Vaisseau trop petit pour torpilles</small>
+            <% end %>
+          <% else %>
+            <%= form_with url: install_weapon_ship_path(ship), method: :patch, local: false, data: { action: "submit->ship-improve#installWeapon" } do |form| %>
+              <%= form.hidden_field :weapon_id, value: weapon.id %>
+              <%= form.hidden_field :slot, value: 'main' %>
+              <%= form.submit "Installer (P)", class: "btn btn-outline-primary btn-sm" %>
+            <% end %>
+            
+            <%= form_with url: install_weapon_ship_path(ship), method: :patch, local: false, data: { action: "submit->ship-improve#installWeapon" } do |form| %>
+              <%= form.hidden_field :weapon_id, value: weapon.id %>
+              <%= form.hidden_field :slot, value: 'secondary' %>
+              <%= form.submit "Installer (S)", class: "btn btn-outline-info btn-sm" %>
+            <% end %>
+          <% end %>
+          
+          <% if weapon.price > 0 %>
+            <%= form_with url: sell_weapon_ship_path(ship), method: :patch, local: false, data: { action: "submit->ship-improve#sellWeapon" } do |form| %>
+              <%= form.hidden_field :weapon_id, value: weapon.id %>
+              <%= form.submit "Vendre", class: "btn btn-outline-success btn-sm", 
+                    data: { confirm: "Vendre cette arme pour #{number_with_delimiter(ship.weapon_sell_price(weapon.id))} crédits ?" } %>
+            <% end %>
+          <% end %>
+        </div>
+      </div>
+    <% end %>
+  <% else %>
+    <div class="text-center">
+      <small class="text-muted">Aucune arme disponible</small>
+    </div>
+  <% end %>
+</div>
+
+<!-- Armes à acheter -->
+<div class="row mt-4">
+  <div class="col-12">
+    <h5 class="text-center mb-3">Armes à acheter</h5>
+    <div class="row">
+      <% Ship::PREDEFINED_WEAPONS.reject { |name, config| name.include?('Lance-') || config[:weapon_type] == 'tourelle' }.each do |weapon_name, weapon_data| %>
+        <div class="col-md-4 col-lg-3 mb-3">
+          <div class="buyable-weapon p-3 bg-primary bg-opacity-10 rounded text-center">
+            <p class="weapon-name"><%= weapon_name %></p>
+            <div class="weapon-stats mb-2">
+              <small class="text-muted">
+                <%= weapon_data[:damage_mastery] %>D<% if weapon_data[:damage_bonus] != 0 %>+<%= weapon_data[:damage_bonus] %><% end %> dégâts<br>
+                <% if weapon_data[:aim_bonus] != 0 %>
+                  <%= weapon_data[:aim_bonus] > 0 ? '+' : '' %><%= weapon_data[:aim_bonus] %>D précision<br>
+                <% end %>
+                <% if weapon_data[:special] %>
+                  <%= weapon_data[:special] %>
+                <% end %>
+              </small>
+            </div>
+            <div class="weapon-price mb-2">
+              <strong class="text-warning">
+                <%= number_with_delimiter(weapon_data[:price]) %> <i class="fa-solid fa-coins"></i>
+              </strong>
+            </div>
+            <div class="buy-button">
+              <% if ship.can_buy_weapon?(weapon_name, user_credits) %>
+                <%= form_with url: buy_weapon_ship_path(ship), method: :patch, local: false, data: { action: "submit->ship-improve#buyWeapon" } do |form| %>
+                  <%= form.hidden_field :weapon_name, value: weapon_name %>
+                  <%= form.submit "Acheter", class: "btn btn-outline-success btn-sm w-100",
+                        data: { confirm: "Acheter #{weapon_name} pour #{number_with_delimiter(weapon_data[:price])} crédits ?" } %>
+                <% end %>
+              <% else %>
+                <button class="btn btn-outline-danger btn-sm w-100" disabled>
+                  Crédits insuffisants
+                </button>
+              <% end %>
+            </div>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div> 

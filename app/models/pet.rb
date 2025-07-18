@@ -5,6 +5,7 @@ class Pet < ApplicationRecord
   has_many :skills, through: :pet_skills
   has_many :building_pets, dependent: :destroy
   has_many :buildings, through: :building_pets
+  has_many :crew_members, as: :assignable, dependent: :destroy
   has_one_attached :image
 
   has_many :pet_statuses, dependent: :destroy

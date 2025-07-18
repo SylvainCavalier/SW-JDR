@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_06_08_180459) do
+ActiveRecord::Schema[7.1].define(version: 2025_07_18_005438) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -111,6 +111,16 @@ ActiveRecord::Schema[7.1].define(version: 2025_06_08_180459) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "crew_members", force: :cascade do |t|
+    t.bigint "ship_id", null: false
+    t.string "assignable_type"
+    t.integer "assignable_id"
+    t.string "position"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["ship_id"], name: "index_crew_members_on_ship_id"
+  end
+
   create_table "defenses", force: :cascade do |t|
     t.string "name", null: false
     t.integer "price", null: false
@@ -155,6 +165,18 @@ ActiveRecord::Schema[7.1].define(version: 2025_06_08_180459) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["user_id"], name: "index_equipments_on_user_id"
+  end
+
+  create_table "genes", force: :cascade do |t|
+    t.string "property", null: false
+    t.boolean "positive", default: true, null: false
+    t.integer "category", null: false
+    t.text "description"
+    t.jsonb "skill_bonuses", default: {}
+    t.jsonb "stats_bonuses", default: {}
+    t.jsonb "special_traits", default: []
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "groups", force: :cascade do |t|
@@ -317,6 +339,9 @@ ActiveRecord::Schema[7.1].define(version: 2025_06_08_180459) do
     t.bigint "ship_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "price", default: 0, null: false
+    t.integer "damage_upgrade_level", default: 0, null: false
+    t.integer "aim_upgrade_level", default: 0, null: false
     t.index ["ship_id"], name: "index_ship_weapons_on_ship_id"
   end
 
@@ -333,7 +358,6 @@ ActiveRecord::Schema[7.1].define(version: 2025_06_08_180459) do
     t.integer "hp_current"
     t.string "main_weapon"
     t.string "secondary_weapon"
-    t.integer "turret", default: 0
     t.float "hyperdrive_rating"
     t.boolean "backup_hyperdrive", default: false
     t.boolean "active", default: false
@@ -348,12 +372,17 @@ ActiveRecord::Schema[7.1].define(version: 2025_06_08_180459) do
     t.boolean "hyperdrive_broken", default: false
     t.boolean "depressurized", default: false
     t.boolean "ship_destroyed", default: false
-    t.integer "tourelles"
     t.boolean "torpilles"
     t.boolean "missiles"
     t.integer "scale", default: 0, null: false
     t.integer "capacity", default: 0, null: false
     t.integer "used_capacity", default: 0, null: false
+    t.integer "thruster_level", default: 0, null: false
+    t.integer "hull_level", default: 0, null: false
+    t.integer "circuits_level", default: 0, null: false
+    t.integer "shield_system_level", default: 0, null: false
+    t.integer "hp_max_upgrades", default: 0, null: false
+    t.integer "astromech_droids", default: 0, null: false
     t.index ["group_id"], name: "index_ships_on_group_id"
     t.index ["parent_ship_id"], name: "index_ships_on_parent_ship_id"
   end
@@ -442,6 +471,17 @@ ActiveRecord::Schema[7.1].define(version: 2025_06_08_180459) do
     t.index ["user_id"], name: "index_user_caracs_on_user_id"
   end
 
+  create_table "user_genes", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.bigint "gene_id", null: false
+    t.integer "level", default: 1
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["gene_id"], name: "index_user_genes_on_gene_id"
+    t.index ["user_id", "gene_id"], name: "index_user_genes_on_user_id_and_gene_id", unique: true
+    t.index ["user_id"], name: "index_user_genes_on_user_id"
+  end
+
   create_table "user_inventory_objects", force: :cascade do |t|
     t.bigint "user_id", null: false
     t.bigint "inventory_object_id", null: false
@@ -514,6 +554,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_06_08_180459) do
     t.integer "dark_side_points", default: 0
     t.integer "cyber_points", default: 0
     t.boolean "junkie", default: false
+    t.integer "study_points", default: 0
     t.index ["classe_perso_id"], name: "index_users_on_classe_perso_id"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["group_id"], name: "index_users_on_group_id"
@@ -529,6 +570,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_06_08_180459) do
   add_foreign_key "building_pets", "pets"
   add_foreign_key "buildings", "headquarters"
   add_foreign_key "buildings", "pets", column: "chief_pet_id"
+  add_foreign_key "crew_members", "ships"
   add_foreign_key "defenses", "headquarters"
   add_foreign_key "enemy_skills", "enemies"
   add_foreign_key "enemy_skills", "skills"
@@ -559,6 +601,8 @@ ActiveRecord::Schema[7.1].define(version: 2025_06_08_180459) do
   add_foreign_key "subscriptions", "users"
   add_foreign_key "user_caracs", "caracs"
   add_foreign_key "user_caracs", "users"
+  add_foreign_key "user_genes", "genes"
+  add_foreign_key "user_genes", "users"
   add_foreign_key "user_inventory_objects", "inventory_objects"
   add_foreign_key "user_inventory_objects", "users"
   add_foreign_key "user_skills", "skills"

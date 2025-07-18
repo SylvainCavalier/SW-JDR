@@ -86,10 +86,20 @@
         <%= text_field_tag 'secondary_weapon', '', class: 'form-control' %>
       </div>
       <div class="col-md-6 mb-3">
-        <%= hidden_field_tag 'tourelles', 0 %>
-        <%= check_box_tag 'tourelles', '1', false, id: 'tourelles-checkbox', data: { action: 'change->toggle#toggleTourelles' } %>
-        <%= label_tag 'tourelles-checkbox', 'Tourelles', class: 'form-label ms-2' %>
-        <%= select_tag 'tourelles_count', options_for_select((0..5).to_a), class: 'form-select ms-2', id: 'tourelles-count', disabled: true %>
+        <%= hidden_field_tag 'turrets', 0 %>
+        <%= check_box_tag 'turrets', '1', false, id: 'turrets-checkbox', data: { action: 'change->toggle#toggleTurrets' } %>
+        <%= label_tag 'turrets-checkbox', 'Tourelles', class: 'form-label ms-2' %>
+        <div id="turret-options" style="display: none;">
+          <div class="mt-2">
+            <%= select_tag 'turret_count', options_for_select((1..5).to_a), { class: 'form-select mb-2', id: 'turret-count' } %>
+            <%= select_tag 'turret_type', options_for_select([
+              ['Tourelle pulso-blaster', 'Tourelle pulso-blaster'],
+              ['Tourelle lourde', 'Tourelle lourde'],
+              ['Tourelle plasmique', 'Tourelle plasmique'],
+              ['Tourelle à ions', 'Tourelle à ions']
+            ]), { class: 'form-select', id: 'turret-type' } %>
+          </div>
+        </div>
       </div>
       <div class="col-md-6 mb-3">
         <%= hidden_field_tag 'torpilles', 0 %>

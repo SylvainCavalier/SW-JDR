@@ -5,7 +5,7 @@
     <div class="row">
       <!-- Colonne Gauche : Image & Actions -->
       <div class="col-md-5 text-center">
-        <div class="image-box">
+        <div class="image-box position-relative">
           <% if @ship.image.attached? %>
             <%= image_tag @ship.image, class: "ship-image rounded shadow" %>
           <% else %>
@@ -13,23 +13,13 @@
               <i class="fa-solid fa-rocket neon-icon"></i>
             </div>
           <% end %>
-        </div>
-        <div class="actions-box d-flex flex-column gap-2 mt-3">
-          <%= link_to 'Éditer', edit_ship_path(@ship), class: 'btn btn-outline-warning btn-sm' %>
-          <button type="button"
-                  class="btn btn-outline-danger btn-sm"
-                  data-bs-toggle="modal"
-                  data-bs-target="#genericModal"
-                  data-modal-title="Confirmation de suppression"
-                  data-modal-message="Voulez-vous vraiment supprimer le vaisseau <%= @ship.name %> ?"
-                  data-modal-confirm-button="Supprimer"
-                  data-modal-confirm-action="delete#confirm"
-                  data-delete-path="<%= ship_path(@ship) %>">
-            Supprimer
+          <button type="button" 
+                  class="btn btn-sm btn-outline-light edit-image-btn"
+                  data-bs-toggle="modal" 
+                  data-bs-target="#editImageModal"
+                  title="Modifier l'image">
+            <i class="fa-solid fa-pencil"></i>
           </button>
-          <% unless @ship.active? %>
-            <%= button_to 'Définir comme principal', set_active_ship_path(@ship), method: :patch, class: 'btn btn-outline-success btn-sm' %>
-          <% end %>
         </div>
         <!-- SECTION SENSEURS -->
         <div class="sensors-container mt-4">
@@ -64,7 +54,16 @@
 
       <!-- Colonne Droite : Infos -->
       <div class="col-md-7">
-        <h1 class="ship-title"><%= @ship.name %></h1>
+        <h1 class="ship-title d-flex align-items-center">
+          <%= @ship.name %>
+          <button type="button" 
+                  class="btn btn-sm btn-outline-light ms-2"
+                  data-bs-toggle="modal" 
+                  data-bs-target="#editNameModal"
+                  title="Modifier le nom">
+            <i class="fa-solid fa-pencil"></i>
+          </button>
+        </h1>
         <div class="mb-3">
           <div class="d-flex justify-content-between text-light mb-1">
             <small>PV</small>
@@ -231,6 +230,80 @@
         </div>
       </div>
     </div>
+
+    <div class="actions-box d-flex flex-column gap-2 mt-3">
+      <% unless @ship.active? %>
+        <%= button_to 'Définir comme principal', set_active_ship_path(@ship), method: :patch, class: 'btn btn-outline-success btn-sm' %>
+      <% end %>
+      <%= link_to 'Equipage', crew_ship_path(@ship), class: 'btn btn-outline-success btn-sm' %>
+      <%= link_to 'Réparer', repair_ship_path(@ship), class: 'btn btn-outline-success btn-sm' %>
+      <%= link_to 'Améliorer', improve_ship_path(@ship), class: 'btn btn-outline-success btn-sm' %>
+      <button type="button"
+              class="btn btn-outline-warning btn-sm"
+              data-bs-toggle="modal"
+              data-bs-target="#genericModal"
+              data-modal-title="Confirmation de suppression"
+              data-modal-message="Voulez-vous vraiment supprimer le vaisseau <%= @ship.name %> ?"
+              data-modal-confirm-button="Supprimer"
+              data-modal-confirm-action="delete#confirm"
+              data-delete-path="<%= ship_path(@ship) %>">
+        Supprimer
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal pour éditer le nom -->
+<div class="modal fade" id="editNameModal" tabindex="-1" aria-labelledby="editNameModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content bg-dark text-light">
+      <div class="modal-header border-secondary">
+        <h5 class="modal-title" id="editNameModalLabel">Modifier le nom du vaisseau</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <%= form_with model: @ship, local: true, multipart: true do |f| %>
+        <div class="modal-body">
+          <div class="mb-3">
+            <%= f.label :name, "Nom du vaisseau", class: "form-label" %>
+            <%= f.text_field :name, class: "form-control bg-secondary text-light border-0", required: true %>
+          </div>
+        </div>
+        <div class="modal-footer border-secondary">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+          <%= f.submit "Sauvegarder", class: "btn btn-primary" %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>
+
+<!-- Modal pour éditer l'image -->
+<div class="modal fade" id="editImageModal" tabindex="-1" aria-labelledby="editImageModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content bg-dark text-light">
+      <div class="modal-header border-secondary">
+        <h5 class="modal-title" id="editImageModalLabel">Modifier l'image du vaisseau</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <%= form_with model: @ship, local: true, multipart: true do |f| %>
+        <div class="modal-body">
+          <div class="mb-3">
+            <%= f.label :image, "Image du vaisseau", class: "form-label" %>
+            <%= f.file_field :image, class: "form-control bg-secondary text-light border-0", accept: "image/*" %>
+          </div>
+          <% if @ship.image.attached? %>
+            <div class="text-center mb-3">
+              <small class="text-muted">Image actuelle :</small><br>
+              <%= image_tag @ship.image, class: "img-thumbnail", style: "max-width: 200px; max-height: 200px;" %>
+            </div>
+          <% end %>
+        </div>
+        <div class="modal-footer border-secondary">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+          <%= f.submit "Sauvegarder", class: "btn btn-primary" %>
+        </div>
+      <% end %>
+    </div>
   </div>
 </div>
 
@@ -340,5 +413,31 @@
 }
 .ammo-icons img {
   filter: drop-shadow(0 0 4px #0ff);
+}
+
+.edit-image-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(5px);
+  transition: all 0.3s ease;
+}
+
+.edit-image-btn:hover {
+  background: rgba(0, 255, 0, 0.2);
+  border-color: #0f0;
+  transform: scale(1.1);
+}
+
+.modal-content {
+  border: 1px solid #0f0;
+  box-shadow: 0 0 20px rgba(0, 255, 0, 0.3);
+}
+
+.form-control:focus {
+  border-color: #0f0;
+  box-shadow: 0 0 0 0.25rem rgba(0, 255, 0, 0.25);
 }
 </style>

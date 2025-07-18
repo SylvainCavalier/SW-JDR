@@ -17,6 +17,33 @@ module ApplicationHelper
     end
   end
 
+  def position_icon(position)
+    case position
+    when "Pilote", "Copilote"
+      "fa-steering-wheel"
+    when "Ingénieur radar"
+      "fa-radar"
+    when "Gabier"
+      "fa-shield"
+    when "Maître machine"
+      "fa-wrench"
+    when /Canonnier/
+      "fa-crosshairs"
+    when "Ingénieur radio"
+      "fa-radio"
+    when "Lieutenant de navigation"
+      "fa-compass"
+    when "Maître d'équipage"
+      "fa-users-cog"
+    when "Capitaine"
+      "fa-crown"
+    when "Second du capitaine"
+      "fa-user-tie"
+    else
+      "fa-user"
+    end
+  end
+
   SKILL_ORDER = {
     "Savoir" => [
       "Nature", "Substances", "Médecine", "Langages", "Astrophysique", "Planètes", "Savoir Jedi", "Évaluation", "Illégalité"

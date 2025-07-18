@@ -1,0 +1,556 @@
+<div class="container position-relative justify-content-center" style="width: 95%; min-height: 100vh; overflow-y: auto; overflow-x: hidden;" data-controller="ship-improve">
+  <%= link_to 'Retour au vaisseau', @ship, class: 'btn btn-outline-secondary mt-3 mb-2' %>
+
+  <!-- Flash messages -->
+  <div data-ship-improve-target="flashMessage"></div>
+
+  <div class="neon-container">
+    <div class="row">
+      <div class="col-12">
+        <h1 class="ship-title text-center mb-4">
+          <i class="fa-solid fa-screwdriver-wrench me-2"></i>
+          Amélioration de <%= @ship.name %>
+        </h1>
+        
+        <div class="image-box">
+          <% if @ship.image.attached? %>
+            <%= image_tag @ship.image, class: "ship-image rounded shadow" %>
+          <% else %>
+            <div class="image-placeholder rounded bg-dark">
+              <i class="fa-solid fa-rocket neon-icon"></i>
+            </div>
+          <% end %>
+        </div>
+
+        <!-- Crédits de l'utilisateur -->
+        <div class="text-center mt-3">
+          <h4>
+            Crédits disponibles: 
+            <span class="text-warning" data-ship-improve-target="userCredits">
+              <%= number_with_delimiter(@user_credits) %>
+            </span>
+            <i class="fa-solid fa-coins"></i>
+          </h4>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section Améliorations de base -->
+    <div class="row mt-2">
+      <% @upgrade_types.each do |upgrade_type| %>
+        <div class="col-lg-6 col-md-6 mb-4">
+          <div class="upgrade-card neon-border h-100">
+            <div class="upgrade-header text-center">
+              <div class="d-flex justify-content-center mb-1">
+                <%= image_tag @ship.upgrade_info(upgrade_type)[:image], class: "upgrade-icon me-2", style: "width: 10vw; height: 10vw;" %>
+                <div class="ms-1 mb-1">
+                <p style="font-size: 1.2rem; color: #00ffff;"><%= @ship.upgrade_info(upgrade_type)[:name] %></p>
+                <p><%= @ship.upgrade_info(upgrade_type)[:description] %></p>
+                </div>
+              </div>
+            </div>
+
+            <div class="upgrade-body">
+              <!-- Niveau actuel -->
+              <div class="current-upgrade mb-3">
+                <p class="mb-2">Equipement actuel:</p>
+                <% current_info = @ship.current_upgrade_info(upgrade_type) %>
+                <div class="current-upgrade-info p-2 bg-success bg-opacity-10 rounded">
+                  <strong><%= current_info[:name] %></strong><br>
+                  <% if current_info[:bonus] != "0" %>
+                    <span class="badge bg-secondary"><%= current_info[:bonus] %></span>
+                  <% else %>
+                    <span class="badge bg-secondary">Aucun bonus</span>
+                  <% end %>
+                </div>
+              </div>
+
+              <!-- Prochaine amélioration disponible -->
+              <% if @ship.next_upgrade_available?(upgrade_type) %>
+                <% next_upgrade = @ship.next_upgrade_info(upgrade_type) %>
+                <div class="next-upgrade">
+                  <p class="mb-2">Amélioration suivante:</p>
+                  <div class="next-upgrade-info p-3 bg-primary bg-opacity-10 rounded">
+                    <div class="d-flex justify-content-around align-items-start mb-2">
+                      <div>
+                        <p><%= next_upgrade[:name] %></p>
+                        <span class="badge bg-primary"><%= next_upgrade[:bonus] %></span>
+                      </div>
+                      <div class="text-end">
+                        <div class="price-tag">
+                          <p class="text-warning">
+                            <%= number_with_delimiter(next_upgrade[:price]) %> <i class="fa-solid fa-coins"></i>
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div class="mt-3">
+                      <% if @ship.can_upgrade?(upgrade_type, @user_credits) %>
+                        <%= form_with url: upgrade_ship_path(@ship), method: :patch, local: false, data: { action: "submit->ship-improve#upgrade" } do |form| %>
+                          <%= form.hidden_field :upgrade_type, value: upgrade_type %>
+                          <%= form.submit "Installer", 
+                                class: "btn btn-outline-success w-100",
+                                data: { 
+                                  confirm: "Confirmer l'achat de #{next_upgrade[:name]} pour #{number_with_delimiter(next_upgrade[:price])} crédits ?" 
+                                } %>
+                        <% end %>
+                      <% else %>
+                        <button class="btn btn-outline-warning w-100" disabled>
+                          <% if @user_credits < next_upgrade[:price] %>
+                            Crédits insuffisants
+                          <% else %>
+                            Non disponible
+                          <% end %>
+                        </button>
+                      <% end %>
+                    </div>
+                  </div>
+                </div>
+              <% else %>
+                <div class="max-upgrade">
+                  <p class="mb-2">MAX</p>
+                  <div class="p-2 bg-warning bg-opacity-10 rounded">
+                    <i class="fa-solid fa-star text-warning me-2"></i>
+                    <strong>Niveau maximum atteint !</strong>
+                  </div>
+                </div>
+              <% end %>
+            </div>
+          </div>
+        </div>
+      <% end %>
+    </div>
+
+    <!-- Résumé des bonus actuels -->
+    <% unless @ship.upgrade_bonuses.empty? %>
+      <div class="row mt-4">
+        <div class="col-12">
+          <div class="upgrade-summary neon-border p-3">
+            <h4 class="text-center mb-3">
+              <i class="fa-solid fa-chart-line me-2"></i>
+              Bonus actuels du vaisseau
+            </h4>
+            <div class="row">
+              <% @ship.upgrade_bonuses.each do |type, bonus| %>
+                <div class="col-md-3 col-sm-6 mb-2">
+                  <div class="bonus-item text-center p-2 bg-success bg-opacity-10 rounded">
+                    <%= image_tag @ship.upgrade_info(type)[:image], class: "upgrade-icon-small me-1", style: "width: 25px; height: 25px;" %>
+                    <strong><%= @ship.upgrade_info(type)[:name] %>:</strong>
+                    <span class="badge bg-success ms-1"><%= bonus %></span>
+                  </div>
+                </div>
+              <% end %>
+            </div>
+          </div>
+        </div>
+      </div>
+    <% end %>
+
+    <!-- Section Senseurs -->
+    <div class="row mt-4">
+      <div class="col-12">
+        <div class="upgrade-card neon-border">
+          <div class="upgrade-header text-center">
+            <h4 class="upgrade-title">
+              <%= image_tag @sensor_config[:image], class: "upgrade-icon me-2", style: "width: 50px; height: 50px;" %>
+              <%= @sensor_config[:name] %>
+            </h4>
+            <p class="upgrade-description text-muted">
+              <%= @sensor_config[:description] %>
+            </p>
+          </div>
+
+          <div class="upgrade-body">
+            <div class="row">
+              <% @sensor_skills.each do |sensor_skill| %>
+                <div class="col-md-6 col-lg-3 mb-3">
+                  <div class="sensor-upgrade-item p-3 bg-primary bg-opacity-10 rounded">
+                    <h6 class="sensor-title"><%= sensor_skill %></h6>
+                    
+                    <!-- Niveau actuel -->
+                    <div class="current-sensor mb-2">
+                      <small class="text-muted">Niveau actuel:</small><br>
+                      <% current_bonus = @ship.sensor_current_bonus_string(sensor_skill) %>
+                      <% if current_bonus != "0" %>
+                        <span class="badge bg-success"><%= current_bonus %></span>
+                      <% else %>
+                        <span class="badge bg-secondary">Aucun bonus</span>
+                      <% end %>
+                    </div>
+
+                    <!-- Prochaine amélioration -->
+                    <div class="next-sensor">
+                      <small class="text-muted">Prochaine amélioration:</small><br>
+                      <span class="badge bg-primary"><%= @ship.sensor_next_bonus_string(sensor_skill) %></span>
+                      <div class="price-tag-small mt-2">
+                        <strong class="text-warning">
+                          <%= number_with_delimiter(@ship.sensor_upgrade_price(sensor_skill)) %> <i class="fa-solid fa-coins"></i>
+                        </strong>
+                      </div>
+                    </div>
+
+                    <!-- Bouton d'amélioration -->
+                    <div class="mt-3">
+                      <% if @ship.can_upgrade_sensor?(sensor_skill, @user_credits) %>
+                        <%= form_with url: upgrade_sensor_ship_path(@ship), method: :patch, local: false, data: { action: "submit->ship-improve#upgradeSensor" } do |form| %>
+                          <%= form.hidden_field :sensor_skill_name, value: sensor_skill %>
+                          <%= form.submit "Améliorer", 
+                                class: "btn btn-outline-success btn-sm w-100",
+                                data: { 
+                                  confirm: "Confirmer l'amélioration de #{sensor_skill} pour #{number_with_delimiter(@ship.sensor_upgrade_price(sensor_skill))} crédits ?" 
+                                } %>
+                        <% end %>
+                      <% else %>
+                        <button class="btn btn-outline-danger btn-sm w-100" disabled>
+                          Crédits insuffisants
+                        </button>
+                      <% end %>
+                    </div>
+                  </div>
+                </div>
+              <% end %>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section Systèmes de survie -->
+    <div class="row mt-4">
+      <div class="col-12">
+        <div class="upgrade-card neon-border">
+          <div class="upgrade-header text-center">
+            <h4 class="upgrade-title">
+              <%= image_tag @survival_config[:image], class: "upgrade-icon me-2", style: "width: 50px; height: 50px;" %>
+              <%= @survival_config[:name] %>
+            </h4>
+            <p class="upgrade-description text-muted">
+              <%= @survival_config[:description] %>
+            </p>
+          </div>
+
+          <div class="upgrade-body">
+            <div class="row justify-content-center">
+              <div class="col-md-6">
+                <div class="survival-upgrade-item p-3 bg-primary bg-opacity-10 rounded text-center">
+                  <!-- Niveau actuel -->
+                  <div class="current-hp mb-3">
+                    <h5 class="mb-2">Points de Blindage actuels: <%= @ship.hp_max %></h5>
+                    <small class="text-muted">Améliorations achetées: <%= @ship.hp_max_upgrade_count %></small>
+                  </div>
+
+                  <!-- Prochaine amélioration -->
+                  <div class="next-hp mb-3">
+                    <h6 class="mb-2">Prochaine amélioration: PB +1</h6>
+                    <div class="price-tag">
+                      <strong class="text-warning fs-5">
+                        <%= number_with_delimiter(@ship.hp_max_upgrade_price) %> <i class="fa-solid fa-coins"></i>
+                      </strong>
+                    </div>
+                  </div>
+
+                  <!-- Bouton d'amélioration -->
+                  <div class="mt-3">
+                    <% if @ship.can_upgrade_hp_max?(@user_credits) %>
+                      <%= form_with url: upgrade_hp_max_ship_path(@ship), method: :patch, local: false, data: { action: "submit->ship-improve#upgradeHpMax" } do |form| %>
+                        <%= form.submit "Améliorer PB", 
+                              class: "btn btn-outline-success",
+                              data: { 
+                                confirm: "Confirmer l'amélioration des Points de Blindage pour #{number_with_delimiter(@ship.hp_max_upgrade_price)} crédits ?" 
+                              } %>
+                      <% end %>
+                    <% else %>
+                      <button class="btn btn-outline-danger" disabled>
+                        Crédits insuffisants
+                      </button>
+                    <% end %>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section Armement -->
+    <div class="row mt-4">
+      <div class="col-12">
+        <div class="upgrade-card neon-border">
+          <div class="upgrade-header text-center">
+            <h4 class="upgrade-title">
+              <i class="<%= @weapon_config[:icon] %> upgrade-icon me-2"></i>
+              <%= @weapon_config[:name] %>
+            </h4>
+          </div>
+
+          <div class="upgrade-body">
+            <div class="row" data-ship-improve-target="weaponSection">
+              <%= render 'ships/weapon_section', ship: @ship, user_credits: @user_credits %>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section Tourelles -->
+    <div class="row mt-4">
+      <div class="col-12">
+        <div class="upgrade-card neon-border">
+          <div class="upgrade-header text-center">
+            <h4 class="upgrade-title">
+              <i class="fa-solid fa-crosshairs upgrade-icon me-2"></i>
+              Tourelles
+            </h4>
+            <p class="upgrade-description text-muted">
+              Gérer les tourelles défensives du vaisseau
+            </p>
+          </div>
+
+          <div class="upgrade-body" data-ship-improve-target="turretSection">
+            <%= render 'ships/turret_section', ship: @ship, user_credits: @user_credits %>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section Équipements Spéciaux -->
+    <div class="row mt-4">
+      <div class="col-12">
+        <div class="upgrade-card neon-border">
+          <div class="upgrade-header text-center">
+            <h4 class="upgrade-title">
+              <i class="fa-solid fa-microchip upgrade-icon me-2"></i>
+              Équipements Spéciaux
+            </h4>
+            <p class="upgrade-description text-muted">
+              Équipements avancés pour améliorer les capacités du vaisseau
+            </p>
+          </div>
+
+          <div class="upgrade-body">
+            <div class="row" data-ship-improve-target="specialEquipmentSection">
+              <%= render 'ships/special_equipment_section', ship: @ship, user_credits: @user_credits %>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+.upgrade-card {
+  background: rgba(0, 0, 0, 0.7);
+  border: 1px solid #00ffff;
+  border-radius: 10px;
+  padding: 20px;
+  transition: all 0.3s ease;
+}
+
+.upgrade-card:hover {
+  box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
+  transform: translateY(-2px);
+}
+
+.upgrade-title {
+  color: #00ffff;
+  margin-bottom: 10px;
+}
+
+.upgrade-icon {
+  filter: drop-shadow(0 0 10px rgba(0, 255, 255, 0.7));
+  border-radius: 5px;
+}
+
+.upgrade-icon-small {
+  filter: drop-shadow(0 0 5px rgba(0, 255, 255, 0.5));
+  border-radius: 3px;
+}
+
+.price-tag {
+  background: rgba(255, 193, 7, 0.1);
+  border: 1px solid #ffc107;
+  border-radius: 5px;
+  padding: 5px 10px;
+}
+
+.price-tag-small {
+  background: rgba(255, 193, 7, 0.1);
+  border: 1px solid #ffc107;
+  border-radius: 3px;
+  padding: 2px 5px;
+  font-size: 0.85rem;
+}
+
+.upgrade-summary {
+  background: rgba(0, 0, 0, 0.8);
+  border: 2px solid #00ffff;
+  border-radius: 10px;
+}
+
+.bonus-item {
+  border: 1px solid rgba(25, 135, 84, 0.3);
+}
+
+.sensor-upgrade-item {
+  border: 1px solid rgba(13, 110, 253, 0.3);
+  transition: all 0.3s ease;
+}
+
+.sensor-upgrade-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(13, 110, 253, 0.2);
+}
+
+.sensor-title {
+  color: #00ffff;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.survival-upgrade-item {
+  border: 1px solid rgba(25, 135, 84, 0.3);
+  transition: all 0.3s ease;
+}
+
+.survival-upgrade-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(25, 135, 84, 0.2);
+}
+
+.weapon-slot {
+  border: 1px solid rgba(255, 193, 7, 0.3);
+  transition: all 0.3s ease;
+}
+
+.weapon-slot:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(255, 193, 7, 0.2);
+}
+
+.weapon-slot-title {
+  color: #00ffff;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.available-weapon {
+  border: 1px solid rgba(108, 117, 125, 0.3);
+  transition: all 0.3s ease;
+}
+
+.available-weapon:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(108, 117, 125, 0.2);
+}
+
+.buyable-weapon {
+  border: 1px solid rgba(13, 110, 253, 0.3);
+  transition: all 0.3s ease;
+}
+
+.buyable-weapon:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(13, 110, 253, 0.2);
+}
+
+.weapon-name {
+  color: #00ffff;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+/* Correction de la visibilité des textes */
+.text-muted {
+  color: #adb5bd !important; /* Gris clair au lieu du gris foncé par défaut */
+}
+
+.upgrade-card .text-muted,
+.weapon-slot .text-muted,
+.available-weapon .text-muted,
+.buyable-weapon .text-muted {
+  color: #ced4da !important; /* Gris encore plus clair pour les descriptions d'armes */
+}
+
+/* Couleur par défaut pour les textes dans les cartes sombres */
+.upgrade-card,
+.weapon-slot,
+.available-weapon,
+.buyable-weapon {
+  color: #f8f9fa; /* Blanc cassé par défaut */
+}
+
+/* Styles pour les améliorations d'armes */
+.weapon-stats-upgradeable {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.stat-line {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.upgrade-btn-form {
+  margin-left: 5px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.upgrade-btn {
+  font-size: 10px !important;
+  padding: 1px 4px !important;
+  line-height: 1 !important;
+  min-width: 16px;
+  min-height: 16px;
+  border-radius: 2px !important;
+}
+
+.upgrade-cost {
+  font-size: 10px;
+  color: #ffc107;
+  white-space: nowrap;
+}
+
+.btn-xs {
+  font-size: 10px;
+  padding: 1px 4px;
+  line-height: 1;
+}
+
+.upgrade-btn:hover {
+  transform: scale(1.1);
+  transition: transform 0.1s ease;
+}
+
+.credits-display {
+  background: rgba(0, 0, 0, 0.6);
+  border: 2px solid #ffc107;
+  border-radius: 10px;
+  padding: 15px;
+  margin: 20px 0;
+}
+
+.ship-image {
+  width: 100%;
+  max-height: 300px;
+  object-fit: cover;
+  border: 1px solid #00ffff;
+  border-radius: 10px;
+  box-shadow: 0 0 10px #0f0;
+}
+
+.image-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 220px;
+  font-size: 2rem;
+  color: #0f0;
+}
+</style>

@@ -1,0 +1,288 @@
+<div class="container position-relative justify-content-center" style="width: 95%; min-height: 100vh; overflow-y: auto; overflow-x: hidden;" data-controller="ship-crew">
+  <%= link_to 'Retour au vaisseau', @ship, class: 'btn btn-outline-secondary mt-3 mb-2' %>
+
+  <!-- Flash messages -->
+  <div data-ship-crew-target="flashMessage"></div>
+
+  <div class="neon-container">
+    <div class="row">
+      <div class="col-12">
+        <h1 class="ship-title text-center mb-4">
+          <i class="fa-solid fa-users me-2"></i>
+          Équipage de <%= @ship.name %>
+        </h1>
+        
+        <div class="image-box">
+          <% if @ship.image.attached? %>
+            <%= image_tag @ship.image, class: "ship-image rounded shadow" %>
+          <% else %>
+            <div class="image-placeholder rounded bg-dark">
+              <i class="fa-solid fa-rocket neon-icon"></i>
+            </div>
+          <% end %>
+        </div>
+
+        <!-- Informations sur le vaisseau -->
+        <div class="text-center mt-3">
+          <h4>
+            Vaisseau de classe <%= @ship.scale.humanize %> 
+            <span class="text-info">(Scale <%= Ship.scales[@ship.scale] %>)</span>
+          </h4>
+          <p class="text-muted">
+            <%= @available_positions.count %> postes disponibles
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section Postes d'équipage -->
+    <div class="row mt-4">
+      <div class="col-12">
+        <div class="crew-card neon-border">
+          <div class="crew-header text-center">
+            <h4 class="crew-title">
+              <i class="fa-solid fa-clipboard-list me-2"></i>
+              Postes d'équipage
+            </h4>
+          </div>
+
+          <div class="crew-body">
+            <div class="row">
+              <% @available_positions.each do |position| %>
+                <% crew_member = @ship.crew_member_for_position(position) %>
+                <div class="col-lg-6 col-xl-4 mb-4">
+                  <div class="position-card p-3 <%= crew_member ? 'occupied' : 'vacant' %> rounded">
+                    <h5 class="position-title">
+                      <i class="fa-solid <%= position_icon(position) %> me-2"></i>
+                      <%= position %>
+                    </h5>
+                    
+                    <p class="position-description text-muted small mb-3">
+                      <%= CrewMember::POSITION_DESCRIPTIONS[position] %>
+                    </p>
+
+                    <!-- Membre d'équipage assigné -->
+                    <div class="assigned-member mb-3" data-position="<%= position %>">
+                      <% if crew_member %>
+                        <div class="member-info p-2 bg-success bg-opacity-25 rounded">
+                          <div class="d-flex align-items-center">
+                            <% if crew_member.assignable.respond_to?(:avatar) && crew_member.assignable.avatar.attached? %>
+                              <%= image_tag crew_member.assignable.avatar, class: "member-avatar me-2" %>
+                            <% elsif crew_member.assignable.respond_to?(:image) && crew_member.assignable.image.attached? %>
+                              <%= image_tag crew_member.assignable.image, class: "member-avatar me-2" %>
+                            <% else %>
+                              <div class="member-avatar-placeholder me-2">
+                                <i class="fa-solid fa-user"></i>
+                              </div>
+                            <% end %>
+                            <div class="flex-grow-1">
+                              <strong><%= crew_member.assignable_name %></strong><br>
+                              <small class="text-muted"><%= crew_member.assignable_type_display %></small>
+                            </div>
+                          </div>
+                        </div>
+                      <% else %>
+                        <div class="member-info p-2 bg-secondary bg-opacity-25 rounded text-center">
+                          <i class="fa-solid fa-user-slash text-muted"></i>
+                          <small class="text-muted d-block">Poste vacant</small>
+                        </div>
+                      <% end %>
+                    </div>
+
+                    <!-- Sélecteur de membre d'équipage -->
+                    <div class="member-selector">
+                      <%= form_with url: assign_crew_ship_path(@ship), method: :patch, 
+                          data: { action: "submit->ship-crew#assignCrewMember" } do |f| %>
+                        <%= f.hidden_field :position, value: position %>
+                        
+                        <div class="mb-2">
+                          <label class="form-label small">Assigner:</label>
+                          <select name="assignable_id" class="form-select form-select-sm" 
+                                  data-action="change->ship-crew#updateAssignableType" 
+                                  data-position="<%= position %>">
+                            <option value="">-- Libérer le poste --</option>
+                            
+                            <optgroup label="Personnages joueurs">
+                              <% @crew_candidates[:users].each do |user| %>
+                                <option value="<%= user.id %>" 
+                                        data-assignable-type="User"
+                                        <%= 'selected' if crew_member&.assignable == user %>>
+                                  <%= user.username %>
+                                </option>
+                              <% end %>
+                            </optgroup>
+                            
+                            <optgroup label="Personnel (Pets)">
+                              <% @crew_candidates[:pets].each do |pet| %>
+                                <option value="<%= pet.id %>" 
+                                        data-assignable-type="Pet"
+                                        <%= 'selected' if crew_member&.assignable == pet %>>
+                                  <%= pet.name %>
+                                </option>
+                              <% end %>
+                            </optgroup>
+                          </select>
+                        </div>
+                        
+                        <%= f.hidden_field :assignable_type %>
+                        
+                        <div class="d-grid">
+                          <%= f.submit "Assigner", class: "btn btn-outline-primary btn-sm" %>
+                        </div>
+                      <% end %>
+                    </div>
+                  </div>
+                </div>
+              <% end %>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section Informations sur l'équipage -->
+    <div class="row mt-4">
+      <div class="col-12">
+        <div class="crew-info-card neon-border p-3">
+          <h5 class="text-center mb-3">
+            <i class="fa-solid fa-info-circle me-2"></i>
+            Informations sur l'équipage
+          </h5>
+          
+          <div class="row">
+            <div class="col-md-6">
+              <h6 class="text-info">Postes selon la taille du vaisseau :</h6>
+              <ul class="small">
+                <li><strong>Scale 0-1:</strong> Pilote, Copilote</li>
+                <li><strong>Scale 2-3:</strong> + Ingénieur radar, Gabier, Maître machine, Canonniers</li>
+                <li><strong>Scale 4-5:</strong> + Ingénieur radio, Maître d'équipage, Capitaine, Second</li>
+              </ul>
+            </div>
+            <div class="col-md-6">
+              <h6 class="text-info">Règles d'assignation :</h6>
+              <ul class="small">
+                <li>Un membre ne peut occuper qu'un seul poste par vaisseau</li>
+                <li>Les canonniers sont liés aux tourelles installées</li>
+                <li>Les personnages peuvent être assignés à plusieurs vaisseaux</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+.crew-card {
+  background: rgba(0, 0, 0, 0.7);
+  border: 1px solid #00ffff;
+  border-radius: 10px;
+  padding: 20px;
+  transition: all 0.3s ease;
+}
+
+.crew-card:hover {
+  box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
+  transform: translateY(-2px);
+}
+
+.crew-title {
+  color: #00ffff;
+  margin-bottom: 10px;
+}
+
+.position-card {
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  transition: all 0.3s ease;
+  min-height: 280px;
+}
+
+.position-card.occupied {
+  border-color: rgba(25, 135, 84, 0.5);
+  background: rgba(25, 135, 84, 0.1);
+}
+
+.position-card.vacant {
+  border-color: rgba(108, 117, 125, 0.5);
+  background: rgba(108, 117, 125, 0.1);
+}
+
+.position-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.position-title {
+  color: #00ffff;
+  font-size: 1.1rem;
+  margin-bottom: 10px;
+}
+
+.position-description {
+  font-size: 0.85rem;
+  line-height: 1.3;
+}
+
+.member-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+}
+
+.member-avatar-placeholder {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: rgba(108, 117, 125, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  color: #6c757d;
+}
+
+.crew-info-card {
+  background: rgba(0, 0, 0, 0.6);
+  border: 1px solid rgba(0, 255, 255, 0.3);
+  border-radius: 10px;
+}
+
+.ship-image {
+  width: 100%;
+  max-height: 300px;
+  object-fit: cover;
+  border: 1px solid #00ffff;
+  border-radius: 10px;
+  box-shadow: 0 0 10px #0f0;
+}
+
+.image-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 220px;
+  font-size: 2rem;
+  color: #0f0;
+}
+
+.form-select {
+  background: rgba(0, 0, 0, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #fff;
+}
+
+.form-select:focus {
+  background: rgba(0, 0, 0, 0.7);
+  border-color: #00ffff;
+  color: #fff;
+  box-shadow: 0 0 0 0.25rem rgba(0, 255, 255, 0.25);
+}
+
+.form-select option {
+  background: #000;
+  color: #fff;
+}
+</style>
