@@ -232,7 +232,8 @@ inventory_objects = [
   { name: "Rétroviral kallidahin", category: "soins", price: 500, description: "Guérit les maladies virales communes", rarity: "Commun" },
   { name: "Draineur de radiations", category: "soins", price: 1000, description: "Guérit la radioactivité", rarity: "Unco" },
   { name: "Trompe-la-mort", category: "soins", price: 2000, description: "Soigne +2D PV à qqun passé sous -10 PV il y a – de 2 tours", rarity: "Rare" },
-  { name: "Homéopathie", category: "soins", price: 0, description: "Soigne intégralement un personnage qui est à 5 PV ou moins de son maximum", rarity: "Don" }
+  { name: "Homéopathie", category: "soins", price: 0, description: "Soigne intégralement un personnage qui est à 5 PV ou moins de son maximum", rarity: "Don" },
+  { name: "Kit de réparation", category: "soins", price: 100, description: "Kit permettant de réparer les vaisseaux. Nécessite 1-3 composants aléatoirement.", rarity: "Commun" }
 ]
 
 inventory_objects.each do |item|
