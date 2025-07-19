@@ -578,7 +578,7 @@ class MjController < ApplicationController
 
   def vaisseaux
     @ships = Ship.joins(:group).where(groups: { name: "PJ" }).includes(:ships_skills, :ship_weapons)
-    @skills = Skill.all
+    @skills = Skill.where(name: ['Coque', 'Ecrans', 'Maniabilité', 'Vitesse'])
   end
 
   def update_ship

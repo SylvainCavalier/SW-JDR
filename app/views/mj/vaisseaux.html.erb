@@ -170,22 +170,53 @@
                   <div class="accordion-body">
                     <%= form_with url: mj_update_ship_skills_path(ship), method: :patch, local: true do |f| %>
                       <div class="row g-3">
+                        <div class="col-12">
+                          <div class="alert alert-info">
+                            <i class="fa-solid fa-info-circle me-2"></i>
+                            Ces compétences représentent les caractéristiques de base du vaisseau.
+                          </div>
+                        </div>
                         <% @skills.each do |skill| %>
                           <% ship_skill = ship.ships_skills.find_by(skill: skill) %>
                           <div class="col-md-6">
                             <div class="card">
                               <div class="card-body">
-                                <h6 class="card-title"><%= skill.name %></h6>
+                                <h6 class="card-title">
+                                  <%= skill.name %>
+                                  <% case skill.name %>
+                                  <% when 'Coque' %>
+                                    <i class="fa-solid fa-shield-halved ms-2" title="Résistance du vaisseau"></i>
+                                  <% when 'Ecrans' %>
+                                    <i class="fa-solid fa-shield ms-2" title="Boucliers déflecteurs"></i>
+                                  <% when 'Maniabilité' %>
+                                    <i class="fa-solid fa-rotate ms-2" title="Capacité à manœuvrer"></i>
+                                  <% when 'Vitesse' %>
+                                    <i class="fa-solid fa-gauge-high ms-2" title="Vitesse maximale"></i>
+                                  <% end %>
+                                </h6>
                                 <div class="row">
                                   <div class="col-6">
-                                    <%= label_tag "ship_skills[#{skill.id}][mastery]", "Maîtrise", class: "form-label" %>
-                                    <%= number_field_tag "ship_skills[#{skill.id}][mastery]", 
-                                        ship_skill&.mastery || 0, class: "form-control", min: 0 %>
+                                    <%= label_tag "ship_skills[#{skill.id}][mastery]", "Maîtrise (D)", class: "form-label" %>
+                                    <div class="input-group" data-controller="increment">
+                                      <%= button_tag "-", type: "button", class: "btn btn-outline-secondary", data: { action: "click->increment#decrement" } %>
+                                      <%= number_field_tag "ship_skills[#{skill.id}][mastery]", 
+                                          ship_skill&.mastery || 0, 
+                                          class: "form-control text-center", 
+                                          min: 0,
+                                          data: { "increment-target" => "input" } %>
+                                      <%= button_tag "+", type: "button", class: "btn btn-outline-secondary", data: { action: "click->increment#increment" } %>
+                                    </div>
                                   </div>
                                   <div class="col-6">
-                                    <%= label_tag "ship_skills[#{skill.id}][bonus]", "Bonus", class: "form-label" %>
-                                    <%= number_field_tag "ship_skills[#{skill.id}][bonus]", 
-                                        ship_skill&.bonus || 0, class: "form-control" %>
+                                    <%= label_tag "ship_skills[#{skill.id}][bonus]", "Bonus (+)", class: "form-label" %>
+                                    <div class="input-group" data-controller="increment">
+                                      <%= button_tag "-", type: "button", class: "btn btn-outline-secondary", data: { action: "click->increment#decrement" } %>
+                                      <%= number_field_tag "ship_skills[#{skill.id}][bonus]", 
+                                          ship_skill&.bonus || 0, 
+                                          class: "form-control text-center",
+                                          data: { "increment-target" => "input" } %>
+                                      <%= button_tag "+", type: "button", class: "btn btn-outline-secondary", data: { action: "click->increment#increment" } %>
+                                    </div>
                                   </div>
                                 </div>
                               </div>
