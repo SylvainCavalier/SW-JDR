@@ -857,28 +857,53 @@ class ShipsController < ApplicationController
     ships_skills_params = params[:ships_skills] || []
     Rails.logger.debug "🎲 Mise à jour des compétences pour #{ship.name}:"
     Rails.logger.debug "  Paramètres reçus: #{ships_skills_params.inspect}"
+    Rails.logger.debug "  Type de paramètres: #{ships_skills_params.class}"
     
     # Supprimer les anciennes compétences
     ship.ships_skills.destroy_all
     
-    # Créer les nouvelles compétences
-    ships_skills_params.each do |skill_params|
-      next if skill_params["skill_id"].blank?
-      skill = Skill.find_by(id: skill_params["skill_id"])
-      next unless skill
-      
-      mastery = skill_params["mastery"].to_i
-      bonus = skill_params["bonus"].to_i
-      
-      Rails.logger.debug "  - #{skill.name}: #{mastery}D + #{bonus}"
-      
-      # Ne créer que si mastery ou bonus sont > 0
-      if mastery > 0 || bonus > 0
-        ship.ships_skills.create!(
-          skill: skill,
-          mastery: mastery,
-          bonus: bonus
-        )
+    # Traiter les paramètres selon leur structure
+    if ships_skills_params.is_a?(Hash)
+      # Structure avec index numérique: {"0" => {"skill_id" => "1", "mastery" => "2"}}
+      ships_skills_params.each do |index, skill_params|
+        next if skill_params["skill_id"].blank?
+        skill = Skill.find_by(id: skill_params["skill_id"])
+        next unless skill
+        
+        mastery = skill_params["mastery"].to_i
+        bonus = skill_params["bonus"].to_i
+        
+        Rails.logger.debug "  - #{skill.name}: #{mastery}D + #{bonus}"
+        
+        # Ne créer que si mastery ou bonus sont > 0
+        if mastery > 0 || bonus > 0
+          ship.ships_skills.create!(
+            skill: skill,
+            mastery: mastery,
+            bonus: bonus
+          )
+        end
+      end
+    elsif ships_skills_params.is_a?(Array)
+      # Structure tableau: [{"skill_id" => "1", "mastery" => "2"}]
+      ships_skills_params.each do |skill_params|
+        next if skill_params["skill_id"].blank?
+        skill = Skill.find_by(id: skill_params["skill_id"])
+        next unless skill
+        
+        mastery = skill_params["mastery"].to_i
+        bonus = skill_params["bonus"].to_i
+        
+        Rails.logger.debug "  - #{skill.name}: #{mastery}D + #{bonus}"
+        
+        # Ne créer que si mastery ou bonus sont > 0
+        if mastery > 0 || bonus > 0
+          ship.ships_skills.create!(
+            skill: skill,
+            mastery: mastery,
+            bonus: bonus
+          )
+        end
       end
     end
   end
