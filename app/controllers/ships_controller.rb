@@ -909,8 +909,15 @@ class ShipsController < ApplicationController
   end
 
   def update_ship_weapons(ship)
+    Rails.logger.debug "🔫 Mise à jour des armes pour #{ship.name}:"
+    Rails.logger.debug "  Paramètres reçus: main_weapon=#{params[:main_weapon]}, secondary_weapon=#{params[:secondary_weapon]}"
+    Rails.logger.debug "  Tourelles: turrets=#{params[:turrets]}, turret_count=#{params[:turret_count]}, turret_type=#{params[:turret_type]}"
+    Rails.logger.debug "  Torpilles: torpilles=#{params[:torpilles]}, torpilles_count=#{params[:torpilles_count]}"
+    Rails.logger.debug "  Missiles: missiles=#{params[:missiles]}, missiles_count=#{params[:missiles_count]}"
+    
     # Arme principale
     if params[:main_weapon].present?
+      Rails.logger.debug "  Création arme principale: #{params[:main_weapon]}"
       ship.ship_weapons.create(
         name: params[:main_weapon],
         weapon_type: 'main',
@@ -923,6 +930,7 @@ class ShipsController < ApplicationController
     end
     # Arme secondaire
     if params[:secondary_weapon].present?
+      Rails.logger.debug "  Création arme secondaire: #{params[:secondary_weapon]}"
       ship.ship_weapons.create(
         name: params[:secondary_weapon],
         weapon_type: 'secondary',
@@ -936,9 +944,12 @@ class ShipsController < ApplicationController
     
     # Tourelles
     if params[:turrets] == '1' && params[:turret_count].to_i > 0 && params[:turret_type].present?
+      Rails.logger.debug "  Traitement tourelles: #{params[:turret_type]}"
       turret_config = Ship::PREDEFINED_WEAPONS[params[:turret_type]]
+      Rails.logger.debug "  Configuration trouvée: #{turret_config.inspect}"
       if turret_config && turret_config[:weapon_type] == 'tourelle'
         (1..params[:turret_count].to_i).each do |i|
+          Rails.logger.debug "  Création tourelle #{i}: #{params[:turret_type]}"
           ship.ship_weapons.create(
             name: params[:turret_type],
             weapon_type: 'tourelle',
@@ -950,11 +961,14 @@ class ShipsController < ApplicationController
             price: 0  # Prix 0 pour les tourelles créées avec le vaisseau
           )
         end
+      else
+        Rails.logger.debug "  ❌ Configuration tourelle non trouvée ou type incorrect pour: #{params[:turret_type]}"
       end
     end
 
     # Torpilles
     if params[:torpilles] == '1' && params[:torpilles_count].to_i > 0
+      Rails.logger.debug "  Création lance-torpilles avec #{params[:torpilles_count]} torpilles"
       ship.ship_weapons.create(
         name: 'Lance-Torpilles à protons',
         weapon_type: 'torpille',
@@ -972,6 +986,7 @@ class ShipsController < ApplicationController
     end
     # Missiles
     if params[:missiles] == '1' && params[:missiles_count].to_i > 0
+      Rails.logger.debug "  Création lance-missiles avec #{params[:missiles_count]} missiles"
       ship.ship_weapons.create(
         name: 'Lance-Missiles à concussion',
         weapon_type: 'missile',
