@@ -8,6 +8,10 @@ class ShipsController < ApplicationController
 
   def show
     @skills = @ship.ships_skills.includes(:skill)
+    Rails.logger.debug "🎲 Compétences chargées pour #{@ship.name}:"
+    @skills.each do |ship_skill|
+      Rails.logger.debug "  - #{ship_skill.skill.name}: #{ship_skill.mastery}D + #{ship_skill.bonus}"
+    end
     @objects = @ship.ship_objects
     @child_ships = @ship.child_ships
   end
@@ -851,15 +855,31 @@ class ShipsController < ApplicationController
   def update_ship_skills(ship)
     # Compétences liées au vaisseau
     ships_skills_params = params[:ships_skills] || []
-    ships_skills_params.each do |skill_hash|
-      next if skill_hash["skill_id"].blank?
-      skill = Skill.find_by(id: skill_hash["skill_id"])
+    Rails.logger.debug "🎲 Mise à jour des compétences pour #{ship.name}:"
+    Rails.logger.debug "  Paramètres reçus: #{ships_skills_params.inspect}"
+    
+    # Supprimer les anciennes compétences
+    ship.ships_skills.destroy_all
+    
+    # Créer les nouvelles compétences
+    ships_skills_params.each do |skill_params|
+      next if skill_params["skill_id"].blank?
+      skill = Skill.find_by(id: skill_params["skill_id"])
       next unless skill
-      ships_skill = ship.ships_skills.find_or_initialize_by(skill: skill)
-      ships_skill.update(
-        mastery: skill_hash["mastery"].to_i,
-        bonus: skill_hash["bonus"].to_i
-      )
+      
+      mastery = skill_params["mastery"].to_i
+      bonus = skill_params["bonus"].to_i
+      
+      Rails.logger.debug "  - #{skill.name}: #{mastery}D + #{bonus}"
+      
+      # Ne créer que si mastery ou bonus sont > 0
+      if mastery > 0 || bonus > 0
+        ship.ships_skills.create!(
+          skill: skill,
+          mastery: mastery,
+          bonus: bonus
+        )
+      end
     end
   end
 

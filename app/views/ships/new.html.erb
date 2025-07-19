@@ -55,23 +55,35 @@
         { name: 'Senseurs focalisation' }
       ].each_with_index do |skill_info, idx| %>
         <% skill = Skill.find_by(name: skill_info[:name]) %>
-        <div class="col-md-6 mb-3">
-          <%= label_tag "ships_skills_#{skill&.id}_mastery", skill_info[:name], class: "form-label" %>
-          <div class="d-flex align-items-center">
-            <div class="input-group custom-input-group me-2" style="width: auto;" data-controller="increment">
-              <%= button_tag "-", type: "button", class: "btn btn-outline-secondary btn-sm", data: { action: "click->increment#decrement" } %>
-              <%= number_field_tag "ships_skills[][mastery]", (@ship.ships_skills.find { |ss| ss.skill_id == skill&.id }&.mastery || 0), min: 0, class: "form-control form-control-sm text-center", style: "width: 45px;", data: { "increment-target" => "input" }, id: "ships_skills_#{skill&.id}_mastery" %>
-              <%= button_tag "+", type: "button", class: "btn btn-outline-secondary btn-sm", data: { action: "click->increment#increment" } %>
+        <% if skill %>
+          <div class="col-md-6 mb-3">
+            <%= label_tag "ships_skills[#{idx}][skill_id]", skill_info[:name], class: "form-label" %>
+            <div class="d-flex align-items-center">
+              <div class="input-group custom-input-group me-2" style="width: auto;" data-controller="increment">
+                <%= button_tag "-", type: "button", class: "btn btn-outline-secondary btn-sm", data: { action: "click->increment#decrement" } %>
+                <%= number_field_tag "ships_skills[#{idx}][mastery]", 
+                    (@ship.ships_skills.find { |ss| ss.skill_id == skill.id }&.mastery || 0), 
+                    min: 0, 
+                    class: "form-control form-control-sm text-center", 
+                    style: "width: 45px;", 
+                    data: { "increment-target" => "input" } %>
+                <%= button_tag "+", type: "button", class: "btn btn-outline-secondary btn-sm", data: { action: "click->increment#increment" } %>
+              </div>
+              <span class="mx-1">D +</span>
+              <div class="input-group custom-input-group ms-2" style="width: auto;" data-controller="increment">
+                <%= button_tag "-", type: "button", class: "btn btn-outline-secondary btn-sm", data: { action: "click->increment#decrement" } %>
+                <%= number_field_tag "ships_skills[#{idx}][bonus]", 
+                    (@ship.ships_skills.find { |ss| ss.skill_id == skill.id }&.bonus || 0), 
+                    min: 0, 
+                    class: "form-control form-control-sm text-center", 
+                    style: "width: 45px;", 
+                    data: { "increment-target" => "input" } %>
+                <%= button_tag "+", type: "button", class: "btn btn-outline-secondary btn-sm", data: { action: "click->increment#increment" } %>
+              </div>
+              <%= hidden_field_tag "ships_skills[#{idx}][skill_id]", skill.id %>
             </div>
-            <span class="mx-1">D +</span>
-            <div class="input-group custom-input-group ms-2" style="width: auto;" data-controller="increment">
-              <%= button_tag "-", type: "button", class: "btn btn-outline-secondary btn-sm", data: { action: "click->increment#decrement" } %>
-              <%= number_field_tag "ships_skills[][bonus]", (@ship.ships_skills.find { |ss| ss.skill_id == skill&.id }&.bonus || 0), min: 0, class: "form-control form-control-sm text-center", style: "width: 45px;", data: { "increment-target" => "input" }, id: "ships_skills_#{skill&.id}_bonus" %>
-              <%= button_tag "+", type: "button", class: "btn btn-outline-secondary btn-sm", data: { action: "click->increment#increment" } %>
-            </div>
-            <%= hidden_field_tag "ships_skills[][skill_id]", skill&.id %>
           </div>
-        </div>
+        <% end %>
       <% end %>
     </div>
 
