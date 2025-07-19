@@ -247,17 +247,149 @@
                      data-accordion-persist-target="section" 
                      data-accordion-persist-section-name="weapons">
                   <div class="accordion-body">
+                    <!-- Section armes prédéfinies -->
+                    <div class="card border-primary mb-3">
+                      <div class="card-header bg-primary text-white">
+                        <h6 class="mb-0">
+                          <i class="fa-solid fa-rocket me-2"></i>
+                          Ajouter une arme prédéfinie
+                        </h6>
+                      </div>
+                      <div class="card-body">
+                        <%= form_with url: mj_add_ship_weapon_path(ship), method: :post, local: true, scope: :ship_weapon, data: { controller: "predefined-weapon" } do |f| %>
+                          <div class="row g-3">
+                            <div class="col-md-6">
+                              <%= f.label :predefined_weapon, "Arme prédéfinie", class: "form-label" %>
+                              <%= f.select :predefined_weapon, options_for_select(
+                                [['--- Sélectionner une arme ---', '']] + 
+                                Ship::PREDEFINED_WEAPONS.map { |name, config| [name, name] } +
+                                Ship::SPECIAL_EQUIPMENT.map { |name, config| [name, name] }
+                              ), {}, { 
+                                class: "form-select", 
+                                data: { action: "change->predefined-weapon#fillFields" }
+                              } %>
+                            </div>
+                            <div class="col-md-3">
+                              <%= f.label :weapon_type, "Type", class: "form-label" %>
+                              <%= f.select :weapon_type, options_for_select([
+                                ['Arme principale', 'main'],
+                                ['Arme secondaire', 'secondary'],
+                                ['Tourelle', 'tourelle'],
+                                ['Lance-torpilles', 'torpille'],
+                                ['Lance-missiles', 'missile'],
+                                ['Équipement spécial', 'special'],
+                                ['Acheté/Disponible', 'purchased'],
+                                ['Arme d\'origine', 'original']
+                              ], 'purchased'), {}, { class: "form-select", data: { "predefined-weapon-target" => "weaponType" } } %>
+                            </div>
+                            <div class="col-md-3">
+                              <%= f.submit "Ajouter l'arme", class: "btn btn-primary" %>
+                            </div>
+                          </div>
+                          <!-- Champs cachés qui seront remplis automatiquement -->
+                          <%= f.hidden_field :name, data: { "predefined-weapon-target" => "name" } %>
+                          <%= f.hidden_field :damage_mastery, data: { "predefined-weapon-target" => "damageMastery" } %>
+                          <%= f.hidden_field :damage_bonus, data: { "predefined-weapon-target" => "damageBonus" } %>
+                          <%= f.hidden_field :aim_mastery, data: { "predefined-weapon-target" => "aimMastery" } %>
+                          <%= f.hidden_field :aim_bonus, data: { "predefined-weapon-target" => "aimBonus" } %>
+                          <%= f.hidden_field :special, data: { "predefined-weapon-target" => "special" } %>
+                          <%= f.hidden_field :price, data: { "predefined-weapon-target" => "price" } %>
+                          <%= f.hidden_field :quantity_max, data: { "predefined-weapon-target" => "quantityMax" } %>
+                          <%= f.hidden_field :quantity_current, data: { "predefined-weapon-target" => "quantityCurrent" } %>
+                        <% end %>
+                      </div>
+                    </div>
+
+                    <!-- Formulaire d'ajout d'une nouvelle arme personnalisée -->
+                    <div class="card border-success mb-4">
+                      <div class="card-header bg-success text-white">
+                        <h6 class="mb-0">
+                          <i class="fa-solid fa-plus me-2"></i>
+                          Ajouter une arme personnalisée
+                        </h6>
+                      </div>
+                      <div class="card-body">
+                        <%= form_with url: mj_add_ship_weapon_path(ship), method: :post, local: true, scope: :ship_weapon do |f| %>
+                          <div class="row g-3">
+                            <div class="col-md-4">
+                              <%= f.label :name, "Nom de l'arme", class: "form-label" %>
+                              <%= f.text_field :name, class: "form-control", placeholder: "Ex: Canon blaster" %>
+                            </div>
+                            <div class="col-md-4">
+                              <%= f.label :weapon_type, "Type", class: "form-label" %>
+                              <%= f.select :weapon_type, options_for_select([
+                                ['Arme principale', 'main'],
+                                ['Arme secondaire', 'secondary'],
+                                ['Tourelle', 'tourelle'],
+                                ['Lance-torpilles', 'torpille'],
+                                ['Lance-missiles', 'missile'],
+                                ['Équipement spécial', 'special'],
+                                ['Acheté/Disponible', 'purchased'],
+                                ['Arme d\'origine', 'original']
+                              ]), { prompt: "Sélectionner le type" }, { class: "form-select" } %>
+                            </div>
+                            <div class="col-md-4">
+                              <%= f.label :price, "Prix (crédits)", class: "form-label" %>
+                              <%= f.number_field :price, class: "form-control", min: 0, value: 0 %>
+                            </div>
+                            <div class="col-md-3">
+                              <%= f.label :damage_mastery, "Dégâts (D)", class: "form-label" %>
+                              <%= f.number_field :damage_mastery, class: "form-control", min: 0, value: 0 %>
+                            </div>
+                            <div class="col-md-3">
+                              <%= f.label :damage_bonus, "Dégâts (+)", class: "form-label" %>
+                              <%= f.number_field :damage_bonus, class: "form-control", value: 0 %>
+                            </div>
+                            <div class="col-md-3">
+                              <%= f.label :aim_mastery, "Visée (D)", class: "form-label" %>
+                              <%= f.number_field :aim_mastery, class: "form-control", min: 0, value: 0 %>
+                            </div>
+                            <div class="col-md-3">
+                              <%= f.label :aim_bonus, "Visée (+)", class: "form-label" %>
+                              <%= f.number_field :aim_bonus, class: "form-control", value: 0 %>
+                            </div>
+                            <div class="col-md-4">
+                              <%= f.label :quantity_max, "Munitions max (optionnel)", class: "form-label" %>
+                              <%= f.number_field :quantity_max, class: "form-control", min: 0, placeholder: "Laisser vide si pas de munitions" %>
+                            </div>
+                            <div class="col-md-4">
+                              <%= f.label :quantity_current, "Munitions actuelles", class: "form-label" %>
+                              <%= f.number_field :quantity_current, class: "form-control", min: 0, value: 0 %>
+                            </div>
+                            <div class="col-md-4">
+                              <%= f.label :special, "Propriétés spéciales", class: "form-label" %>
+                              <%= f.text_field :special, class: "form-control", placeholder: "Ex: Ionisant, Traversant..." %>
+                            </div>
+                            <div class="col-12">
+                              <%= f.submit "Ajouter l'arme", class: "btn btn-success" %>
+                            </div>
+                          </div>
+                        <% end %>
+                      </div>
+                    </div>
+
+                    <!-- Liste des armes existantes -->
                     <% if ship.ship_weapons.any? %>
                       <%= form_with url: mj_update_ship_weapons_path(ship), method: :patch, local: true do |f| %>
                         <div class="row g-3">
                           <% ship.ship_weapons.each do |weapon| %>
                             <div class="col-12">
                               <div class="card">
-                                <div class="card-header">
+                                <div class="card-header d-flex justify-content-between align-items-center">
                                   <h6 class="mb-0">
                                     <%= weapon.name %> 
                                     <span class="badge bg-info"><%= weapon.weapon_type.humanize %></span>
+                                    <% if weapon.special.present? %>
+                                      <span class="badge bg-warning text-dark"><%= weapon.special %></span>
+                                    <% end %>
                                   </h6>
+                                  <%= link_to mj_delete_ship_weapon_path(ship, weapon), 
+                                      method: :delete, 
+                                      class: "btn btn-outline-danger btn-sm",
+                                      confirm: "Êtes-vous sûr de vouloir supprimer #{weapon.name} ?",
+                                      title: "Supprimer cette arme" do %>
+                                    <i class="fa-solid fa-trash"></i>
+                                  <% end %>
                                 </div>
                                 <div class="card-body">
                                   <div class="row">

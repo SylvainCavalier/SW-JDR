@@ -172,6 +172,8 @@ Rails.application.routes.draw do
   patch 'mj/vaisseaux/:id/update_ship_skills', to: 'mj#update_ship_skills', as: 'mj_update_ship_skills'
   patch 'mj/vaisseaux/:id/update_ship_weapons', to: 'mj#update_ship_weapons', as: 'mj_update_ship_weapons'
   patch 'mj/vaisseaux/:id/update_ship_status', to: 'mj#update_ship_status', as: 'mj_update_ship_status'
+  post 'mj/vaisseaux/:id/add_ship_weapon', to: 'mj#add_ship_weapon', as: 'mj_add_ship_weapon'
+  delete 'mj/vaisseaux/:ship_id/weapons/:weapon_id', to: 'mj#delete_ship_weapon', as: 'mj_delete_ship_weapon'
 
   get 'combat', to: 'combat#index', as: 'combat'
   get 'mj/combat', to: 'combat#index', as: 'mj_combat'

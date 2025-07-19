@@ -657,6 +657,76 @@ class MjController < ApplicationController
       redirect_to mj_vaisseaux_path, alert: "Erreur lors de la mise à jour : #{@ship.errors.full_messages.join(', ')}"
     end
   end
+
+  def add_ship_weapon
+    @ship = Ship.find(params[:id])
+    
+    weapon_params = params.require(:ship_weapon).permit(:name, :weapon_type, :damage_mastery, :damage_bonus, :aim_mastery, :aim_bonus, :special, :quantity_max, :quantity_current, :price, :predefined_weapon)
+    
+    # Si une arme ou équipement prédéfini est sélectionné, utiliser ses paramètres
+    if weapon_params[:predefined_weapon].present?
+      predefined_config = nil
+      
+      # Vérifier dans les armes prédéfinies
+      if Ship::PREDEFINED_WEAPONS.key?(weapon_params[:predefined_weapon])
+        predefined_config = Ship::PREDEFINED_WEAPONS[weapon_params[:predefined_weapon]]
+      # Vérifier dans les équipements spéciaux
+      elsif Ship::SPECIAL_EQUIPMENT.key?(weapon_params[:predefined_weapon])
+        predefined_config = Ship::SPECIAL_EQUIPMENT[weapon_params[:predefined_weapon]]
+      end
+      
+      if predefined_config
+        weapon_params[:name] = weapon_params[:predefined_weapon]
+        weapon_params[:damage_mastery] = predefined_config[:damage_mastery] || 0
+        weapon_params[:damage_bonus] = predefined_config[:damage_bonus] || 0
+        weapon_params[:aim_mastery] = predefined_config[:aim_mastery] || 0
+        weapon_params[:aim_bonus] = predefined_config[:aim_bonus] || 0
+        weapon_params[:special] = predefined_config[:special]
+        weapon_params[:price] = predefined_config[:price]
+        
+        # Si l'équipement prédéfini a un type spécifique et qu'aucun type n'est sélectionné
+        if predefined_config[:weapon_type] && weapon_params[:weapon_type] == 'purchased'
+          weapon_params[:weapon_type] = predefined_config[:weapon_type]
+        end
+        
+        # Pour les lanceurs, définir les munitions par défaut
+        if predefined_config[:weapon_type].in?(['missile', 'torpille'])
+          weapon_params[:quantity_max] = 3
+          weapon_params[:quantity_current] = 3
+        end
+        
+        # Pour les équipements à quantité limitée
+        if predefined_config[:quantity_max]
+          weapon_params[:quantity_max] = predefined_config[:quantity_max]
+          weapon_params[:quantity_current] = 1
+        end
+      end
+    end
+    
+    # Retirer le paramètre predefined_weapon qui n'est pas un attribut du modèle
+    weapon_params.delete(:predefined_weapon)
+    
+    weapon = @ship.ship_weapons.build(weapon_params)
+    
+    if weapon.save
+      redirect_to mj_vaisseaux_path, notice: "Arme #{weapon.name} ajoutée avec succès au vaisseau #{@ship.name}."
+    else
+      redirect_to mj_vaisseaux_path, alert: "Erreur lors de l'ajout de l'arme : #{weapon.errors.full_messages.join(', ')}"
+    end
+  end
+
+  def delete_ship_weapon
+    @ship = Ship.find(params[:ship_id])
+    @weapon = @ship.ship_weapons.find(params[:weapon_id])
+    
+    weapon_name = @weapon.name
+    
+    if @weapon.destroy
+      redirect_to mj_vaisseaux_path, notice: "Arme #{weapon_name} supprimée avec succès du vaisseau #{@ship.name}."
+    else
+      redirect_to mj_vaisseaux_path, alert: "Erreur lors de la suppression de l'arme."
+    end
+  end
   
   private
   
