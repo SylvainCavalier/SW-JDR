@@ -10,7 +10,7 @@ class Pet < ApplicationRecord
 
   has_many :pet_statuses, dependent: :destroy
   has_many :statuses, through: :pet_statuses
-  belongs_to :user, foreign_key: :id, primary_key: :pet_id, optional: true
+  has_one :user, foreign_key: :pet_id, primary_key: :id
 
   validates :name, presence: true, length: { maximum: 20 }
   validates :race, presence: true, length: { maximum: 12 }
@@ -32,6 +32,7 @@ class Pet < ApplicationRecord
   after_update :reset_hunger_for_special_categories
   after_update :update_status_based_on_hp
   after_create :set_default_status
+  before_destroy :dissociate_from_user
 
   def update_status_based_on_hp
     if saved_change_to_hp_current?
@@ -390,6 +391,13 @@ class Pet < ApplicationRecord
       skill.update!(bonus: 0, mastery: skill.mastery + 1)
       "L'entraînement a amélioré son #{skill_name} en passant à #{skill.mastery}D."
     end
+  end
+
+  private
+
+  def dissociate_from_user
+    # Dissocier le pet de l'utilisateur avant suppression
+    user&.update(pet_id: nil)
   end
 end
   

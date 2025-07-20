@@ -33,7 +33,8 @@ statuses = [
   { name: "Paralysé", description: "Impossible de bouger", color: "#FF69B4" }, # Rose
   { name: "Sonné", description: "Désorienté", color: "#4682B4" }, # Bleu acier
   { name: "Aveugle", description: "Impossible de voir", color: "#000000" }, # Noir
-  { name: "Sourd", description: "Impossible d'entendre", color: "#C0C0C0" } # Argent
+  { name: "Sourd", description: "Impossible d'entendre", color: "#C0C0C0" }, # Argent
+  { name: "Folie", description: "Ne se contrôle plus et attaque le plus proche", color: "#FF69B4" } # Rose
 ]
 
 statuses.each do |status|
@@ -94,7 +95,8 @@ players.each do |player_attrs|
         echani_shield_current: player_attrs[:echani_shield_current],
         credits: player_attrs[:credits]
       )
-      user.statuses << Status.find_by(name: "En forme")
+      # ✅ Utiliser set_status pour éviter les doublons potentiels
+      user.set_status("En forme")
       puts "#{player_attrs[:username]} créé avec succès"
     rescue ActiveRecord::RecordInvalid => e
       puts "Erreur lors de la création de #{player_attrs[:username]}: #{e.message}"
@@ -351,16 +353,7 @@ ingredients = [
   { name: "Diffuseur aérosol", price: 100, description: "Un diffuseur aérosol à ouverture manuelle ou retardée, pour y mettre des choses méchantes à diffuser dedans", rarity: "Unco" },
   { name: "Matière explosive", price: 200, description: "La matière explosive est une matière malléable et adaptable, qui sert à la fabrication d'explosifs", rarity: "Commun" },
   { name: "Poudre de Zabron", price: 100, description: "La poudre de zabron est issu d'un sable très volatile qui se disperse en de grandes volutes de fumée rose", rarity: "Commun" },
-  { name: "Cardamine", price: 30, description: "Une petite plante commune aux propriétés diurétiques, et toxique à haute dose", rarity: "Commun" },
-  { name: "Kava", price: 50, description: "Une plante hallucinogène, aux effets réactifs divers en mélange avec d’autres plantes", rarity: "Commun" },
-  { name: "Passiflore", price: 100, description: "Une famille de plantes peu commune, à très haute toxicité", rarity: "Unco" },
-  { name: "Neurotoxique", price: 300, description: "Une substance neurotoxique particulièrement dangereuse", rarity: "Rare" },
-  { name: "Processeur basique (10)", price: 200, description: "Un processeur de base dont la vitesse permettra à la plupart des navordinateurs et droïdes de fonctionner", rarity: "Commun" },
-  { name: "Processeur 12", price: 400, description: "Un processeur un peu amélioré, de façon à intégrer quelques fonctions plus poussées", rarity: "Commun" },
-  { name: "Processeur 14", price: 600, description: "Un processeur plus puissant dont la vitesse permettra à des systèmes plus complexes de fonctionner", rarity: "Unco" },
-  { name: "Processeur 16", price: 1500, description: "Un processeur très puissant qui conviendra pour faire tourner la plupart des systèmes", rarity: "Rare" },
-  { name: "Processeur 18", price: 3000, description: "Un processeur rare d'une technologie de pointe dont la puissance énorme permet de gérer presque tout système", rarity: "Rare" },
-  { name: "Processeur 20", price: 6000, description: "Un processeur rare et de très haute technologie dont la puissance extrême permet de gérer tout type de système", rarity: "Très rare" }
+  { name: "Neurotoxique", price: 300, description: "Une substance neurotoxique particulièrement dangereuse", rarity: "Rare" }
 ]
 
 ingredients.each do |ingredient|
@@ -450,10 +443,10 @@ injections.each do |injection|
 end
 
 chemical_weapons = [
-  { name: "Gaz Lacrymogène", price: 50, description: "A le statut désorienté tant qu'il est exposé à l'arme", rarity: "Commun", category: "chimique" },
-  { name: "Gaz Souffre", price: 100, description: "Perd 1D PV Ignore def / tour tant qu'il est exposé", rarity: "Commun", category: "chimique" },
-  { name: "Gaz Empoisonné", price: 300, description: "Perd 2D PV Ignore def / tour tant qu'il est exposé + Empoisonné", rarity: "Unco", category: "chimique" },
-  { name: "Gaz Neurolax", price: 500, description: "Perd 2D PV Ign def / tour tant qu'il est exposé + Tue les -20PVmax", rarity: "Rare", category: "chimique" }
+  { name: "Gaz Lacrymogène", price: 50, description: "A le statut désorienté tant qu'il est exposé à l'arme", rarity: "Commun", category: "gaz" },
+  { name: "Gaz Souffre", price: 100, description: "Perd 1D PV Ignore def / tour tant qu'il est exposé", rarity: "Commun", category: "gaz" },
+  { name: "Gaz Empoisonné", price: 300, description: "Perd 2D PV Ignore def / tour tant qu'il est exposé + Empoisonné", rarity: "Unco", category: "gaz" },
+  { name: "Gaz Neurolax", price: 500, description: "Perd 2D PV Ign def / tour tant qu'il est exposé + Tue les -20PVmax", rarity: "Rare", category: "gaz" }
 ]
 
 chemical_weapons.each do |weapon|
@@ -488,11 +481,7 @@ end
 
 puts "✅ New objects added successfully!"
 
-puts "Adding new status..."
-
-Status.find_or_create_by!(name: "Folie", description: "Ne se contrôle plus et attaque le plus proche", color: "#FF69B4")
-
-puts "✅ New status added successfully!"
+# ✅ Le statut "Folie" est maintenant créé avec les autres statuts ci-dessus
 
 puts "Adding new base..."
 
