@@ -594,10 +594,16 @@ class MjController < ApplicationController
   def update_ship_stats
     @ship = Ship.find(params[:id])
     
-    if @ship.update(ship_stats_params)
-      redirect_to mj_vaisseaux_path, notice: "Statistiques du vaisseau #{@ship.name} mises à jour avec succès."
-    else
-      redirect_to mj_vaisseaux_path, alert: "Erreur lors de la mise à jour : #{@ship.errors.full_messages.join(', ')}"
+    begin
+      if @ship.update(ship_stats_params)
+        redirect_to mj_vaisseaux_path, notice: "Statistiques du vaisseau #{@ship.name} mises à jour avec succès."
+      else
+        redirect_to mj_vaisseaux_path, alert: "Erreur lors de la mise à jour : #{@ship.errors.full_messages.join(', ')}"
+      end
+    rescue ActiveModel::UnknownAttributeError => e
+      Rails.logger.error "Attribut inconnu dans update_ship_stats: #{e.message}"
+      Rails.logger.error "Paramètres reçus: #{params[:ship].inspect}"
+      redirect_to mj_vaisseaux_path, alert: "Erreur : attribut non valide détecté. Veuillez vider le cache de votre navigateur."
     end
   end
 

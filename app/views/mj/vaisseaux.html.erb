@@ -380,9 +380,11 @@
                                     <% end %>
                                   </h6>
                                   <%= link_to mj_delete_ship_weapon_path(ship, weapon), 
-                                      method: :delete, 
                                       class: "btn btn-outline-danger btn-sm",
-                                      confirm: "Êtes-vous sûr de vouloir supprimer #{weapon.name} ?",
+                                      data: { 
+                                        "turbo-method": "delete",
+                                        "turbo-confirm": "Êtes-vous sûr de vouloir supprimer #{weapon.name} ?" 
+                                      },
                                       title: "Supprimer cette arme" do %>
                                     <i class="fa-solid fa-trash"></i>
                                   <% end %>
