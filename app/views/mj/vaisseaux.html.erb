@@ -87,8 +87,8 @@
                   <div class="accordion-body">
                     <%= form_with model: ship, url: mj_update_ship_stats_path(ship), method: :patch, local: true, class: "row g-3" do |f| %>
                       <div class="col-md-2">
-                        <%= f.label :size, "Taille", class: "form-label" %>
-                        <%= f.number_field :size, class: "form-control", min: 0, max: 6 %>
+                        <%= f.label :size, "Taille (mètres)", class: "form-label" %>
+                        <%= f.number_field :size, class: "form-control", min: 0, max: 1000 %>
                       </div>
                       <div class="col-md-2">
                         <%= f.label :max_passengers, "Passagers max", class: "form-label" %>
