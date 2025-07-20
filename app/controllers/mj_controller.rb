@@ -801,8 +801,7 @@ class MjController < ApplicationController
     params.require(:ship).permit(
       :size, :max_passengers, :min_crew, :hp_max, :hp_current, 
       :hyperdrive_rating, :backup_hyperdrive, :astromech_droids,
-      :thruster_level, :hull_level, :circuits_level, :shield_system_level,
-      :torpilles_count, :missiles_count
+      :thruster_level, :hull_level, :circuits_level, :shield_system_level
     )
   end
 
