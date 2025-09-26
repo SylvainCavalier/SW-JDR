@@ -33,7 +33,8 @@ statuses = [
   { name: "Paralysé", description: "Impossible de bouger", color: "#FF69B4" }, # Rose
   { name: "Sonné", description: "Désorienté", color: "#4682B4" }, # Bleu acier
   { name: "Aveugle", description: "Impossible de voir", color: "#000000" }, # Noir
-  { name: "Sourd", description: "Impossible d'entendre", color: "#C0C0C0" } # Argent
+  { name: "Sourd", description: "Impossible d'entendre", color: "#C0C0C0" }, # Argent
+  { name: "Folie", description: "Ne se contrôle plus et attaque le plus proche", color: "#FF69B4" } # Rose
 ]
 
 statuses.each do |status|
@@ -41,20 +42,72 @@ statuses.each do |status|
 end
 
 puts "Creating the users and assigning them to the corresponding groups, races, and classes..."
-User.find_or_create_by!(username: "MJ", email: "mj@rpg.com", password: "adminsw", hp_max: 1000, hp_current: 1000, credits: 100000, group: group1)
+
+# Vérification pour le MJ
+existing_mj = User.find_by("LOWER(username) = ?", "mj")
+puts "MJ existant trouvé : #{existing_mj ? existing_mj.username : 'Aucun'}"
+
+unless existing_mj
+  puts "Création du MJ..."
+  User.create!(
+    username: "MJ",
+    email: "mj@rpg.com",
+    password: "adminsw",
+    hp_max: 1000,
+    hp_current: 1000,
+    credits: 100000,
+    group: group1
+  )
+  puts "MJ créé avec succès"
+else
+  puts "MJ déjà existant, passage..."
+end
 
 players = [
   { username: "Jarluc", email: "jarluc@rpg.com", race: human, classe_perso: senator, hp_max: 33, hp_current: 33, shield_max: 0, shield_current: 0, echani_shield_max: 0, echani_shield_current: 0, credits: 31650 },
-  { username: "Kaey Noah", email: "kay@rpg.com", race: kaminoan, classe_perso: bio_savant, hp_max: 26, hp_current: 26, shield_max: 50, shield_current: 50, echani_shield_max: 50, echani_shield_current: 0, credits: 520 },
+  { username: "Kaey Noa", email: "kay@rpg.com", race: kaminoan, classe_perso: bio_savant, hp_max: 26, hp_current: 26, shield_max: 50, shield_current: 50, echani_shield_max: 50, echani_shield_current: 0, credits: 520 },
   { username: "Nuok", email: "nuok@rpg.com", race: codruji, classe_perso: autodidact, hp_max: 38, hp_current: 38, shield_max: 0, shield_current: 0, echani_shield_max: 0, echani_shield_current: 0, credits: 1110 },
   { username: "Pluto", email: "pluto@rpg.com", race: human, classe_perso: mercenary, hp_max: 34, hp_current: 34, shield_max: 50, shield_current: 50, echani_shield_max: 0, echani_shield_current: 0, credits: 0 },
   { username: "Viggo", email: "viggo@rpg.com", race: toydarian, classe_perso: cyber_engineer, hp_max: 22, hp_current: 22, shield_max: 50, echani_shield_max: 0, echani_shield_current: 0, credits: 14850 },
   { username: "Mas Tandor", email: "mas@rpg.com", race: clawdite, classe_perso: smuggler, hp_max: 21, hp_current: 21, shield_max: 20, shield_current: 20, echani_shield_max: 30, echani_shield_current: 30, credits: 8120 }
 ]
 
-players.each do |player|
-  user = User.find_or_create_by!(player.merge(password: "password", group: group3))
-  user.statuses << Status.find_by(name: "En forme")
+players.each do |player_attrs|
+  # Recherche insensible à la casse
+  existing_user = User.find_by("LOWER(username) = ?", player_attrs[:username].downcase)
+  puts "Utilisateur #{player_attrs[:username]} existant : #{existing_user ? 'Oui' : 'Non'}"
+  
+  unless existing_user
+    puts "Création de #{player_attrs[:username]}..."
+    begin
+      user = User.create!(
+        username: player_attrs[:username],
+        email: player_attrs[:email],
+        password: "password",
+        group: group3,
+        race: player_attrs[:race],
+        classe_perso: player_attrs[:classe_perso],
+        hp_max: player_attrs[:hp_max],
+        hp_current: player_attrs[:hp_current],
+        shield_max: player_attrs[:shield_max],
+        shield_current: player_attrs[:shield_current],
+        echani_shield_max: player_attrs[:echani_shield_max],
+        echani_shield_current: player_attrs[:echani_shield_current],
+        credits: player_attrs[:credits]
+      )
+      # ✅ Utiliser set_status pour éviter les doublons potentiels
+      user.set_status("En forme")
+      puts "#{player_attrs[:username]} créé avec succès"
+    rescue ActiveRecord::RecordInvalid => e
+      puts "Erreur lors de la création de #{player_attrs[:username]}: #{e.message}"
+      # Vérifier s'il y a des doublons
+      puts "Utilisateurs avec username similaire: #{User.where("username ILIKE ?", "%#{player_attrs[:username]}%").pluck(:username, :email)}"
+      puts "Utilisateurs avec email similaire: #{User.where("email ILIKE ?", "%#{player_attrs[:email]}%").pluck(:username, :email)}"
+      raise e
+    end
+  else
+    puts "#{player_attrs[:username]} déjà existant, passage..."
+  end
 end
 
 puts "Adding new skills..."
@@ -219,7 +272,6 @@ end
 
 puts "✅ New implants added successfully!"
 
-
 puts "Creating healing inventory objects..."
 inventory_objects = [
   { name: "Medipack", category: "soins", price: 50, description: "Redonne en PV le jet de médecine du soigneur divisé par deux.", rarity: "Commun" },
@@ -237,7 +289,12 @@ inventory_objects = [
 ]
 
 inventory_objects.each do |item|
-  InventoryObject.find_or_create_by!(item)
+  InventoryObject.find_or_create_by!(name: item[:name]) do |obj|
+    obj.category = item[:category]
+    obj.price = item[:price]
+    obj.description = item[:description]
+    obj.rarity = item[:rarity]
+  end
 end
 
 patches = [
@@ -252,9 +309,10 @@ patches = [
 ]
 
 patches.each do |patch|
-  InventoryObject.find_or_create_by!(name: patch[:name], category: patch[:category]) do |p|
+  InventoryObject.find_or_create_by!(name: patch[:name]) do |p|
     p.description = patch[:description]
     p.price = patch[:price]
+    p.category = patch[:category]
   end
 end
 
@@ -294,66 +352,19 @@ ingredients = [
   { name: "Diffuseur aérosol", price: 100, description: "Un diffuseur aérosol à ouverture manuelle ou retardée, pour y mettre des choses méchantes à diffuser dedans", rarity: "Unco" },
   { name: "Matière explosive", price: 200, description: "La matière explosive est une matière malléable et adaptable, qui sert à la fabrication d'explosifs", rarity: "Commun" },
   { name: "Poudre de Zabron", price: 100, description: "La poudre de zabron est issu d'un sable très volatile qui se disperse en de grandes volutes de fumée rose", rarity: "Commun" },
-  { name: "Cardamine", price: 30, description: "Une petite plante commune aux propriétés diurétiques, et toxique à haute dose", rarity: "Commun" },
-  { name: "Kava", price: 50, description: "Une plante hallucinogène, aux effets réactifs divers en mélange avec d’autres plantes", rarity: "Commun" },
-  { name: "Passiflore", price: 100, description: "Une famille de plantes peu commune, à très haute toxicité", rarity: "Unco" },
-  { name: "Neurotoxique", price: 300, description: "Une substance neurotoxique particulièrement dangereuse", rarity: "Rare" },
-  { name: "Processeur basique (10)", price: 200, description: "Un processeur de base dont la vitesse permettra à la plupart des navordinateurs et droïdes de fonctionner", rarity: "Commun" },
-  { name: "Processeur 12", price: 400, description: "Un processeur un peu amélioré, de façon à intégrer quelques fonctions plus poussées", rarity: "Commun" },
-  { name: "Processeur 14", price: 600, description: "Un processeur plus puissant dont la vitesse permettra à des systèmes plus complexes de fonctionner", rarity: "Unco" },
-  { name: "Processeur 16", price: 1500, description: "Un processeur très puissant qui conviendra pour faire tourner la plupart des systèmes", rarity: "Rare" },
-  { name: "Processeur 18", price: 3000, description: "Un processeur rare d'une technologie de pointe dont la puissance énorme permet de gérer presque tout système", rarity: "Rare" },
-  { name: "Processeur 20", price: 6000, description: "Un processeur rare et de très haute technologie dont la puissance extrême permet de gérer tout type de système", rarity: "Très rare" }
+  { name: "Neurotoxique", price: 300, description: "Une substance neurotoxique particulièrement dangereuse", rarity: "Rare" }
 ]
 
 ingredients.each do |ingredient|
-  InventoryObject.find_or_create_by!(ingredient.merge(category: "ingredient"))
-end
-
-puts "Adding new ingredients..."
-
-ingredients = [
-  { name: "Composant", price: 10, description: "Une pièce basique pour fabriquer ou réparer des objets techniques divers. Se trouve partout", rarity: "Commun" },
-  { name: "Transmetteur", price: 50, description: "Le transmetteur est une pièce commune qui permet la transmission d'informations par ondes", rarity: "Commun" },
-  { name: "Répartiteur", price: 50, description: "Le répartiteur est une pièce commune qui assure la redistribution de l'énergie", rarity: "Commun" },
-  { name: "Répercuteur", price: 100, description: "Le répercuteur est une pièce commune qui permet d'amorcer des systèmes complexes", rarity: "Commun" },
-  { name: "Circuit de retransmission", price: 200, description: "Fabriqué par le fabricant à base de 2 compos et 1 transmetteur, le circuit permet d'améliorer la connectique", rarity: "Commun" },
-  { name: "Répartiteur fuselé", price: 200, description: "Fabriqué par le fabricant à base de 2 compos et 1 répartiteur, le rép. fuselé redistribue mieux l'énergie", rarity: "Commun" },
-  { name: "Convecteur thermique", price: 300, description: "Le convecteur thermique est une pièce peu commune qui a pour fonction la concentration d'énergie", rarity: "Unco" },
-  { name: "Senseur", price: 200, description: "Le senseur est une pièce peu commune qui a de multiples paramètres de détection par balayage d'ondes", rarity: "Unco" },
-  { name: "Fuseur", price: 400, description: "Le fuseur est une pièce peu commune qui sert à fusionner des particules instables d'énergie", rarity: "Unco" },
-  { name: "Propulseur", price: 400, description: "Le propulseur est une pièce peu commune dédiée aux systèmes de propulsion", rarity: "Unco" },
-  { name: "Vibro-érecteur", price: 500, description: "Fabriqué avec 2 compos + 1 répercuteur + 1 circ de retr + 1 rép fuselé, sert à activer des puissants systèmes", rarity: "Unco" },
-  { name: "Commandes", price: 1000, description: "Les commandes sont une pièce rare qui consiste en une interface de contrôle de systèmes complexes", rarity: "Rare" },
-  { name: "Injecteur de photon", price: 2000, description: "L'injecteur de photon est une pièce rare qui sert à la transmission d'énergie dans la technologie de pointe", rarity: "Rare" },
-  { name: "Chrysalis", price: 5000, description: "La chrysalis est une pièce très rare, qui catalyse l'énergie du vide pour l'alimentation en énergie", rarity: "Très rare" },
-  { name: "Vibreur", price: 200, description: "Le vibreur est une pièce commune qui concentre l'énergie par émission d'ondes vibratoires", rarity: "Commun" },
-  { name: "Micro-générateur", price: 300, description: "Le micro-générateur est une pièce commune qui assure l'apport en énergie dans la micro-ingénierie", rarity: "Commun" },
-  { name: "Synthé-gilet", price: 200, description: "Nécessaire pour crafter différents types d'améliorations d'armures", rarity: "Commun" },
-  { name: "Interface cyber", price: 500, description: "L'interface cyber est une pièce peu commune qui sert à créer une interface homme / machine", rarity: "Unco" },
-  { name: "Pile à protons", price: 800, description: "La pile à protons une pièce rare qui sert à capter les particules de protons environnantes", rarity: "Rare" },
-  { name: "Lingot de Phrik", price: 500, description: "Le lingot de phrik est un échantillon peu commun d'un métal résistant", rarity: "Unco" },
-  { name: "Filet de Lommite", price: 1000, description: "Le filet de lommite est un échantillon rare d'un métal très résistant", rarity: "Rare" },
-  { name: "Lingot de Duracier", price: 3000, description: "Le lingot de duracier est un alliage très rare et extrêmement résistant", rarity: "Très rare" },
-  { name: "Fiole", price: 30, description: "Un contenant pour diverses préparations de potions et poisons", rarity: "Commun" },
-  { name: "Matière organique", price: 50, description: "Un substrat de matière organique amalgamée", rarity: "Commun" },
-  { name: "Dose de bacta", price: 100, description: "Une dose de bacta, cette substance régénératrice utilisée dans les medipacks et cuves à bacta", rarity: "Unco" },
-  { name: "Dose de kolto", price: 300, description: "Une dose de kolto, une substance régénératrice rare et très efficace", rarity: "Rare" },
-  { name: "Jeu d'éprouvettes", price: 50, description: "Un simple jeu d'éprouvettes pour l'artisanat du biosavant", rarity: "Commun" },
-  { name: "Pique chirurgicale", price: 300, description: "Une pique chirurgicale à usage unique pour les manipulations techniques difficiles du biosavant", rarity: "Unco" },
-  { name: "Diffuseur aérosol", price: 100, description: "Un diffuseur aérosol à ouverture manuelle ou retardée, pour y mettre des choses méchantes à diffuser dedans", rarity: "Unco" },
-  { name: "Matière explosive", price: 200, description: "La matière explosive est une matière malléable et adaptable, qui sert à la fabrication d'explosifs", rarity: "Commun" },
-  { name: "Poudre de Zabron", price: 100, description: "La poudre de zabron est issu d'un sable très volatile qui se disperse en de grandes volutes de fumée rose", rarity: "Commun" },
-  { name: "Neurotoxine", price: 300, description: "Une substance neurotoxique particulièrement dangereuse", rarity: "Rare" }
-]
-
-ingredients.each do |ingredient|
-  InventoryObject.find_or_create_by!(name: ingredient[:name], category: "ingredient") do |obj|
+  InventoryObject.find_or_create_by!(name: ingredient[:name]) do |obj|
     obj.price = ingredient[:price]
     obj.description = ingredient[:description]
     obj.rarity = ingredient[:rarity]
+    obj.category = "ingredient"
   end
 end
+
+# Section ingrédients déjà créée ci-dessus, pas besoin de la dupliquer
 
 # Processors
 processors = [
@@ -397,7 +408,7 @@ end
 plants = [
   { name: "Cardamine", price: 30, description: "Une petite plante commune aux propriétés diurétiques, et toxique à haute dose", rarity: "Commun" },
   { name: "Kava", price: 50, description: "Une plante hallucinogène, aux effets réactifs divers en mélange avec d'autres plantes", rarity: "Commun" },
-  { name: "Passiflore", price: 100, description: "Une famille de plantes peu communes, à très haute toxicité", rarity: "Unco" },
+  { name: "Passiflore", price: 100, description: "Une famille de plantes peu commune, à très haute toxicité", rarity: "Unco" },
   { name: "Nysillin", price: 100, description: "Une famille de plantes peu communes, à vertu thérapeuthique", rarity: "Unco" }
 ]
 
@@ -431,10 +442,10 @@ injections.each do |injection|
 end
 
 chemical_weapons = [
-  { name: "Gaz Lacrymogène", price: 50, description: "A le statut désorienté tant qu'il est exposé à l'arme", rarity: "Commun", category: "chimique" },
-  { name: "Gaz Souffre", price: 100, description: "Perd 1D PV Ignore def / tour tant qu'il est exposé", rarity: "Commun", category: "chimique" },
-  { name: "Gaz Empoisonné", price: 300, description: "Perd 2D PV Ignore def / tour tant qu'il est exposé + Empoisonné", rarity: "Unco", category: "chimique" },
-  { name: "Gaz Neurolax", price: 500, description: "Perd 2D PV Ign def / tour tant qu'il est exposé + Tue les -20PVmax", rarity: "Rare", category: "chimique" }
+  { name: "Gaz Lacrymogène", price: 50, description: "A le statut désorienté tant qu'il est exposé à l'arme", rarity: "Commun", category: "gaz" },
+  { name: "Gaz Souffre", price: 100, description: "Perd 1D PV Ignore def / tour tant qu'il est exposé", rarity: "Commun", category: "gaz" },
+  { name: "Gaz Empoisonné", price: 300, description: "Perd 2D PV Ignore def / tour tant qu'il est exposé + Empoisonné", rarity: "Unco", category: "gaz" },
+  { name: "Gaz Neurolax", price: 500, description: "Perd 2D PV Ign def / tour tant qu'il est exposé + Tue les -20PVmax", rarity: "Rare", category: "gaz" }
 ]
 
 chemical_weapons.each do |weapon|
@@ -465,15 +476,79 @@ poisons.each do |poison|
   end
 end
 
-InventoryObject.find_or_create_by!(name: "Kit de réparation", category: "soins", description: "Répare un droïde.")
+pazaak_cards = []
+
+# Cartes positives +1 à +5
+(1..5).each do |i|
+  pazaak_cards << {
+    name: "+#{i}",
+    price: 100,
+    description: "Ajoute #{i} à votre total.",
+    rarity: "Commun",
+    category: "pazaak"
+  }
+end
+
+# Cartes négatives -1 à -5
+(1..5).each do |i|
+  pazaak_cards << {
+    name: "-#{i}",
+    price: 100,
+    description: "Retire #{i} à votre total.",
+    rarity: "Commun",
+    category: "pazaak"
+  }
+end
+
+# Cartes duales ±1 à ±5
+(1..5).each do |i|
+  pazaak_cards << {
+    name: "±#{i}",
+    price: 150,
+    description: "Permet d'ajouter ou retirer #{i}.",
+    rarity: "Inhabituel",
+    category: "pazaak"
+  }
+end
+
+# Carte spéciale x2
+pazaak_cards << {
+  name: "x2",
+  price: 200,
+  description: "Double la valeur de la dernière carte jouée.",
+  rarity: "Rare",
+  category: "pazaak"
+}
+
+# Carte spéciale 2&4
+pazaak_cards << {
+  name: "2&4",
+  price: 250,
+  description: "Transforme tous les 2 et 4 en -2 et -4.",
+  rarity: "Rare",
+  category: "pazaak"
+}
+
+# Carte spéciale 3&6
+pazaak_cards << {
+  name: "3&6",
+  price: 250,
+  description: "Transforme tous les 3 et 6 en -3 et -6.",
+  rarity: "Rare",
+  category: "pazaak"
+}
+
+# Création dans la base
+pazaak_cards.each do |card|
+  InventoryObject.find_or_create_by!(name: card[:name]) do |obj|
+    obj.price = card[:price]
+    obj.description = card[:description]
+    obj.rarity = card[:rarity]
+    obj.category = card[:category]
+  end
+end
 
 puts "✅ New objects added successfully!"
-
-puts "Adding new status..."
-
-Status.find_or_create_by!(name: "Folie", description: "Ne se contrôle plus et attaque le plus proche", color: "#FF69B4")
-
-puts "✅ New status added successfully!"
 
 puts "Adding new base..."
 
@@ -492,16 +567,15 @@ end
 
 Building::BUILDING_DATA.each do |building_type, levels|
   levels.each do |level, data|
-    level = level.to_i  # S'assurer que le level est bien un entier
+    level = level.to_i 
 
     building = headquarter.buildings.find_or_initialize_by(name: data["name"])
 
-    # Mise à jour ou création du bâtiment
     building.update!(
       level: 0,
       description: data["description"],
       price: data["price"],
-      category: building_type,  # On utilise le type de bâtiment (ex: "Hangar") comme catégorie
+      category: building_type,
       properties: data["properties"] || {}
     )
 

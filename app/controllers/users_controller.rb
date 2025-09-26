@@ -4,8 +4,11 @@ class UsersController < ApplicationController
   
   def show
     @user = User.find(params[:id])
-    # Stocker la page d'origine seulement si on vient d'une autre page
-    if request.referer.present? && !request.referer.include?(user_path(@user))
+    # Stocker la page d'origine seulement si on vient d'une page principale (pas pet/user)
+    if request.referer.present? && 
+       !request.referer.include?(user_path(@user)) &&
+       !request.referer.include?('/pets/') &&
+       !request.referer.include?('/users/')
       session[:return_to] = request.referer
     end
     

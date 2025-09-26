@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_07_18_005438) do
+ActiveRecord::Schema[7.1].define(version: 2025_09_26_120000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -245,6 +245,77 @@ ActiveRecord::Schema[7.1].define(version: 2025_07_18_005438) do
     t.string "rarity"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "pazaak_games", force: :cascade do |t|
+    t.bigint "host_id", null: false
+    t.bigint "guest_id"
+    t.integer "status", default: 0, null: false
+    t.integer "current_turn_user_id"
+    t.integer "round_number", default: 1, null: false
+    t.integer "wins_host", default: 0, null: false
+    t.integer "wins_guest", default: 0, null: false
+    t.text "host_state", default: "{}", null: false
+    t.text "guest_state", default: "{}", null: false
+    t.integer "last_drawn_card"
+    t.datetime "started_at"
+    t.datetime "finished_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer "first_player_id"
+    t.index ["first_player_id"], name: "index_pazaak_games_on_first_player_id"
+    t.index ["guest_id"], name: "index_pazaak_games_on_guest_id"
+    t.index ["host_id"], name: "index_pazaak_games_on_host_id"
+  end
+
+  create_table "pazaak_invitations", force: :cascade do |t|
+    t.bigint "inviter_id", null: false
+    t.bigint "invitee_id", null: false
+    t.bigint "pazaak_game_id"
+    t.integer "status", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer "stake", default: 0, null: false
+    t.index ["invitee_id"], name: "index_pazaak_invitations_on_invitee_id"
+    t.index ["inviter_id", "invitee_id", "status"], name: "idx_on_inviter_id_invitee_id_status_362b576a3f"
+    t.index ["inviter_id"], name: "index_pazaak_invitations_on_inviter_id"
+    t.index ["pazaak_game_id"], name: "index_pazaak_invitations_on_pazaak_game_id"
+  end
+
+  create_table "pazaak_presences", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.datetime "last_seen_at", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_pazaak_presences_on_user_id", unique: true
+  end
+
+  create_table "pazaak_stats", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.integer "games_played", default: 0, null: false
+    t.integer "games_won", default: 0, null: false
+    t.integer "games_lost", default: 0, null: false
+    t.integer "rounds_won", default: 0, null: false
+    t.integer "rounds_lost", default: 0, null: false
+    t.integer "rounds_tied", default: 0, null: false
+    t.integer "games_abandoned", default: 0, null: false
+    t.integer "best_win_streak", default: 0, null: false
+    t.integer "worst_lose_streak", default: 0, null: false
+    t.integer "current_win_streak", default: 0, null: false
+    t.integer "current_lose_streak", default: 0, null: false
+    t.integer "credits_won", default: 0, null: false
+    t.integer "credits_lost", default: 0, null: false
+    t.integer "stake_max", default: 0, null: false
+    t.integer "stake_min", default: 0, null: false
+    t.integer "stake_sum", default: 0, null: false
+    t.integer "stake_count", default: 0, null: false
+    t.integer "playmate_user_id"
+    t.integer "nemesis_user_id"
+    t.integer "victim_user_id"
+    t.jsonb "opponent_counters", default: {}
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_pazaak_stats_on_user_id", unique: true
   end
 
   create_table "pet_inventory_objects", force: :cascade do |t|
@@ -555,6 +626,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_07_18_005438) do
     t.integer "cyber_points", default: 0
     t.boolean "junkie", default: false
     t.integer "study_points", default: 0
+    t.jsonb "pazaak_deck", default: []
     t.index ["classe_perso_id"], name: "index_users_on_classe_perso_id"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["group_id"], name: "index_users_on_group_id"
@@ -581,6 +653,13 @@ ActiveRecord::Schema[7.1].define(version: 2025_07_18_005438) do
   add_foreign_key "holonew_reads", "holonews"
   add_foreign_key "holonew_reads", "users"
   add_foreign_key "holonews", "users"
+  add_foreign_key "pazaak_games", "users", column: "guest_id"
+  add_foreign_key "pazaak_games", "users", column: "host_id"
+  add_foreign_key "pazaak_invitations", "pazaak_games"
+  add_foreign_key "pazaak_invitations", "users", column: "invitee_id"
+  add_foreign_key "pazaak_invitations", "users", column: "inviter_id"
+  add_foreign_key "pazaak_presences", "users"
+  add_foreign_key "pazaak_stats", "users"
   add_foreign_key "pet_inventory_objects", "inventory_objects"
   add_foreign_key "pet_inventory_objects", "pets"
   add_foreign_key "pet_skills", "pets"

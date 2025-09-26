@@ -2,7 +2,7 @@ import { Controller } from "@hotwired/stimulus";
 
 export default class extends Controller {
   toggleTourelles(event) {
-    const select = document.getElementById('tourelles-count');
+    const select = document.getElementById('turrets-count');
     select.disabled = !event.target.checked;
   }
 

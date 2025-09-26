@@ -5,7 +5,7 @@ class Building < ApplicationRecord
   has_many :pets, through: :building_pets
 
   validates :name, presence: true
-  validates :level, numericality: { only_integer: true, equal_or_greater_than: 0 }
+  validates :level, numericality: { only_integer: true, greater_than_or_equal_to: 0 }
 
   before_validation :update_building_details
 

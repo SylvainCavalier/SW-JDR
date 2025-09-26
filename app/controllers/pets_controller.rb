@@ -47,10 +47,7 @@ class PetsController < ApplicationController
 
   def show
     @pet = Pet.find(params[:id])
-    # Stocker la page d'origine seulement si on vient d'une autre page
-    if request.referer.present? && !request.referer.include?(pet_path(@pet))
-      session[:return_to] = request.referer
-    end
+    # Ne pas gérer session[:return_to] ici pour éviter les conflits avec users_controller
   end
 
   def edit

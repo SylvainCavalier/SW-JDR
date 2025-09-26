@@ -172,6 +172,8 @@ Rails.application.routes.draw do
   patch 'mj/vaisseaux/:id/update_ship_skills', to: 'mj#update_ship_skills', as: 'mj_update_ship_skills'
   patch 'mj/vaisseaux/:id/update_ship_weapons', to: 'mj#update_ship_weapons', as: 'mj_update_ship_weapons'
   patch 'mj/vaisseaux/:id/update_ship_status', to: 'mj#update_ship_status', as: 'mj_update_ship_status'
+  post 'mj/vaisseaux/:id/add_ship_weapon', to: 'mj#add_ship_weapon', as: 'mj_add_ship_weapon'
+  delete 'mj/vaisseaux/:ship_id/weapons/:weapon_id', to: 'mj#delete_ship_weapon', as: 'mj_delete_ship_weapon'
 
   get 'combat', to: 'combat#index', as: 'combat'
   get 'mj/combat', to: 'combat#index', as: 'mj_combat'
@@ -244,6 +246,26 @@ Rails.application.routes.draw do
     end
     resources :ship_objects, only: [:new, :create, :edit, :update, :destroy]
   end
+
+  # Pazaak mini-jeu
+  namespace :pazaak do
+    resource :menu, only: :show, controller: :menus
+    resource :deck, only: [:show, :update], controller: :decks
+    resource :stats, only: :show, controller: :stats
+    resources :lobbies, only: :index do
+      collection do
+        post :ping
+      end
+    end
+    resources :invitations, only: [:create, :update]
+    resources :games, only: [:show, :create] do
+      member do
+        post :abandon
+      end
+      resources :moves, only: :create
+    end
+  end
+  get "/pazaak", to: "pazaak/menus#show"
 
   root 'pages#home'
 end

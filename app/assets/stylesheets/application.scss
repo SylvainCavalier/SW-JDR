@@ -15,6 +15,7 @@
 @import "pages/observation";
 @import "pages/lightsaber";
 @import "combat";
+@import "pazaak";
 
 @media screen and (orientation: portrait) {
   body {
@@ -127,8 +128,8 @@ span {
 
 .frame-container {
   position: relative;
-  width: 100vw;  /* 100% de la largeur de l'écran */
-  height: 100vh; /* 100% de la hauteur de l'écran */
+  width: 100vw;
+  height: 100vh;
   overflow: hidden;
 }
 

@@ -90,6 +90,13 @@
 
         <div class="description-box mt-3">
           <strong>Description :</strong>
+          <button type="button" 
+                  class="btn btn-sm btn-outline-light ms-2"
+                  data-bs-toggle="modal" 
+                  data-bs-target="#editDescriptionModal"
+                  title="Modifier la description">
+            <i class="fa-solid fa-pencil"></i>
+          </button>
           <p><%= @ship.description %></p>
         </div>
 
@@ -106,10 +113,22 @@
                 ] %>
                 <div class="d-flex flex-column justify-content-between align-items-center">
                   <% main_skills.each do |skill_name| %>
-                    <% skill = @skills.find { |s| s.skill.name == skill_name } %>
+                    <% skill = @skills.find { |s| s.skill&.name == skill_name } %>
                     <div class="skill-item me-3 mb-2">
-                      <span><strong><%= skill_name %> :</strong> <%= skill&.mastery %>D<% if skill&.bonus.to_i > 0 %> + <%= skill.bonus %><% end %></span>
-                      <i class="fa-solid fa-dice neon-icon ms-2" data-bs-toggle="modal" data-bs-target="#diceModal" data-dice-count="<%= skill&.mastery %>" data-dice-bonus-value="<%= skill&.bonus %>" data-action="click->dice#prepareRoll"></i>
+                      <span>
+                        <strong><%= skill_name %> :</strong>
+                        <% if skill %>
+                          <%= skill.mastery %>D<% if skill.bonus.to_i > 0 %> + <%= skill.bonus %><% end %>
+                          <i class="fa-solid fa-dice neon-icon ms-2" 
+                             data-bs-toggle="modal" 
+                             data-bs-target="#diceModal" 
+                             data-dice-count="<%= skill.mastery %>" 
+                             data-dice-bonus-value="<%= skill.bonus %>" 
+                             data-action="click->dice#prepareRoll"></i>
+                        <% else %>
+                          <span class="text-muted">0D</span>
+                        <% end %>
+                      </span>
                     </div>
                   <% end %>
                 </div>
@@ -297,6 +316,30 @@
               <%= image_tag @ship.image, class: "img-thumbnail", style: "max-width: 200px; max-height: 200px;" %>
             </div>
           <% end %>
+        </div>
+        <div class="modal-footer border-secondary">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+          <%= f.submit "Sauvegarder", class: "btn btn-primary" %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>
+
+<!-- Modal pour éditer la description -->
+<div class="modal fade" id="editDescriptionModal" tabindex="-1" aria-labelledby="editDescriptionModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content bg-dark text-light">
+      <div class="modal-header border-secondary">
+        <h5 class="modal-title" id="editDescriptionModalLabel">Modifier la description du vaisseau</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <%= form_with model: @ship, local: true do |f| %>
+        <div class="modal-body">
+          <div class="mb-3">
+            <%= f.label :description, "Description du vaisseau", class: "form-label" %>
+            <%= f.text_area :description, class: "form-control bg-secondary text-light border-0", rows: 5 %>
+          </div>
         </div>
         <div class="modal-footer border-secondary">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>

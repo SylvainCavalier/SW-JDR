@@ -1,0 +1,21 @@
+<div class="modal fade show" style="display:block;" tabindex="-1" aria-modal="true" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Invitation Pazaak</h5>
+      </div>
+      <div class="modal-body">
+        <p><%= inviter.username || inviter.email %> vous invite à jouer au Pazaak.</p>
+        <% if invitation.respond_to?(:stake) %>
+          <p>Mise: <strong><%= invitation.stake %> crédits</strong></p>
+        <% end %>
+      </div>
+      <div class="modal-footer">
+        <%= button_to "Accepter", pazaak_invitation_path(invitation, decision: :accept), method: :patch, class: "btn btn-success" %>
+        <%= button_to "Refuser", pazaak_invitation_path(invitation, decision: :decline), method: :patch, class: "btn btn-secondary" %>
+      </div>
+    </div>
+  </div>
+</div>
+
+

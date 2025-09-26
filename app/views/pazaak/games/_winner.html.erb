@@ -1,0 +1,25 @@
+<% redirect_url ||= nil %>
+<% attrs = {} %>
+<% if redirect_url.present? %>
+  <% attrs = { controller: 'redirect', url: redirect_url, redirect_delay_value: 3000 } %>
+<% end %>
+<div class="winner-banner" <%= attrs.present? ? attrs.map { |k,v| %(data-#{k.to_s.dasherize}="#{v}") }.join(' ') : '' %>>
+  <div class="content">
+    <% if redirect_url.present? %>
+      <%# Fin de PARTIE %>
+      <% if winner.present? %>
+        Le joueur <%= winner.username || winner.email %> a gagné la partie
+      <% else %>
+        Egalité
+      <% end %>
+    <% else %>
+      <%# Fin de MANCHE %>
+      <% if winner.present? %>
+        Le joueur <%= winner.username || winner.email %> a gagné la manche
+      <% else %>
+        Egalité
+      <% end %>
+    <% end %>
+  </div>
+</div>
+

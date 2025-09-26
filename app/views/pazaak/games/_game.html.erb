@@ -1,0 +1,146 @@
+<% game ||= @game %>
+<% me = viewer || current_user %>
+<% my_state = (game.player_state(me) || {}) %>
+<% opp_state = (game.opponent_state(me) || {}) %>
+
+<div class="game-state">
+  <% if game.finished? %>
+    <h5>Partie terminée — VICTOIRES: Hôte <%= game.wins_host %> | Invité <%= game.wins_guest %></p>
+  <% else %>
+    <h5>Manche <%= game.round_number %> — Tour de: <strong><%= User.find(game.current_turn_user_id).username rescue "?" %></strong></p>
+    <% if (inv = PazaakInvitation.find_by(pazaak_game_id: game.id)) && inv.stake.to_i > 0 %>
+      <h5>Mise: <strong><%= inv.stake %> crédits</strong></p>
+    <% end %>
+  <% end %>
+</div>
+<div class="pazaak-table">
+  <!-- Colonne gauche: joueur courant -->
+  <div class="pazaak-side pazaak-side-my">
+    <!-- Lignes 1-2: plateau du joueur courant (2x5 slots) + score à gauche -->
+    <% my_draws = (my_state["draws"] || []) %>
+    <% my_specs = (my_state["played_specials"] || []) %>
+    <% my_spec_i = 0 %>
+    <div class="pazaak-row board-section <%= 'board-served' if my_state["served"] %>" id="my_score_row">
+      <span class="score-badge"><%= my_state["sum"] || 0 %></span>
+      <span class="round-dots">
+        <% wins_me = (me.id == game.host_id) ? (game.wins_host || 0) : (game.wins_guest || 0) %>
+        <% 3.times do |i| %>
+          <span class="round-dot <%= 'on' if i < wins_me %>"></span>
+        <% end %>
+      </span>
+      <% 5.times do |i| %>
+        <% if (dv = my_draws[i]) %>
+          <div class="card card-main"><span class="card-label"><%= dv %></span></div>
+        <% elsif my_spec_i < my_specs.length %>
+          <% sv = my_specs[my_spec_i]; my_spec_i += 1 %>
+          <div class="card card-special <%= sv > 0 ? 'plus' : (sv < 0 ? 'minus' : 'utility') %>"><span class="card-label"><%= sv > 0 ? "+#{sv}" : sv %></span></div>
+        <% else %>
+          <div class="slot">&nbsp;</div>
+        <% end %>
+      <% end %>
+    </div>
+    <div class="pazaak-row board-section <%= 'board-served' if my_state["served"] %>">
+      <% 5.times do |i| %>
+        <% if (dv = my_draws[i+5]) %>
+          <div class="card card-main"><span class="card-label"><%= dv %></span></div>
+        <% elsif my_spec_i < my_specs.length %>
+          <% sv = my_specs[my_spec_i]; my_spec_i += 1 %>
+          <div class="card card-special <%= sv > 0 ? 'plus' : 'minus' %>"><span class="card-label"><%= sv > 0 ? "+#{sv}" : sv %></span></div>
+        <% else %>
+          <div class="slot">&nbsp;</div>
+        <% end %>
+      <% end %>
+      <% if my_state["served"] %>
+        <div class="board-dim"></div>
+        <div class="served-tag"><div class="content">Score validé: <%= my_state["sum"] %></div></div>
+      <% end %>
+    </div>
+
+    <!-- Ligne 3: main spéciale du joueur courant (visible si c'est mon tour) -->
+    <div class="pazaak-row">
+      <% 4.times do |i| %>
+        <% v = (my_state["hand"] || [])[i] %>
+        <% if v %>
+          <% kind = Pazaak::CardEffect.css_kind(v) %>
+          <% label = v.to_s %>
+          <% if game.current_turn_user_id == me.id && !my_state["served"] %>
+            <%= button_to content_tag(:span, label, class: 'card-label'),
+                  pazaak_game_moves_path(game, action_type: :play_special, value: v),
+                  method: :post,
+                  form: { class: "card-form" },
+                  class: "card card-special #{kind}" %>
+          <% else %>
+            <div class="card card-special <%= kind %>"><span class="card-label"><%= label %></span></div>
+          <% end %>
+        <% else %>
+          <div class="slot">&nbsp;</div>
+        <% end %>
+      <% end %>
+    </div>
+  </div>
+
+  <!-- Séparateur vertical -->
+  <div class="pazaak-sep-vert"></div>
+
+  <!-- Colonne droite: adversaire -->
+  <div class="pazaak-side pazaak-side-opp">
+    <!-- Lignes 1-2: plateau adverse (2x5 slots) + score à gauche -->
+    <% opp_draws = (opp_state["draws"] || []) %>
+    <% opp_specs = (opp_state["played_specials"] || []) %>
+    <% spec_i = 0 %>
+    <div class="pazaak-row board-section <%= 'board-served' if opp_state["served"] %>" id="opp_score_row">
+      <span class="score-badge"><%= opp_state["sum"] || 0 %></span>
+      <span class="round-dots">
+        <% opp_wins = (me.id == game.host_id) ? (game.wins_guest || 0) : (game.wins_host || 0) %>
+        <% 3.times do |i| %>
+          <span class="round-dot <%= 'on' if i < opp_wins %>"></span>
+        <% end %>
+      </span>
+      <% 5.times do |i| %>
+        <% if (dv = opp_draws[i]) %>
+          <div class="card card-main"><span class="card-label"><%= dv %></span></div>
+        <% elsif spec_i < opp_specs.length %>
+          <% sv = opp_specs[spec_i]; spec_i += 1 %>
+          <div class="card card-special <%= sv > 0 ? 'plus' : 'minus' %>"><span class="card-label"><%= sv > 0 ? "+#{sv}" : sv %></span></div>
+        <% else %>
+          <div class="slot">&nbsp;</div>
+        <% end %>
+      <% end %>
+    </div>
+    <div class="pazaak-row board-section <%= 'board-served' if opp_state["served"] %>">
+      <% 5.times do |i| %>
+        <% if (dv = opp_draws[i+5]) %>
+          <div class="card card-main"><span class="card-label"><%= dv %></span></div>
+        <% elsif spec_i < opp_specs.length %>
+          <% sv = opp_specs[spec_i]; spec_i += 1 %>
+          <div class="card card-special <%= sv > 0 ? 'plus' : 'minus' %>"><span class="card-label"><%= sv > 0 ? "+#{sv}" : sv %></span></div>
+        <% else %>
+          <div class="slot">&nbsp;</div>
+        <% end %>
+      <% end %>
+      <% if opp_state["served"] %>
+        <div class="board-dim"></div>
+        <div class="served-tag"><div class="content">Score validé: <%= opp_state["sum"] %></div></div>
+      <% end %>
+    </div>
+
+    <!-- Ligne 3: main spéciale adverse (cachée) -->
+    <div class="pazaak-row">
+      <% 4.times do %>
+        <div class="card card-back"></div>
+      <% end %>
+    </div>
+  </div>
+</div>
+<div class="pazaak-buttons mt-3">
+  <% if game.current_turn_user_id == me.id %>
+    <div class="btn-group gap-2">
+      <%= button_to "Passer", pazaak_game_moves_path(game, action_type: :pass), method: :post, class: "btn btn-secondary" %>
+      <%= button_to "Valider", pazaak_game_moves_path(game, action_type: :stand), method: :post, class: "btn btn-warning" %>
+      <%= button_to "Abandonner", abandon_pazaak_game_path(game), method: :post, class: "btn btn-outline-danger", data: { turbo_confirm: "Abandonner la partie ?" } %>
+    </div>
+  <% else %>
+    <p>En attente du tour adverse…</p>
+  <% end %>
+</div>
+<div id="<%= "#{game.stream_key}_overlay" %>"></div>
