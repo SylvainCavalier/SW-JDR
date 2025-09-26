@@ -247,5 +247,25 @@ Rails.application.routes.draw do
     resources :ship_objects, only: [:new, :create, :edit, :update, :destroy]
   end
 
+  # Pazaak mini-jeu
+  namespace :pazaak do
+    resource :menu, only: :show, controller: :menus
+    resource :deck, only: [:show, :update], controller: :decks
+    resource :stats, only: :show, controller: :stats
+    resources :lobbies, only: :index do
+      collection do
+        post :ping
+      end
+    end
+    resources :invitations, only: [:create, :update]
+    resources :games, only: [:show, :create] do
+      member do
+        post :abandon
+      end
+      resources :moves, only: :create
+    end
+  end
+  get "/pazaak", to: "pazaak/menus#show"
+
   root 'pages#home'
 end

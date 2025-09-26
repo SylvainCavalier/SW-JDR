@@ -1,0 +1,40 @@
+<div class="content-container">
+  <h2 class="audiowide-regular">Statistiques Pazaak</h2>
+  <div class="row g-3 mt-2">
+    <div class="col-md-4">
+      <ul class="list-group">
+        <li class="list-group-item d-flex justify-content-between"><span>Parties jouées</span><strong><%= @stats.games_played %></strong></li>
+        <li class="list-group-item d-flex justify-content-between"><span>Parties gagnées</span><strong><%= @stats.games_won %></strong></li>
+        <li class="list-group-item d-flex justify-content-between"><span>Parties perdues</span><strong><%= @stats.games_lost %></strong></li>
+        <li class="list-group-item d-flex justify-content-between"><span>Taux de victoire</span><strong><%= (@stats.win_rate * 100).round(1) %>%</strong></li>
+        <li class="list-group-item d-flex justify-content-between"><span>Meilleure série de victoires</span><strong><%= @stats.best_win_streak %></strong></li>
+        <li class="list-group-item d-flex justify-content-between"><span>Pire série de défaites</span><strong><%= @stats.worst_lose_streak %></strong></li>
+      </ul>
+    </div>
+    <div class="col-md-4">
+      <ul class="list-group">
+        <li class="list-group-item d-flex justify-content-between"><span>Crédits gagnés</span><strong><%= @stats.credits_won %></strong></li>
+        <li class="list-group-item d-flex justify-content-between"><span>Crédits perdus</span><strong><%= @stats.credits_lost %></strong></li>
+        <li class="list-group-item d-flex justify-content-between"><span>Manches gagnées</span><strong><%= @stats.rounds_won %></strong></li>
+        <li class="list-group-item d-flex justify-content-between"><span>Manches perdues</span><strong><%= @stats.rounds_lost %></strong></li>
+        <li class="list-group-item d-flex justify-content-between"><span>Manches à égalité</span><strong><%= @stats.rounds_tied %></strong></li>
+        <li class="list-group-item d-flex justify-content-between"><span>Abandons</span><strong><%= @stats.games_abandoned %></strong></li>
+        <li class="list-group-item d-flex justify-content-between"><span>Mise max</span><strong><%= @stats.stake_max %></strong></li>
+        <li class="list-group-item d-flex justify-content-between"><span>Mise min</span><strong><%= @stats.stake_min %></strong></li>
+        <li class="list-group-item d-flex justify-content-between"><span>Mise moyenne</span><strong><%= @stats.stake_avg %></strong></li>
+      </ul>
+    </div>
+    <div class="col-md-4">
+      <ul class="list-group">
+        <li class="list-group-item d-flex justify-content-between"><span>Playmate</span><strong><%= User.find_by(id: @stats.playmate_user_id)&.username || '-' %></strong></li>
+        <li class="list-group-item d-flex justify-content-between"><span>Némésis</span><strong><%= User.find_by(id: @stats.nemesis_user_id)&.username || '-' %></strong></li>
+        <li class="list-group-item d-flex justify-content-between"><span>Victime</span><strong><%= User.find_by(id: @stats.victim_user_id)&.username || '-' %></strong></li>
+      </ul>
+    </div>
+  </div>
+  <div class="mt-3">
+    <%= link_to 'Retour', pazaak_menu_path, class: 'btn btn-outline-light' %>
+  </div>
+</div>
+
+

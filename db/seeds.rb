@@ -272,7 +272,6 @@ end
 
 puts "✅ New implants added successfully!"
 
-
 puts "Creating healing inventory objects..."
 inventory_objects = [
   { name: "Medipack", category: "soins", price: 50, description: "Redonne en PV le jet de médecine du soigneur divisé par deux.", rarity: "Commun" },
@@ -477,11 +476,79 @@ poisons.each do |poison|
   end
 end
 
-# Kit de réparation déjà créé dans la section des objets de soins ci-dessus
+pazaak_cards = []
+
+# Cartes positives +1 à +5
+(1..5).each do |i|
+  pazaak_cards << {
+    name: "+#{i}",
+    price: 100,
+    description: "Ajoute #{i} à votre total.",
+    rarity: "Commun",
+    category: "pazaak"
+  }
+end
+
+# Cartes négatives -1 à -5
+(1..5).each do |i|
+  pazaak_cards << {
+    name: "-#{i}",
+    price: 100,
+    description: "Retire #{i} à votre total.",
+    rarity: "Commun",
+    category: "pazaak"
+  }
+end
+
+# Cartes duales ±1 à ±5
+(1..5).each do |i|
+  pazaak_cards << {
+    name: "±#{i}",
+    price: 150,
+    description: "Permet d'ajouter ou retirer #{i}.",
+    rarity: "Inhabituel",
+    category: "pazaak"
+  }
+end
+
+# Carte spéciale x2
+pazaak_cards << {
+  name: "x2",
+  price: 200,
+  description: "Double la valeur de la dernière carte jouée.",
+  rarity: "Rare",
+  category: "pazaak"
+}
+
+# Carte spéciale 2&4
+pazaak_cards << {
+  name: "2&4",
+  price: 250,
+  description: "Transforme tous les 2 et 4 en -2 et -4.",
+  rarity: "Rare",
+  category: "pazaak"
+}
+
+# Carte spéciale 3&6
+pazaak_cards << {
+  name: "3&6",
+  price: 250,
+  description: "Transforme tous les 3 et 6 en -3 et -6.",
+  rarity: "Rare",
+  category: "pazaak"
+}
+
+# Création dans la base
+pazaak_cards.each do |card|
+  InventoryObject.find_or_create_by!(name: card[:name]) do |obj|
+    obj.price = card[:price]
+    obj.description = card[:description]
+    obj.rarity = card[:rarity]
+    obj.category = card[:category]
+  end
+end
 
 puts "✅ New objects added successfully!"
-
-# ✅ Le statut "Folie" est maintenant créé avec les autres statuts ci-dessus
 
 puts "Adding new base..."
 
@@ -500,16 +567,15 @@ end
 
 Building::BUILDING_DATA.each do |building_type, levels|
   levels.each do |level, data|
-    level = level.to_i  # S'assurer que le level est bien un entier
+    level = level.to_i 
 
     building = headquarter.buildings.find_or_initialize_by(name: data["name"])
 
-    # Mise à jour ou création du bâtiment
     building.update!(
       level: 0,
       description: data["description"],
       price: data["price"],
-      category: building_type,  # On utilise le type de bâtiment (ex: "Hangar") comme catégorie
+      category: building_type,
       properties: data["properties"] || {}
     )
 

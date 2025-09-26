@@ -1,0 +1,26 @@
+<div class="frame-container" style="position: relative; width: 100%; height: 100svh;">
+  <!-- Username -->
+  <p class="username-display mt-1 text-primary fw-bold">
+    <%= current_user.username.capitalize %>
+  </p>
+  <!-- Cadre principal SVG -->
+  <img src="<%= asset_path('cadre2.svg') %>" alt="Cadre" class="ui-frame">
+
+  <!-- Zone sécurisée (marges ~12vw / 12vh) -->
+  <div class="safe-area">
+    <!-- Image centrée et la plus grande possible dans la zone -->
+    <img src="<%= asset_path('pazaak.jpeg') %>" alt="Pazaak" class="pazaak-hero">
+
+    <!-- Overlay centré pour le titre et les boutons -->
+    <div class="pazaak-overlay d-flex flex-column align-items-center justify-content-center text-center">
+      <h1 class="audiowide-regular pazaak-title mb-3">Pazaak</h1>
+      <div class="pazaak-actions d-flex flex-column gap-2">
+        <%= link_to "Deck", pazaak_deck_path, class: "btn btn-success neon-btn" %>
+        <%= link_to "Jouer", pazaak_lobbies_path, class: "btn btn-success neon-btn" %>
+        <%= link_to "Statistiques", pazaak_stats_path, class: "btn btn-secondary neon-btn" %>
+      </div>
+    </div>
+  </div>
+
+  <%= link_to "Retour", current_user.group.name == "MJ" ? mj_dashboard_path : root_path, class: "btn btn-outline-secondary go-back" %>
+</div>

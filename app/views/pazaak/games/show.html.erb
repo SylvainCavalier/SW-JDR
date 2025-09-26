@@ -1,0 +1,10 @@
+<div class="frame-container" style="position: relative;">
+  <div class="pazaak-container d-flex flex-column justify-content-center text-center align-items-center">
+    <%= turbo_stream_from "user_#{current_user.id}" %>
+    <turbo-frame id="pazaak_redirect"></turbo-frame>
+
+    <div id="<%= @game.stream_key %>">
+      <%= render partial: "pazaak/games/game", locals: { game: @game, viewer: current_user } %>
+    </div>
+  </div>
+</div>

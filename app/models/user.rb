@@ -12,6 +12,7 @@ class User < ApplicationRecord
   has_many :subscriptions, dependent: :destroy
   has_many :user_inventory_objects
   has_many :inventory_objects, through: :user_inventory_objects
+  has_one :pazaak_stat, dependent: :destroy
   has_many :user_skills
   has_many :skills, through: :user_skills
   has_many :user_caracs

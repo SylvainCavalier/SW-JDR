@@ -1,0 +1,5 @@
+<%= turbo_stream.replace @game.stream_key do %>
+  <%= render partial: "pazaak/games/game", locals: { game: @game } %>
+<% end %>
+
+
