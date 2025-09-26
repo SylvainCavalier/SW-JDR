@@ -1,11 +1,9 @@
 class TransactionsController < ApplicationController
   before_action :authenticate_user!
+  before_action :set_transfer_users, only: [:new, :create]
 
   def new
     @transaction = Transaction.new
-    @transfer_users = User.where.not(id: current_user.id)
-                          .includes(avatar_attachment: :blob)
-                          .order(:username)
   end
 
   def create
@@ -73,5 +71,11 @@ class TransactionsController < ApplicationController
 
   def transaction_params
     params.require(:transaction).permit(:amount, :receiver_username)
+  end
+
+  def set_transfer_users
+    @transfer_users = User.where.not(id: current_user.id)
+                          .includes(avatar_attachment: :blob)
+                          .order(:username)
   end
 end

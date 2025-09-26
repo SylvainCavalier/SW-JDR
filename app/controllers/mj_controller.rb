@@ -514,17 +514,38 @@ class MjController < ApplicationController
   end
 
   def apply_hp_bonus
-    bonus = params[:hp_bonus][:bonus].to_i
+    headquarter = Headquarter.first
+    if headquarter.nil?
+      redirect_to mj_dashboard_path, alert: "Aucun QG trouvé pour calculer les bonus." and return
+    end
+
     users = User.where(group: Group.find_by(name: "PJ"))
-  
+    user_bonus = headquarter.temporary_hp_bonus_for_users
+
     User.transaction do
       users.find_each do |user|
-        user.update!(hp_current: user.hp_max + bonus)
+        user.update!(hp_current: user.hp_max + user_bonus)
         user.broadcast_hp_update
       end
     end
-  
-    flash[:success] = "Bonus temporaire de #{bonus} PV attribué à tous les joueurs."
+
+    # Pets: humanoïdes => dortoirs; animaux => refuge animalier
+    humanoid_pets = Pet.where(category: "humanoïde").where(id: User.where.not(pet_id: nil).pluck(:pet_id))
+    animal_pets = Pet.where(category: "animal").where(id: User.where.not(pet_id: nil).pluck(:pet_id))
+
+    humanoid_bonus = headquarter.temporary_hp_bonus_for_humanoid_pets
+    animal_bonus = headquarter.temporary_hp_bonus_for_animal_pets
+
+    Pet.transaction do
+      humanoid_pets.find_each do |pet|
+        pet.update!(hp_current: pet.hp_max + humanoid_bonus)
+      end
+      animal_pets.find_each do |pet|
+        pet.update!(hp_current: pet.hp_max + animal_bonus)
+      end
+    end
+
+    flash[:success] = "Bonus temporaires appliqués (PJ: +#{user_bonus} PV, Pets humanoïdes: +#{humanoid_bonus}, Pets animaux: +#{animal_bonus})."
     redirect_to mj_dashboard_path
   end
 

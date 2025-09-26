@@ -48,6 +48,16 @@
       </div>
     </div>
 
+    <!-- Bouclier maximum -->
+    <div class="mb-3">
+      <%= f.label :shield_max, "Bouclier Maximum", for: "pet_shield_max", class: "form-label" %>
+      <div class="input-group custom-input-group" data-controller="increment">
+        <%= button_tag "-", type: "button", class: "btn btn-outline-secondary", data: { action: "click->increment#decrement" } %>
+        <%= f.number_field :shield_max, value: @pet.shield_max || 0, min: 0, class: "form-control text-center", id: "pet_shield_max", data: { "increment-target" => "input" } %>
+        <%= button_tag "+", type: "button", class: "btn btn-outline-secondary", data: { action: "click->increment#increment" } %>
+      </div>
+    </div>
+
     <!-- Résistance Corporelle -->
     <div class="mb-3">
       <%= f.label :res_corp_mastery, "Résistance Corporelle", for: "pet_res_corp_mastery", class: "form-label" %>

@@ -47,13 +47,10 @@
       </div>
     <% end %>
 
-    <%= simple_form_for :hp_bonus, url: mj_apply_hp_bonus_path, method: :post, html: { novalidate: true } do |f| %>
-      <div class="form-group d-flex text-success">
-        <%= f.label :bonus, "Bonus de PV max à donner :" %>
-        <%= f.input_field :bonus, class: "form-control", type: "number", value: 5, min: 1, step: 1 %>
-        <%= f.button :submit, "Appliquer", class: "btn btn-outline-success mt-2" %>
-      </div>
-    <% end %>
+    <!-- Suppression du champ manuel de bonus temporaire: utilisation des bâtiments -->
+    <div class="text-center mt-3">
+      <%= button_to "Appliquer bonus temporaires (bâtiments)", mj_apply_hp_bonus_path, method: :post, class: "btn btn-outline-success" %>
+    </div>
 
     <div class="text-center mt-4">
       <%= link_to "Retour", current_user.group.name == "MJ" ? mj_dashboard_path : root_path, class: "btn btn-outline-secondary go-back-two" %>

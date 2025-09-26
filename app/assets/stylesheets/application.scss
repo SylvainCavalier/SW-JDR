@@ -1758,6 +1758,96 @@ input.dice-count-input {
 
 /* ------------- SHIPS -------------- */
 
+/* ------------- GRAVEYARD (Cimetière) -------------- */
+
+.graveyard-theme {
+  filter: grayscale(85%);
+}
+
+.graveyard-container {
+  background-color: #0a0a0a;
+  border: 2px solid rgba(160, 160, 160, 0.5);
+  box-shadow: 0 0 10px rgba(160, 160, 160, 0.3);
+  color: #d0d0d0;
+}
+
+.graveyard-title {
+  color: #c0c0c0 !important;
+  text-shadow: 0 0 6px rgba(200, 200, 200, 0.3);
+}
+
+.graveyard-category-title {
+  color: #bdbdbd !important;
+}
+
+.graveyard-list-item {
+  background: rgba(20, 20, 20, 0.8);
+  color: #cfcfcf;
+  border: 1px solid rgba(180, 180, 180, 0.6);
+  box-shadow: 0 0 6px 2px rgba(150, 150, 150, 0.25);
+}
+
+.graveyard-list-item:hover {
+  background: rgba(25, 25, 25, 0.9);
+  box-shadow: 0 0 10px 3px rgba(170, 170, 170, 0.35);
+}
+
+.graveyard-back-btn {
+  border-color: #9e9e9e !important;
+  color: #c9c9c9 !important;
+}
+
+.graveyard-view-btn {
+  border-color: #bdbdbd !important;
+  color: #d6d6d6 !important;
+}
+
+/* Icône croix funéraire */
+.fa-cross { /* fallback si jamais */
+  color: #bdbdbd;
+}
+
+.fa-solid.fa-cross, .fa-solid.fa-skull-crossbones {
+  color: #bdbdbd;
+}
+
+/* ------------- DEAD PET (fiche) -------------- */
+
+.pet-dead .pet-status,
+.pet-dead .weapon-box,
+.pet-dead .description-box,
+.pet-dead .associated-box {
+  background-color: #1a1a1a;
+  border: 1px solid #6b6b6b;
+}
+
+.pet-dead .list-group-item {
+  background: rgba(20, 20, 20, 0.8);
+  color: #cfcfcf;
+  border: 1px solid #7a7a7a;
+  box-shadow: 0 0 6px 2px rgba(120, 120, 120, 0.25);
+}
+
+.pet-dead .pet-image {
+  filter: grayscale(100%);
+  border-color: #888;
+}
+
+.pet-dead .hp-text { color: #e0e0e0; }
+.pet-dead .hp-fill { fill: #7a7a7a !important; }
+
+.pet-dead .btn-outline-primary,
+.pet-dead .btn-outline-secondary,
+.pet-dead .btn-outline-warning,
+.pet-dead .btn-outline-danger {
+  border-color: #a0a0a0;
+  color: #cfcfcf;
+}
+
+.pet-dead strong, .pet-dead h3, .pet-dead h2 {
+  color: #cfcfcf !important;
+}
+
 .ship-item {
   background-color: rgba(10, 20, 30, 0.95);
   border: 1px solid rgba(0, 255, 127, 0.6);

@@ -303,7 +303,11 @@ class Pet < ApplicationRecord
 
   def set_default_status
     status_en_forme = Status.find_by(name: "En forme")
-    pet_statuses.create!(status: status_en_forme) if status_en_forme
+    if status_en_forme
+      pet_statuses.create!(status: status_en_forme)
+      # Garder la colonne pets.status_id synchronisée avec le statut courant
+      self.update_column(:status_id, status_en_forme.id)
+    end
   end
 
   def update_status_based_on_hp
@@ -330,6 +334,8 @@ class Pet < ApplicationRecord
   
     # Ajoute le nouveau statut s’il n’est pas déjà là
     pet_statuses.find_or_create_by(status: new_status)
+    # Synchronise aussi la colonne pets.status_id pour les usages qui la lisent
+    self.update_column(:status_id, new_status.id)
   end
 
   def roll_dice(number, sides)

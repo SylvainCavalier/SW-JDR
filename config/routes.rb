@@ -58,6 +58,7 @@ Rails.application.routes.draw do
       get :inventory
       get :observation
       get :credits
+      post :transfer_credits
       get :buildings
       get :personnel
       patch :inventory

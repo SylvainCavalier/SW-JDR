@@ -37,6 +37,8 @@ class PetsController < ApplicationController
   def create
     @pet = Pet.new(pet_params)
     @pet.hp_current = @pet.hp_max
+    # Initialise le bouclier courant au maximum défini
+    @pet.shield_current = @pet.shield_max.to_i if @pet.shield_current.blank?
     if @pet.save
       update_pet_skills(@pet)
       redirect_to @pet, notice: "Familier créé avec succès."
@@ -60,6 +62,10 @@ class PetsController < ApplicationController
 
   def update
     if @pet.update(pet_params)
+      # Si le bouclier max a changé et que shield_current est supérieur, on le borne
+      if @pet.saved_change_to_shield_max?
+        @pet.update(shield_current: [@pet.shield_current, @pet.shield_max].min)
+      end
       update_pet_skills(@pet)
       redirect_to @pet, notice: "Familier mis à jour avec succès."
     else
@@ -226,7 +232,7 @@ class PetsController < ApplicationController
   def pet_params
     params.require(:pet).permit(
       :name, :race, :age, :description, :category, :url_image, 
-      :hp_max, :weapon_1, :damage_1, :damage_1_bonus, 
+      :hp_max, :shield_max, :weapon_1, :damage_1, :damage_1_bonus, 
       :weapon_2, :damage_2, :damage_2_bonus, :image, :size, :weight
     )
   end

@@ -34,16 +34,20 @@
   <div class="top-bar-container">
     <img src="<%= asset_path('top-bar.svg') %>" alt="Top Bar" class="ui-top-bar">
     <% if @patch_equipped %>
-      <i class="fa-regular fa-circle-down patch-icon"></i>
+      <i class="fa-regular fa-circle-down patch-icon" title="<%= current_user.equipped_patch&.name %>"
+         data-bs-toggle="tooltip" data-bs-placement="bottom"></i>
     <% end %>
     <% if @active_injection_object %>
-      <i class="fa-solid fa-syringe injection-icon"></i>
+      <i class="fa-solid fa-syringe injection-icon" title="<%= @active_injection_object.name %>"
+         data-bs-toggle="tooltip" data-bs-placement="bottom"></i>
     <% end %>
     <% if current_user.active_implant_object %>
-      <i class="fa-solid fa-microchip implant-icon"></i>
+      <i class="fa-solid fa-microchip implant-icon" title="<%= current_user.active_implant_object&.name %>"
+         data-bs-toggle="tooltip" data-bs-placement="bottom"></i>
     <% end %>
     <% if current_user.spheros.exists?(active: true) %>
-      <i class="fa-brands fa-discord sphero-icon"></i>
+      <i class="fa-brands fa-discord sphero-icon" title="<%= current_user.spheros.find_by(active: true)&.name %>"
+         data-bs-toggle="tooltip" data-bs-placement="bottom"></i>
     <% end %>
   </div>
 

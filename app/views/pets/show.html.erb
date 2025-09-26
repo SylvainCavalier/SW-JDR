@@ -1,6 +1,7 @@
 <div class="frame-container" style="position: relative; width: 100%; height: 100vh; overflow-y: auto; overflow-x: hidden;">
   <%= back_link(pets_path) %>
-  <div class="pet-container">
+  <% is_dead = (@pet.current_status&.name == "Mort") || (@pet.hp_current.to_i <= -10) %>
+  <div class="pet-container <%= 'pet-dead' if is_dead %>">
     <!-- Box principale -->
     <div class="pet-box">
       <!-- Section supérieure : Nom et Stats -->
@@ -8,7 +9,7 @@
         <div class="col-12 col-sm-6">
           <ul class="list-group">
             <li class="list-group-item">
-              <strong>Nom :</strong> <%= @pet.name %>
+              <strong>Nom :</strong> <%= is_dead ? content_tag(:i, '', class: 'fa-solid fa-cross me-1') : ''.html_safe %><%= @pet.name %>
             </li>
             <li class="list-group-item">
               <strong>Race :</strong> <%= @pet.race %>
@@ -91,7 +92,7 @@
         <div class="col-12 col-sm-6 pet-status text-center p-2">
           <%= image_tag(@pet.image.attached? ? @pet.image.variant(resize_to_limit: [300, 300]) : "petbase.png", class: "pet-image") %>
           <div class="text-center d-flex justify-content-center align-items-center mt-1">
-            <% if current_user.pet_id == @pet.id %>
+            <% if current_user.pet_id == @pet.id && !is_dead %>
               <div class="text-center mx-2">
                 <%= form_with url: heal_pet_path(@pet), method: :post, local: true, class: "d-flex align-items-center" do |f| %>
                   <%= f.select :item_id, 
@@ -129,7 +130,7 @@
                 </div>
               </div>
             </div>
-            <% if @pet.shield_max > 0 %>
+            <% if @pet.shield_max > 0 && !is_dead %>
               <div class="shield-text-container d-flex" data-controller="shield-recharge-pet">
                 <div class="shield-text" data-shield-bar-target="shieldText">
                   🛡️ Bouclier : <span id="shield-value"><%= @pet.shield_current %></span> / <%= @pet.shield_max %>
@@ -187,9 +188,9 @@
         </div>
       </div>
 
-      <!-- Section description -->
+      <!-- Section description / épitaphe -->
       <div class="description-box mt-4">
-        <strong>Description :</strong>
+        <strong><%= is_dead ? 'Épitaphe' : 'Description' %> :</strong>
         <p><%= @pet.description %></p>
       </div>
 
@@ -218,31 +219,31 @@
 
           <!-- Colonne droite : actions -->
           <div class="col-12 col-sm-6">
-            <div class="text-center mb-1">
-              <strong>Points d'action restants :</strong> <%= current_user.pet_action_points %> / 10
+            <!--<div class="text-center mb-1">
+              <strong>Points d'action restants :</strong> <%#= current_user.pet_action_points %> / 10
             </div>
             <div class="actions d-flex flex-column text-center">
-              <% case @pet.category %>
-              <% when "animal" %>
-                <%= button_to "Nourrir", perform_action_pet_path(@pet, action_type: "feed"), method: :post, class: "btn btn-outline-success mb-2" %>
-                <%= button_to "Câlin", perform_action_pet_path(@pet, action_type: "cuddle"), method: :post, class: "btn btn-outline-success mb-2" %>
-                <%= button_to "Jouer", perform_action_pet_path(@pet, action_type: "play"), method: :post, class: "btn btn-outline-success mb-2" %>
-                <%= button_to "Gronder", perform_action_pet_path(@pet, action_type: "scold"), method: :post, class: "btn btn-outline-success mb-2" %>
+              <%# case @pet.category %>-->
+              <%# when "animal" %>
+                <%#= button_to "Nourrir", perform_action_pet_path(@pet, action_type: "feed"), method: :post, class: "btn btn-outline-success mb-2" %>
+                <%#= button_to "Câlin", perform_action_pet_path(@pet, action_type: "cuddle"), method: :post, class: "btn btn-outline-success mb-2" %>
+                <%#= button_to "Jouer", perform_action_pet_path(@pet, action_type: "play"), method: :post, class: "btn btn-outline-success mb-2" %>
+                <%#= button_to "Gronder", perform_action_pet_path(@pet, action_type: "scold"), method: :post, class: "btn btn-outline-success mb-2" %>
                 <%#= button_to "Entrainer", perform_action_pet_path(@pet, action_type: "train"), method: :post, class: "btn btn-outline-primary mb-2" %>
-              <% when "droïde" %>
-                <%= button_to "Huiler", perform_action_pet_path(@pet, action_type: "oil"), method: :post, class: "btn btn-outline-success mb-2" %>
-                <%= button_to "Vider Mémoire", perform_action_pet_path(@pet, action_type: "wipe_memory"), method: :post, class: "btn btn-outline-success mb-2" %>
-                <%= button_to "Améliorer", perform_action_pet_path(@pet, action_type: "upgrade"), method: :post, class: "btn btn-outline-primary mb-2" %>
-              <% when "humanoïde" %>
-                <%= button_to "Complimenter", perform_action_pet_path(@pet, action_type: "compliment"), method: :post, class: "btn btn-outline-success mb-2" %>
-                <%= button_to "Discuter", perform_action_pet_path(@pet, action_type: "chat"), method: :post, class: "btn btn-outline-success mb-2" %>
-                <%= button_to "Frapper", perform_action_pet_path(@pet, action_type: "hit"), method: :post, class: "btn btn-outline-success mb-2" %>
+              <%# when "droïde" %>
+                <%#= button_to "Huiler", perform_action_pet_path(@pet, action_type: "oil"), method: :post, class: "btn btn-outline-success mb-2" %>
+                <%#= button_to "Vider Mémoire", perform_action_pet_path(@pet, action_type: "wipe_memory"), method: :post, class: "btn btn-outline-success mb-2" %>
+                <%#= button_to "Améliorer", perform_action_pet_path(@pet, action_type: "upgrade"), method: :post, class: "btn btn-outline-primary mb-2" %>
+              <%# when "humanoïde" %>
+                <%#= button_to "Complimenter", perform_action_pet_path(@pet, action_type: "compliment"), method: :post, class: "btn btn-outline-success mb-2" %>
+                <%#= button_to "Discuter", perform_action_pet_path(@pet, action_type: "chat"), method: :post, class: "btn btn-outline-success mb-2" %>
+                <%#= button_to "Frapper", perform_action_pet_path(@pet, action_type: "hit"), method: :post, class: "btn btn-outline-success mb-2" %>
                 <%#= button_to "Entrainer", perform_action_pet_path(@pet, action_type: "train"), method: :post, class: "btn btn-outline-primary mb-2" %>
-                <% if @pet.force? && @pet.apprentice.nil? %>
-                  <%= button_to "Prendre comme apprenti", create_apprentice_path(pet_id: @pet.id), method: :post, class: "btn btn-primary", data: { confirm: "Voulez-vous vraiment prendre ce pet comme apprenti ?" } %>
-                <% end %>
-              <% end %>
-            </div>
+                <%# if @pet.force? && @pet.apprentice.nil? %>
+                  <%#= button_to "Prendre comme apprenti", create_apprentice_path(pet_id: @pet.id), method: :post, class: "btn btn-primary", data: { confirm: "Voulez-vous vraiment prendre ce pet comme apprenti ?" } %>
+                <%# end %>
+              <%# end %>
+<!--            </div>-->
           </div>
         </div>
       <% end %>

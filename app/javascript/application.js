@@ -50,5 +50,20 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 });
 
+// Initialisation des tooltips Bootstrap après chaque navigation Turbo
+document.addEventListener("turbo:load", () => {
+  try {
+    const tooltipTriggerList = [].slice.call(
+      document.querySelectorAll('[data-bs-toggle="tooltip"]')
+    );
+    tooltipTriggerList.forEach((tooltipTriggerEl) => {
+      // eslint-disable-next-line no-undef
+      new bootstrap.Tooltip(tooltipTriggerEl);
+    });
+  } catch (e) {
+    console.warn("Bootstrap Tooltip init error:", e);
+  }
+});
+
 // Réduire le délai de la barre de progression Turbo
 Turbo.setProgressBarDelay(0);

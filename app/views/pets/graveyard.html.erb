@@ -1,19 +1,23 @@
-<div class="frame-container" style="position: relative; width: 100%; height: 100vh; overflow-y: auto; overflow-x: hidden;">
-  <div class="pet-container mt-3">
-    <h2 class="text-danger text-center mb-4">Cimetière des Familiers</h2>
+<div class="frame-container graveyard-theme" style="position: relative; width: 100%; height: 100vh; overflow-y: auto; overflow-x: hidden;">
+  <div class="pet-container graveyard-container mt-3">
+    <h2 class="text-center mb-4 graveyard-title">Cimetière des Familiers</h2>
 
     <%# Liste des Humanoïdes morts %>
     <div class="pet-category-box mb-5">
-      <h3 class="text-center text-info">Humanoïdes</h3>
+      <h3 class="text-center graveyard-category-title">Humanoïdes</h3>
       <ul class="list-group">
         <% @dead_humanoids.each do |pet| %>
-          <li class="list-group-item d-flex justify-content-between align-items-center">
+          <li class="list-group-item graveyard-list-item d-flex justify-content-between align-items-center">
             <div>
-              <strong>Nom :</strong> <%= pet.name %> | 
-              <strong>Race :</strong> <%= pet.race %> | 
+              <% if pet.image.attached? %>
+                <%= image_tag pet.image.variant(resize_to_fill: [30, 30]), class: "rounded-circle me-2" %> |
+              <% end %>
+              <strong>Nom :</strong> <i class="fa-solid fa-cross me-1"></i><%= pet.name %> |
+              <strong>Race :</strong> <%= pet.race %> |
+              <strong>PV :</strong> <%= "#{pet.hp_current} / #{pet.hp_max}" %>
             </div>
             <div>
-              <%= link_to "Voir", pet_path(pet), class: "btn btn-outline-primary btn-sm" %>
+              <%= link_to "Voir", pet_path(pet), class: "btn btn-outline-primary btn-sm graveyard-view-btn" %>
             </div>
           </li>
         <% end %>
@@ -22,17 +26,20 @@
 
     <%# Liste des Animaux morts %>
     <div class="pet-category-box mb-5">
-      <h3 class="text-center text-success">Animaux</h3>
+      <h3 class="text-center graveyard-category-title">Animaux</h3>
       <ul class="list-group">
         <% @dead_animals.each do |pet| %>
-          <li class="list-group-item d-flex justify-content-between align-items-center">
+          <li class="list-group-item graveyard-list-item d-flex justify-content-between align-items-center">
             <div>
-              <strong>Nom :</strong> <%= pet.name %> | 
-              <strong>Race :</strong> <%= pet.race %> | 
+              <% if pet.image.attached? %>
+                <%= image_tag pet.image.variant(resize_to_fill: [30, 30]), class: "rounded-circle me-2" %> |
+              <% end %>
+              <strong>Nom :</strong> <i class="fa-solid fa-cross me-1"></i><%= pet.name %> |
+              <strong>Race :</strong> <%= pet.race %> |
               <strong>PV :</strong> <%= "#{pet.hp_current} / #{pet.hp_max}" %>
             </div>
             <div>
-              <%= link_to "Voir", pet_path(pet), class: "btn btn-outline-primary btn-sm" %>
+              <%= link_to "Voir", pet_path(pet), class: "btn btn-outline-primary btn-sm graveyard-view-btn" %>
             </div>
           </li>
         <% end %>
@@ -41,36 +48,20 @@
 
     <%# Liste des Droïdes morts %>
     <div class="pet-category-box mb-5">
-      <h3 class="text-center text-warning">Droïdes</h3>
+      <h3 class="text-center graveyard-category-title">Droïdes</h3>
       <ul class="list-group">
         <% @dead_droids.each do |pet| %>
-          <li class="list-group-item d-flex justify-content-between align-items-center">
+          <li class="list-group-item graveyard-list-item d-flex justify-content-between align-items-center">
             <div>
-              <strong>Nom :</strong> <%= pet.name %> | 
-              <strong>Race :</strong> <%= pet.race %> | 
+              <% if pet.image.attached? %>
+                <%= image_tag pet.image.variant(resize_to_fill: [30, 30]), class: "rounded-circle me-2" %> |
+              <% end %>
+              <strong>Nom :</strong> <i class="fa-solid fa-cross me-1"></i><%= pet.name %> |
+              <strong>Race :</strong> <%= pet.race %> |
               <strong>PV :</strong> <%= "#{pet.hp_current} / #{pet.hp_max}" %>
             </div>
             <div>
-              <%= link_to "Voir", pet_path(pet), class: "btn btn-outline-primary btn-sm" %>
-            </div>
-          </li>
-        <% end %>
-      </ul>
-    </div>
-
-    <%# Liste des Bio-Armures mortes %>
-    <div class="pet-category-box mb-5">
-      <h3 class="text-center text-danger">Bio-Armures</h3>
-      <ul class="list-group">
-        <% @dead_bio_armors.each do |pet| %>
-          <li class="list-group-item d-flex justify-content-between align-items-center">
-            <div>
-              <strong>Nom :</strong> <%= pet.name %> | 
-              <strong>Race :</strong> <%= pet.race %> | 
-              <strong>PV :</strong> <%= "#{pet.hp_current} / #{pet.hp_max}" %>
-            </div>
-            <div>
-              <%= link_to "Voir", pet_path(pet), class: "btn btn-outline-primary btn-sm" %>
+              <%= link_to "Voir", pet_path(pet), class: "btn btn-outline-primary btn-sm graveyard-view-btn" %>
             </div>
           </li>
         <% end %>
@@ -79,7 +70,7 @@
 
     <%# Retour à l'index principal %>
     <div class="text-center mt-4">
-      <%= link_to "Retour à la Liste des Familiers", pets_path, class: "btn btn-outline-secondary" %>
+      <%= link_to "Retour à la Liste des Familiers", pets_path, class: "btn btn-outline-secondary graveyard-back-btn" %>
     </div>
   </div>
 </div>
