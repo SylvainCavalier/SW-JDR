@@ -1862,3 +1862,18 @@ input.dice-count-input {
 .badge {
   font-size: 0.75em;
 }
+
+/* Global status badge (utilisé hors combat) */
+.status-badge {
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.25rem;
+  font-size: 0.875rem;
+  background-color: rgba(0, 0, 0, 0.2);
+  border: 1px solid;
+  text-shadow: 0 0 10px currentColor;
+}
+
+.status-badge.status-normal {
+  color: #1EDD88;
+  border-color: #1EDD88;
+}
