@@ -143,6 +143,9 @@ Rails.application.routes.draw do
   post 'apply_damage_pets', to: 'mj#apply_damage_pets'
   post 'apply_damage_spheros', to: 'mj#apply_damage_spheros'
 
+  # Balles perdues (MJ uniquement)
+  post 'mj/balles_perdues', to: 'mj#balles_perdues', as: 'mj_balles_perdues'
+
   get 'mj/fixer_pv_max', to: 'mj#fixer_pv_max', as: 'fixer_pv_max'
   post 'mj/fixer_pv_max', to: 'mj#update_pv_max'
   post 'mj/apply_hp_bonus', to: 'mj#apply_hp_bonus'

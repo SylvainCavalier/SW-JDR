@@ -669,6 +669,11 @@ class ShipsController < ApplicationController
     @can_repair = @technique_mastery >= 2
     
     if @can_repair
+      # Assigner une cause d'avarie persistée si le vaisseau est endommagé et qu'aucune cause n'est encore définie
+      if @ship.hp_current && @ship.hp_max && @ship.hp_current < @ship.hp_max && @ship.current_damage_cause.blank?
+        causes = Rails.application.config.ship_damage_causes || []
+        @ship.update_column(:current_damage_cause, causes.sample) if causes.any?
+      end
       # Compétence Réparation du joueur
       reparation_skill = current_user.user_skills.joins(:skill).find_by(skills: { name: "Réparation" })
       @reparation_mastery = reparation_skill&.mastery || 0
@@ -690,7 +695,7 @@ class ShipsController < ApplicationController
       @can_use_astromech = @ship.can_use_astromech_droids?
       @astromech_count = @ship.astromech_droids
       
-      # Liste des avaries pour le rôle play
+      # Liste des avaries pour le rôle play (affiche la cause persistée)
       @ship_damages = helpers.ship_damage_list(@ship)
     end
   end
@@ -747,6 +752,11 @@ class ShipsController < ApplicationController
       @ship.update!(hp_current: new_hp)
       repair_kit.decrement!(:quantity, kit_cost)
       components.decrement!(:quantity, components_needed)
+    end
+
+    # Si complètement réparé, effacer la cause
+    if @ship.hp_current >= @ship.hp_max
+      @ship.update_column(:current_damage_cause, nil)
     end
 
     render json: {
@@ -824,6 +834,11 @@ class ShipsController < ApplicationController
       message += " ⚠️ Le droïde a été détruit par un tir ennemi !"
     else
       message += " Le droïde est rentré sain et sauf."
+    end
+
+    # Si complètement réparé, effacer la cause
+    if @ship.hp_current >= @ship.hp_max
+      @ship.update_column(:current_damage_cause, nil)
     end
 
     render json: {

@@ -27,7 +27,7 @@ export default class extends Controller {
     return current
   }
 
-  async updateStat(participantId, participantType, type, increment) {
+  async updateStat(participantId, participantType, type, increment, fieldOverride = null) {
     if (!this.canModifyParticipant(participantId, participantType)) {
       console.error("Vous n'avez pas les permissions nécessaires")
       return
@@ -37,7 +37,7 @@ export default class extends Controller {
     if (currentValue === null) return
 
     const newValue = increment ? currentValue + 1 : Math.max(0, currentValue - 1)
-    const field = type === 'hp' ? 'hp_current' : 'shield_current'
+    const field = fieldOverride || (type === 'hp' ? 'hp_current' : 'shield_current')
 
     try {
       const response = await fetch('/combat/update_stat', {
@@ -72,13 +72,13 @@ export default class extends Controller {
   }
 
   incrementShield(event) {
-    const { participantId, participantType } = event.currentTarget.dataset
-    this.updateStat(participantId, participantType, 'shield', true)
+    const { participantId, participantType, field } = event.currentTarget.dataset
+    this.updateStat(participantId, participantType, 'shield', true, field)
   }
 
   decrementShield(event) {
-    const { participantId, participantType } = event.currentTarget.dataset
-    this.updateStat(participantId, participantType, 'shield', false)
+    const { participantId, participantType, field } = event.currentTarget.dataset
+    this.updateStat(participantId, participantType, 'shield', false, field)
   }
 
   async updateStatus(event) {

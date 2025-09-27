@@ -265,24 +265,9 @@ span {
 /* Boutons en bas de l'écran */
 .home-bottom-buttons {
   position: absolute;
-  top: 80%;
-  left: 62%;
+  top: 75%;
+  right: 12%;
   transform: translateY(-50%);
-  z-index: 5;
-}
-
-.pets-home {
-  width: 7vw;
-  z-index: 5;
-}
-
-.settings-home {
-  width: 7vw;
-  z-index: 5;
-}
-
-.rules-home {
-  width: 7vw;
   z-index: 5;
 }
 
@@ -298,7 +283,7 @@ span {
 
 .shield {
   position: absolute;
-  top: 50%;
+  top: 47%;
   right: 20%;
   transform: translateY(-50%);
   z-index: 3;
@@ -320,7 +305,7 @@ span {
 
 .echani-shield {
   position: absolute;
-  top: 50%;
+  top: 47%;
   right: 10%;
   transform: translateY(-50%);
   z-index: 3;

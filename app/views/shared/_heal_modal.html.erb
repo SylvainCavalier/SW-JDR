@@ -1,0 +1,97 @@
+<!-- Modal de soins réutilisable -->
+<div class="modal fade" id="healModal" tabindex="-1" aria-labelledby="healModalLabel" aria-hidden="true" data-controller="heal" data-heal-current-user-id-value="<%= current_user.id %>">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="healModalLabel">Soigner un joueur</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="player-list" style="max-height: 60vh; overflow-y: auto;">
+          <!-- Joueurs -->
+          <% users.each do |user| %>
+            <div class="player-box border rounded p-3 mb-3" data-user-id="<%= user.id %>">
+              <p><strong>Nom : </strong><%= user.username.capitalize %></p>
+              <p class="player-hp" data-hp-max="<%= user.hp_max %>"><strong>PV : </strong><%= user.hp_current %> / <%= user.hp_max %></p>
+              <p class="player-status">
+                <strong>Statut : </strong>
+                <span style="color: <%= user.current_status&.color || "#FFFFFF" %>;">
+                  <%= user.current_status&.name || "Statut inconnu" %>
+                </span>
+              </p>
+              <div class="form-group">
+                <label for="heal-item-<%= user.id %>">Objet de soin</label>
+                <select 
+                  class="form-select heal-item" 
+                  id="heal-item-<%= user.id %>" 
+                  data-heal-target="healItem" 
+                  data-user-id="<%= user.id %>">
+                  <% user_inventory_objects.each do |uio| %>
+                    <% if current_user.homeopathie && uio.inventory_object.name == "Homéopathie" %>
+                      <option value="<%= uio.inventory_object.id %>">
+                        <%= uio.inventory_object.name %>
+                      </option>
+                    <% elsif uio.quantity > 0 && uio.inventory_object.category == "soins" %>
+                      <option value="<%= uio.inventory_object.id %>">
+                        <%= uio.inventory_object.name %> (x<%= uio.quantity %>)
+                      </option>
+                    <% end %>
+                  <% end %>
+                </select>
+              </div>
+              <button 
+                class="btn btn-outline-primary use-heal-btn mt-2"
+                data-action="click->heal#useHeal"
+                data-user-id="<%= user.id %>"
+                data-target-type="user">
+                Utiliser
+              </button>
+            </div>
+          <% end %>
+
+          <!-- Familiers -->
+          <% pets.each do |pet| %>
+            <div class="player-box border rounded p-3 mb-3" data-pet-id="<%= pet.id %>">
+              <p><strong>Familier : </strong><%= pet.name.capitalize %></p>
+              <p class="player-hp" data-hp-max="<%= pet.hp_max %>"><strong>PV : </strong><%= pet.hp_current %> / <%= pet.hp_max %></p>
+              <p class="player-status">
+                <strong>Statut : </strong>
+                <span style="color: <%= pet.current_status&.color || "#FFFFFF" %>;">
+                  <%= pet.current_status&.name || "Statut inconnu" %>
+                </span>
+              </p>
+              <div class="form-group">
+                <label for="heal-item-pet-<%= pet.id %>">Objet de soin</label>
+                <select 
+                  class="form-select heal-item" 
+                  id="heal-item-pet-<%= pet.id %>" 
+                  data-heal-target="healItem" 
+                  data-pet-id="<%= pet.id %>">
+                  <% user_inventory_objects.each do |uio| %>
+                    <% if current_user.homeopathie && uio.inventory_object.name == "Homéopathie" %>
+                      <option value="<%= uio.inventory_object.id %>">
+                        <%= uio.inventory_object.name %>
+                      </option>
+                    <% elsif uio.quantity > 0 && uio.inventory_object.category == "soins" %>
+                      <option value="<%= uio.inventory_object.id %>">
+                        <%= uio.inventory_object.name %> (x<%= uio.quantity %>)
+                      </option>
+                    <% end %>
+                  <% end %>
+                </select>
+              </div>
+              <button 
+                class="btn btn-outline-primary use-heal-btn mt-2"
+                data-action="click->heal#useHeal"
+                data-pet-id="<%= pet.id %>"
+                data-target-type="pet">
+                Utiliser
+              </button>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+

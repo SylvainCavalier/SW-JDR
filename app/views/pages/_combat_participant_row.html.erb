@@ -53,14 +53,43 @@
       <% can_modify = (participant.is_a?(Enemy) && current_user&.group&.name == "MJ") || 
                      (participant.is_a?(User) && participant.id == current_user&.id) || 
                      (participant.is_a?(Pet) && participant.id == current_user&.pet_id) %>
-      <%= turbo_frame_tag "#{dom_id(participant)}_shield_value" do %>
-        <%= render "pages/combat_value", 
-              participant: participant, 
-              field: "shield_current",
-              current: participant.shield_current,
-              max: participant.shield_max,
-              can_modify: can_modify,
-              current_user: current_user %>
+
+      <% if participant.is_a?(User) %>
+        <% if participant.shield_state %>
+          <%= turbo_frame_tag "#{dom_id(participant)}_shield_value" do %>
+            <%= render "pages/combat_value",
+                  participant: participant,
+                  field: "shield_current",
+                  current: participant.shield_current,
+                  max: participant.shield_max,
+                  can_modify: can_modify,
+                  current_user: current_user %>
+          <% end %>
+        <% elsif participant.echani_shield_state %>
+          <%= turbo_frame_tag "#{dom_id(participant)}_shield_value" do %>
+            <%= render "pages/combat_value",
+                  participant: participant,
+                  field: "echani_shield_current",
+                  current: participant.echani_shield_current,
+                  max: participant.echani_shield_max,
+                  can_modify: can_modify,
+                  current_user: current_user %>
+          <% end %>
+        <% else %>
+          <%= turbo_frame_tag "#{dom_id(participant)}_shield_value" do %>
+            <!-- Aucun bouclier actif pour ce joueur -->
+          <% end %>
+        <% end %>
+      <% else %>
+        <%= turbo_frame_tag "#{dom_id(participant)}_shield_value" do %>
+          <%= render "pages/combat_value", 
+                participant: participant, 
+                field: "shield_current",
+                current: participant.shield_current,
+                max: participant.shield_max,
+                can_modify: can_modify,
+                current_user: current_user %>
+        <% end %>
       <% end %>
     </div>
   </td>

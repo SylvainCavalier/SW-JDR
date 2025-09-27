@@ -240,6 +240,51 @@ class MjController < ApplicationController
     end
   end
 
+  # Balles perdues: répartit N tirs aléatoirement entre les PJ en combat
+  # Chaque balle inflige 4D6 dégâts énergétiques
+  def balles_perdues
+    count = params[:count].to_i
+    if count <= 0
+      redirect_back fallback_location: mj_combat_path, alert: "Nombre de balles invalide." and return
+    end
+
+    pj_group = Group.find_by(name: "PJ")
+    eligible_users = User.where(group: pj_group).where.not(vitesse: nil)
+
+    if eligible_users.empty?
+      redirect_back fallback_location: mj_combat_path, alert: "Aucun PJ éligible (initiative non renseignée)." and return
+    end
+
+    count.times do
+      user = eligible_users.sample
+      damage_roll = roll_dice(4, 6)
+
+      if user.shield_state && user.shield_current > 0
+        new_shield_value = [user.shield_current - damage_roll, 0].max
+        user.update(
+          shield_current: new_shield_value,
+          shield_state: new_shield_value > 0
+        )
+        user.broadcast_energy_shield_update
+      else
+        resistance_skill = user.user_skills.joins(:skill).find_by(skills: { name: "Résistance Corporelle" })
+        resistance_bonus = if resistance_skill.nil?
+                             0
+                           else
+                             resistance_mastery = resistance_skill.mastery || 0
+                             roll_dice(resistance_mastery, 6) + (resistance_skill.bonus || 0)
+                           end
+
+        actual_damage = calculate_damage(damage_roll, resistance_bonus)
+        new_hp_value = [user.hp_current - actual_damage, -10].max
+        user.update(hp_current: new_hp_value)
+        user.broadcast_hp_update
+      end
+    end
+
+    redirect_back fallback_location: mj_combat_path, notice: "#{count} balles perdues envoyées."
+  end
+
   def handle_patch_activation(user, damage)
     return nil unless user.patch.present?
   

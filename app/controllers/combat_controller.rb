@@ -8,6 +8,15 @@ class CombatController < ApplicationController
     @enemy.enemy_skills.build(skill: Skill.find_by(name: "Résistance Corporelle"))
     @enemies = Enemy.order(:enemy_type, :number)
     @combat_actions = CombatAction.order(created_at: :desc).limit(50)
+
+    # Données pour la modale de soins réutilisable
+    pj_group = Group.find_by(name: "PJ")
+    @heal_users = User.joins(:group).where(groups: { name: "PJ" }).order(:username).to_a
+    @heal_users.delete(current_user)
+    @heal_users.unshift(current_user)
+
+    @heal_pets = @heal_users.map(&:pet).compact
+    @heal_items = current_user.user_inventory_objects.includes(:inventory_object)
     render "pages/combat"
   end
 
@@ -75,7 +84,7 @@ class CombatController < ApplicationController
       return
     end
 
-    field = params.keys.find { |key| ["hp_current", "shield_current"].include?(key) }
+    field = params.keys.find { |key| ["hp_current", "shield_current", "echani_shield_current"].include?(key) }
     unless field
       render json: { success: false, error: "Champ invalide" }, status: :bad_request
       return
@@ -89,7 +98,7 @@ class CombatController < ApplicationController
       action_type = case field
                    when "hp_current"
                      new_value > old_value ? "heal" : "damage"
-                   when "shield_current"
+                   when "shield_current", "echani_shield_current"
                      "shield"
                    end
                    

@@ -97,36 +97,39 @@
   <% end %>
 
   <!-- Boutons de bas de page -->
-  <div class="home-bottom-buttons d-flex">
-    <!-- Gestion des Pets -->
-    <%= link_to pets_path, class: "btn btn-outline-success team-home" do %>
-      <i class="fa-solid fa-paw"></i>
-    <% end %>
+  <div class="home-bottom-buttons">
+    <div class="d-flex gap-2">
+      <!-- Gestion des Pets -->
+      <%= link_to pets_path, class: "btn btn-outline-success team-home" do %>
+        <i class="fa-solid fa-paw"></i>
+      <% end %>
 
-    <!-- Équipe -->
-    <%= link_to team_path, class: "btn btn-outline-success team-home" do %>
-      <i class="fa-solid fa-people-group"></i>
-    <% end %>
+      <!-- Équipe -->
+      <%= link_to team_path, class: "btn btn-outline-success team-home" do %>
+        <i class="fa-solid fa-people-group"></i>
+      <% end %>
 
-    <!-- Gestion de la base -->
-    <%= link_to headquarter_path(@headquarter), class: "btn btn-outline-success team-home" do %>
-      <i class="fa-solid fa-building-flag"></i>
-    <% end %>
+      <!-- Gestion de la base -->
+      <%= link_to headquarter_path(@headquarter), class: "btn btn-outline-success team-home" do %>
+        <i class="fa-solid fa-building-flag"></i>
+      <% end %>
+    </div>
+    <div class="d-flex gap-2">
+      <!-- Règles du jeu -->
+      <%= link_to rules_path, class: "btn btn-outline-success team-home" do %>
+        <i class="fa-solid fa-file-invoice"></i>
+      <% end %>
 
-    <!-- Vaisseau -->
-    <%= link_to ships_path, class: "btn btn-outline-success team-home" do %>
-      <i class="fa-solid fa-shuttle-space"></i>
-    <% end %>
+      <!-- Vaisseau -->
+      <%= link_to ships_path, class: "btn btn-outline-success team-home" do %>
+        <i class="fa-solid fa-shuttle-space"></i>
+      <% end %>
 
-    <!-- Pazaak -->
-    <%= link_to pazaak_path, class: "btn btn-outline-success team-home" do %>
-      <i class="fa-solid fa-dice"></i>
-    <% end %>
-
-    <!-- Règles du jeu -->
-    <%= link_to rules_path, class: "btn btn-outline-success team-home" do %>
-      <i class="fa-solid fa-file-invoice"></i>
-    <% end %>
+      <!-- Pazaak -->
+      <%= link_to pazaak_path, class: "btn btn-outline-success team-home" do %>
+        <i class="fa-solid fa-dice"></i>
+      <% end %>
+    </div>
   </div>
 
   <!-- Boucliers -->

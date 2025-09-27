@@ -10,14 +10,26 @@
   <h1 class="text-center mb-4 text-success">Assistant de Combat</h1>
   
   <% if current_user.group.name == "MJ" %>
+    <!-- Outil MJ : Balles perdues -->
+    <div class="enemy-form-box p-4 mb-4">
+      <h3 class="text-success mb-3">Balles perdues</h3>
+      <%= form_with url: mj_balles_perdues_path, method: :post, local: true, class: "d-flex align-items-center gap-3" do |f| %>
+        <div class="input-group" style="width: auto;">
+          <span class="input-group-text">Nombre</span>
+          <%= number_field_tag :count, 3, min: 1, class: "form-control", style: "width: 120px;" %>
+        </div>
+        <%= submit_tag "Envoyer", class: "btn btn-outline-danger" %>
+      <% end %>
+      <small class="text-muted d-block mt-2">Chaque balle inflige 4D6 dégâts énergétiques, réparties aléatoirement entre les PJ en combat.</small>
+    </div>
     <!-- Formulaire d'ajout d'ennemis (MJ uniquement) -->
     <div class="enemy-form-box p-4">
       <h3 class="text-success mb-3">Ajouter un ennemi</h3>
       <%= simple_form_for @enemy, url: add_enemy_path, method: :post do |f| %>
         <div class="row g-3">
           <div class="col-12 col-sm-3">
-            <%= f.input :enemy_type, collection: ["Trandoshan", "Créature", "Terentatek", "Mandalorien", "Garde", "Droïde", "Bandit", "Chasseur", "Ennemi CaC", "Ennemi distant", "Lieutenant", "Boss"], 
-                        label: "Type d'ennemi", prompt: "Sélectionnez un type", input_html: { class: "form-select" } %>
+            <%= f.input :enemy_type, label: "Nom de l'ennemi",
+                        input_html: { class: "form-control", placeholder: "Ex: Mandalorien, Garde, Sith, ..." } %>
           </div>
           <div class="col-12 col-sm-2">
             <%= f.input :hp_max, label: "PV Max", input_html: { min: 1, value: 20 } %>
@@ -117,6 +129,16 @@
       <% end %>
     </div>
   <% end %>
+
+  <!-- Modale de soins réutilisable -->
+  <%= render partial: "shared/heal_modal", locals: { users: @heal_users, pets: @heal_pets, user_inventory_objects: @heal_items } %>
+
+  <!-- Bouton global Soins -->
+  <div class="mt-3 text-end">
+    <button class="btn btn-outline-success" data-bs-toggle="modal" data-bs-target="#healModal">
+      Soins
+    </button>
+  </div>
 
   <!-- Formulaires d'initiative -->
   <% unless current_user.group.name == "MJ" %>

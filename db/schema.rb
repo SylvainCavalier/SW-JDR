@@ -454,6 +454,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_09_26_120000) do
     t.integer "shield_system_level", default: 0, null: false
     t.integer "hp_max_upgrades", default: 0, null: false
     t.integer "astromech_droids", default: 0, null: false
+    t.string "current_damage_cause"
     t.index ["group_id"], name: "index_ships_on_group_id"
     t.index ["parent_ship_id"], name: "index_ships_on_parent_ship_id"
   end

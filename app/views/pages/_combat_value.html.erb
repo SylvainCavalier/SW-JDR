@@ -4,14 +4,32 @@
        data-participant-id="<%= participant.id %>"
        data-participant-type="<%= participant.class.name %>"
        data-controller="combat-permissions">
-    <span class="combat-controls">
+    <% is_echani_shield = (participant.is_a?(User) && field == 'echani_shield_current') %>
+      <span class="combat-controls">
       <%= button_tag "-", type: "button", class: "btn btn-outline-success btn-sm me-1",
             data: { action: "click->combat#decrement#{field == 'hp_current' ? 'Hp' : 'Shield'}", 
                    participant_id: participant.id, 
-                   participant_type: participant.class.name } %>
-    </span>
+                   participant_type: participant.class.name,
+                   field: (is_echani_shield ? 'echani_shield_current' : (field == 'shield_current' ? 'shield_current' : (field == 'hp_current' ? 'hp_current' : 'shield_current'))) } %>
+      </span>
     
-    <span class="fw-bold mx-1" data-combat-target="<%= field == 'hp_current' ? 'hp' : 'shield' %>">
+    <% value_classes = ["fw-bold", "mx-1"] %>
+    <% value_style = nil %>
+    <% if field == 'hp_current' && max.to_i > 0 %>
+      <% if current.to_i <= 0 %>
+        <% value_classes << 'text-danger' %>
+      <% elsif current.to_f < (max.to_f * 0.25) %>
+        <% value_classes << 'text-warning' %>
+      <% elsif current.to_f < (max.to_f * 0.5) %>
+        <% value_classes << 'text-info' %>
+      <% end %>
+    <% elsif participant.is_a?(User) && field == 'shield_current' %>
+      <% value_classes << 'text-primary' %>
+    <% elsif participant.is_a?(User) && field == 'echani_shield_current' %>
+      <% value_style = 'color: #FFC65A;' %>
+    <% end %>
+
+    <span class="<%= value_classes.join(' ') %>" style="<%= value_style %>" data-combat-target="<%= field == 'hp_current' ? 'hp' : 'shield' %>">
       <%= current %>/<%= max %>
     </span>
     
@@ -19,7 +37,8 @@
       <%= button_tag "+", type: "button", class: "btn btn-outline-success btn-sm ms-1",
             data: { action: "click->combat#increment#{field == 'hp_current' ? 'Hp' : 'Shield'}", 
                    participant_id: participant.id, 
-                   participant_type: participant.class.name } %>
+                   participant_type: participant.class.name,
+                   field: (is_echani_shield ? 'echani_shield_current' : (field == 'shield_current' ? 'shield_current' : (field == 'hp_current' ? 'hp_current' : 'shield_current'))) } %>
     </span>
   </div>
-<% end %> 
+<% end %>  
