@@ -328,46 +328,23 @@ class PazaakGame < ApplicationRecord
     first_next_id = (current_turn_user_id == host_id) ? guest_id : host_id
     update!(current_turn_user_id: first_next_id)
     next_user = User.find(first_next_id)
-    next_state = player_state(next_user)
-
-    if next_state["served"]
-      # Si le joueur suivant est déjà servi, on saute son tour
-      # Si les deux sont servis, on conclut, sinon on revient au joueur non servi
+    # Si le joueur qui reçoit le tour est déjà servi, gérer immédiatement
+    if (player_state(next_user) || {})["served"]
       if both_served?
         compare_scores_and_finish!
-        return
-      end
-      second_next_id = (first_next_id == host_id) ? guest_id : host_id
-      update!(current_turn_user_id: second_next_id)
-      second_user = User.find(second_next_id)
-      second_state = player_state(second_user)
-      if second_state["served"]
-        # Les deux sont servis (l'autre l'était déjà) → conclure
-        compare_scores_and_finish!
       else
-        draw_main_card_for!(second_user) unless second_state["bust"]
+        second_next_id = (first_next_id == host_id) ? guest_id : host_id
+        update!(current_turn_user_id: second_next_id)
+        second_user = User.find(second_next_id)
+        draw_main_card_for!(second_user)
+        handle_auto_after_draw!(second_user)
       end
       return
     end
 
-    # Même si le joueur arrive déjà bust, on pioche quand même au début de son tour
-
-    # Cas normal: début de son tour → tirage auto
+    # Tirage auto de début de tour et harmonisation de l'auto-stand
     draw_main_card_for!(next_user)
-    # Si la carte amène exactement à 20 (auto-servi), on enchaîne immédiatement vers l'adversaire.
-    # Si le joueur est bust (>20), on LUI LAISSE le tour pour qu'il puisse jouer des cartes spéciales.
-    next_state_after = player_state(next_user)
-    if next_state_after["served"]
-      if both_served?
-        compare_scores_and_finish!
-        return
-      end
-      second_next_id = (first_next_id == host_id) ? guest_id : host_id
-      update!(current_turn_user_id: second_next_id)
-      second_user = User.find(second_next_id)
-      second_state = player_state(second_user)
-      draw_main_card_for!(second_user) unless second_state["served"] || second_state["bust"]
-    end
+    handle_auto_after_draw!(next_user)
   end
 
   def apply_move!(user, action_type, value = nil)
