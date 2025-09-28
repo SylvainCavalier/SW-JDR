@@ -244,7 +244,8 @@ class PazaakGame < ApplicationRecord
       loser_stat = loser_user.pazaak_stat || loser_user.build_pazaak_stat
       winner_stat.record_game!(won: true, stake: stake, opponent_id: loser_user.id, credits_delta: stake)
       loser_stat.record_game!(won: false, stake: stake, opponent_id: winner_user.id, credits_delta: -stake)
-      # Afficher le vainqueur de PARTIE pendant 3s (overlay avec redirection)
+      # Diffuser d'abord l'état du plateau final, puis afficher le bandeau de PARTIE (avec redirection)
+      broadcast_board_to_both!
       [host_id, guest_id].compact.each do |recipient_id|
         Turbo::StreamsChannel.broadcast_update_to(
           "user_#{recipient_id}",
@@ -256,7 +257,8 @@ class PazaakGame < ApplicationRecord
       # Destruction après 3s (redirection gérée par l'overlay)
       FinishPazaakGameJob.set(wait: 3.seconds).perform_later(id)
     else
-      # Afficher le vainqueur de manche (bandeau) puis démarrer la manche suivante via streams
+      # Diffuser d'abord l'état du plateau final, puis afficher le bandeau de MANCHE et lancer la suivante
+      broadcast_board_to_both!
       [host_id, guest_id].compact.each do |recipient_id|
         Turbo::StreamsChannel.broadcast_update_to(
           "user_#{recipient_id}",
@@ -272,6 +274,8 @@ class PazaakGame < ApplicationRecord
 
   def announce_round_winner!(winner_user_or_nil)
     set_round_banner!(winner_user_or_nil)
+    # Diffuser d'abord l'état du plateau final
+    broadcast_board_to_both!
     [host_id, guest_id].compact.each do |recipient_id|
       Turbo::StreamsChannel.broadcast_update_to(
         "user_#{recipient_id}",
@@ -335,7 +339,12 @@ class PazaakGame < ApplicationRecord
       update!(current_turn_user_id: second_next_id)
       second_user = User.find(second_next_id)
       second_state = player_state(second_user)
-      draw_main_card_for!(second_user) unless second_state["served"] || second_state["bust"]
+      if second_state["served"]
+        # Les deux sont servis (l'autre l'était déjà) → conclure
+        compare_scores_and_finish!
+      else
+        draw_main_card_for!(second_user) unless second_state["bust"]
+      end
       return
     end
 
@@ -395,6 +404,17 @@ def apply_stake_transfer!(loser:)
   stake = inv.stake.to_i
   loser.update!(credits: loser.credits.to_i - stake)
   winner.update!(credits: winner.credits.to_i + stake)
+end
+
+def broadcast_board_to_both!
+  [host_id, guest_id].compact.each do |recipient_id|
+    Turbo::StreamsChannel.broadcast_update_to(
+      "user_#{recipient_id}",
+      target: stream_key,
+      partial: "pazaak/games/game",
+      locals: { game: self, viewer: User.find(recipient_id) }
+    )
+  end
 end
 
 
