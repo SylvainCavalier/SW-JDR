@@ -410,6 +410,16 @@ def handle_auto_after_draw!(user)
       other_state = player_state(other_user)
       unless other_state["served"]
         draw_main_card_for!(other_user) unless other_state["bust"]
+        # Après tirage de l'adversaire, vérifier s'il est devenu servi → conclure si nécessaire
+        other_state_after = player_state(other_user)
+        if other_state_after["served"] && both_served?
+          compare_scores_and_finish!
+          return
+        end
+      else
+        # L'adversaire était déjà servi
+        compare_scores_and_finish!
+        return
       end
     end
   else
