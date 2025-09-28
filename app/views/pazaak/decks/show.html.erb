@@ -3,22 +3,26 @@
   <p>Sélectionnez exactement 10 cartes spéciales à utiliser en partie.</p>
 
   <%= form_with url: pazaak_deck_path, method: :patch, data: { controller: 'deck' } do %>
-    <div class="pazaak-row" style="flex-wrap: wrap; gap: 12px;">
+    <div class="deck-grid">
       <% @owned_cards.each do |uio| %>
         <% card = uio.inventory_object %>
         <% name = card.name.to_s %>
-        <% checked = @selected.include?(name) %>
+        <% qty = uio.quantity.to_i %>
+        <% selected_count = @selected_counts[name].to_i %>
         <% kind = Pazaak::CardEffect.css_kind(name) %>
-        <label class="card card-special <%= kind %>" style="cursor: pointer;">
-          <%= check_box_tag 'deck[]', name, checked, data: { deck_target: 'checkbox' } %>
-          <span style="margin-left:8px;"><%= name %></span>
-        </label>
+        <% qty.times do |i| %>
+          <% already_checked = (i < selected_count) %>
+          <label class="card card-special <%= kind %>" style="cursor: pointer;">
+            <%= check_box_tag 'deck[]', name, already_checked, data: { deck_target: 'checkbox' } %>
+            <span class="card-label"><%= name %></span>
+          </label>
+        <% end %>
       <% end %>
     </div>
 
     <div class="mt-3 d-flex align-items-center gap-3">
       <span data-deck-target="counter">Sélection: <%= @selected.size %>/10</span>
-      <%= submit_tag 'Sauvegarder', class: 'btn btn-success', data: { deck_target: 'submit' } %>
+      <%= submit_tag 'Sauvegarder', class: 'btn btn-outline-success', data: { deck_target: 'submit' } %>
       <%= link_to 'Retour', pazaak_menu_path, class: 'btn btn-outline-light' %>
     </div>
   <% end %>

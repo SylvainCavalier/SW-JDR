@@ -20,6 +20,7 @@ module Pazaak
           delta = current < 20 ? n : -n
           state["sum"] = current + delta
           state["bust"] = state["sum"] > 20
+          state["served"] = true if state["sum"] == 20
           (state["played_specials"] ||= []) << delta
           game.set_player_state!(user, state)
         }]

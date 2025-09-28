@@ -9,6 +9,8 @@ module Pazaak
                                   .where(inventory_objects: { category: 'pazaak' })
                                   .includes(:inventory_object)
       @selected = Array(current_user.pazaak_deck).map(&:to_s)
+      # pour gérer les doublons, on compte les occurrences déjà sélectionnées
+      @selected_counts = @selected.tally
     end
 
     def update

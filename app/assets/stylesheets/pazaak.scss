@@ -227,6 +227,48 @@ label.card span { color: #fff; text-shadow: 0 0 6px rgba(0,0,0,.4); }
   overflow: hidden;
 }
 
+/* Deck grid responsiveness (reuse table variables) */
+.deck-grid {
+  /* Re-définir toutes les variables nécessaires pour que .card garde sa taille */
+  --card-h: clamp(68px, 14vmin, 116px);
+  --card-w: calc(var(--card-h) * 0.6667);
+  --radius: calc(var(--card-h) * 0.11);
+  --border-w: max(1px, calc(var(--card-h) * 0.0185));
+  --row-gap: calc(var(--card-h) * 0.074);
+  --font-size-card: clamp(14px, calc(var(--card-h) * 0.20), 26px);
+  --middle-h: calc(var(--card-h) * 0.44);
+  --middle-radius: calc(var(--card-h) * 0.093);
+  --badge-size: calc(var(--card-h) * 0.167);
+  --badge-offset: calc(var(--card-h) * 0.056);
+  --badge-font: clamp(10px, calc(var(--card-h) * 0.13), 18px);
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(var(--card-w), var(--card-w)));
+  grid-auto-rows: var(--card-h);
+  gap: var(--row-gap);
+  justify-content: center;
+  max-height: 70vh;
+  overflow: auto;
+  padding: 8px;
+}
+
+.deck-grid label.card {
+  /* Empêche l'étirement dans la cellule */
+  width: var(--card-w);
+  height: var(--card-h);
+}
+
+.deck-grid input[type="checkbox"] {
+  position: absolute;
+  opacity: 0;
+  width: 0; height: 0;
+}
+
+/* Feedback visuel quand sélectionné */
+.deck-grid label.card:has(input:checked) {
+  outline: calc(var(--border-w)) solid #00e5ff;
+  box-shadow: 0 0 12px rgba(0,229,255,.6), inset 0 0 10px rgba(0,229,255,.25);
+}
+
 .pazaak-hero {
   width: 100%;
   height: 100%;

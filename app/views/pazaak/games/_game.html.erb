@@ -126,8 +126,13 @@
 
     <!-- Ligne 3: main spéciale adverse (cachée) -->
     <div class="pazaak-row">
-      <% 4.times do %>
-        <div class="card card-back"></div>
+      <% opp_hand = (opp_state["hand"] || []) %>
+      <% 4.times do |i| %>
+        <% if opp_hand[i] %>
+          <div class="card card-back"></div>
+        <% else %>
+          <div class="slot">&nbsp;</div>
+        <% end %>
       <% end %>
     </div>
   </div>

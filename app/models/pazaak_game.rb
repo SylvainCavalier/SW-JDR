@@ -120,6 +120,8 @@ class PazaakGame < ApplicationRecord
     state = (player_state(user) || {}).deep_dup
     state["sum"] += drawn
     state["bust"] = state["sum"] > 20
+    # Auto-stand si pile 20
+    state["served"] = true if state["sum"] == 20
     (state["draws"] ||= []) << drawn
     set_player_state!(user, state)
     update!(last_drawn_card: drawn)
@@ -144,6 +146,8 @@ class PazaakGame < ApplicationRecord
       state["sum"] += delta
       (state["played_specials"] ||= []) << delta
       state["bust"] = state["sum"] > 20
+      # Auto-stand si pile 20
+      state["served"] = true if state["sum"] == 20
       set_player_state!(user, state)
     end
   end
@@ -225,24 +229,27 @@ class PazaakGame < ApplicationRecord
     (loser_user.pazaak_stat || loser_user.build_pazaak_stat).record_round_loss!(opponent_id: winner_user.id)
     if wins_host >= 3 || wins_guest >= 3
       update!(status: :finished, finished_at: Time.current)
+      # Capturer la mise avant toute modification des invitations
+      stake = (PazaakInvitation.find_by(pazaak_game_id: id)&.stake || 0).to_i
       apply_stake_transfer!(loser: (winner_user.id == host_id ? guest : host))
+      # Détacher immédiatement les invitations pour éviter toute réutilisation avant destruction
+      PazaakInvitation.where(pazaak_game_id: id).update_all(pazaak_game_id: nil)
       # Statistiques de fin de partie (victoire/défaite)
       winner_stat = winner_user.pazaak_stat || winner_user.build_pazaak_stat
       loser_user = (winner_user.id == host_id ? guest : host)
       loser_stat = loser_user.pazaak_stat || loser_user.build_pazaak_stat
-      stake = (PazaakInvitation.find_by(pazaak_game_id: id)&.stake || 0).to_i
       winner_stat.record_game!(won: true, stake: stake, opponent_id: loser_user.id, credits_delta: stake)
       loser_stat.record_game!(won: false, stake: stake, opponent_id: winner_user.id, credits_delta: -stake)
-      # Afficher le vainqueur de PARTIE pendant 3s (même logique qu'une manche), puis rediriger
+      # Afficher le vainqueur de PARTIE pendant 3s (overlay avec redirection)
       [host_id, guest_id].compact.each do |recipient_id|
         Turbo::StreamsChannel.broadcast_update_to(
           "user_#{recipient_id}",
           target: overlay_target,
           partial: "pazaak/games/winner",
-          locals: { game: self, winner: winner_user, redirect_url: nil }
+          locals: { game: self, winner: winner_user, redirect_url: Rails.application.routes.url_helpers.pazaak_path, stake: stake }
         )
       end
-      # Redirection + destruction après 3s
+      # Destruction après 3s (redirection gérée par l'overlay)
       FinishPazaakGameJob.set(wait: 3.seconds).perform_later(id)
     else
       # Afficher le vainqueur de manche (bandeau) puis démarrer la manche suivante via streams
@@ -336,6 +343,19 @@ class PazaakGame < ApplicationRecord
 
     # Cas normal: début de son tour → tirage auto
     draw_main_card_for!(next_user)
+    # Si la carte amène exactement à 20 (auto-servi) ou bust, gérer immédiatement
+    next_state_after = player_state(next_user)
+    if next_state_after["served"] || next_state_after["bust"]
+      if both_served?
+        compare_scores_and_finish!
+        return
+      end
+      second_next_id = (first_next_id == host_id) ? guest_id : host_id
+      update!(current_turn_user_id: second_next_id)
+      second_user = User.find(second_next_id)
+      second_state = player_state(second_user)
+      draw_main_card_for!(second_user) unless second_state["served"] || second_state["bust"]
+    end
   end
 
   def apply_move!(user, action_type, value = nil)
@@ -371,21 +391,6 @@ def apply_stake_transfer!(loser:)
   stake = inv.stake.to_i
   loser.update!(credits: loser.credits.to_i - stake)
   winner.update!(credits: winner.credits.to_i + stake)
-
-  # Mettre à jour quelques stats liées aux crédits et à la mise
-  winner_stat = winner.pazaak_stat || winner.build_pazaak_stat
-  loser_stat  = loser.pazaak_stat  || loser.build_pazaak_stat
-
-  [winner_stat, loser_stat].each do |s|
-    s.stake_max = [s.stake_max, stake].max
-    s.stake_min = (s.stake_min.zero? ? stake : [s.stake_min, stake].min)
-    s.stake_sum += stake
-    s.stake_count += 1
-  end
-  winner_stat.credits_won += stake
-  loser_stat.credits_lost += stake
-  winner_stat.save!
-  loser_stat.save!
 end
 
 

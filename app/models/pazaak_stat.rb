@@ -1,6 +1,9 @@
 class PazaakStat < ApplicationRecord
   belongs_to :user
 
+  # won: a gagné la PARTIE ?
+  # stake: mise de la partie
+  # credits_delta: +stake pour le gagnant, -stake pour le perdant (transfert net)
   def record_game!(won:, stake:, opponent_id:, credits_delta: 0)
     self.games_played += 1
     if won
@@ -15,12 +18,16 @@ class PazaakStat < ApplicationRecord
       self.current_win_streak = 0
     end
 
-    self.credits_won += [credits_delta, 0].max
-    self.credits_lost += [-credits_delta, 0].max
-    self.stake_max = [stake, stake_max].max
-    self.stake_min = (stake_min.zero? ? stake : [stake_min, stake].min)
+    # Comptes de crédits: séparer total misé, gagné, perdu
+    # total misé = somme des stakes joués
     self.stake_sum += stake
     self.stake_count += 1
+    self.stake_max = [stake, stake_max].max
+    self.stake_min = (stake_min.zero? ? stake : [stake_min, stake].min)
+
+    # gagnés/perdus = flux nets
+    self.credits_won += [credits_delta, 0].max
+    self.credits_lost += [-credits_delta, 0].max
 
     counters = (opponent_counters || {})
     c = counters[opponent_id.to_s] || { "played" => 0, "won" => 0, "lost" => 0 }

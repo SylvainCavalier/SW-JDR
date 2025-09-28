@@ -8,7 +8,10 @@
     <% if redirect_url.present? %>
       <%# Fin de PARTIE %>
       <% if winner.present? %>
-        Le joueur <%= winner.username || winner.email %> a gagné la partie
+        Le joueur <%= winner.username || winner.email %> a gagné la partie<br>
+        <% if defined?(stake) && stake.to_i > 0 %>
+          <small>Il remporte la mise de <strong><%= stake %></strong> crédits !</small>
+        <% end %>
       <% else %>
         Egalité
       <% end %>
