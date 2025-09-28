@@ -56,6 +56,7 @@ class PazaakGame < ApplicationRecord
     fp = [host_id, guest_id].compact.sample
     update!(status: :in_progress, round_number: 1, current_turn_user_id: fp, first_player_id: fp, started_at: Time.current)
     draw_main_card_for!(User.find(fp))
+    handle_auto_after_draw!(User.find(fp))
   end
 
   def default_player_state
@@ -320,6 +321,7 @@ class PazaakGame < ApplicationRecord
     reset_round_state!(guest)
     # Tirage auto pour le nouveau premier joueur
     draw_main_card_for!(User.find(next_first))
+    handle_auto_after_draw!(User.find(next_first))
   end
 
   def advance_turn!
@@ -414,6 +416,27 @@ def broadcast_board_to_both!
       partial: "pazaak/games/game",
       locals: { game: self, viewer: User.find(recipient_id) }
     )
+  end
+end
+
+def handle_auto_after_draw!(user)
+  st = player_state(user)
+  return unless st["served"] || st["bust"]
+  # Si pile 20 → peut conclure si l'autre est déjà servi; sinon passer la main et tirer pour l'autre
+  if st["served"]
+    if both_served?
+      compare_scores_and_finish!
+    else
+      other_id = (user.id == host_id) ? guest_id : host_id
+      update!(current_turn_user_id: other_id)
+      other_user = User.find(other_id)
+      other_state = player_state(other_user)
+      unless other_state["served"]
+        draw_main_card_for!(other_user) unless other_state["bust"]
+      end
+    end
+  else
+    # bust au début du tour → laisser jouer des spéciales (ne rien faire)
   end
 end
 
