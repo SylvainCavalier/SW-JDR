@@ -335,17 +335,14 @@ class PazaakGame < ApplicationRecord
       return
     end
 
-    if next_state["bust"]
-      # Joueur suivant arrive bust (cas limite) → fin de manche si l'autre est servi ou ne peut pas corriger
-      check_round_end!
-      return
-    end
+    # Même si le joueur arrive déjà bust, on pioche quand même au début de son tour
 
     # Cas normal: début de son tour → tirage auto
     draw_main_card_for!(next_user)
-    # Si la carte amène exactement à 20 (auto-servi) ou bust, gérer immédiatement
+    # Si la carte amène exactement à 20 (auto-servi), on enchaîne immédiatement vers l'adversaire.
+    # Si le joueur est bust (>20), on LUI LAISSE le tour pour qu'il puisse jouer des cartes spéciales.
     next_state_after = player_state(next_user)
-    if next_state_after["served"] || next_state_after["bust"]
+    if next_state_after["served"]
       if both_served?
         compare_scores_and_finish!
         return
@@ -362,6 +359,9 @@ class PazaakGame < ApplicationRecord
     return unless in_progress? && current_turn_user_id == user.id
     # Si un bandeau de fin de manche est affiché, ignorer tout rendu/avancée (anti-remplacement précoce)
     return if round_banner?
+    # Un joueur qui a validé (served) ne peut plus effectuer aucune action
+    st = player_state(user)
+    return if st && st["served"]
 
     case action_type
     when "draw"

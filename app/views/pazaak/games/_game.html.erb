@@ -138,7 +138,7 @@
   </div>
 </div>
 <div class="pazaak-buttons mt-3">
-  <% if game.current_turn_user_id == me.id %>
+  <% if game.current_turn_user_id == me.id && !my_state["served"] %>
     <div class="btn-group gap-2">
       <%= button_to "Passer", pazaak_game_moves_path(game, action_type: :pass), method: :post, class: "btn btn-secondary" %>
       <%= button_to "Valider", pazaak_game_moves_path(game, action_type: :stand), method: :post, class: "btn btn-warning" %>
