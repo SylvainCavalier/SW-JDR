@@ -150,6 +150,10 @@ class PazaakGame < ApplicationRecord
       state["served"] = true if state["sum"] == 20
       set_player_state!(user, state)
     end
+
+    # Après application: si le joueur vient d'être servi (pile 20), avancer la logique
+    final_state = player_state(user)
+    check_round_end! if final_state && final_state["served"]
   end
 
   def pass_turn!(_user)
