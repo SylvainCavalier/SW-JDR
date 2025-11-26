@@ -55,5 +55,5 @@
   <div class="text-center mt-4">
     <%= link_to 'Ajouter un vaisseau', new_ship_path, class: 'btn btn-success btn-lg shadow-sm' %>
   </div>
-  <%= link_to "Retour", (current_user.group&.name == "MJ" ? mj_dashboard_path : root_path), class: "btn btn-outline-secondary go-back-two" %>
+  <%= back_link(current_user.group&.name == "MJ" ? mj_dashboard_path : root_path) %>
 </div>

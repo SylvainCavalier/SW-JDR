@@ -1,0 +1,58 @@
+# Liste des statuts disponibles dans le jeu
+
+- name: "En forme"
+  description: "En pleine santé"
+  color: "#1EDD88"
+
+- name: "Empoisonné"
+  description: "Empoisonné"
+  color: "#7F00FF"
+
+- name: "Irradié"
+  description: "Irradié par des radiations"
+  color: "#FFD700"
+
+- name: "Agonisant"
+  description: "À l'agonie, proche de la mort"
+  color: "#8B0000"
+
+- name: "Mort"
+  description: "Le joueur est mort"
+  color: "#A9A9A9"
+
+- name: "Inconscient"
+  description: "Inconscient, dans le coma"
+  color: "#808080"
+
+- name: "Malade"
+  description: "Affection commune"
+  color: "#FF4500"
+
+- name: "Maladie Virale"
+  description: "Affection commune"
+  color: "#FF4600"
+
+- name: "Gravement Malade"
+  description: "Affection grave"
+  color: "#FF4700"
+
+- name: "Paralysé"
+  description: "Impossible de bouger"
+  color: "#FF69B4"
+
+- name: "Sonné"
+  description: "Désorienté"
+  color: "#4682B4"
+
+- name: "Aveugle"
+  description: "Impossible de voir"
+  color: "#000000"
+
+- name: "Sourd"
+  description: "Impossible d'entendre"
+  color: "#C0C0C0"
+
+- name: "Folie"
+  description: "Ne se contrôle plus et attaque le plus proche"
+  color: "#FF69B4"
+

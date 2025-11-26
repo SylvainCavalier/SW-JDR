@@ -9,7 +9,7 @@ class Building < ApplicationRecord
 
   before_validation :update_building_details
 
-  BUILDING_DATA = JSON.parse(File.read(Rails.root.join("db/seeds/buildings_data.json")))
+  BUILDING_DATA = YAML.load_file(Rails.root.join("config/catalogs/buildings.yml"))
 
   def update_building_details
     return unless BUILDING_DATA[name] && BUILDING_DATA[name][level.to_s]

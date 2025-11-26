@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_09_26_120000) do
+ActiveRecord::Schema[7.1].define(version: 2025_11_26_014500) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -179,6 +179,17 @@ ActiveRecord::Schema[7.1].define(version: 2025_09_26_120000) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "goods_crates", force: :cascade do |t|
+    t.string "content"
+    t.integer "quantity"
+    t.string "origin_planet"
+    t.integer "price_per_crate"
+    t.bigint "user_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_goods_crates_on_user_id"
+  end
+
   create_table "groups", force: :cascade do |t|
     t.string "name"
     t.text "description"
@@ -245,6 +256,8 @@ ActiveRecord::Schema[7.1].define(version: 2025_09_26_120000) do
     t.string "rarity"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "catalog_id"
+    t.index ["catalog_id"], name: "index_inventory_objects_on_catalog_id"
   end
 
   create_table "pazaak_games", force: :cascade do |t|
@@ -628,6 +641,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_09_26_120000) do
     t.boolean "junkie", default: false
     t.integer "study_points", default: 0
     t.jsonb "pazaak_deck", default: []
+    t.jsonb "discovered_drinks", default: []
     t.index ["classe_perso_id"], name: "index_users_on_classe_perso_id"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["group_id"], name: "index_users_on_group_id"
@@ -648,6 +662,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_09_26_120000) do
   add_foreign_key "enemy_skills", "enemies"
   add_foreign_key "enemy_skills", "skills"
   add_foreign_key "equipments", "users"
+  add_foreign_key "goods_crates", "users"
   add_foreign_key "headquarter_inventory_objects", "headquarters"
   add_foreign_key "headquarter_inventory_objects", "inventory_objects"
   add_foreign_key "headquarter_objects", "users"

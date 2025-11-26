@@ -642,6 +642,35 @@ class MjController < ApplicationController
     redirect_to fixer_points_path
   end
 
+  def unlock_drink
+    @users = User.joins(:group).where(groups: { name: "PJ" })
+    @drinks_data = YAML.load_file(Rails.root.join('config/catalogs/drinks.yml'))['drinks']
+  end
+
+  def update_unlock_drink
+    user = User.find(params[:user_id])
+    drink_id = params[:drink_id]
+
+    drinks_data = YAML.load_file(Rails.root.join('config/catalogs/drinks.yml'))['drinks']
+    drink_data = drinks_data.find { |d| d['id'] == drink_id }
+
+    unless drink_data
+      redirect_to mj_unlock_drink_path, alert: "Alcool introuvable."
+      return
+    end
+
+    discovered_drinks = user.discovered_drinks || []
+    unless discovered_drinks.include?(drink_id)
+      discovered_drinks << drink_id
+      user.update!(discovered_drinks: discovered_drinks)
+      redirect_to mj_unlock_drink_path, notice: "Alcool '#{drink_data['name']}' débloqué pour #{user.username}."
+    else
+      redirect_to mj_unlock_drink_path, alert: "Cet alcool est déjà débloqué pour #{user.username}."
+    end
+  rescue => e
+    redirect_to mj_unlock_drink_path, alert: "Erreur : #{e.message}"
+  end
+
   def vaisseaux
     @ships = Ship.joins(:group).where(groups: { name: "PJ" }).includes(:ships_skills, :ship_weapons)
     @skills = Skill.where(name: ['Coque', 'Ecrans', 'Maniabilité', 'Vitesse'])

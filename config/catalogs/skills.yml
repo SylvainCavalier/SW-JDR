@@ -1,0 +1,242 @@
+# Liste des compétences disponibles dans le jeu
+# Les compétences sont organisées par caractéristique associée
+
+# Caractéristiques de base
+caracteristics:
+  - name: "Vigueur"
+  - name: "Dextérité"
+  - name: "Perception"
+  - name: "Savoir"
+  - name: "Technique"
+  - name: "Mécanique"
+
+# Compétences avec leur caractéristique associée
+skills:
+  # Compétences liées à la Dextérité
+  - name: "Vitesse"
+    carac: "Dextérité"
+    description: ""
+  
+  - name: "Précision"
+    carac: "Dextérité"
+    description: ""
+  
+  - name: "Esquive"
+    carac: "Dextérité"
+    description: ""
+  
+  - name: "Sabre-laser"
+    carac: "Dextérité"
+    description: ""
+  
+  - name: "Arts martiaux"
+    carac: "Dextérité"
+    description: ""
+  
+  - name: "Armes blanches"
+    carac: "Dextérité"
+    description: ""
+  
+  - name: "Lancer"
+    carac: "Dextérité"
+    description: ""
+  
+  - name: "Tir"
+    carac: "Dextérité"
+    description: ""
+  
+  - name: "Discrétion"
+    carac: "Dextérité"
+    description: ""
+  
+  - name: "Habileté"
+    carac: "Dextérité"
+    description: ""
+
+  # Compétences liées à la Perception
+  - name: "Observation"
+    carac: "Perception"
+    description: ""
+  
+  - name: "Intuition"
+    carac: "Perception"
+    description: ""
+  
+  - name: "Imitation"
+    carac: "Perception"
+    description: ""
+  
+  - name: "Psychologie"
+    carac: "Perception"
+    description: ""
+  
+  - name: "Commandement"
+    carac: "Perception"
+    description: ""
+  
+  - name: "Marchandage"
+    carac: "Perception"
+    description: ""
+  
+  - name: "Persuasion"
+    carac: "Perception"
+    description: ""
+  
+  - name: "Dressage"
+    carac: "Perception"
+    description: ""
+  
+  - name: "Sang Froid"
+    carac: "Perception"
+    description: ""
+
+  # Compétences liées à la Vigueur
+  - name: "Saut"
+    carac: "Vigueur"
+    description: ""
+  
+  - name: "Escalade"
+    carac: "Vigueur"
+    description: ""
+  
+  - name: "Endurance"
+    carac: "Vigueur"
+    description: ""
+  
+  - name: "Intimidation"
+    carac: "Vigueur"
+    description: ""
+  
+  - name: "Natation"
+    carac: "Vigueur"
+    description: ""
+  
+  - name: "Survie"
+    carac: "Vigueur"
+    description: ""
+
+  # Compétences liées au Savoir
+  - name: "Nature"
+    carac: "Savoir"
+    description: ""
+  
+  - name: "Substances"
+    carac: "Savoir"
+    description: ""
+  
+  - name: "Savoir jedi"
+    carac: "Savoir"
+    description: ""
+  
+  - name: "Langage"
+    carac: "Savoir"
+    description: ""
+  
+  - name: "Astrophysique"
+    carac: "Savoir"
+    description: ""
+  
+  - name: "Planètes"
+    carac: "Savoir"
+    description: ""
+  
+  - name: "Evaluation"
+    carac: "Savoir"
+    description: ""
+  
+  - name: "Illégalité"
+    carac: "Savoir"
+    description: ""
+  
+  - name: "Médecine"
+    carac: "Savoir"
+    description: ""
+
+  # Compétences liées à la Mécanique
+  - name: "Pilotage"
+    carac: "Mécanique"
+    description: ""
+  
+  - name: "Esquive spatiale"
+    carac: "Mécanique"
+    description: ""
+  
+  - name: "Astrogation"
+    carac: "Mécanique"
+    description: ""
+  
+  - name: "Tourelles"
+    carac: "Mécanique"
+    description: ""
+  
+  - name: "Jetpack"
+    carac: "Mécanique"
+    description: ""
+
+  # Compétences liées à la Technique
+  - name: "Ingénierie"
+    carac: "Technique"
+    description: ""
+  
+  - name: "Réparation"
+    carac: "Technique"
+    description: ""
+  
+  - name: "Sécurité"
+    carac: "Technique"
+    description: ""
+  
+  - name: "Démolition"
+    carac: "Technique"
+    description: ""
+  
+  - name: "Systèmes"
+    carac: "Technique"
+    description: ""
+
+  # Compétences sans caractéristique associée (pour vaisseaux)
+  - name: "Résistance Corporelle"
+    carac: null
+    description: ""
+  
+  - name: "Coque"
+    carac: null
+    description: ""
+  
+  - name: "Ecrans"
+    carac: null
+    description: ""
+  
+  - name: "Maniabilité"
+    carac: null
+    description: ""
+  
+  - name: "Contrôle"
+    carac: null
+    description: ""
+  
+  - name: "Sens"
+    carac: null
+    description: ""
+  
+  - name: "Altération"
+    carac: null
+    description: ""
+
+  # Senseurs (compétences spéciales pour vaisseaux)
+  - name: "Senseurs passifs"
+    carac: null
+    description: "Senseur du vaisseau"
+  
+  - name: "Senseurs détection"
+    carac: null
+    description: "Senseur du vaisseau"
+  
+  - name: "Senseurs recherche"
+    carac: null
+    description: "Senseur du vaisseau"
+  
+  - name: "Senseurs focalisation"
+    carac: null
+    description: "Senseur du vaisseau"
+

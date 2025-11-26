@@ -1,0 +1,22 @@
+# Liste des races disponibles dans le jeu
+
+- name: "Humain"
+  description: "Une espèce polyvalente."
+  key: "human"
+
+- name: "Kaminien"
+  description: "Les bio-savants de Kamino."
+  key: "kaminoan"
+
+- name: "Codru'Ji"
+  description: "Les êtres à quatre bras de Munto Codru."
+  key: "codruji"
+
+- name: "Torydarien"
+  description: "Les ingénieurs venus de Toydaria."
+  key: "toydarian"
+
+- name: "Clawdite"
+  description: "Les métamorphes de Zolan."
+  key: "clawdite"
+

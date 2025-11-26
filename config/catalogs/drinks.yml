@@ -1,0 +1,420 @@
+drinks:
+  - id: accarrgm
+    name: "Accarrgm"
+    planet: "Kashyyyk"
+    description: "Liqueur pâle wookiee à base de champignons fermentés, réputée pour mettre un Humain au tapis en quelques gorgées."
+    abv: 65
+    price: 40
+
+  - id: ambrostine
+    name: "Ambrostine"
+    planet: "Coruscant"
+    description: "Alcool doux mais traître, très prisé dans les salons huppés de Coruscant, connu pour ses lendemains de cuite particulièrement cruels."
+    abv: 30
+    price: 25
+
+  - id: arboite_twister
+    name: "Arboite Twister"
+    planet: "Arboinia"
+    description: "Liqueur brutale d’Arboinia, censée être assez forte pour faire se cogner les deux têtes d’un Troig jusqu’à l’inconscience."
+    abv: 55
+    price: 35
+
+  - id: jawa_juice
+    name: "Jus de jawa"
+    planet: "Tatooine"
+    description: "Boisson populaire des cantinas de Tatooine, faite de peaux de bantha macérées et de grains fermentés, au goût rustique mais étonnamment buvable."
+    abv: 18
+    price: 8
+
+  - id: arkanian_sweet_milk
+    name: "Lait sucré arkanien"
+    planet: "Arkania"
+    description: "Hydromel crémeux extrêmement sucré, brassé sur Arkania, qui ressemble plus à un dessert qu’à un alcool… jusqu’au black-out."
+    abv: 30
+    price: 20
+
+  - id: bantha_blaster
+    name: "Bantha Blaster"
+    planet: "Tatooine"
+    description: "Cocktail rose et vert qui pétille et claque sur la langue, très apprécié dans les soirées douteuses des Hutt et de leurs invités."
+    abv: 22
+    price: 15
+
+  - id: bantha_blood_fizz
+    name: "Fizz de sang de bantha"
+    planet: "Tatooine"
+    description: "Boisson gazeuse faite à partir de sang de bantha purifié, rouge sombre et mousseux, pour ceux qui veulent frimer avec un verre inquiétant."
+    abv: 28
+    price: 18
+
+  - id: xinphar
+    name: "Calamari Xinphar"
+    planet: "Mon Cala"
+    description: "Alcool rosé originaire de Dac, au parfum iodé et légèrement salin, très apprécié des Mon Calamari et quasi inconnu ailleurs."
+    abv: 24
+    price: 20
+
+  - id: cassandran_choholl
+    name: "Choholl cassandran"
+    planet: "Garqi"
+    description: "Liqueur de feuilles de hafa, fruitée et raffinée, considérée comme supérieure à la plupart des brandys ; une bouteille de bonne marque peut valoir une petite speeder."
+    abv: 32
+    price: 600
+
+  - id: dorian_quill
+    name: "Quill dorian"
+    planet: "Doria"
+    description: "Whisky spatial vieilli douze ans, à la robe ambrée et au goût fumé, surnommé le « space whiskey » des pilotes de cargo."
+    abv: 40
+    price: 45
+
+  - id: durindfire
+    name: "Feu de Durind"
+    planet: "Core Worlds"
+    description: "Cocktail phosphorescent qui se met à briller au contact de l’air, très en vogue dans les clubs branchés qui aiment que leurs clients soient visibles depuis l’orbite."
+    abv: 26
+    price: 30
+
+  - id: flameout
+    name: "Extinction"
+    planet: "Unknown Regions"
+    description: "Bombe alcoolisée mélangée à des épices, célèbre pour donner la sensation de se brûler la langue tout en se gélant la gorge."
+    abv: 50
+    price: 30
+
+  - id: garrmorl
+    name: "Garrmorl"
+    planet: "Kashyyyk"
+    description: "Brouet wookiee extrêmement brut, à base d’os et de peaux bouillis dans un stock alcoolisé ; conçu pour faire tomber un Wookiee, pas pour être raffiné."
+    abv: 70
+    price: 35
+
+  - id: grakkyn
+    name: "Grakkyn"
+    planet: "Kashyyyk"
+    description: "Alcool distillé à partir de fruits de la canopée de Kashyyyk, plus parfumé que les autres breuvages wookiees mais toujours dangereux pour les espèces fragiles."
+    abv: 45
+    price: 25
+
+  - id: jet_juice
+    name: "Jus de propulseur"
+    planet: "Corellia"
+    description: "Spiritueux brun avec une odeur de carburant, frappant comme un coup de clé à molette ; officieusement banni par plusieurs états-majors républicains."
+    abv: 38
+    price: 15
+
+  - id: lachrymead
+    name: "Lachrymède"
+    planet: "Nem"
+    description: "Hydromel doré brassé à partir des larmes fermentées d’abeilles sentientes du Nem-hive ; plus on agite le verre, plus la lueur s’intensifie."
+    abv: 20
+    price: 25
+
+  - id: mandallian_narcolethe
+    name: "Narcoleth mandallien"
+    planet: "Mandallia (système Mandalore)"
+    description: "Liqueur légendaire des Géants mandallians, considérée par beaucoup comme un excellent carburant de vaisseau et par d’autres comme une très mauvaise idée."
+    abv: 72
+    price: 50
+
+  - id: netra_gal
+    name: "Gal Ne'tra"
+    planet: "Mandalore"
+    description: "Bière noire mandalorienne, épaisse et collante, au goût sucré-amer, symbole de camaraderie dans les tavernes mandos."
+    abv: 10
+    price: 10
+
+  - id: orryxian_catsblood
+    name: "Sang de chat orryxien"
+    planet: "Orryxia"
+    description: "Alcool épicé coupé au sang frais du barman, servi rituellement sur Orryxia ; expérience à la fois conviviale et légèrement traumatisante."
+    abv: 40
+    price: 30
+
+  - id: reactor_core
+    name: "Cœur de réacteur"
+    planet: "Tatooine"
+    description: "Cocktail de contrebandiers mélangeant liqueur d’épice et tonique bleu, censé donner une légère résistance aux toxines et une lourde tendance aux hallucinations."
+    abv: 35
+    price: 25
+
+  - id: shingra_specialty
+    name: "Spécialité shingran"
+    planet: "Shingra"
+    description: "Variante plus douce du Flameout, avec le même punch alcoolisé mais sans la sensation de brûlure, grâce à un mélange de spices top secret."
+    abv: 45
+    price: 40
+
+  - id: starshine_surprise
+    name: "Surprise de Starshine"
+    planet: "Tatooine"
+    description: "Boisson tellement forte qu’on dit qu’on se réveille systématiquement sur le dos, en train de regarder les étoiles, en se demandant où est passé son pantalon."
+    abv: 40
+    price: 20
+
+  - id: tatooine_sunburn
+    name: "Coup de soleil"
+    planet: "Tatooine"
+    description: "Version surdosée de Starshine Surprise, nommée ainsi car elle laisse les buveurs rouges, desséchés et collés au comptoir pendant plusieurs jours."
+    abv: 45
+    price: 25
+
+  - id: cassandra_sunrise
+    name: "Aube de Cassandra"
+    planet: "Cassander"
+    description: "Cocktail multi-couches dérivé du Starshine Surprise, aux teintes d’aube galactique, réservé aux estomacs renforcés au duracier."
+    abv: 48
+    price: 30
+
+  - id: tssolok
+    name: "T'ssolok"
+    planet: "Ryloth"
+    description: "Liqueur twi’lek à la première gorgée franchement infecte, mais au délicieux arrière-goût… pour ceux qui survivent jusque-là."
+    abv: 30
+    price: 18
+
+  - id: vayerbok
+    name: "Vayerbok"
+    planet: "Ord Mantell"
+    description: "Breuvage épais et vert à base de légumes fermentés, servi brûlant ; on y gagne un coup de chaud intérieur et une haleine d’arrière-soute."
+    abv: 16
+    price: 10
+
+  - id: spotchka
+    name: "Spotchka"
+    planet: "Sorgan"
+    description: "Boisson fluorescente brassée à partir de krill bleus d’eau douce, spécialité des villages agricoles de Sorgan, souvent servie dans des tasses grossières."
+    abv: 20
+    price: 12
+
+  - id: tihaar
+    name: "Tihaar"
+    planet: "Mandalore"
+    description: "Spiritueux clair, distillé à partir de fruits locaux ; les Mandaloriens plaisantent en disant qu’il peut aussi servir de dégraissant pour moteur."
+    abv: 45
+    price: 5
+
+  - id: corellian_ale
+    name: "Bière corellienne"
+    planet: "Corellia"
+    description: "Ale violette à la saveur douce et au corps moyen, probablement l’une des bières les plus courantes de la galaxie."
+    abv: 11
+    price: 9
+
+  - id: corellian_whiskey
+    name: "Whisky corellien"
+    planet: "Corellia"
+    description: "Whisky brun boisé et épicé, fierté de Corellia, utilisé autant pour trinquer que pour parfumer certains desserts locaux."
+    abv: 40
+    price: 35
+
+  - id: whyrens_reserve
+    name: "Réserve de Whyren"
+    planet: "Corellia"
+    description: "Millésime de prestige du whisky corellien, vieilli de longues années en fûts de chêne ; une bouteille de bonne série peut valoir autant qu’un petit cargo d’occasion."
+    abv: 43
+    price: 500
+
+  - id: merenzane_gold
+    name: "Or de Merenzane"
+    planet: "Coruscant"
+    description: "Liqueur ambrée subtile et sucrée, servie dans les cantinas prétentieuses ; la véritable Merenzane coûte une fortune, le reste est souvent une imitation médiocre."
+    abv: 30
+    price: 200
+
+  - id: gamorrean_grog
+    name: "Grog gamorréen"
+    planet: "Batuu"
+    description: "Grog servi à la cantina d’Oga sur Batuu, boisson lourde et épaisse appréciée des pirates Weequay et de ceux qui ne craignent pas les gueules de bois industrielles."
+    abv: 35
+    price: 15
+
+  - id: gruvian_tovash
+    name: "Tovash gruvien"
+    planet: "Gruvia"
+    description: "Spiritueux corsé en bouteille bouchonnée, célèbre pour réagir avec le ryll en produisant une fumée bleutée… et des accidents idiots."
+    abv: 32
+    price: 12
+
+  - id: gizer_ale
+    name: "Gizer Ale"
+    planet: "Ylesia"
+    description: "Bière bleu clair légèrement pétillante, très populaire chez les jeunes pilotes qui veulent boire « quelque chose de spatial » sans se ruiner."
+    abv: 9
+    price: 7
+
+  - id: ryll_beer
+    name: "Bière de ryll"
+    planet: "Ryloth"
+    description: "Bière épicée infusée au ryll, avec de légers effets psychotropes, réservée en principe aux Twi’leks mais très recherchée dans les cercles clandestins."
+    abv: 10
+    price: 8
+
+  - id: endorian_brandy
+    name: "Brandy endorien"
+    planet: "Endor"
+    description: "Brandy raffiné produit sur la lune forestière, à la robe dorée et au bouquet boisé ; plus rare que la bière ewok standard."
+    abv: 34
+    price: 25
+
+  - id: lum
+    name: "Lum"
+    planet: "Secteur Corellien"
+    description: "Alcool très fort cité dans de nombreuses chansons de bar, décrit comme « imbuvable mais étrangement addictif »."
+    abv: 40
+    price: 18
+
+  - id: naboo_sunset
+    name: "Coucher de soleil"
+    planet: "Naboo"
+    description: "Cocktail aux couleurs de coucher de soleil sur Theed, mélange de jus de fruits locaux et de spiritueux doux, servi dans les hôtels de luxe."
+    abv: 16
+    price: 14
+
+  - id: phattro
+    name: "Phattro"
+    planet: "Tatooine"
+    description: "Boisson gazeuse légèrement alcoolisée, populaire lors des courses de podracer et souvent vendue tiède par des marchands douteux."
+    abv: 5
+    price: 5
+
+  - id: rancor_blood
+    name: "Cocktail Sang de Rancor"
+    planet: "Tatooine"
+    description: "Cocktail sombre et épais, baptisé en référence au rancor pour donner de la prestance à un mélange déjà beaucoup trop fort."
+    abv: 30
+    price: 18
+
+  - id: rancors_breath
+    name: "Souffle de Rancor"
+    planet: "Outer Rim"
+    description: "Alcool clair d’une violence rare, dont l’odeur seule justifie pleinement son nom ; souvent utilisé pour des défis idiots entre chasseurs de primes."
+    abv: 60
+    price: 25
+
+  - id: sarlacc_kicker
+    name: "Botteur de Sarlacc"
+    planet: "Tatooine"
+    description: "Boisson du désert servie en shot, censée « te digérer pendant mille ans » si tu en prends trop."
+    abv: 50
+    price: 22
+
+  - id: salty_gaffer
+    name: "Gaffer salé"
+    planet: "Mon Gazza"
+    description: "Mélange salé-alcoolisé prisé des dockers et mécaniciens de spatioport, souvent servi dans des chopes en métal cabossées."
+    abv: 25
+    price: 15
+
+  - id: spice_runner_hard_cider
+    name: "Cidre épicé"
+    planet: "Kessel"
+    description: "Cidre sec infusé à de très faibles doses d’épices, boisson favorite des contrebandiers qui veulent un peu de piquant sans perdre la tête."
+    abv: 9
+    price: 10
+
+  - id: sith_scorcher
+    name: "Ecorcheur Sith"
+    planet: "Korriban"
+    description: "Spiritueux rouge foncé associé aux cultes sith, brûlant à la fois la gorge et la conscience morale."
+    abv: 45
+    price: 30
+
+  - id: skannbult_likker
+    name: "Skannbult Likker"
+    planet: "Unknown Regions"
+    description: "Alcool de contrebande rustique, transparent et dévastateur, souvent servi dans des bouteilles sans étiquette au fond des cantinas."
+    abv: 55
+    price: 20
+
+  - id: star_vine
+    name: "Vigne des étoiles"
+    planet: "Chandrila"
+    description: "Vin léger produit à partir de vignes cultivées sous dômes transparents, permettant d’admirer les étoiles pendant qu’on boit."
+    abv: 17
+    price: 22
+
+  - id: starfire_skee
+    name: "Skee"
+    planet: "Core Worlds"
+    description: "Boisson pétillante orangée, servie en soirées mondaines, réputée pour rendre les conversations plus brillantes que leur contenu réel."
+    abv: 28
+    price: 20
+
+  - id: surabat_valley_harvest_brew
+    name: "Bière de Surabat"
+    planet: "Lothal"
+    description: "Bière ambrée de récolte, brassée une fois par an avec les céréales de la vallée de Surabat, douce mais bien marquée en bouche."
+    abv: 8
+    price: 9
+
+  - id: fiery_mustafarian
+    name: "Fiery Mustafarian"
+    planet: "Mustafar"
+    description: "Cocktail volcanique servi flambé, mélange de spiritueux forts et de sirops épicés, très apprécié de ceux qui n’ont plus beaucoup de papilles."
+    abv: 35
+    price: 18
+
+  - id: dantooine_tonic
+    name: "Tonique de Dantooine"
+    planet: "Dantooine"
+    description: "Boisson claire légèrement amère, agrémentée d’herbes des plaines de Dantooine, servie comme apéritif dans les fermes isolées."
+    abv: 12
+    price: 10
+
+  - id: fermented_bantha_milk
+    name: "Lait de bantha"
+    planet: "Tatooine"
+    description: "Lait de bantha fermenté, proche d’un kéfir du désert, apprécié des locaux, beaucoup moins des visiteurs."
+    abv: 11
+    price: 6
+
+  - id: lothal_spicebrew
+    name: "Bière de lothal"
+    planet: "Lothal"
+    description: "Bière artisanale infusée avec des épices locales, populaire parmi les ouvriers."
+    abv: 13
+    price: 12
+
+  - id: coruscant_cooler
+    name: "Glacière de coruscant"
+    planet: "Coruscant"
+    description: "Mélange de jus de fruits et de vin léger, cocktail rafraîchissant très prisé des personnels médicaux en permission dans les hôpitaux de guerre."
+    abv: 15
+    price: 15
+
+  - id: naboo_royal_wine
+    name: "Vin royal naboo"
+    planet: "Naboo"
+    description: "Vin rouge raffiné servi lors des réceptions officielles à Theed, au bouquet floral et aux tanins soyeux."
+    abv: 13
+    price: 60
+
+  - id: sullustan_gin
+    name: "Gin sullustain"
+    planet: "Sullust"
+    description: "Gin clair distillé dans les cavernes de Sullust, étonnamment léger et parfumé malgré son origine volcanique."
+    abv: 37
+    price: 20
+
+  - id: vosh
+    name: "Vosh"
+    planet: "Unknown"
+    description: "Alcool quasiment pur à la couleur bleu ciel, réservé aux buveurs suicidaires et aux médecins qui ont besoin d’un désinfectant improvisé."
+    abv: 100
+    price: 15
+
+  - id: adumari_beer
+    name: "Bière adumari"
+    planet: "Adumar"
+    description: "Bière rugueuse à base de grains fermentés et parfois de peau de bantha, boisson utilitaire des pilotes adumari."
+    abv: 5
+    price: 6
+
+  - id: alderaan_beer
+    name: "Bière d'Aldérande"
+    planet: "Alderande"
+    description: "Bière ordinaire d’Alderaan, aujourd’hui surtout collectionnée et rarement ouverte."
+    abv: 5
+    price: 25

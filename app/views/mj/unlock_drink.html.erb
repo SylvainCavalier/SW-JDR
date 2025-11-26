@@ -1,0 +1,76 @@
+<div class="container-fluid mt-4">
+  <div class="row justify-content-center">
+    <div class="col-12">
+      <h1 class="text-center mb-4">
+        <i class="fa-solid fa-wine-bottle me-2"></i>
+        Interface MJ - Débloquer un Alcool
+      </h1>
+
+      <%= link_to 'Retour au tableau de bord MJ', mj_dashboard_path, class: 'btn btn-outline-secondary mb-4' %>
+
+      <div class="alert alert-info">
+        <i class="fa-solid fa-info-circle me-2"></i>
+        <strong>Note :</strong> Les alcools sont automatiquement débloqués lorsqu'un joueur en obtient une bouteille dans son inventaire. 
+        Cette interface permet de débloquer manuellement un alcool (ex: dégustation dans une taverne sans achat).
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <h5 class="mb-0">Débloquer manuellement un alcool pour un joueur</h5>
+        </div>
+        <div class="card-body">
+          <%= form_with url: mj_update_unlock_drink_path, method: :post, local: true do |f| %>
+            <div class="row mb-3">
+              <div class="col-md-6">
+                <%= f.label :user_id, "Joueur", class: "form-label" %>
+                <%= f.select :user_id, options_from_collection_for_select(@users, :id, :username), 
+                    { prompt: "Sélectionnez un joueur" }, 
+                    { class: "form-select", required: true } %>
+              </div>
+              <div class="col-md-6">
+                <%= f.label :drink_id, "Alcool", class: "form-label" %>
+                <%= f.select :drink_id, options_from_collection_for_select(@drinks_data, 'id', 'name'), 
+                    { prompt: "Sélectionnez un alcool" }, 
+                    { class: "form-select", required: true } %>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-12">
+                <%= f.submit "Débloquer l'alcool", class: "btn btn-outline-success" %>
+              </div>
+            </div>
+          <% end %>
+        </div>
+      </div>
+
+      <div class="card mt-4">
+        <div class="card-header">
+          <h5 class="mb-0">Alcools débloqués par joueur</h5>
+        </div>
+        <div class="card-body">
+          <% @users.each do |user| %>
+            <div class="mb-3">
+              <h6><%= user.username %></h6>
+              <% discovered = user.discovered_drinks || [] %>
+              <% if discovered.any? %>
+                <ul class="list-group">
+                  <% discovered.each do |drink_id| %>
+                    <% drink = @drinks_data.find { |d| d['id'] == drink_id } %>
+                    <% if drink %>
+                      <li class="list-group-item">
+                        <%= drink['name'] %> - <%= drink['planet'] %>
+                      </li>
+                    <% end %>
+                  <% end %>
+                </ul>
+              <% else %>
+                <p class="text-muted">Aucun alcool débloqué</p>
+              <% end %>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+

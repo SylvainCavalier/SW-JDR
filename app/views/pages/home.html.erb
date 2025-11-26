@@ -58,6 +58,14 @@
       <%= link_to science_path do %>
         <img src="<%= asset_path('function.svg') %>" alt="Function UI" class="ui-function">
       <% end %>
+    <% elsif current_user.classe_perso&.name == "Contrebandier" %>
+      <%= link_to goods_crates_path do %>
+        <img src="<%= asset_path('function.svg') %>" alt="Function UI" class="ui-function">
+      <% end %>
+    <% elsif current_user.classe_perso&.name == "Mercenaire" %>
+      <%= link_to wine_cellar_path do %>
+        <img src="<%= asset_path('function.svg') %>" alt="Function UI" class="ui-function">
+      <% end %>
     <% else %>
       <img src="<%= asset_path('function.svg') %>" alt="Function UI" class="ui-function">
     <% end %>

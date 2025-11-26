@@ -1,0 +1,674 @@
+# Catalogue des objets d'inventaire pour la seed
+# Organisé par catégorie pour faciliter la maintenance
+
+soins:
+  - name: "Medipack"
+    category: "soins"
+    price: 50
+    description: "Redonne en PV le jet de médecine du soigneur divisé par deux."
+    rarity: "Commun"
+  
+  - name: "Medipack +"
+    category: "soins"
+    price: 200
+    description: "Redonne en PV le jet de médecine du soigneur divisé par deux +1D"
+    rarity: "Unco"
+  
+  - name: "Medipack Deluxe"
+    category: "soins"
+    price: 500
+    description: "Redonne en PV le plein jet de médecine du soigneur"
+    rarity: "Rare"
+  
+  - name: "Antidote"
+    category: "soins"
+    price: 200
+    description: "Soigne le statut empoisonné, +1D PV"
+    rarity: "Unco"
+  
+  - name: "Extrait de Nysillin"
+    category: "soins"
+    price: 150
+    description: "Plante soignante de Félucia: +2D PV immédiat en action de soutien"
+    rarity: "Unco"
+  
+  - name: "Baume de Kolto"
+    category: "soins"
+    price: 800
+    description: "Baume miraculeux disparu de Manaan. +4D PV immédiat action soutien"
+    rarity: "Très rare"
+  
+  - name: "Sérum de Thyffera"
+    category: "soins"
+    price: 300
+    description: "Guérit les maladies communes"
+    rarity: "Commun"
+  
+  - name: "Rétroviral kallidahin"
+    category: "soins"
+    price: 500
+    description: "Guérit les maladies virales communes"
+    rarity: "Commun"
+  
+  - name: "Draineur de radiations"
+    category: "soins"
+    price: 1000
+    description: "Guérit la radioactivité"
+    rarity: "Unco"
+  
+  - name: "Trompe-la-mort"
+    category: "soins"
+    price: 2000
+    description: "Soigne +2D PV à qqun passé sous -10 PV il y a – de 2 tours"
+    rarity: "Rare"
+  
+  - name: "Homéopathie"
+    category: "soins"
+    price: 0
+    description: "Soigne intégralement un personnage qui est à 5 PV ou moins de son maximum"
+    rarity: "Don"
+  
+  - name: "Kit de réparation"
+    category: "soins"
+    price: 100
+    description: "Kit permettant de réparer les vaisseaux. Nécessite 1-3 composants aléatoirement."
+    rarity: "Commun"
+
+patch:
+  - name: "Poisipatch"
+    category: "patch"
+    price: 50
+    description: "Quand le porteur est empoisonné, le patch libère un antidote"
+    rarity: "Commun"
+  
+  - name: "Traumapatch"
+    category: "patch"
+    price: 50
+    description: "Quand le porteur est blessé, le patch libère 1D PV de bacta"
+    rarity: "Commun"
+  
+  - name: "Stimpatch"
+    category: "patch"
+    price: 50
+    description: "Quand le porteur est sonné, le stimpatch le stimule"
+    rarity: "Commun"
+  
+  - name: "Fibripatch"
+    category: "patch"
+    price: 80
+    description: "Quand le porteur tombe agonisant, le patch le stabilise"
+    rarity: "Commun"
+  
+  - name: "Vigpatch"
+    category: "patch"
+    price: 100
+    description: "Le porteur a +1DD à son prochain jet de dégâts Mains nues/AB"
+    rarity: "Commun"
+  
+  - name: "Focuspatch"
+    category: "patch"
+    price: 100
+    description: "Quand le porteur fait moins de la moitié du max d'un jet de précision, +1D préci"
+    rarity: "Commun"
+  
+  - name: "Répercupatch"
+    category: "patch"
+    price: 200
+    description: "Quand le porteur reçoit des dégâts, il gagne 1 action immédiate"
+    rarity: "Unco"
+  
+  - name: "Vitapatch"
+    category: "patch"
+    price: 300
+    description: "Quand le porteur tombe agonisant, le patch le remet à 0 PV"
+    rarity: "Unco"
+
+implant:
+  - name: "Implant de vitalité"
+    category: "implant"
+    price: 400
+    description: "Implant lvl 1 ajoutant +5 Pvmax temporaires tant que l'implant est porté"
+    rarity: "Commun"
+  
+  - name: "Implant de vitalité +"
+    category: "implant"
+    price: 1000
+    description: "Implant lvl 2 ajoutant +10 Pvmax temporaires tant que l'implant est porté"
+    rarity: "Unco"
+  
+  - name: "Implant de récupération"
+    category: "implant"
+    price: 600
+    description: "Implant lvl 1 permettant de récupérer +1PV à chaque début de tour"
+    rarity: "Commun"
+  
+  - name: "Implant de récupération +"
+    category: "implant"
+    price: 1200
+    description: "Implant lvl 2 permettant de récupérer +2PV à chaque début de tour"
+    rarity: "Unco"
+  
+  - name: "Implant de comm neurale"
+    category: "implant"
+    price: 500
+    description: "Implant lvl 1 permettant de communiquer par la pensée avec un autre cyborg"
+    rarity: "Commun"
+
+ingredient:
+  - name: "Composant"
+    category: "ingredient"
+    price: 10
+    description: "Une pièce basique pour fabriquer ou réparer des objets techniques divers. Se trouve partout"
+    rarity: "Commun"
+  
+  - name: "Transmetteur"
+    category: "ingredient"
+    price: 50
+    description: "Le transmetteur est une pièce commune qui permet la transmission d'informations par ondes"
+    rarity: "Commun"
+  
+  - name: "Répartiteur"
+    category: "ingredient"
+    price: 50
+    description: "Le répartiteur est une pièce commune qui assure la redistribution de l'énergie"
+    rarity: "Commun"
+  
+  - name: "Répercuteur"
+    category: "ingredient"
+    price: 100
+    description: "Le répercuteur est une pièce commune qui permet d'amorcer des systèmes complexes"
+    rarity: "Commun"
+  
+  - name: "Circuit de retransmission"
+    category: "ingredient"
+    price: 200
+    description: "Fabriqué par le fabricant à base de 2 compos et 1 transmetteur, le circuit permet d'améliorer la connectique"
+    rarity: "Commun"
+  
+  - name: "Répartiteur fuselé"
+    category: "ingredient"
+    price: 200
+    description: "Fabriqué par le fabricant à base de 2 compos et 1 répartiteur, le rép. fuselé redistribue mieux l'énergie"
+    rarity: "Commun"
+  
+  - name: "Convecteur thermique"
+    category: "ingredient"
+    price: 300
+    description: "Le convecteur thermique est une pièce peu commune qui a pour fonction la concentration d'énergie"
+    rarity: "Unco"
+  
+  - name: "Senseur"
+    category: "ingredient"
+    price: 200
+    description: "Le senseur est une pièce peu commune qui a de multiples paramètres de détection par balayage d'ondes"
+    rarity: "Unco"
+  
+  - name: "Fuseur"
+    category: "ingredient"
+    price: 400
+    description: "Le fuseur est une pièce peu commune qui sert à fusionner des particules instables d'énergie"
+    rarity: "Unco"
+  
+  - name: "Propulseur"
+    category: "ingredient"
+    price: 400
+    description: "Le propulseur est une pièce peu commune dédiée aux systèmes de propulsion"
+    rarity: "Unco"
+  
+  - name: "Vibro-érecteur"
+    category: "ingredient"
+    price: 500
+    description: "Fabriqué avec 2 compos + 1 répercuteur + 1 circ de retr + 1 rép fuselé, sert à activer des puissants systèmes"
+    rarity: "Unco"
+  
+  - name: "Commandes"
+    category: "ingredient"
+    price: 1000
+    description: "Les commandes sont une pièce rare qui consiste en une interface de contrôle de systèmes complexes"
+    rarity: "Rare"
+  
+  - name: "Injecteur de photon"
+    category: "ingredient"
+    price: 2000
+    description: "L'injecteur de photon est une pièce rare qui sert à la transmission d'énergie dans la technologie de pointe"
+    rarity: "Rare"
+  
+  - name: "Chrysalis"
+    category: "ingredient"
+    price: 5000
+    description: "La chrysalis est une pièce très rare, qui catalyse l'énergie du vide pour l'alimentation en énergie"
+    rarity: "Très rare"
+  
+  - name: "Vibreur"
+    category: "ingredient"
+    price: 200
+    description: "Le vibreur est une pièce commune qui concentre l'énergie par émission d'ondes vibratoires"
+    rarity: "Commun"
+  
+  - name: "Micro-générateur"
+    category: "ingredient"
+    price: 300
+    description: "Le micro-générateur est une pièce commune qui assure l'apport en énergie dans la micro-ingénierie"
+    rarity: "Commun"
+  
+  - name: "Synthé-gilet"
+    category: "ingredient"
+    price: 200
+    description: "Nécessaire pour crafter différents types d'améliorations d'armures"
+    rarity: "Commun"
+  
+  - name: "Interface cyber"
+    category: "ingredient"
+    price: 500
+    description: "L'interface cyber est une pièce peu commune qui sert à créer une interface homme / machine"
+    rarity: "Unco"
+  
+  - name: "Pile à protons"
+    category: "ingredient"
+    price: 800
+    description: "La pile à protons une pièce rare qui sert à capter les particules de protons environnantes"
+    rarity: "Rare"
+  
+  - name: "Lingot de Phrik"
+    category: "ingredient"
+    price: 500
+    description: "Le lingot de phrik est un échantillon peu commun d'un métal résistant"
+    rarity: "Unco"
+  
+  - name: "Filet de Lommite"
+    category: "ingredient"
+    price: 1000
+    description: "Le filet de lommite est un échantillon rare d'un métal très résistant"
+    rarity: "Rare"
+  
+  - name: "Lingot de Duracier"
+    category: "ingredient"
+    price: 3000
+    description: "Le lingot de duracier est un alliage très rare et extrêmement résistant"
+    rarity: "Très rare"
+  
+  - name: "Fiole"
+    category: "ingredient"
+    price: 30
+    description: "Un contenant pour diverses préparations de potions et poisons"
+    rarity: "Commun"
+  
+  - name: "Matière organique"
+    category: "ingredient"
+    price: 80
+    description: "Un substras de matière organique amalgamée"
+    rarity: "Commun"
+  
+  - name: "Dose de bacta"
+    category: "ingredient"
+    price: 100
+    description: "Une dose de bacta, cette substance régénératrice utilisée dans les medipacks et cuves à bacta"
+    rarity: "Unco"
+  
+  - name: "Dose de kolto"
+    category: "ingredient"
+    price: 300
+    description: "Une dose de kolto, une substance régénératrice rare et très efficace"
+    rarity: "Rare"
+  
+  - name: "Jeu d'éprouvettes"
+    category: "ingredient"
+    price: 50
+    description: "Un simple jeu d'éprouvettes pour l'artisanat du biosavant"
+    rarity: "Commun"
+  
+  - name: "Pique chirurgicale"
+    category: "ingredient"
+    price: 300
+    description: "Une pique chirurgicale à usage unique pour les manipulations techniques difficiles du biosavant"
+    rarity: "Unco"
+  
+  - name: "Diffuseur aérosol"
+    category: "ingredient"
+    price: 100
+    description: "Un diffuseur aérosol à ouverture manuelle ou retardée, pour y mettre des choses méchantes à diffuser dedans"
+    rarity: "Unco"
+  
+  - name: "Matière explosive"
+    category: "ingredient"
+    price: 200
+    description: "La matière explosive est une matière malléable et adaptable, qui sert à la fabrication d'explosifs"
+    rarity: "Commun"
+  
+  - name: "Poudre de Zabron"
+    category: "ingredient"
+    price: 100
+    description: "La poudre de zabron est issu d'un sable très volatile qui se disperse en de grandes volutes de fumée rose"
+    rarity: "Commun"
+  
+  - name: "Neurotoxique"
+    category: "ingredient"
+    price: 300
+    description: "Une substance neurotoxique particulièrement dangereuse"
+    rarity: "Rare"
+
+processeur:
+  - name: "Processeur basique (10)"
+    category: "processeur"
+    price: 200
+    description: "Un processeur de base dont la vitesse permettra à la plupart des navordinateurs et droïdes de fonctionner"
+    rarity: "Commun"
+  
+  - name: "Processeur 12"
+    category: "processeur"
+    price: 400
+    description: "Un processeur un peu amélioré, de façon à intégrer quelques fonctions plus poussées"
+    rarity: "Commun"
+  
+  - name: "Processeur 14"
+    category: "processeur"
+    price: 600
+    description: "Un processeur plus puissant dont la vitesse permettra à des systèmes plus complexes de fonctionner"
+    rarity: "Unco"
+  
+  - name: "Processeur 16"
+    category: "processeur"
+    price: 1500
+    description: "Un processeur très puissant qui conviendra pour faire tourner la plupart des systèmes"
+    rarity: "Rare"
+  
+  - name: "Processeur 18"
+    category: "processeur"
+    price: 3000
+    description: "Un processeur rare d'une technologie de pointe dont la puissance énorme permet de gérer presque tout système"
+    rarity: "Rare"
+  
+  - name: "Processeur 20"
+    category: "processeur"
+    price: 6000
+    description: "Un processeur rare et de très haute technologie dont la puissance extrême permet de gérer tout type de système"
+    rarity: "Très rare"
+
+animal:
+  - name: "Sang de félin"
+    category: "animal"
+    price: 300
+    description: "Du sang de félin bien frais pour les expériences scientifiques"
+    rarity: "Unco"
+  
+  - name: "Hormone de rongeur"
+    category: "animal"
+    price: 300
+    description: "Des hormones spécifiques de rongeurs dédiées à la science"
+    rarity: "Unco"
+  
+  - name: "Cerveau de mammifère aquatique"
+    category: "animal"
+    price: 300
+    description: "Un cerveau frais disponible pour expérimentation"
+    rarity: "Unco"
+  
+  - name: "Yeux de rapace"
+    category: "animal"
+    price: 300
+    description: "Des yeux de rapaces conservés pour l'expérimentation scientifique"
+    rarity: "Unco"
+  
+  - name: "Sang de Dragon Krayt"
+    category: "animal"
+    price: 800
+    description: "Du sang de Dragon Krayt bouillonnant dans une éprouvette"
+    rarity: "Rare"
+  
+  - name: "Sang de Rancor"
+    category: "animal"
+    price: 800
+    description: "Du sang de Rancor bouillonnant dans une éprouvette"
+    rarity: "Rare"
+
+plante:
+  - name: "Cardamine"
+    category: "plante"
+    price: 30
+    description: "Une petite plante commune aux propriétés diurétiques, et toxique à haute dose"
+    rarity: "Commun"
+  
+  - name: "Kava"
+    category: "plante"
+    price: 50
+    description: "Une plante hallucinogène, aux effets réactifs divers en mélange avec d'autres plantes"
+    rarity: "Commun"
+  
+  - name: "Passiflore"
+    category: "plante"
+    price: 100
+    description: "Une famille de plantes peu commune, à très haute toxicité"
+    rarity: "Unco"
+  
+  - name: "Nysillin"
+    category: "plante"
+    price: 100
+    description: "Une famille de plantes peu communes, à vertu thérapeuthique"
+    rarity: "Unco"
+
+injection:
+  - name: "Injection d'adrénaline"
+    category: "injection"
+    price: 200
+    description: "Perd 2 PV mais augmente les compétences de dex de +1D pour 3 tours"
+    rarity: "Unco"
+  
+  - name: "Injection d'hormone de Shalk"
+    category: "injection"
+    price: 300
+    description: "Perd 2 PV mais augmente les compétences de vig de +1D pour 3 tours"
+    rarity: "Rare"
+  
+  - name: "Injection de phosphore"
+    category: "injection"
+    price: 100
+    description: "Perd 2 PV mais augmente les compétences de sav de +1D pour 3 tours"
+    rarity: "Unco"
+  
+  - name: "Injection de focusféron"
+    category: "injection"
+    price: 100
+    description: "Perd 2 PV mais augmente les compétences de perc de +1D pour 3 tours"
+    rarity: "Unco"
+  
+  - name: "Injection de trinitine"
+    category: "injection"
+    price: 50
+    description: "Regagne +1D PV par tour pour 3 tours, mais -2 toutes comp"
+    rarity: "Unco"
+  
+  - name: "Injection de stimulant"
+    category: "injection"
+    price: 50
+    description: "Perd 2 PV mais est immunisé au statut désorienté ou sonné 3 tours"
+    rarity: "Unco"
+  
+  - name: "Injection de bio-rage"
+    category: "injection"
+    price: 400
+    description: "Folie 1D tours, +1DD au CaC, +1 action d'attaque par tour"
+    rarity: "Rare"
+  
+  - name: "Injection tétrasulfurée"
+    category: "injection"
+    price: 500
+    description: "Ne peut pas passer en statut sonné, inconscient ou agonisant 3 tours"
+    rarity: "Rare"
+
+gaz:
+  - name: "Gaz Lacrymogène"
+    category: "gaz"
+    price: 50
+    description: "A le statut désorienté tant qu'il est exposé à l'arme"
+    rarity: "Commun"
+  
+  - name: "Gaz Souffre"
+    category: "gaz"
+    price: 100
+    description: "Perd 1D PV Ignore def / tour tant qu'il est exposé"
+    rarity: "Commun"
+  
+  - name: "Gaz Empoisonné"
+    category: "gaz"
+    price: 300
+    description: "Perd 2D PV Ignore def / tour tant qu'il est exposé + Empoisonné"
+    rarity: "Unco"
+  
+  - name: "Gaz Neurolax"
+    category: "gaz"
+    price: 500
+    description: "Perd 2D PV Ign def / tour tant qu'il est exposé + Tue les -20PVmax"
+    rarity: "Rare"
+
+poison:
+  - name: "Laxatif"
+    category: "poison"
+    price: 30
+    description: "Jet de vig pour résister au poison : 15 / Effets : -1DD au CaC et -1D précision à distance, -1PV / tour, 3/12 se chie dessus"
+    rarity: "Commun"
+  
+  - name: "Tranquilisant"
+    category: "poison"
+    price: 50
+    description: "Jet de vig pour résister au poison : 15 / Effets : -1D à tous ses jets, -1PV / tour, 1/12 s'endort"
+    rarity: "Commun"
+  
+  - name: "Somnifère"
+    category: "poison"
+    price: 50
+    description: "Jet de vig pour résister au poison : 20 / Effets : -1D à tous ses jets, -2PV / tour, 2/12 s'endort, 10/12 si 25PVmax"
+    rarity: "Unco"
+  
+  - name: "Poison"
+    category: "poison"
+    price: 100
+    description: "Jet de vig pour résister au poison : 15 / Effets : -1DPV / tour, 1/12 tombe inconscient"
+    rarity: "Commun"
+  
+  - name: "Poison neurotoxique"
+    category: "poison"
+    price: 200
+    description: "Jet de vig pour résister au poison : 20 / Effets : -1DPV / tour, 2/12 tombe inconscient"
+    rarity: "Unco"
+  
+  - name: "Poison foudroyant"
+    category: "poison"
+    price: 300
+    description: "Jet de vig pour résister au poison : 25 / Effets : -2DPV / tour, 4/12 tombe inconscient, 1/12 meurt"
+    rarity: "Rare"
+  
+  - name: "Stimulateur mnémonique"
+    category: "poison"
+    price: 300
+    description: "Jet de vig pour résister : 20 / Rend une personne très volubile, proche d'un sérum de vérité. +1D Comm, Intim, Psy sur elle"
+    rarity: "Rare"
+
+pazaak:
+  - name: "+1"
+    category: "pazaak"
+    price: 100
+    description: "Ajoute 1 à votre total."
+    rarity: "Commun"
+  
+  - name: "+2"
+    category: "pazaak"
+    price: 100
+    description: "Ajoute 2 à votre total."
+    rarity: "Commun"
+  
+  - name: "+3"
+    category: "pazaak"
+    price: 100
+    description: "Ajoute 3 à votre total."
+    rarity: "Commun"
+  
+  - name: "+4"
+    category: "pazaak"
+    price: 100
+    description: "Ajoute 4 à votre total."
+    rarity: "Commun"
+  
+  - name: "+5"
+    category: "pazaak"
+    price: 100
+    description: "Ajoute 5 à votre total."
+    rarity: "Commun"
+  
+  - name: "-1"
+    category: "pazaak"
+    price: 100
+    description: "Retire 1 à votre total."
+    rarity: "Commun"
+  
+  - name: "-2"
+    category: "pazaak"
+    price: 100
+    description: "Retire 2 à votre total."
+    rarity: "Commun"
+  
+  - name: "-3"
+    category: "pazaak"
+    price: 100
+    description: "Retire 3 à votre total."
+    rarity: "Commun"
+  
+  - name: "-4"
+    category: "pazaak"
+    price: 100
+    description: "Retire 4 à votre total."
+    rarity: "Commun"
+  
+  - name: "-5"
+    category: "pazaak"
+    price: 100
+    description: "Retire 5 à votre total."
+    rarity: "Commun"
+  
+  - name: "±1"
+    category: "pazaak"
+    price: 150
+    description: "Permet d'ajouter ou retirer 1."
+    rarity: "Inhabituel"
+  
+  - name: "±2"
+    category: "pazaak"
+    price: 150
+    description: "Permet d'ajouter ou retirer 2."
+    rarity: "Inhabituel"
+  
+  - name: "±3"
+    category: "pazaak"
+    price: 150
+    description: "Permet d'ajouter ou retirer 3."
+    rarity: "Inhabituel"
+  
+  - name: "±4"
+    category: "pazaak"
+    price: 150
+    description: "Permet d'ajouter ou retirer 4."
+    rarity: "Inhabituel"
+  
+  - name: "±5"
+    category: "pazaak"
+    price: 150
+    description: "Permet d'ajouter ou retirer 5."
+    rarity: "Inhabituel"
+  
+  - name: "x2"
+    category: "pazaak"
+    price: 200
+    description: "Double la valeur de la dernière carte jouée."
+    rarity: "Rare"
+  
+  - name: "2&4"
+    category: "pazaak"
+    price: 250
+    description: "Transforme tous les 2 et 4 en -2 et -4."
+    rarity: "Rare"
+  
+  - name: "3&6"
+    category: "pazaak"
+    price: 250
+    description: "Transforme tous les 3 et 6 en -3 et -6."
+    rarity: "Rare"
+

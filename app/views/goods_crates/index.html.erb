@@ -1,0 +1,102 @@
+<div class="content-container d-flex flex-column align-items-center">
+  <h1 class="text-success">Gestion des Marchandises de Contrebande</h1>
+
+  <div class="container mt-4" style="max-width: 1200px;">
+    <!-- Formulaire d'ajout -->
+    <div class="card mb-4">
+      <div class="card-header">
+        <h5 class="mb-0">Ajouter une caisse de marchandises</h5>
+      </div>
+      <div class="card-body">
+        <%= form_with model: @goods_crate, url: goods_crates_path, local: true, class: "row g-3" do |f| %>
+          <% if @goods_crate.errors.any? %>
+            <div class="alert alert-danger">
+              <ul class="mb-0">
+                <% @goods_crate.errors.full_messages.each do |message| %>
+                  <li><%= message %></li>
+                <% end %>
+              </ul>
+            </div>
+          <% end %>
+
+          <div class="col-md-4">
+            <%= f.label :content, "Contenu de la caisse", class: "form-label" %>
+            <%= f.text_field :content, class: "form-control", placeholder: "Ex: Armes, Drogues, Électronique...", required: true %>
+          </div>
+
+          <div class="col-md-2">
+            <%= f.label :quantity, "Quantité", class: "form-label" %>
+            <%= f.number_field :quantity, class: "form-control", min: 1, value: 1, required: true %>
+          </div>
+
+          <div class="col-md-3">
+            <%= f.label :origin_planet, "Planète de provenance", class: "form-label" %>
+            <%= f.text_field :origin_planet, class: "form-control", placeholder: "Ex: Tatooine, Coruscant...", required: true %>
+          </div>
+
+          <div class="col-md-2">
+            <%= f.label :price_per_crate, "Prix par caisse", class: "form-label" %>
+            <%= f.number_field :price_per_crate, class: "form-control", min: 0, value: 0, required: true %>
+          </div>
+
+          <div class="col-md-1 d-flex align-items-end">
+            <%= f.submit "Ajouter", class: "btn btn-outline-success" %>
+          </div>
+        <% end %>
+      </div>
+    </div>
+
+    <!-- Tableau des caisses -->
+    <div class="card">
+      <div class="card-header">
+        <h5 class="mb-0">Caisses dans la soute</h5>
+      </div>
+      <div class="card-body">
+        <% if @goods_crates.any? %>
+          <div class="table-responsive">
+            <table class="table table-bordered table-striped">
+              <thead class="table-dark">
+                <tr>
+                  <th style="width: 30%;">Contenu</th>
+                  <th style="width: 15%;">Quantité</th>
+                  <th style="width: 25%;">Planète de provenance</th>
+                  <th style="width: 15%;">Prix par caisse</th>
+                  <th style="width: 15%;">Valeur totale</th>
+                  <th style="width: 10%;">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% @goods_crates.each do |crate| %>
+                  <tr id="goods_crate_<%= crate.id %>">
+                    <td><%= crate.content %></td>
+                    <td><%= crate.quantity %></td>
+                    <td><%= crate.origin_planet %></td>
+                    <td><%= crate.price_per_crate %> crédits</td>
+                    <td><strong><%= crate.quantity * crate.price_per_crate %> crédits</strong></td>
+                    <td>
+                      <%= button_to "❌", goods_crate_path(crate), method: :delete, 
+                          data: { turbo: false, confirm: "Supprimer cette caisse de marchandises ?" }, 
+                          class: "btn btn-sm btn-outline-danger" %>
+                    </td>
+                  </tr>
+                <% end %>
+              </tbody>
+              <tfoot class="table-secondary">
+                <tr>
+                  <td colspan="4" class="text-end"><strong>Valeur totale de la cargaison :</strong></td>
+                  <td><strong><%= @goods_crates.sum { |c| c.quantity * c.price_per_crate } %> crédits</strong></td>
+                  <td></td>
+                </tr>
+              </tfoot>
+            </table>
+          </div>
+        <% else %>
+          <p class="text-muted text-center">Aucune caisse de marchandises dans la soute pour le moment.</p>
+        <% end %>
+      </div>
+    </div>
+  </div>
+
+  <%= link_to "Retour", root_path, class: "btn btn-outline-secondary mt-4" %>
+</div>
+

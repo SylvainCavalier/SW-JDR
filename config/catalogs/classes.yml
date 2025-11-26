@@ -1,0 +1,26 @@
+# Liste des classes de personnage disponibles
+
+- name: "Sénateur"
+  description: "Politicien influent."
+  key: "senator"
+
+- name: "Bio-savant"
+  description: "Expert en sciences de la vie."
+  key: "bio_savant"
+
+- name: "Autodidacte"
+  description: "Un apprenant autonome."
+  key: "autodidact"
+
+- name: "Mercenaire"
+  description: "Un combattant à louer."
+  key: "mercenary"
+
+- name: "Cyber-ingénieur"
+  description: "Spécialiste des technologies avancées."
+  key: "cyber_engineer"
+
+- name: "Contrebandier"
+  description: "Expert dans l'art de la contrebande."
+  key: "smuggler"
+

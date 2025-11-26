@@ -1,0 +1,415 @@
+---
+Hangar:
+  '1':
+    name: Hangar basique
+    description: Un hangar basique, un trou dans le mur pour les vaisseaux, et quelques
+      caisses.
+    price: 1000
+    properties:
+      Capacité: 3 emplacements de vaisseaux
+      Murs: Parois naturelles
+      Ravitaillement: Aucun
+      Automatisation: Non
+      Défense: Porte basique
+  '2':
+    name: Hangar aménagé
+    description: Un hangar aménagé avec des murs renforcés et un espace plus optimisé.
+    price: 3000
+    properties:
+      Capacité: 5 emplacements de vaisseaux
+      Murs: Parois aménagées
+      Ravitaillement: Basique
+      Automatisation: Non
+      Défense: Porte blindée
+  '3':
+    name: Hangar de la rébellion
+    description: Un hangar militaire bien protégé, capable de stocker plusieurs vaisseaux.
+    price: 6000
+    properties:
+      Capacité: 10 emplacements de vaisseaux
+      Murs: Parois renforcées
+      Ravitaillement: Basique
+      Automatisation: Non
+      Défense: Tourelle & porte blindée
+  '4':
+    name: Hangar automatisé
+    description: Un hangar ultra-moderne avec des systèmes automatiques et une sécurité
+      maximale.
+    price: 15000
+    properties:
+      Capacité: 20 emplacements de vaisseaux
+      Murs: Parois blindées
+      Ravitaillement: Avancé
+      Automatisation: Oui
+      Défense: Bouclier & tourelle
+Atelier:
+  '1':
+    name: Atelier de bricolage
+    description: Un petit atelier permettant des réparations basiques sur les vaisseaux.
+    price: 1000
+    properties:
+      Réparation: "+2PB/jour"
+      Bonus: "+2 aux jets d’amélioration de vaisseaux"
+  '2':
+    name: Atelier d'entretien
+    description: Un atelier mieux équipé pour gérer tous les dégâts basiques des vaisseaux.
+    price: 5000
+    properties:
+      Réparation: "+4PB/jour"
+      Bonus: "+1D aux jets d’amélioration de vaisseaux"
+  '3':
+    name: Atelier avancé
+    description: Un atelier spécialisé pouvant réparer armes et hyperdrive des vaisseaux.
+    price: 7000
+    properties:
+      Réparation: "+6PB/jour"
+      Bonus: "+2D aux jets d’amélioration de vaisseaux"
+  '4':
+    name: Atelier spécialisé
+    description: Un atelier de pointe, capable de réinitialiser l'identification des
+      vaisseaux.
+    price: 12000
+    properties:
+      Réparation: "+8PB/jour"
+      Bonus: "+3D aux jets d’amélioration de vaisseaux"
+Centre de contrôle:
+  '1':
+    name: Centre de contrôle temporaire
+    description: Un centre de contrôle rudimentaire permettant une supervision basique
+      de la base.
+    price: 500
+    properties:
+      Fonction: Supervision basique
+  '2':
+    name: Centre de contrôle aménagé
+    description: Un centre de contrôle équipé de caméras de surveillance pour chaque
+      section de la base.
+    price: 1000
+    properties:
+      Surveillance: Caméras sur toute la base
+  '3':
+    name: Centre de contrôle rebelle
+    description: Une salle de contrôle avancée intégrant la gestion de la défense
+      interne et externe.
+    price: 2000
+    properties:
+      Défense: Gestion avancée des systèmes de sécurité
+  '4':
+    name: Centre de contrôle moderne
+    description: Une salle de contrôle auxiliaire pour prendre le relais en cas de
+      panne de la principale.
+    price: 5000
+    properties:
+      Sécurité: Salle de contrôle de secours
+Dortoirs:
+  '1':
+    name: Dortoirs précaires
+    description: Quelques lits de camp pour le personnel, inconfortables mais pratiques.
+    price: 500
+    properties:
+      Capacité: 10 places
+  '2':
+    name: Dortoirs aménagés
+    description: Des dortoirs optimisés pour le repos du personnel.
+    price: 1000
+    properties:
+      Capacité: 20 places
+      Bonus: "+2 PV max temporaire"
+  '3':
+    name: Dortoirs confortables
+    description: Des dortoirs bien aménagés pour un meilleur confort.
+    price: 4000
+    properties:
+      Capacité: 30 places
+      Bonus: "+3 PV max temporaire, +1 PV max permanent"
+  '4':
+    name: Dortoirs optimisés
+    description: Des dortoirs modernes et individuels pour le personnel.
+    price: 8000
+    properties:
+      Capacité: 50 places
+      Bonus: "+4 PV max temporaire, +1 PV max permanent"
+Infirmerie:
+  '1':
+    name: Infirmerie
+    description: Une infirmerie rudimentaire avec des moyens limités.
+    price: 1000
+    properties:
+      Bonus: "+1D aux jets de médecine, +1D PV par nuit"
+  '2':
+    name: Dispensaire
+    description: Un dispensaire équipé pour les opérations de combat.
+    price: 3000
+    properties:
+      Bonus: "+2D aux jets de médecine, +2D PV par nuit, +1 aux jets de séquelle"
+  '3':
+    name: Hôpital
+    description: Un hôpital complet avec des équipements avancés pour des soins intensifs.
+    price: 10000
+    properties:
+      Bonus: "+3D aux jets de médecine, +3D PV par nuit, +1 aux jets de séquelle"
+Centrale énergétique:
+  '1':
+    name: Thermo-moteur faiblard
+    description: Un moteur basique, sale et capricieux, pour alimenter la base en
+      énergie.
+    price: 1000
+    properties:
+      Capacité énergétique: Faible
+      Fiabilité: Capricieuse
+      Bâtiments supportés: Niveau 1 uniquement
+  '2':
+    name: Centrale énergétique
+    description: Une centrale énergétique digne de ce nom qui pourra alimenter tous
+      les bâtiments de 2e niveau.
+    price: 5000
+    properties:
+      Capacité énergétique: Moyenne
+      Fiabilité: Stable
+      Bâtiments supportés: Niveau 1 et 2
+  '3':
+    name: Centrale double cœur
+    description: Une centrale avancée qui permettra d’alimenter tous les systèmes
+      de défense les plus avancés et tous les bâtiments de 3e niveau.
+    price: 15000
+    properties:
+      Capacité énergétique: Élevée
+      Fiabilité: Très stable
+      Bâtiments supportés: Niveau 1, 2 et 3
+      Défense: Alimentation des systèmes de défense avancés
+  '4':
+    name: Réacteurs à plasma
+    description: Une centrale dernière génération permettant le fonctionnement de
+      tous les bâtiments de 4e niveau.
+    price: 30000
+    properties:
+      Capacité énergétique: Maximale
+      Fiabilité: Parfaite
+      Bâtiments supportés: Tous les niveaux
+      Défense: Alimentation optimisée des boucliers et défenses
+Armurerie:
+  '1':
+    name: Armurerie
+    description: Une armurerie basique et régulièrement approvisionnée par votre armurier.
+    price: 1000
+    properties:
+      Sécurité: Basse
+      Approvisionnement: Basique
+      Accès: Libre
+  '2':
+    name: Armurerie sécurisée
+    description: Une armurerie sécurisée et aménagée où vous pourrez retrouver de
+      nombreux types d’armes, alimentée par votre personnel de base.
+    price: 3000
+    properties:
+      Sécurité: Renforcée
+      Approvisionnement: Avancé
+      Accès: Restreint
+  '3':
+    name: Armurerie de luxe
+    description: L’armurerie de luxe vous permet de retrouver ici 1 arme rare à l’issue
+      de chacune de vos missions.
+    price: 6000
+    properties:
+      Sécurité: Maximale
+      Approvisionnement: Exceptionnel
+      Arme rare: 1 après chaque mission
+Tour de surveillance:
+  '1':
+    name: Tour panoramique
+    description: Tour d’observation bardée de radars surplombant la base, avec un
+      petit canon pour la défense.
+    price: 2000
+    properties:
+      Observation: Radar
+      Défense: Petit canon
+      Visibilité: Élevée
+  '2':
+    name: Tour télescopique
+    description: Encore plus moderne, la tour d’observation télescopique peut pivoter
+      pour optimiser son champ de vision.
+    price: 6000
+    properties:
+      Observation: Radar amélioré
+      Défense: Système de tir automatisé
+      Rotation: Oui
+Centre spirituel:
+  '1':
+    name: Salle de méditation
+    description: Un espace dédié aux êtres sensibles à la Force pour se recentrer
+      et se découvrir.
+    price: 500
+    properties:
+      Bonus: "+1 en Con, Sens ou Alt à la première méditation"
+      Ambiance: Paisible
+  '2':
+    name: Cloître d'entraînement
+    description: Un espace structuré conforme aux normes Jedi pour un entraînement
+      spirituel optimal.
+    price: 3000
+    properties:
+      Bonus: "+1 permanent à la première méditation"
+      Architecture: Jedi standard
+  '3':
+    name: Enclave Jedi
+    description: Un complexe spirituel imposant combinant tradition et modernité.
+    price: 10000
+    properties:
+      Bonus: "+2 permanent à la première méditation, bonus temporaires à chaque séance"
+      Équipements: Salle d'entraînement Jedi
+Complexe d'entraînement:
+  '1':
+    name: Salle de sport
+    description: Une salle pour garder une condition physique correcte.
+    price: 800
+    properties:
+      Bonus: "+2 XP permanent"
+      Équipements: Basique
+  '2':
+    name: Salle d'entraînement
+    description: Salle équipée pour des exercices avancés avec cibles mobiles.
+    price: 5000
+    properties:
+      Bonus: "+2 XP permanent"
+      Équipements: Avancé
+  '3':
+    name: Stade artificiel
+    description: Un espace de combat sécurisé permettant des affrontements réalistes.
+    price: 15000
+    properties:
+      Bonus: "+2 XP permanent"
+      Fonctionnalité: Duels et combats non mortels entre joueurs
+Laboratoire de recherche:
+  '1':
+    name: Laboratoire artisanal
+    description: Un espace rudimentaire pour les biosavants débutants.
+    price: 1000
+    properties:
+      Bonus: "+2 aux jets d'artisanat"
+      Équipements: Basique
+  '2':
+    name: Laboratoire aménagé
+    description: Un laboratoire bien équipé pour des recherches avancées.
+    price: 3000
+    properties:
+      Bonus: "+1D aux jets d'artisanat"
+      Équipements: Standard
+  '3':
+    name: Laboratoire modernisé
+    description: Un complexe de recherche avancé doté de cuves et de matériel sophistiqué.
+    price: 10000
+    properties:
+      Bonus: "+1D aux jets d'artisanat, +1 en génétique"
+      Équipements: Haut de gamme
+Atelier d'ingénierie:
+  '1':
+    name: Établi artisanal
+    description: Une planche sur deux tréteaux, mais utile pour les ingénieurs astucieux.
+    price: 1000
+    properties:
+      Bonus: "+1 en ingénierie"
+      Équipements: Minimaliste
+  '2':
+    name: Établi aménagé
+    description: Un espace équipé pour un travail plus efficace.
+    price: 3000
+    properties:
+      Bonus: "+2 aux jets d'artisanat"
+      Équipements: Moyen
+  '3':
+    name: Établi modernisé
+    description: Un atelier équipé de technologies avancées pour optimiser l'ingénierie.
+    price: 10000
+    properties:
+      Bonus: "+1D aux jets d'artisanat"
+      Équipements: Haute technologie
+Refuge animalier:
+  '1':
+    name: Animalerie
+    description: Un petit refuge où les animaux peuvent se reposer et se nourrir.
+    price: 500
+    properties:
+      Capacité: 5 emplacements
+      Fonction: Vétérinaire
+  '2':
+    name: Écuries
+    description: Un espace plus grand avec des infrastructures adaptées à l'élevage.
+    price: 2000
+    properties:
+      Capacité: 10 emplacements
+      Fonction: Élevage possible
+  '3':
+    name: Zoo
+    description: Un grand espace aménagé où les animaux prospèrent en toute sécurité.
+    price: 5000
+    properties:
+      Capacité: 30 emplacements
+      Bonus: "+3 PV max temporaires"
+      Fonction: Élevage possible
+Cantina:
+  '1':
+    name: Salle de vie
+    description: Quelques tonneaux pour s'asseoir et 3 ou 4 jeux de pazaac pour passer
+      le temps
+    price: 500
+    properties:
+      Moral de la base: Amélioré
+      Achat: Boissons basiques
+  '2':
+    name: Salle de vie avec cuisine
+    description: Salle de vie plus agréable à vivre, avec une cuisine pour les repas.
+    price: 1000
+    properties:
+      Moral de la base: Amélioré
+      Achat: Boissons et repas
+      Bonus: "+2 aux jets de perception pendant 2 jours"
+  '3':
+    name: Salle de vie confortable
+    description: Salle de vie confortable avec de nombreuses installations de loisir,
+      et même un vibro-baby-foot.
+    price: 3000
+    properties:
+      Moral de la base: Amélioré
+      Achat: Boissons et repas
+      Bonus: "+1D aux jets de perception pendant 2 jours"
+  '4':
+    name: Salle de vie moderne
+    description: Salle de vie moderne avec des toboggans, des piscines à balles et
+      des jeux vidéo. Inutile donc indispensable.
+    price: 5000
+    properties:
+      Moral de la base: Au top
+      Achat: Boissons et repas
+      Bonus: "+1D aux jets de perception pendant 2 jours"
+Réserve:
+  '1':
+    name: Cavité de réserve
+    description: Une cavité humide pour y ranger les fournitures nécessaires à la
+      base.
+    price: 500
+    properties:
+      Capacité: 30 objets
+  '2':
+    name: Réserve
+    description: Une vraie réserve avec de vraies étagères et quelques caisses au
+      rangement presque logique
+    price: 1000
+    properties:
+      Capacité: 50 objets
+  '3':
+    name: Réserve aménagée
+    description: Une réserve sécurisée et aménagée spécialement contre l'humidité,
+      les champignons et les indélicatesses des voleurs
+    price: 2000
+    properties:
+      Capacité: 100 objets
+      Reserve sécurisée: Oui
+  '4':
+    name: Réserve de luxe
+    description: Une réserve de luxe avec des étagères en bois précieux et des caisses
+      en cuir de bantha
+    price: 5000
+    properties:
+      Capacité: infini
+      Reserve sécurisée: Oui
+      Reserve secrète: Oui

@@ -115,6 +115,12 @@ Rails.application.routes.draw do
     end
   end
 
+  resources :goods_crates, only: [:index, :create, :destroy]
+
+  get 'wine_cellar', to: 'wine_cellar#index', as: 'wine_cellar'
+  post 'wine_cellar/add_bottle', to: 'wine_cellar#add_bottle', as: 'add_bottle_wine_cellar'
+  post 'wine_cellar/remove_bottle', to: 'wine_cellar#remove_bottle', as: 'remove_bottle_wine_cellar'
+
   resources :spheros, only: [:destroy] do
     member do
       post :activate
@@ -137,6 +143,9 @@ Rails.application.routes.draw do
   get 'mj/fixer-points', to: 'mj#fixer_points', as: 'fixer_points'
   patch 'mj/update_points/:id', to: 'mj#update_points', as: 'update_points'
   patch 'mj/reset_points/:id', to: 'mj#reset_points', as: 'reset_points'
+
+  get 'mj/unlock_drink', to: 'mj#unlock_drink', as: 'mj_unlock_drink'
+  post 'mj/unlock_drink', to: 'mj#update_unlock_drink', as: 'mj_update_unlock_drink'
 
   get 'mj/infliger_degats', to: 'mj#infliger_degats', as: 'infliger_degats'
   post 'mj/infliger_degats', to: 'mj#apply_damage'
