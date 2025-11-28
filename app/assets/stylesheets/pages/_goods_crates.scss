@@ -1,0 +1,390 @@
+// Styles pour la page de gestion des marchandises de contrebande
+
+.smuggler-page {
+  position: relative;
+  min-height: 100vh;
+  overflow-x: hidden;
+  padding: 2rem;
+
+  // Image de fond avec overlay sombre
+  &::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url(asset-path('Blackmarket.png'));
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    z-index: -2;
+  }
+
+  &::after {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+      180deg,
+      rgba(0, 0, 0, 0.75) 0%,
+      rgba(10, 15, 10, 0.85) 50%,
+      rgba(0, 0, 0, 0.9) 100%
+    );
+    z-index: -1;
+  }
+}
+
+.smuggler-title {
+  font-family: "Audiowide", sans-serif;
+  font-size: 2.2rem;
+  color: #00ff66;
+  text-shadow: 
+    0 0 10px rgba(0, 255, 102, 0.8),
+    0 0 20px rgba(0, 255, 102, 0.5),
+    0 0 40px rgba(0, 255, 102, 0.3);
+  letter-spacing: 2px;
+  margin-bottom: 1.5rem;
+  position: relative;
+  
+  &::after {
+    content: '';
+    display: block;
+    width: 60%;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, #00ff66, transparent);
+    margin: 0.5rem auto 0;
+    box-shadow: 0 0 10px #00ff66;
+  }
+}
+
+.smuggler-subtitle {
+  font-family: "Audiowide", sans-serif;
+  color: #ff6b35;
+  text-shadow: 0 0 8px rgba(255, 107, 53, 0.6);
+  font-size: 1.1rem;
+  letter-spacing: 1px;
+}
+
+// Container principal
+.smuggler-container {
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+// Card style marché noir
+.smuggler-card {
+  background: rgba(10, 15, 12, 0.92);
+  border: 1px solid rgba(0, 255, 102, 0.3);
+  border-radius: 12px;
+  box-shadow: 
+    0 0 20px rgba(0, 255, 102, 0.15),
+    inset 0 0 30px rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(10px);
+  overflow: hidden;
+  transition: all 0.3s ease;
+
+  &:hover {
+    border-color: rgba(0, 255, 102, 0.5);
+    box-shadow: 
+      0 0 30px rgba(0, 255, 102, 0.25),
+      inset 0 0 30px rgba(0, 0, 0, 0.5);
+  }
+}
+
+.smuggler-card-header {
+  background: linear-gradient(
+    90deg,
+    rgba(0, 255, 102, 0.15) 0%,
+    rgba(0, 0, 0, 0.3) 50%,
+    rgba(255, 107, 53, 0.15) 100%
+  );
+  border-bottom: 1px solid rgba(0, 255, 102, 0.3);
+  padding: 1rem 1.5rem;
+
+  h5 {
+    margin: 0;
+    color: #00ff66;
+    font-family: "Audiowide", sans-serif;
+    font-size: 1rem;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+
+    i {
+      color: #ff6b35;
+      margin-right: 0.5rem;
+    }
+  }
+}
+
+.smuggler-card-body {
+  padding: 1.5rem;
+}
+
+// Formulaire style holo
+.smuggler-form {
+  .form-label {
+    color: #8fbc8f;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 0.3rem;
+  }
+
+  .form-control {
+    background: rgba(0, 20, 10, 0.8);
+    border: 1px solid rgba(0, 255, 102, 0.3);
+    color: #00ff66;
+    border-radius: 6px;
+    padding: 0.6rem 0.8rem;
+    transition: all 0.3s ease;
+
+    &::placeholder {
+      color: rgba(0, 255, 102, 0.4);
+    }
+
+    &:focus {
+      background: rgba(0, 30, 15, 0.9);
+      border-color: #00ff66;
+      box-shadow: 0 0 15px rgba(0, 255, 102, 0.3);
+      color: #00ff66;
+    }
+  }
+
+  .btn-smuggler-add {
+    background: linear-gradient(135deg, rgba(0, 255, 102, 0.2), rgba(0, 255, 102, 0.1));
+    border: 1px solid #00ff66;
+    color: #00ff66;
+    font-family: "Audiowide", sans-serif;
+    font-size: 0.85rem;
+    padding: 0.6rem 1.2rem;
+    border-radius: 6px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: all 0.3s ease;
+    box-shadow: 0 0 10px rgba(0, 255, 102, 0.2);
+
+    &:hover {
+      background: linear-gradient(135deg, rgba(0, 255, 102, 0.4), rgba(0, 255, 102, 0.2));
+      box-shadow: 0 0 20px rgba(0, 255, 102, 0.5);
+      transform: translateY(-2px);
+      color: #00ff66;
+    }
+  }
+}
+
+// Tableau des marchandises
+.smuggler-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+
+  thead {
+    th {
+      background: rgba(0, 255, 102, 0.1);
+      color: #00ff66;
+      font-family: "Audiowide", sans-serif;
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      padding: 1rem 0.8rem;
+      border-bottom: 2px solid rgba(0, 255, 102, 0.4);
+      text-shadow: 0 0 5px rgba(0, 255, 102, 0.5);
+    }
+  }
+
+  tbody {
+    tr {
+      transition: all 0.3s ease;
+      border-bottom: 1px solid rgba(0, 255, 102, 0.1);
+
+      &:hover {
+        background: rgba(0, 255, 102, 0.08);
+        
+        td {
+          color: #00ff88;
+        }
+      }
+
+      &:last-child {
+        border-bottom: none;
+      }
+    }
+
+    td {
+      padding: 0.9rem 0.8rem;
+      color: #a0d0a0;
+      vertical-align: middle;
+      font-size: 0.95rem;
+
+      &.content-cell {
+        color: #00ff66;
+        font-weight: 500;
+      }
+
+      &.quantity-cell {
+        font-family: "Audiowide", sans-serif;
+        color: #ff6b35;
+        text-shadow: 0 0 5px rgba(255, 107, 53, 0.4);
+      }
+
+      &.planet-cell {
+        color: #6db3f2;
+        font-style: italic;
+      }
+
+      &.price-cell {
+        color: #ffd700;
+        text-shadow: 0 0 3px rgba(255, 215, 0, 0.3);
+      }
+
+      &.total-cell {
+        color: #00ff66;
+        font-weight: bold;
+        font-family: "Audiowide", sans-serif;
+        text-shadow: 0 0 8px rgba(0, 255, 102, 0.5);
+      }
+    }
+  }
+
+  tfoot {
+    tr {
+      background: rgba(0, 255, 102, 0.08);
+      border-top: 2px solid rgba(0, 255, 102, 0.3);
+    }
+
+    td {
+      padding: 1rem 0.8rem;
+      color: #00ff66;
+      font-family: "Audiowide", sans-serif;
+
+      &.grand-total {
+        color: #00ff66;
+        font-size: 1.1rem;
+        text-shadow: 0 0 10px rgba(0, 255, 102, 0.6);
+      }
+    }
+  }
+}
+
+// Bouton supprimer
+.btn-smuggler-delete {
+  background: transparent;
+  border: 1px solid rgba(255, 80, 80, 0.5);
+  color: #ff5050;
+  padding: 0.4rem 0.8rem;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  transition: all 0.3s ease;
+
+  &:hover {
+    background: rgba(255, 80, 80, 0.2);
+    border-color: #ff5050;
+    box-shadow: 0 0 15px rgba(255, 80, 80, 0.4);
+    color: #ff6666;
+  }
+}
+
+// Message vide
+.smuggler-empty {
+  text-align: center;
+  padding: 3rem 2rem;
+  color: #6a8f6a;
+  
+  i {
+    font-size: 3rem;
+    color: rgba(0, 255, 102, 0.3);
+    margin-bottom: 1rem;
+    display: block;
+  }
+
+  p {
+    font-style: italic;
+    color: #6a8f6a;
+    margin: 0;
+  }
+}
+
+// Bouton retour
+.btn-smuggler-back {
+  background: transparent;
+  border: 1px solid rgba(150, 150, 150, 0.5);
+  color: #a0a0a0;
+  font-family: "Audiowide", sans-serif;
+  font-size: 0.85rem;
+  padding: 0.6rem 1.5rem;
+  border-radius: 6px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  transition: all 0.3s ease;
+  text-decoration: none;
+
+  &:hover {
+    background: rgba(150, 150, 150, 0.1);
+    border-color: #c0c0c0;
+    color: #d0d0d0;
+    box-shadow: 0 0 15px rgba(150, 150, 150, 0.2);
+  }
+}
+
+// Alertes
+.smuggler-alert {
+  background: rgba(255, 80, 80, 0.15);
+  border: 1px solid rgba(255, 80, 80, 0.5);
+  border-radius: 8px;
+  color: #ff8080;
+  padding: 1rem;
+  margin-bottom: 1rem;
+
+  ul {
+    margin: 0;
+    padding-left: 1.2rem;
+  }
+}
+
+// Icône de caisse
+.crate-icon {
+  color: #ff6b35;
+  margin-right: 0.5rem;
+}
+
+// Animation d'apparition
+@keyframes smuggler-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.smuggler-card {
+  animation: smuggler-fade-in 0.5s ease-out;
+
+  &:nth-child(2) {
+    animation-delay: 0.1s;
+  }
+}
+
+// Responsive
+@media (max-width: 992px) {
+  .smuggler-form .row {
+    gap: 1rem;
+  }
+  
+  .smuggler-table {
+    font-size: 0.85rem;
+    
+    thead th,
+    tbody td,
+    tfoot td {
+      padding: 0.6rem 0.5rem;
+    }
+  }
+}
+

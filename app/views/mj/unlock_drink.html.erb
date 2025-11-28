@@ -29,7 +29,7 @@
               </div>
               <div class="col-md-6">
                 <%= f.label :drink_id, "Alcool", class: "form-label" %>
-                <%= f.select :drink_id, options_from_collection_for_select(@drinks_data, 'id', 'name'), 
+                <%= f.select :drink_id, options_for_select(@drinks_data.sort_by { |d| d['name'] }.map { |d| [d['name'], d['id']] }), 
                     { prompt: "Sélectionnez un alcool" }, 
                     { class: "form-select", required: true } %>
               </div>

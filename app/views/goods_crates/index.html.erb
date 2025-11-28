@@ -1,16 +1,25 @@
-<div class="content-container d-flex flex-column align-items-center">
-  <h1 class="text-success">Gestion des Marchandises de Contrebande</h1>
+<div class="smuggler-page">
+  <div class="smuggler-container">
+    <!-- Titre principal -->
+    <div class="text-center mb-4">
+      <h1 class="smuggler-title">
+        <i class="fa-solid fa-box-open me-2"></i>Cargaison de Contrebande
+      </h1>
+      <p class="smuggler-subtitle">
+        <i class="fa-solid fa-skull-crossbones me-2"></i>
+        Marchandises dans la soute du vaisseau
+      </p>
+    </div>
 
-  <div class="container mt-4" style="max-width: 1200px;">
     <!-- Formulaire d'ajout -->
-    <div class="card mb-4">
-      <div class="card-header">
-        <h5 class="mb-0">Ajouter une caisse de marchandises</h5>
+    <div class="smuggler-card mb-4">
+      <div class="smuggler-card-header">
+        <h5><i class="fa-solid fa-plus-circle"></i> Nouvelle cargaison</h5>
       </div>
-      <div class="card-body">
-        <%= form_with model: @goods_crate, url: goods_crates_path, local: true, class: "row g-3" do |f| %>
+      <div class="smuggler-card-body">
+        <%= form_with model: @goods_crate, url: goods_crates_path, local: true, class: "smuggler-form" do |f| %>
           <% if @goods_crate.errors.any? %>
-            <div class="alert alert-danger">
+            <div class="smuggler-alert">
               <ul class="mb-0">
                 <% @goods_crate.errors.full_messages.each do |message| %>
                   <li><%= message %></li>
@@ -19,84 +28,102 @@
             </div>
           <% end %>
 
-          <div class="col-md-4">
-            <%= f.label :content, "Contenu de la caisse", class: "form-label" %>
-            <%= f.text_field :content, class: "form-control", placeholder: "Ex: Armes, Drogues, Électronique...", required: true %>
-          </div>
+          <div class="row g-3 align-items-end">
+            <div class="col-md-3">
+              <%= f.label :content, "Contenu de la caisse", class: "form-label" %>
+              <%= f.text_field :content, class: "form-control", placeholder: "Armes, Épice, Tech...", required: true %>
+            </div>
 
-          <div class="col-md-2">
-            <%= f.label :quantity, "Quantité", class: "form-label" %>
-            <%= f.number_field :quantity, class: "form-control", min: 1, value: 1, required: true %>
-          </div>
+            <div class="col-md-2">
+              <%= f.label :quantity, "Quantité", class: "form-label" %>
+              <%= f.number_field :quantity, class: "form-control", min: 1, value: 1, required: true %>
+            </div>
 
-          <div class="col-md-3">
-            <%= f.label :origin_planet, "Planète de provenance", class: "form-label" %>
-            <%= f.text_field :origin_planet, class: "form-control", placeholder: "Ex: Tatooine, Coruscant...", required: true %>
-          </div>
+            <div class="col-md-3">
+              <%= f.label :origin_planet, "Provenance", class: "form-label" %>
+              <%= f.text_field :origin_planet, class: "form-control", placeholder: "Tatooine, Nar Shaddaa...", required: true %>
+            </div>
 
-          <div class="col-md-2">
-            <%= f.label :price_per_crate, "Prix par caisse", class: "form-label" %>
-            <%= f.number_field :price_per_crate, class: "form-control", min: 0, value: 0, required: true %>
-          </div>
+            <div class="col-md-2">
+              <%= f.label :price_per_crate, "Prix / caisse", class: "form-label" %>
+              <div class="input-group">
+                <%= f.number_field :price_per_crate, class: "form-control", min: 0, value: 0, required: true %>
+                <span class="input-group-text" style="background: rgba(0, 20, 10, 0.8); border-color: rgba(0, 255, 102, 0.3); color: #ffd700;">¢</span>
+              </div>
+            </div>
 
-          <div class="col-md-1 d-flex align-items-end">
-            <%= f.submit "Ajouter", class: "btn btn-outline-success" %>
+            <div class="col-md-2">
+              <%= f.submit "Ajouter", class: "btn btn-smuggler-add w-100" %>
+            </div>
           </div>
         <% end %>
       </div>
     </div>
 
     <!-- Tableau des caisses -->
-    <div class="card">
-      <div class="card-header">
-        <h5 class="mb-0">Caisses dans la soute</h5>
+    <div class="smuggler-card">
+      <div class="smuggler-card-header">
+        <h5><i class="fa-solid fa-warehouse"></i> Inventaire de la soute</h5>
       </div>
-      <div class="card-body">
+      <div class="smuggler-card-body">
         <% if @goods_crates.any? %>
           <div class="table-responsive">
-            <table class="table table-bordered table-striped">
-              <thead class="table-dark">
+            <table class="smuggler-table">
+              <thead>
                 <tr>
-                  <th style="width: 30%;">Contenu</th>
-                  <th style="width: 15%;">Quantité</th>
-                  <th style="width: 25%;">Planète de provenance</th>
-                  <th style="width: 15%;">Prix par caisse</th>
-                  <th style="width: 15%;">Valeur totale</th>
-                  <th style="width: 10%;">Actions</th>
+                  <th><i class="fa-solid fa-box crate-icon"></i>Contenu</th>
+                  <th><i class="fa-solid fa-layer-group crate-icon"></i>Qté</th>
+                  <th><i class="fa-solid fa-globe crate-icon"></i>Provenance</th>
+                  <th><i class="fa-solid fa-tag crate-icon"></i>Prix unitaire</th>
+                  <th><i class="fa-solid fa-coins crate-icon"></i>Valeur</th>
+                  <th></th>
                 </tr>
               </thead>
               <tbody>
                 <% @goods_crates.each do |crate| %>
                   <tr id="goods_crate_<%= crate.id %>">
-                    <td><%= crate.content %></td>
-                    <td><%= crate.quantity %></td>
-                    <td><%= crate.origin_planet %></td>
-                    <td><%= crate.price_per_crate %> crédits</td>
-                    <td><strong><%= crate.quantity * crate.price_per_crate %> crédits</strong></td>
+                    <td class="content-cell"><%= crate.content %></td>
+                    <td class="quantity-cell"><%= crate.quantity %></td>
+                    <td class="planet-cell"><%= crate.origin_planet %></td>
+                    <td class="price-cell"><%= number_with_delimiter(crate.price_per_crate) %> ¢</td>
+                    <td class="total-cell"><%= number_with_delimiter(crate.quantity * crate.price_per_crate) %> ¢</td>
                     <td>
-                      <%= button_to "❌", goods_crate_path(crate), method: :delete, 
-                          data: { turbo: false, confirm: "Supprimer cette caisse de marchandises ?" }, 
-                          class: "btn btn-sm btn-outline-danger" %>
+                      <%= button_to goods_crate_path(crate), method: :delete, 
+                          data: { turbo: false, confirm: "Jeter cette cargaison dans l'espace ?" }, 
+                          class: "btn btn-smuggler-delete" do %>
+                        <i class="fa-solid fa-trash-can"></i>
+                      <% end %>
                     </td>
                   </tr>
                 <% end %>
               </tbody>
-              <tfoot class="table-secondary">
+              <tfoot>
                 <tr>
-                  <td colspan="4" class="text-end"><strong>Valeur totale de la cargaison :</strong></td>
-                  <td><strong><%= @goods_crates.sum { |c| c.quantity * c.price_per_crate } %> crédits</strong></td>
+                  <td colspan="4" class="text-end">
+                    <strong><i class="fa-solid fa-calculator me-2"></i>Valeur totale de la cargaison :</strong>
+                  </td>
+                  <td class="grand-total">
+                    <strong><%= number_with_delimiter(@goods_crates.sum { |c| c.quantity * c.price_per_crate }) %> ¢</strong>
+                  </td>
                   <td></td>
                 </tr>
               </tfoot>
             </table>
           </div>
         <% else %>
-          <p class="text-muted text-center">Aucune caisse de marchandises dans la soute pour le moment.</p>
+          <div class="smuggler-empty">
+            <i class="fa-solid fa-box-open"></i>
+            <p>La soute est vide... Trouvez de la marchandise à transporter.</p>
+          </div>
         <% end %>
       </div>
     </div>
+
+    <!-- Bouton retour -->
+    <div class="text-center mt-4">
+      <%= link_to root_path, class: "btn-smuggler-back" do %>
+        <i class="fa-solid fa-arrow-left me-2"></i>Retour au cockpit
+      <% end %>
+    </div>
   </div>
-
-  <%= link_to "Retour", root_path, class: "btn btn-outline-secondary mt-4" %>
 </div>
-

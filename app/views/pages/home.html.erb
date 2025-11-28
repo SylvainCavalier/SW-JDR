@@ -12,248 +12,264 @@
 
 <%= render 'pages/credits_sound' %>
 
-<div class="frame-container" style="position: relative; width: 100%; height: 100vh;">
-
-  <!-- Username -->
-  <p class="username-display mt-1 text-primary fw-bold">
-    <%= current_user.username.titleize %>
-  </p>
-
+<div class="frame-container">
   <!-- Cadre principal SVG -->
   <img src="<%= asset_path('cadre2.svg') %>" alt="Cadre" class="ui-frame">
 
-  <!-- Infos Race/Classe -->
-  <div class= "race">
+  <!-- Username -->
+  <p class="username-display">
+    <%= current_user.username.titleize %>
+  </p>
+
+  <!-- Infos Race/Classe (en bas, hors du flow flexbox) -->
+  <div class="race">
     <p><%= current_user.race.name if current_user.race %></p>
   </div>
-  <div class= "classe">
+  <div class="classe">
     <p><%= current_user.classe_perso.name if current_user.classe_perso %></p>
   </div>
 
-  <!-- Barre du haut à droite -->
-  <div class="top-bar-container">
-    <img src="<%= asset_path('top-bar.svg') %>" alt="Top Bar" class="ui-top-bar">
-    <% if @patch_equipped %>
-      <i class="fa-regular fa-circle-down patch-icon" title="<%= current_user.equipped_patch&.name %>"
-         data-bs-toggle="tooltip" data-bs-placement="bottom"></i>
-    <% end %>
-    <% if @active_injection_object %>
-      <i class="fa-solid fa-syringe injection-icon" title="<%= @active_injection_object.name %>"
-         data-bs-toggle="tooltip" data-bs-placement="bottom"></i>
-    <% end %>
-    <% if current_user.active_implant_object %>
-      <i class="fa-solid fa-microchip implant-icon" title="<%= current_user.active_implant_object&.name %>"
-         data-bs-toggle="tooltip" data-bs-placement="bottom"></i>
-    <% end %>
-    <% if current_user.spheros.exists?(active: true) %>
-      <i class="fa-brands fa-discord sphero-icon" title="<%= current_user.spheros.find_by(active: true)&.name %>"
-         data-bs-toggle="tooltip" data-bs-placement="bottom"></i>
-    <% end %>
-  </div>
+  <!-- ========== CONTENU PRINCIPAL (3 lignes flexbox) ========== -->
+  <div class="home-content">
 
-  <!-- Elements en haut à gauche -->
-  <div class="d-flex home-top-icons">
-    <!-- Fonctionnalités spéciales -->
-    <% if current_user.classe_perso&.name == "Bio-savant" %>
-      <%= link_to science_path do %>
-        <img src="<%= asset_path('function.svg') %>" alt="Function UI" class="ui-function">
-      <% end %>
-    <% elsif current_user.classe_perso&.name == "Contrebandier" %>
-      <%= link_to goods_crates_path do %>
-        <img src="<%= asset_path('function.svg') %>" alt="Function UI" class="ui-function">
-      <% end %>
-    <% elsif current_user.classe_perso&.name == "Mercenaire" %>
-      <%= link_to wine_cellar_path do %>
-        <img src="<%= asset_path('function.svg') %>" alt="Function UI" class="ui-function">
-      <% end %>
-    <% else %>
-      <img src="<%= asset_path('function.svg') %>" alt="Function UI" class="ui-function">
-    <% end %>
+    <!-- ===== LIGNE DU HAUT ===== -->
+    <div class="home-row-top">
+      <!-- Bloc gauche : icônes de navigation -->
+      <div class="home-top-icons">
+        <!-- Fonctionnalités spéciales -->
+        <% if current_user.classe_perso&.name == "Bio-savant" %>
+          <%= link_to science_path do %>
+            <img src="<%= asset_path('function.svg') %>" alt="Function UI" class="ui-function">
+          <% end %>
+        <% elsif current_user.classe_perso&.name == "Contrebandier" %>
+          <%= link_to goods_crates_path do %>
+            <img src="<%= asset_path('function.svg') %>" alt="Function UI" class="ui-function">
+          <% end %>
+        <% elsif current_user.classe_perso&.name == "Mercenaire" %>
+          <%= link_to wine_cellar_path do %>
+            <img src="<%= asset_path('function.svg') %>" alt="Function UI" class="ui-function">
+          <% end %>
+        <% else %>
+          <img src="<%= asset_path('function.svg') %>" alt="Function UI" class="ui-function">
+        <% end %>
 
-    <!-- Gestion de combat -->
-    <div class="fight-btn">
-      <%= link_to combat_path do %>
-        <img src="<%= asset_path('fighticon2t.png') %>" alt="Combat" class="fight-icon">
-      <% end %>
-    </div>
-
-    <!-- Bouton Holonews avec compteur dynamique -->
-    <div class="holonews-btn">
-      <%= link_to holonews_path, class: "position-relative" do %>
-        <img src="<%= asset_path('holonewspng.png') %>" alt="Holonews" class="holonews-icon">
-        <turbo-frame id="user_<%= current_user.id %>_holonews_counter">
-          <%= render "holonews/count", unread_count: { user_id: current_user.id, count: @unread_holonews_count } %>
-        </turbo-frame>
-      <% end %>
-    </div>
-  </div>
-
-  <!-- Avatar -->
-  <div class="avatar-container">
-    <%= link_to user_path(current_user), class: "avatar-label" do %>
-      <% if current_user.avatar.attached? %>
-        <%= image_tag(current_user.avatar, class: "avatar-preview") %>
-      <% else %>
-        <div class="avatar-placeholder">+</div>
-      <% end %>
-    <% end %>
-  </div>
-
-  <!-- Dé en bas de l'écran du screen -->
-  <%= link_to dice_users_path do %>
-  <img src="<%= asset_path('de6.png') %>" alt="Dé à 6 faces" class="dice-home">
-  <% end %>
-
-  <!-- Boutons de bas de page -->
-  <div class="home-bottom-buttons">
-    <div class="d-flex gap-2">
-      <!-- Gestion des Pets -->
-      <%= link_to pets_path, class: "btn btn-outline-success team-home" do %>
-        <i class="fa-solid fa-paw"></i>
-      <% end %>
-
-      <!-- Équipe -->
-      <%= link_to team_path, class: "btn btn-outline-success team-home" do %>
-        <i class="fa-solid fa-people-group"></i>
-      <% end %>
-
-      <!-- Gestion de la base -->
-      <%= link_to headquarter_path(@headquarter), class: "btn btn-outline-success team-home" do %>
-        <i class="fa-solid fa-building-flag"></i>
-      <% end %>
-    </div>
-    <div class="d-flex gap-2">
-      <!-- Règles du jeu -->
-      <%= link_to rules_path, class: "btn btn-outline-success team-home" do %>
-        <i class="fa-solid fa-file-invoice"></i>
-      <% end %>
-
-      <!-- Vaisseau -->
-      <%= link_to ships_path, class: "btn btn-outline-success team-home" do %>
-        <i class="fa-solid fa-shuttle-space"></i>
-      <% end %>
-
-      <!-- Pazaak -->
-      <%= link_to pazaak_path, class: "btn btn-outline-success team-home" do %>
-        <i class="fa-solid fa-dice"></i>
-      <% end %>
-    </div>
-  </div>
-
-  <!-- Boucliers -->
-  <div class="d-flex" data-controller="shield-recharge" 
-      data-user-id="<%= current_user.id %>"
-      data-credits="<%= current_user.credits %>">
-
-    <!-- Bouclier d'énergie -->
-    <div class="shield">
-      <turbo-frame id="user_<%= current_user.id %>_energy_shield_frame">
-        <div class="shield-icon"
-            data-controller="shield"
-            data-action="click->shield#toggle"
-            data-user-id="<%= current_user.id %>"
-            data-shield-type="energy"
-            data-shield-max="<%= current_user.shield_max || 0 %>"
-            data-shield-current="<%= current_user.shield_current || 0 %>"
-            data-shield-state="<%= current_user.shield_state %>">
-            
-            <i class="fa-solid fa-shield" data-shield-target="icon"></i>
-            
-            <p class="mt-1 mb-0" style="font-size: 0.8em;" 
-              data-shield-target="shieldCurrent"
-              data-shield-current="<%= current_user.shield_current %>"
-              data-shield-state="<%= current_user.shield_state %>">
-              Energie <%= current_user.shield_current %>/<%= current_user.shield_max %>
-            </p>
+        <!-- Gestion de combat -->
+        <div class="fight-btn">
+          <%= link_to combat_path do %>
+            <img src="<%= asset_path('fighticon2t.png') %>" alt="Combat" class="fight-icon">
+          <% end %>
         </div>
-        <!-- Bouton de recharge -->
-        <button class="btn btn-outline-primary btn-sm" 
-                data-action="click->shield-recharge#openRechargePopup" 
+
+        <!-- Bouton Holonews avec compteur dynamique -->
+        <div class="holonews-btn">
+          <%= link_to holonews_path, class: "position-relative" do %>
+            <img src="<%= asset_path('holonewspng.png') %>" alt="Holonews" class="holonews-icon">
+            <turbo-frame id="user_<%= current_user.id %>_holonews_counter">
+              <%= render "holonews/count", unread_count: { user_id: current_user.id, count: @unread_holonews_count } %>
+            </turbo-frame>
+          <% end %>
+        </div>
+      </div>
+
+      <!-- Bloc droite : barre SVG avec icônes -->
+      <div class="top-bar-container">
+        <img src="<%= asset_path('top-bar.svg') %>" alt="Top Bar" class="ui-top-bar">
+        <% if @patch_equipped %>
+          <i class="fa-regular fa-circle-down patch-icon" title="<%= current_user.equipped_patch&.name %>"
+             data-bs-toggle="tooltip" data-bs-placement="bottom"></i>
+        <% end %>
+        <% if @active_injection_object %>
+          <i class="fa-solid fa-syringe injection-icon" title="<%= @active_injection_object.name %>"
+             data-bs-toggle="tooltip" data-bs-placement="bottom"></i>
+        <% end %>
+        <% if current_user.active_implant_object %>
+          <i class="fa-solid fa-microchip implant-icon" title="<%= current_user.active_implant_object&.name %>"
+             data-bs-toggle="tooltip" data-bs-placement="bottom"></i>
+        <% end %>
+        <% if current_user.spheros.exists?(active: true) %>
+          <i class="fa-brands fa-discord sphero-icon" title="<%= current_user.spheros.find_by(active: true)&.name %>"
+             data-bs-toggle="tooltip" data-bs-placement="bottom"></i>
+        <% end %>
+      </div>
+    </div>
+
+    <!-- ===== LIGNE DU MILIEU ===== -->
+    <div class="home-row-middle">
+      <!-- Bloc gauche : Avatar -->
+      <div class="avatar-container">
+        <%= link_to user_path(current_user), class: "avatar-label" do %>
+          <% if current_user.avatar.attached? %>
+            <%= image_tag(current_user.avatar, class: "avatar-preview") %>
+          <% else %>
+            <div class="avatar-placeholder">+</div>
+          <% end %>
+        <% end %>
+      </div>
+
+      <!-- Bloc centre : Container crédits/XP -->
+      <%= link_to new_transaction_path do %>
+        <div class="credits-container" data-controller="credits" data-user-id="<%= current_user.id %>" data-max-hp="<%= current_user.hp_max %>">
+          <%= turbo_stream_from "notifications_#{current_user.id}" %>
+          <turbo-frame id="notification_frame"></turbo-frame>
+          <img src="<%= asset_path('screen.svg') %>" alt="Screen Background" class="screen-background">
+          <!-- Credits -->
+          <turbo-frame id="user_<%= current_user.id %>_credits_frame">
+            <%= render partial: "pages/credits", locals: { user: current_user } %>
+          </turbo-frame>
+          <!-- XP Container -->
+          <div class="xp-container" data-controller="xp-spend" data-user-id="<%= current_user.id %>">
+            <turbo-frame id="user_<%= current_user.id %>_xp_frame">
+              <p class="xp-text" id="user_<%= current_user.id %>_xp" data-xp-spend-target="xp">
+                XP : <%= current_user.xp %>
+              </p>
+            </turbo-frame>
+            <div id="xp_notifications"></div>
+          </div>
+        </div>
+      <% end %>
+
+      <!-- Bloc droite : Boucliers -->
+      <div class="shields-container" data-controller="shield-recharge" 
+           data-user-id="<%= current_user.id %>"
+           data-credits="<%= current_user.credits %>">
+
+        <!-- Bouclier d'énergie -->
+        <div class="shield">
+          <turbo-frame id="user_<%= current_user.id %>_energy_shield_frame">
+            <div class="shield-icon"
+                data-controller="shield"
+                data-action="click->shield#toggle"
+                data-user-id="<%= current_user.id %>"
                 data-shield-type="energy"
                 data-shield-max="<%= current_user.shield_max || 0 %>"
                 data-shield-current="<%= current_user.shield_current || 0 %>"
-                style="width: 80%;">
-          ++
-        </button>
-      </turbo-frame>
-      <audio id="shield-sound" src="<%= asset_path('shield.mp3') %>" preload="auto"></audio>
-    </div>
-
-    <!-- Bouclier echani -->
-    <div class="echani-shield">
-      <turbo-frame id="user_<%= current_user.id %>_echani_shield_frame">
-        <div class="echani-shield-icon"
-            data-controller="shield"
-            data-action="click->shield#toggle"
-            data-user-id="<%= current_user.id %>"
-            data-shield-type="echani"
-            data-shield-max="<%= current_user.echani_shield_max || 0 %>"
-            data-shield-current="<%= current_user.echani_shield_current || 0 %>"
-            data-shield-state="<%= current_user.echani_shield_state %>">
-          
-          <i class="fa-solid fa-shield" data-shield-target="icon"></i>
-          
-          <p class="mt-1 mb-0" style="font-size: 0.8em;" 
-            data-shield-target="shieldCurrent"
-            data-shield-current="<%= current_user.echani_shield_current %>"
-            data-shield-state="<%= current_user.echani_shield_state %>">
-            Energie <%= current_user.echani_shield_current %>/<%= current_user.echani_shield_max %>
-          </p>
+                data-shield-state="<%= current_user.shield_state %>">
+                
+                <i class="fa-solid fa-shield" data-shield-target="icon"></i>
+                
+                <p data-shield-target="shieldCurrent"
+                  data-shield-current="<%= current_user.shield_current %>"
+                  data-shield-state="<%= current_user.shield_state %>">
+                  Energie <%= current_user.shield_current %>/<%= current_user.shield_max %>
+                </p>
+            </div>
+            <!-- Bouton de recharge -->
+            <button class="btn btn-outline-primary btn-sm" 
+                    data-action="click->shield-recharge#openRechargePopup" 
+                    data-shield-type="energy"
+                    data-shield-max="<%= current_user.shield_max || 0 %>"
+                    data-shield-current="<%= current_user.shield_current || 0 %>">
+              ++
+            </button>
+          </turbo-frame>
+          <audio id="shield-sound" src="<%= asset_path('shield.mp3') %>" preload="auto"></audio>
         </div>
-          
-        <!-- Bouton de recharge -->
-        <button class="btn btn-outline-primary btn-sm" 
-                data-action="click->shield-recharge#openRechargePopup" 
+
+        <!-- Bouclier echani -->
+        <div class="echani-shield">
+          <turbo-frame id="user_<%= current_user.id %>_echani_shield_frame">
+            <div class="echani-shield-icon"
+                data-controller="shield"
+                data-action="click->shield#toggle"
+                data-user-id="<%= current_user.id %>"
                 data-shield-type="echani"
                 data-shield-max="<%= current_user.echani_shield_max || 0 %>"
                 data-shield-current="<%= current_user.echani_shield_current || 0 %>"
-                style="width: 80%;">
-          ++
-        </button>
-      </turbo-frame>
-      <audio id="shield-sound" src="<%= asset_path('shield.mp3') %>" preload="auto"></audio>
-    </div>
+                data-shield-state="<%= current_user.echani_shield_state %>">
+              
+              <i class="fa-solid fa-shield" data-shield-target="icon"></i>
+              
+              <p data-shield-target="shieldCurrent"
+                data-shield-current="<%= current_user.echani_shield_current %>"
+                data-shield-state="<%= current_user.echani_shield_state %>">
+                Echani <%= current_user.echani_shield_current %>/<%= current_user.echani_shield_max %>
+              </p>
+            </div>
+              
+            <!-- Bouton de recharge -->
+            <button class="btn btn-outline-primary btn-sm" 
+                    data-action="click->shield-recharge#openRechargePopup" 
+                    data-shield-type="echani"
+                    data-shield-max="<%= current_user.echani_shield_max || 0 %>"
+                    data-shield-current="<%= current_user.echani_shield_current || 0 %>">
+              ++
+            </button>
+          </turbo-frame>
+          <audio id="echani-shield-sound" src="<%= asset_path('shield.mp3') %>" preload="auto"></audio>
+        </div>
 
-    <!-- Pop-up de confirmation de recharge --> 
-    <%= render "shared/recharge_modal" %>
-  </div>
-
-  <!-- CENTRAL CONTAINER -->
-  <%= link_to new_transaction_path do %>
-    <div class="credits-container mt-1" data-controller="credits" data-user-id="<%= current_user.id %>" data-max-hp="<%= current_user.hp_max %>">
-      <%= turbo_stream_from "notifications_#{current_user.id}" %>
-      <turbo-frame id="notification_frame"></turbo-frame>
-      <img src="<%= asset_path('screen.svg') %>" alt="Screen Background" class="screen-background">
-      <!-- Credits -->
-      <turbo-frame id="user_<%= current_user.id %>_credits_frame">
-        <%= render partial: "pages/credits", locals: { user: current_user } %>
-      </turbo-frame>
-      <!-- XP Container -->
-      <div class="xp-container d-flex" data-controller="xp-spend" data-user-id="<%= current_user.id %>">
-        <turbo-frame id="user_<%= current_user.id %>_xp_frame">
-          <p class="xp-text" id="user_<%= current_user.id %>_xp" data-xp-spend-target="xp">
-            XP : <%= current_user.xp %>
-          </p>
-        </turbo-frame>
-        <div id="xp_notifications"></div>
+        <!-- Pop-up de confirmation de recharge --> 
+        <%= render "shared/recharge_modal" %>
       </div>
     </div>
-  <% end %>
 
-  <!-- Statut -->
-  <turbo-frame id="user_<%= current_user.id %>_status_frame">
-    <div class="status-container m-1">
-      <% current_user.statuses.each do |status| %>
-        <p style="color: <%= status.color %>; font-size: 0.9em;"><%= status.name %></p>
-      <% end %>
+    <!-- ===== LIGNE DU BAS ===== -->
+    <div class="home-row-bottom">
+      <!-- Bloc gauche : Barre de PV et statut -->
+      <div class="hp-status-container">
+        <!-- Statut -->
+        <turbo-frame id="user_<%= current_user.id %>_status_frame">
+          <div class="status-container">
+            <% current_user.statuses.each do |status| %>
+              <p style="color: <%= status.color %>;"><%= status.name %></p>
+            <% end %>
+          </div>
+        </turbo-frame>
+        <!-- Barre de vie -->
+        <turbo-frame id="user_<%= current_user.id %>_hp_frame">
+          <%= render partial: "hp_bar", locals: { user: current_user } %>
+        </turbo-frame>
+      </div>
+
+      <!-- Bloc centre : Dé -->
+      <div class="dice-container-home">
+        <%= link_to dice_users_path do %>
+          <img src="<%= asset_path('de6.png') %>" alt="Dé à 6 faces" class="dice-home">
+        <% end %>
+      </div>
+
+      <!-- Bloc droite : Boutons de navigation -->
+      <div class="home-bottom-buttons">
+        <div class="d-flex">
+          <!-- Gestion des Pets -->
+          <%= link_to pets_path, class: "btn btn-outline-success team-home" do %>
+            <i class="fa-solid fa-paw"></i>
+          <% end %>
+
+          <!-- Équipe -->
+          <%= link_to team_path, class: "btn btn-outline-success team-home" do %>
+            <i class="fa-solid fa-people-group"></i>
+          <% end %>
+
+          <!-- Gestion de la base -->
+          <%= link_to headquarter_path(@headquarter), class: "btn btn-outline-success team-home" do %>
+            <i class="fa-solid fa-building-flag"></i>
+          <% end %>
+        </div>
+        <div class="d-flex">
+          <!-- Règles du jeu -->
+          <%= link_to rules_path, class: "btn btn-outline-success team-home" do %>
+            <i class="fa-solid fa-file-invoice"></i>
+          <% end %>
+
+          <!-- Vaisseau -->
+          <%= link_to ships_path, class: "btn btn-outline-success team-home" do %>
+            <i class="fa-solid fa-shuttle-space"></i>
+          <% end %>
+
+          <!-- Pazaak -->
+          <%= link_to pazaak_path, class: "btn btn-outline-success team-home" do %>
+            <i class="fa-solid fa-dice"></i>
+          <% end %>
+        </div>
+      </div>
     </div>
-  </turbo-frame>
-  <!-- Barre de vie -->
-  <turbo-frame id="user_<%= current_user.id %>_hp_frame">
-    <%= render partial: "hp_bar", locals: { user: current_user } %>
-  </turbo-frame>
 
+  </div>
+  <!-- ========== FIN CONTENU PRINCIPAL ========== -->
+
+  <!-- Bouton de déconnexion -->
   <%= button_to "✖", destroy_user_session_path, method: :delete, data: { turbo: false, confirm: "Se déconnecter ?" },
-    style: "position: absolute; top: 10px; right: 70px; color: #333; font-size: 10px; text-decoration: none; z-index: 3;",
+    class: "logout-btn",
     onmouseover: "this.style.color='#ff0000'", onmouseout: "this.style.color='#333'" %>
 </div>
