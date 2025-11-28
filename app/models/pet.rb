@@ -10,7 +10,9 @@ class Pet < ApplicationRecord
 
   has_many :pet_statuses, dependent: :destroy
   has_many :statuses, through: :pet_statuses
-  has_one :user, foreign_key: :pet_id, primary_key: :id
+  belongs_to :user, optional: true  # créateur
+  belongs_to :origin_embryo, class_name: 'Embryo', optional: true
+  has_one :user_as_active_pet, class_name: "User", foreign_key: :pet_id
 
   validates :name, presence: true, length: { maximum: 20 }
   validates :race, presence: true, length: { maximum: 12 }
@@ -26,6 +28,7 @@ class Pet < ApplicationRecord
   validates :age, numericality: { greater_than_or_equal_to: 1, only_integer: true }
 
   scope :force_sensitive_humanoids, -> { where(category: "humanoïde", force: true) }
+  scope :genetic_creatures, -> { where(creature: true) }
 
   after_commit :resize_image_if_needed
   after_initialize :set_default_values, if: :new_record?

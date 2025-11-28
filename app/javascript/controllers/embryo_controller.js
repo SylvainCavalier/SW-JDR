@@ -5,7 +5,7 @@ export default class extends Controller {
     "creatureType", "preview", "previewHp", "previewDamage", "previewResist",
     "previewPrecision", "previewSpeed", "previewDodge", "submitBtn",
     "eprouvettes", "matiere", "embryoList", "embryoCount", "emptyMessage",
-    "resultModal", "modalHeader", "modalTitle", "diceResult", "resultMessage"
+    "resultModal", "modalHeader", "modalTitle", "diceResult", "resultMessage", "resultImage"
   ];
 
   connect() {
@@ -151,10 +151,16 @@ export default class extends Controller {
       this.modalHeaderTarget.className = "modal-header bg-success";
       this.modalTitleTarget.textContent = "🎉 Succès !";
       this.diceResultTarget.className = "display-1 text-success";
+      if (this.hasResultImageTarget) {
+        this.resultImageTarget.innerHTML = '<img src="/assets/reussite.png" alt="Réussite" class="img-fluid" style="max-height: 120px;">';
+      }
     } else {
       this.modalHeaderTarget.className = "modal-header bg-danger";
       this.modalTitleTarget.textContent = "❌ Échec";
       this.diceResultTarget.className = "display-1 text-danger";
+      if (this.hasResultImageTarget) {
+        this.resultImageTarget.innerHTML = '<img src="/assets/echec.png" alt="Échec" class="img-fluid" style="max-height: 120px;">';
+      }
     }
 
     // Afficher le modal

@@ -1,6 +1,8 @@
 <div class="container mt-4" data-controller="embryo">
   <h1 class="text-center text-success mb-4">🧬 Culture d'embryons</h1>
 
+  <%= link_to "Retour", genetique_dashboard_path, class: "btn btn-outline-secondary mt-4 go-back-two" %>
+
   <!-- Ressources disponibles -->
   <div class="row justify-content-center mb-4">
     <div class="col-auto">
@@ -87,18 +89,8 @@
               </div>
             </div>
 
-            <!-- Coût -->
-            <div class="alert alert-info py-2 mb-3">
-              <small>
-                <i class="fa-solid fa-info-circle me-1"></i>
-                Coût: 1 Jeu d'éprouvettes + 1 Matière organique<br>
-                <i class="fa-solid fa-dice me-1"></i>
-                Jet de chance (1D12) : réussite si ≥ 4
-              </small>
-            </div>
-
-            <%= f.submit "🧫 Cultiver l'embryon", 
-                class: "btn btn-success w-100",
+            <%= f.submit "Cultiver l'embryon", 
+                class: "btn btn-outline-success w-100",
                 data: { embryo_target: "submitBtn" } %>
           <% end %>
         </div>
@@ -160,6 +152,8 @@
           <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
         </div>
         <div class="modal-body text-center">
+          <!-- Image de résultat -->
+          <div class="mb-3" data-embryo-target="resultImage"></div>
           <div class="dice-result-display mb-3">
             <span class="display-1" data-embryo-target="diceResult">?</span>
             <p class="text-muted">Jet de dé (1D12)</p>

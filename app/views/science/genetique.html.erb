@@ -1,5 +1,7 @@
 <h1 class="container text-center mt-4">Tableau de Bord Génétique</h1>
 
+<%= link_to "Retour", science_path, class: "btn btn-outline-secondary mt-4 go-back-two" %>
+
 <div class="d-flex flex-column justify-content-center align-items-center mt-4">
   <img src="<%= asset_path('genetiqueillus2.png') %>" alt="Génétique" class="img-fluid mb-4" style="max-width: 40vw;">
   <%= link_to "🔬 Labo d'études génétiques", labo_genetique_path, class: "btn btn-success m-2" %>

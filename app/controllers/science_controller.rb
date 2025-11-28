@@ -280,7 +280,7 @@ class ScienceController < ApplicationController
     # Jet de chance (1d12)
     luck_bonus = current_user.luck ? 1 : 0
     dice_roll = rand(1..12) + luck_bonus
-    success_threshold = 4 # Réussite si >= 4
+    success_threshold = 5
 
     if dice_roll >= success_threshold
       # Succès - Créer l'embryon
@@ -328,26 +328,241 @@ class ScienceController < ApplicationController
   end
 
   def gestation
-    @embryos_en_gestation = current_user.embryos.where(status: 'en_gestation').order(created_at: :desc)
+    @tubes = (1..3).map do |tube_num|
+      embryo = current_user.embryos.in_gestation.find_by(gestation_tube: tube_num)
+      { number: tube_num, embryo: embryo }
+    end
+    @embryos_ready = current_user.embryos.where(status: 'éclos')
   end
 
   def traits
-    @embryos = current_user.embryos.where(status: ['stocké', 'en_culture']).order(created_at: :desc)
+    @embryos = current_user.embryos.available_for_modification.order(created_at: :desc)
+    @modified_embryos = current_user.embryos.modified_not_gestating.order(created_at: :desc)
     @user_genes = current_user.user_genes.includes(:gene).where('level > 0')
+    @eprouvettes = get_inventory_quantity("Jeu d'éprouvettes")
+    @matiere_organique = get_inventory_quantity("Matière organique")
+  end
+
+  # Calcul des probabilités AJAX
+  def calculate_probabilities
+    genes_data = params[:genes] || []
+    genes_with_levels = genes_data.map do |g|
+      { gene_id: g[:gene_id].to_i, level: g[:level].to_i }
+    end
+
+    probabilities = Embryo.calculate_probabilities(genes_with_levels)
+    costs = Embryo::TRAIT_COSTS[genes_with_levels.size] || { eprouvettes: 0, matiere: 0 }
+
+    render json: {
+      probabilities: probabilities,
+      costs: costs
+    }
+  end
+
+  # Application des traits génétiques
+  def apply_traits
+    embryo = current_user.embryos.find(params[:embryo_id])
+    genes_data = params[:genes] || []
+
+    if genes_data.empty? || genes_data.size > 3
+      render json: { success: false, error: "Sélectionnez entre 1 et 3 gènes." }, status: :unprocessable_entity
+      return
+    end
+
+    genes_with_levels = genes_data.map do |g|
+      { gene_id: g[:gene_id].to_i, level: g[:level].to_i }
+    end
+
+    # Vérifier les coûts
+    costs = Embryo::TRAIT_COSTS[genes_with_levels.size]
+    eprouvettes = get_user_inventory("Jeu d'éprouvettes")
+    matiere = get_user_inventory("Matière organique")
+
+    if eprouvettes.nil? || eprouvettes.quantity < costs[:eprouvettes]
+      render json: { success: false, error: "Éprouvettes insuffisantes (#{costs[:eprouvettes]} requises)." }, status: :unprocessable_entity
+      return
+    end
+
+    if matiere.nil? || matiere.quantity < costs[:matiere]
+      render json: { success: false, error: "Matière organique insuffisante (#{costs[:matiere]} requise)." }, status: :unprocessable_entity
+      return
+    end
+
+    # Consommer les ressources
+    eprouvettes.decrement!(:quantity, costs[:eprouvettes])
+    matiere.decrement!(:quantity, costs[:matiere])
+
+    # Appliquer les traits
+    user_genes_to_consume = genes_with_levels.map do |g|
+      { gene_id: g[:gene_id], level: g[:level] }
+    end
+
+    result = embryo.apply_genetic_traits!(genes_with_levels, user_genes_to_consume)
+
+    render json: result.merge(
+      new_eprouvettes: eprouvettes.quantity,
+      new_matiere: matiere.quantity
+    )
+  end
+
+  # Mettre en gestation
+  def start_gestation
+    embryo = current_user.embryos.find(params[:embryo_id])
+    result = embryo.start_gestation!
+
+    if result[:success]
+      render json: result
+    else
+      render json: result, status: :unprocessable_entity
+    end
+  end
+
+  # Recycler un embryon
+  def recycle_embryo
+    embryo = current_user.embryos.find(params[:embryo_id])
+    result = embryo.recycle!
+
+    if result[:success]
+      render json: result
+    else
+      render json: result, status: :unprocessable_entity
+    end
+  end
+
+  # Voir les détails d'un embryon en gestation
+  def show_embryo
+    @embryo = current_user.embryos.find(params[:id])
+    render json: {
+      id: @embryo.id,
+      name: @embryo.name,
+      creature_type: @embryo.creature_type,
+      race: @embryo.race,
+      gender: @embryo.gender,
+      hp_max: @embryo.hp_max,
+      damage_1: @embryo.damage_1,
+      damage_bonus_1: @embryo.damage_bonus_1,
+      weapon: @embryo.weapon,
+      special_traits: @embryo.special_traits,
+      status: @embryo.status,
+      gestation_days_remaining: @embryo.gestation_days_remaining,
+      gestation_days_total: @embryo.gestation_days_total,
+      skills: @embryo.embryo_skills.includes(:skill).map do |es|
+        { name: es.skill.name, mastery: es.mastery, bonus: es.bonus }
+      end
+    }
+  end
+
+  # Cloner un embryon
+  def clone_embryo
+    embryo = current_user.embryos.find(params[:embryo_id])
+    target_tube = params[:target_tube].to_i
+
+    # Vérifier les ressources (100 crédits + 3 matières organiques)
+    if current_user.credits < 100
+      render json: { success: false, error: "Crédits insuffisants (100 requis)." }, status: :unprocessable_entity
+      return
+    end
+
+    matiere = get_user_inventory("Matière organique")
+    if matiere.nil? || matiere.quantity < 3
+      render json: { success: false, error: "Matière organique insuffisante (3 requises)." }, status: :unprocessable_entity
+      return
+    end
+
+    # Consommer les ressources
+    current_user.decrement!(:credits, 100)
+    matiere.decrement!(:quantity, 3)
+
+    result = embryo.clone!(target_tube)
+
+    render json: result.merge(
+      new_credits: current_user.credits,
+      new_matiere: matiere.quantity
+    )
+  end
+
+  # Accélérer la gestation
+  def accelerate_gestation
+    embryo = current_user.embryos.find(params[:embryo_id])
+
+    # Vérifier les ressources (500 crédits + 1 matière organique)
+    if current_user.credits < 500
+      render json: { success: false, error: "Crédits insuffisants (500 requis)." }, status: :unprocessable_entity
+      return
+    end
+
+    matiere = get_user_inventory("Matière organique")
+    if matiere.nil? || matiere.quantity < 1
+      render json: { success: false, error: "Matière organique insuffisante (1 requise)." }, status: :unprocessable_entity
+      return
+    end
+
+    # Consommer les ressources
+    current_user.decrement!(:credits, 500)
+    matiere.decrement!(:quantity, 1)
+
+    result = embryo.accelerate_gestation!
+
+    render json: {
+      success: true,
+      message: "Gestation accélérée ! La créature est prête.",
+      new_credits: current_user.credits,
+      new_matiere: matiere.quantity
+    }
+  end
+
+  # Faire naître la créature (convertir en Pet)
+  def birth_creature
+    embryo = current_user.embryos.find(params[:embryo_id])
+
+    unless embryo.status == 'éclos'
+      render json: { success: false, error: "L'embryon n'est pas prêt à naître." }, status: :unprocessable_entity
+      return
+    end
+
+    pet = embryo.convert_to_pet!
+
+    if pet
+      render json: {
+        success: true,
+        message: "#{pet.name} est né ! Vous pouvez le retrouver dans le bestiaire.",
+        pet: {
+          id: pet.id,
+          name: pet.name,
+          race: pet.race
+        }
+      }
+    else
+      render json: { success: false, error: "Erreur lors de la naissance." }, status: :unprocessable_entity
+    end
   end
 
   def clonage
   end
 
   def stats
+    @genetic_stats = GeneticStatistic.for_user(current_user)
     @total_embryos = current_user.embryos.count
-    @embryos_stockes = current_user.embryos.where(status: 'stocké').count
-    @embryos_en_culture = current_user.embryos.where(status: 'en_culture').count
+    @embryos_stockes = current_user.embryos.where(status: 'stocké', modified: false).count
+    @embryos_modifies = current_user.embryos.where(modified: true, status: 'stocké').count
     @embryos_en_gestation = current_user.embryos.where(status: 'en_gestation').count
     @embryos_eclos = current_user.embryos.where(status: 'éclos').count
+    @genes_debloques = current_user.user_genes.where('level > 0').count
+    @genes_total = Gene.where(positive: true).count
+    @creatures_creees = Pet.where(creature: true, origin_embryo_id: current_user.embryos.pluck(:id)).count
   end
   
   private
+
+  def get_inventory_quantity(item_name)
+    current_user.user_inventory_objects.joins(:inventory_object)
+               .find_by(inventory_objects: { name: item_name })&.quantity || 0
+  end
+
+  def get_user_inventory(item_name)
+    current_user.user_inventory_objects.joins(:inventory_object)
+               .find_by(inventory_objects: { name: item_name })
+  end
 
   def transfer_params
     params.require(:science).permit(:item_id, :player_id)

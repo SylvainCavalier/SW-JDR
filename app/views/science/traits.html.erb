@@ -1,30 +1,58 @@
-<div class="container mt-4">
+<div class="container mt-4" data-controller="traits">
   <h1 class="text-center text-success mb-4">🧬 Appliquer les Traits Génétiques</h1>
 
-  <div class="row">
-    <!-- Liste des embryons -->
-    <div class="col-lg-6 mb-4">
-      <div class="card bg-dark text-light border-info h-100">
-        <div class="card-header bg-info text-dark">
-          <h5 class="mb-0"><i class="fa-solid fa-box me-2"></i>Embryons disponibles (<%= @embryos.count %>)</h5>
+  <%= link_to "Retour", genetique_dashboard_path, class: "btn btn-outline-secondary mt-4 go-back-two" %>
+  
+  <!-- Ressources disponibles -->
+  <div class="row justify-content-center mb-4">
+    <div class="col-auto">
+      <div class="card bg-dark text-light border-success">
+        <div class="card-body d-flex align-items-center gap-3">
+          <div class="resource-item">
+            <i class="fa-solid fa-flask text-info"></i>
+            <span>Éprouvettes: </span>
+            <strong data-traits-target="eprouvettes"><%= @eprouvettes %></strong>
+          </div>
+          <div class="vr"></div>
+          <div class="resource-item">
+            <i class="fa-solid fa-dna text-warning"></i>
+            <span>Matière organique: </span>
+            <strong data-traits-target="matiere"><%= @matiere_organique %></strong>
+          </div>
         </div>
-        <div class="card-body" style="max-height: 500px; overflow-y: auto;">
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <!-- Colonne gauche: Sélection embryon + gènes -->
+    <div class="col-lg-7 mb-4">
+      <!-- Sélection de l'embryon -->
+      <div class="card bg-dark text-light border-info mb-4">
+        <div class="card-header bg-info text-dark">
+          <h5 class="mb-0"><i class="fa-solid fa-box me-2"></i>1. Sélectionnez un embryon (<%= @embryos.count %>)</h5>
+        </div>
+        <div class="card-body" style="max-height: 250px; overflow-y: auto;">
           <% if @embryos.any? %>
             <% @embryos.each do |embryo| %>
-              <div class="card bg-secondary mb-2">
+              <div class="card bg-secondary mb-2 embryo-card" 
+                   data-action="click->traits#selectEmbryo"
+                   data-embryo-id="<%= embryo.id %>"
+                   data-embryo-name="<%= embryo.name %>"
+                   data-embryo-type="<%= embryo.creature_type %>"
+                   data-embryo-hp="<%= embryo.hp_max %>"
+                   data-embryo-damage="<%= embryo.damage_1 %>"
+                   data-embryo-weapon="<%= embryo.weapon %>">
                 <div class="card-body py-2">
                   <div class="d-flex justify-content-between align-items-center">
                     <div>
                       <strong><%= embryo.name %></strong>
                       <span class="badge bg-success ms-2"><%= embryo.creature_type.humanize %></span>
-                      <span class="badge bg-<%= embryo.status == 'stocké' ? 'info' : 'warning' %>"><%= embryo.status %></span>
                     </div>
-                    <button class="btn btn-sm btn-outline-success" disabled>
-                      <i class="fa-solid fa-dna me-1"></i>Sélectionner
-                    </button>
+                    <i class="fa-solid fa-circle-check text-success d-none" data-traits-target="embryoCheck<%= embryo.id %>"></i>
                   </div>
                   <small class="text-muted">
-                    PV: <%= embryo.hp_max %> | Arme: <%= embryo.weapon || "-" %> | Race: <%= embryo.race || "-" %>
+                    PV: <%= embryo.hp_max %> | Dégâts: <%= embryo.damage_1 %>D+<%= embryo.damage_bonus_1 %> | Arme: <%= embryo.weapon || "-" %>
                   </small>
                 </div>
               </div>
@@ -33,55 +61,234 @@
             <div class="text-center text-muted py-4">
               <i class="fa-solid fa-flask fa-3x mb-3"></i>
               <p>Aucun embryon disponible.</p>
-              <p class="small">Créez des embryons dans la page "Cultiver un embryon".</p>
+              <p class="small">
+                <%= link_to "Créez des embryons", cultiver_embryon_path %> dans la page "Cultiver un embryon".
+              </p>
             </div>
           <% end %>
         </div>
       </div>
-    </div>
 
-    <!-- Liste des gènes débloqués -->
-    <div class="col-lg-6 mb-4">
-      <div class="card bg-dark text-light border-success h-100">
+      <!-- Sélection des gènes -->
+      <div class="card bg-dark text-light border-success">
         <div class="card-header bg-success text-white">
-          <h5 class="mb-0"><i class="fa-solid fa-microscope me-2"></i>Gènes débloqués (<%= @user_genes.count %>)</h5>
+          <h5 class="mb-0"><i class="fa-solid fa-microscope me-2"></i>2. Sélectionnez 1 à 3 gènes (<%= @user_genes.count %> disponibles)</h5>
         </div>
-        <div class="card-body" style="max-height: 500px; overflow-y: auto;">
+        <div class="card-body" style="max-height: 350px; overflow-y: auto;">
           <% if @user_genes.any? %>
-            <% @user_genes.group_by { |ug| ug.gene.category }.each do |category, genes| %>
-              <h6 class="text-info mt-3"><%= Gene.categories.key(category)&.humanize || "Autre" %></h6>
-              <% genes.each do |ug| %>
-                <div class="card bg-secondary mb-2">
-                  <div class="card-body py-2">
-                    <div class="d-flex justify-content-between align-items-center">
-                      <div>
-                        <strong><%= ug.gene.property %></strong>
-                        <span class="badge bg-success ms-2">Nv.<%= ug.level %></span>
+            <% Gene.categories.each do |cat_name, cat_value| %>
+              <% category_genes = @user_genes.select { |ug| ug.gene.category == cat_name } %>
+              <% if category_genes.any? %>
+                <h6 class="text-info mt-3 mb-2"><%= cat_name.humanize.capitalize %></h6>
+                <% category_genes.each do |ug| %>
+                  <div class="card bg-secondary mb-2 gene-card"
+                       data-action="click->traits#toggleGene"
+                       data-gene-id="<%= ug.gene.id %>"
+                       data-gene-level="<%= ug.level %>"
+                       data-gene-name="<%= ug.gene.property %>">
+                    <div class="card-body py-2">
+                      <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                          <strong><%= ug.gene.property %></strong>
+                          <span class="badge bg-warning text-dark ms-2">Nv.<%= ug.level %></span>
+                        </div>
+                        <i class="fa-solid fa-square-check text-success d-none" data-traits-target="geneCheck<%= ug.gene.id %>"></i>
                       </div>
-                      <button class="btn btn-sm btn-outline-warning" disabled>
-                        <i class="fa-solid fa-plus me-1"></i>Appliquer
-                      </button>
+                      <small class="text-muted"><%= ug.gene.description.truncate(80) %></small>
                     </div>
-                    <small class="text-muted"><%= ug.gene.description %></small>
                   </div>
-                </div>
+                <% end %>
               <% end %>
             <% end %>
           <% else %>
             <div class="text-center text-muted py-4">
               <i class="fa-solid fa-lock fa-3x mb-3"></i>
               <p>Aucun gène débloqué.</p>
-              <p class="small">Débloquez des gènes dans le Labo de recherche.</p>
+              <p class="small">
+                <%= link_to "Débloquez des gènes", labo_genetique_path %> dans le Labo de recherche.
+              </p>
             </div>
           <% end %>
         </div>
       </div>
     </div>
+
+    <!-- Colonne droite: Récapitulatif et action -->
+    <div class="col-lg-5 mb-4">
+      <div class="card bg-dark text-light border-warning sticky-top" style="top: 20px;">
+        <div class="card-header bg-warning text-dark">
+          <h5 class="mb-0"><i class="fa-solid fa-flask-vial me-2"></i>3. Récapitulatif</h5>
+        </div>
+        <div class="card-body">
+          <!-- Embryon sélectionné -->
+          <div class="mb-3">
+            <label class="form-label text-info">Embryon sélectionné:</label>
+            <div class="bg-secondary text-white py-2" data-traits-target="selectedEmbryo">
+              <em class="text-muted">Aucun embryon sélectionné</em>
+            </div>
+          </div>
+
+          <!-- Gènes sélectionnés -->
+          <div class="mb-3">
+            <label class="form-label text-info">Gènes sélectionnés (<span data-traits-target="geneCount">0</span>/3):</label>
+            <div class="selected-genes-list" data-traits-target="selectedGenes">
+              <div class="text-success py-2">
+                <em class="text-muted">Aucun gène sélectionné</em>
+              </div>
+            </div>
+          </div>
+
+          <!-- Coûts -->
+          <div class="mb-3">
+            <label class="form-label text-info">Coût:</label>
+            <div class="d-flex gap-3">
+              <span><i class="fa-solid fa-flask text-info"></i> <span data-traits-target="costEprouvettes">0</span> éprouvettes</span>
+              <span><i class="fa-solid fa-dna text-warning"></i> <span data-traits-target="costMatiere">0</span> matière</span>
+            </div>
+          </div>
+
+          <!-- Probabilités -->
+          <div class="mb-3">
+            <label class="form-label text-info">Probabilités de réussite:</label>
+            <div class="probability-bars">
+              <div class="d-flex align-items-center mb-1">
+                <span class="me-2" style="width: 100px;">Échec:</span>
+                <div class="progress flex-grow-1" style="height: 20px;">
+                  <div class="progress-bar bg-danger" data-traits-target="probFailure" style="width: 0%;">0%</div>
+                </div>
+              </div>
+              <div class="d-flex align-items-center mb-1">
+                <span class="me-2" style="width: 100px;">Partiel:</span>
+                <div class="progress flex-grow-1" style="height: 20px;">
+                  <div class="progress-bar bg-warning" data-traits-target="probPartial" style="width: 0%;">0%</div>
+                </div>
+              </div>
+              <div class="d-flex align-items-center mb-1">
+                <span class="me-2" style="width: 100px;">Réussite:</span>
+                <div class="progress flex-grow-1" style="height: 20px;">
+                  <div class="progress-bar bg-success" data-traits-target="probSuccess" style="width: 0%;">0%</div>
+                </div>
+              </div>
+              <div class="d-flex align-items-center">
+                <span class="me-2" style="width: 100px;">Parfait:</span>
+                <div class="progress flex-grow-1" style="height: 20px;">
+                  <div class="progress-bar bg-info" data-traits-target="probPerfect" style="width: 0%;">0%</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Bouton d'application -->
+          <button class="btn btn-success w-100 btn-lg" 
+                  data-action="click->traits#applyTraits"
+                  data-traits-target="applyBtn"
+                  disabled>
+            <i class="fa-solid fa-dna me-2"></i>Appliquer les traits
+          </button>
+        </div>
+      </div>
+    </div>
   </div>
 
-  <div class="alert alert-info text-center">
-    <i class="fa-solid fa-info-circle me-2"></i>
-    <strong>En développement</strong> - L'application des traits génétiques sera disponible prochainement.
+  <!-- Section embryons modifiés (prêts pour gestation) -->
+  <% if @modified_embryos.any? %>
+    <div class="row mt-4">
+      <div class="col-12">
+        <div class="card bg-dark text-light border-primary">
+          <div class="card-header bg-primary text-white">
+            <h5 class="mb-0"><i class="fa-solid fa-egg me-2"></i>Embryons modifiés prêts pour la gestation (<%= @modified_embryos.count %>)</h5>
+          </div>
+          <div class="card-body">
+            <div class="row">
+              <% @modified_embryos.each do |embryo| %>
+                <div class="col-md-6 col-lg-4 mb-3">
+                  <div class="card bg-secondary">
+                    <div class="card-body">
+                      <h6 class="card-title"><%= embryo.name %></h6>
+                      <p class="card-text small">
+                        <span class="badge bg-success"><%= embryo.creature_type.humanize %></span><br>
+                        PV: <%= embryo.hp_max %> | Dégâts: <%= embryo.damage_1 %>D+<%= embryo.damage_bonus_1 %>
+                      </p>
+                      <% if embryo.special_traits.present? %>
+                        <p class="small text-info mb-2">
+                          <% embryo.special_traits.first(3).each do |trait| %>
+                            <span class="badge bg-info text-dark me-1"><%= trait %></span>
+                          <% end %>
+                        </p>
+                      <% end %>
+                      <div class="d-flex gap-2">
+                        <button class="btn btn-sm btn-primary flex-grow-1"
+                                data-action="click->traits#startGestation"
+                                data-embryo-id="<%= embryo.id %>">
+                          <i class="fa-solid fa-egg me-1"></i>Gestation
+                        </button>
+                        <button class="btn btn-sm btn-outline-danger"
+                                data-action="click->traits#recycleEmbryo"
+                                data-embryo-id="<%= embryo.id %>"
+                                data-embryo-name="<%= embryo.name %>">
+                          <i class="fa-solid fa-recycle"></i>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              <% end %>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  <% end %>
+
+  <!-- Modal de résultat -->
+  <div class="modal fade" id="traitsResultModal" tabindex="-1" data-traits-target="resultModal">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content bg-dark text-light border-success">
+        <div class="modal-header" data-traits-target="modalHeader">
+          <h5 class="modal-title" data-traits-target="modalTitle">Résultat</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <div class="text-center mb-4" data-traits-target="resultAnimation">
+            <!-- Animation placeholder -->
+          </div>
+          <p class="lead text-center" data-traits-target="resultMessage"></p>
+          
+          <!-- Stats de la créature (affiché en cas de succès) -->
+          <div class="creature-stats d-none" data-traits-target="creatureStats">
+            <!-- Infos créature -->
+            <div class="text-center mb-3" data-traits-target="statInfo"></div>
+            <h5 class="text-center text-success mb-3">📊 Caractéristiques finales</h5>
+            <div class="row">
+              <div class="col-md-6">
+                <ul class="list-group list-group-flush bg-transparent">
+                  <li class="list-group-item bg-transparent text-light">
+                    <i class="fa-solid fa-heart text-danger me-2"></i>PV Max: <strong data-traits-target="statHp">-</strong>
+                  </li>
+                  <li class="list-group-item bg-transparent text-light">
+                    <i class="fa-solid fa-sword text-warning me-2"></i>Dégâts: <strong data-traits-target="statDamage">-</strong>
+                  </li>
+                  <li class="list-group-item bg-transparent text-light">
+                    <i class="fa-solid fa-hand-fist text-info me-2"></i>Arme: <strong data-traits-target="statWeapon">-</strong>
+                  </li>
+                </ul>
+              </div>
+              <div class="col-md-6">
+                <ul class="list-group list-group-flush bg-transparent" data-traits-target="statSkills">
+                </ul>
+              </div>
+            </div>
+            <div class="mt-3" data-traits-target="statTraits">
+              <h6 class="text-info">Traits spéciaux:</h6>
+              <div class="traits-badges" data-traits-target="traitsBadges"></div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+        </div>
+      </div>
+    </div>
   </div>
 
   <!-- Lien retour -->
@@ -91,3 +298,29 @@
     <% end %>
   </div>
 </div>
+
+<style>
+  .embryo-card, .gene-card {
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: 2px solid transparent;
+  }
+  .embryo-card:hover, .gene-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+  }
+  .embryo-card.selected {
+    border-color: var(--bs-info) !important;
+    background-color: rgba(var(--bs-info-rgb), 0.2) !important;
+  }
+  .gene-card.selected {
+    border-color: var(--bs-success) !important;
+    background-color: rgba(var(--bs-success-rgb), 0.2) !important;
+  }
+  .probability-bars .progress {
+    background-color: rgba(255,255,255,0.1);
+  }
+  .probability-bars .progress-bar {
+    transition: width 0.5s ease;
+  }
+</style>

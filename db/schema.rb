@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_11_28_000002) do
+ActiveRecord::Schema[7.1].define(version: 2025_11_28_100003) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -195,6 +195,13 @@ ActiveRecord::Schema[7.1].define(version: 2025_11_28_000002) do
     t.bigint "user_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.boolean "modified", default: false
+    t.datetime "gestation_started_at"
+    t.integer "gestation_days_total"
+    t.integer "gestation_days_remaining"
+    t.jsonb "applied_genes", default: []
+    t.jsonb "final_stats", default: {}
+    t.integer "gestation_tube"
     t.index ["user_id"], name: "index_embryos_on_user_id"
   end
 
@@ -243,6 +250,21 @@ ActiveRecord::Schema[7.1].define(version: 2025_11_28_000002) do
     t.jsonb "special_traits", default: []
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "genetic_statistics", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.integer "embryos_created", default: 0
+    t.integer "embryos_recycled", default: 0
+    t.integer "traits_applications_success", default: 0
+    t.integer "traits_applications_partial", default: 0
+    t.integer "traits_applications_failed", default: 0
+    t.integer "gestations_completed", default: 0
+    t.integer "clones_created", default: 0
+    t.integer "clones_failed", default: 0
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_genetic_statistics_on_user_id"
   end
 
   create_table "goods_crates", force: :cascade do |t|
@@ -539,6 +561,9 @@ ActiveRecord::Schema[7.1].define(version: 2025_11_28_000002) do
     t.boolean "creature", default: false, null: false
     t.integer "age", default: 1, null: false
     t.boolean "force"
+    t.jsonb "special_traits", default: []
+    t.bigint "origin_embryo_id"
+    t.index ["origin_embryo_id"], name: "index_pets_on_origin_embryo_id"
     t.index ["status_id"], name: "index_pets_on_status_id"
   end
 
@@ -827,6 +852,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_11_28_000002) do
   add_foreign_key "enemy_skills", "enemies"
   add_foreign_key "enemy_skills", "skills"
   add_foreign_key "equipments", "users"
+  add_foreign_key "genetic_statistics", "users"
   add_foreign_key "goods_crates", "users"
   add_foreign_key "goods_crates", "users"
   add_foreign_key "headquarter_inventory_objects", "headquarters"

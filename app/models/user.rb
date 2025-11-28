@@ -7,7 +7,7 @@ class User < ApplicationRecord
   belongs_to :group
   belongs_to :race, optional: true
   belongs_to :classe_perso, class_name: "ClassePerso", foreign_key: "classe_perso_id", optional: true
-  belongs_to :pet, optional: true
+  belongs_to :pet, optional: true 
   has_one :apprentice, dependent: :nullify
   has_many :subscriptions, dependent: :destroy
   has_many :user_inventory_objects
@@ -25,21 +25,19 @@ class User < ApplicationRecord
   has_many :holonew_reads, dependent: :destroy
   has_many :read_holonews, through: :holonew_reads, source: :holonew
   has_many :equipments, dependent: :destroy
-  has_many :user_genes, dependent: :destroy
-  has_many :genes, through: :user_genes
-<<<<<<< HEAD
   has_many :crew_members, as: :assignable, dependent: :destroy
   has_many :goods_crates, dependent: :destroy
-=======
+  has_many :user_genes, dependent: :destroy
+  has_many :genes, through: :user_genes
   has_many :embryos, dependent: :destroy
->>>>>>> cedbb47 (Add Embryos)
+  has_many :created_pets, class_name: 'Pet'
+  has_one :genetic_statistic, dependent: :destroy
   has_one_attached :avatar
 
   validates :username, presence: true, uniqueness: true
   validates :hp_current, numericality: { greater_than_or_equal_to: -20 }
   validates :pet_action_points, numericality: { greater_than_or_equal_to: 0, less_than_or_equal_to: 10 }
   validates :hp_bonus, numericality: { greater_than_or_equal_to: 0 }, allow_nil: true
-
   validate :shield_current_values_valid
 
   after_update_commit :broadcast_xp_update, if: :saved_change_to_xp?

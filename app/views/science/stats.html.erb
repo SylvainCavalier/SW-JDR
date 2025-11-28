@@ -1,88 +1,199 @@
 <div class="container mt-4">
   <h1 class="text-center text-success mb-4">📊 Statistiques Génétiques</h1>
 
-  <div class="row justify-content-center">
-    <!-- Total embryons -->
-    <div class="col-md-4 col-sm-6 mb-4">
-      <div class="card bg-dark text-light border-success h-100">
-        <div class="card-body text-center">
-          <i class="fa-solid fa-dna fa-3x text-success mb-3"></i>
-          <p class="stat-counter"><%= @total_embryos %></p>
-          <p class="text-muted">Embryons créés au total</p>
-        </div>
-      </div>
-    </div>
-
-    <!-- Embryons stockés -->
-    <div class="col-md-4 col-sm-6 mb-4">
+  <%= link_to "Retour", genetique_dashboard_path, class: "btn btn-outline-secondary mt-4 go-back-two" %>
+  
+  <!-- Stats principales -->
+  <div class="row mb-4">
+    <!-- Colonne gauche: Embryons -->
+    <div class="col-lg-6 mb-4">
       <div class="card bg-dark text-light border-info h-100">
-        <div class="card-body text-center">
-          <i class="fa-solid fa-box fa-3x text-info mb-3"></i>
-          <p class="stat-counter text-info"><%= @embryos_stockes %></p>
-          <p class="text-muted">Embryons stockés</p>
+        <div class="card-header bg-info text-dark">
+          <h5 class="mb-0"><i class="fa-solid fa-flask me-2"></i>Embryons</h5>
+        </div>
+        <div class="card-body">
+          <div class="row text-center">
+            <div class="col-6 col-md-4 mb-3">
+              <div class="stat-box">
+                <span class="stat-counter text-info"><%= @total_embryos %></span>
+                <p class="small mb-0">Total créés</p>
+              </div>
+            </div>
+            <div class="col-6 col-md-4 mb-3">
+              <div class="stat-box">
+                <span class="stat-counter text-secondary"><%= @embryos_stockes %></span>
+                <p class="small mb-0">Stockés (bruts)</p>
+              </div>
+            </div>
+            <div class="col-6 col-md-4 mb-3">
+              <div class="stat-box">
+                <span class="stat-counter text-warning"><%= @embryos_modifies %></span>
+                <p class="small mb-0">Modifiés</p>
+              </div>
+            </div>
+            <div class="col-6 col-md-4 mb-3">
+              <div class="stat-box">
+                <span class="stat-counter text-primary"><%= @embryos_en_gestation %></span>
+                <p class="small mb-0">En gestation</p>
+              </div>
+            </div>
+            <div class="col-6 col-md-4 mb-3">
+              <div class="stat-box">
+                <span class="stat-counter text-success"><%= @embryos_eclos %></span>
+                <p class="small mb-0">Éclos</p>
+              </div>
+            </div>
+            <div class="col-6 col-md-4 mb-3">
+              <div class="stat-box">
+                <span class="stat-counter text-success"><%= @creatures_creees %></span>
+                <p class="small mb-0">Créatures vivantes</p>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
 
-    <!-- En culture -->
-    <div class="col-md-4 col-sm-6 mb-4">
-      <div class="card bg-dark text-light border-warning h-100">
-        <div class="card-body text-center">
-          <i class="fa-solid fa-flask fa-3x text-warning mb-3"></i>
-          <p class="stat-counter text-warning"><%= @embryos_en_culture %></p>
-          <p class="text-muted">En culture</p>
-        </div>
-      </div>
-    </div>
-
-    <!-- En gestation -->
-    <div class="col-md-4 col-sm-6 mb-4">
-      <div class="card bg-dark text-light border-primary h-100">
-        <div class="card-body text-center">
-          <i class="fa-solid fa-egg fa-3x text-primary mb-3"></i>
-          <p class="stat-counter text-primary"><%= @embryos_en_gestation %></p>
-          <p class="text-muted">En gestation</p>
-        </div>
-      </div>
-    </div>
-
-    <!-- Éclos -->
-    <div class="col-md-4 col-sm-6 mb-4">
+    <!-- Colonne droite: Gènes -->
+    <div class="col-lg-6 mb-4">
       <div class="card bg-dark text-light border-success h-100">
-        <div class="card-body text-center">
-          <i class="fa-solid fa-paw fa-3x text-success mb-3"></i>
-          <p class="stat-counter"><%= @embryos_eclos %></p>
-          <p class="text-muted">Créatures écloses</p>
+        <div class="card-header bg-success text-white">
+          <h5 class="mb-0"><i class="fa-solid fa-dna me-2"></i>Recherche Génétique</h5>
+        </div>
+        <div class="card-body">
+          <div class="text-center mb-4">
+            <div class="progress mb-2" style="height: 30px;">
+              <% gene_progress = @genes_total > 0 ? (@genes_debloques.to_f / @genes_total * 100).round : 0 %>
+              <div class="progress-bar bg-success" style="width: <%= gene_progress %>%;">
+                <%= gene_progress %>% découverts
+              </div>
+            </div>
+            <p class="mb-0">
+              <strong class="text-success"><%= @genes_debloques %></strong> / <%= @genes_total %> gènes débloqués
+            </p>
+          </div>
+          
+          <hr class="border-secondary">
+          
+          <div class="row text-center">
+            <div class="col-6">
+              <span class="stat-counter text-info"><%= @genes_total - @genes_debloques %></span>
+              <p class="small mb-0">Gènes à découvrir</p>
+            </div>
+            <div class="col-6">
+              <span class="stat-counter text-warning"><%= current_user.study_points %></span>
+              <p class="small mb-0">Points d'étude</p>
+            </div>
+          </div>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- Tableau récapitulatif des gènes débloqués -->
-  <div class="row mt-4">
-    <div class="col-12">
-      <div class="card bg-dark text-light border-success">
-        <div class="card-header bg-success text-white">
-          <h5 class="mb-0"><i class="fa-solid fa-microscope me-2"></i>Gènes débloqués</h5>
+  <!-- Statistiques d'activité -->
+  <div class="card bg-dark text-light border-warning mb-4">
+    <div class="card-header bg-warning text-dark">
+      <h5 class="mb-0"><i class="fa-solid fa-chart-line me-2"></i>Activité Génétique</h5>
+    </div>
+    <div class="card-body">
+      <div class="row text-center">
+        <div class="col-6 col-md-3 mb-3">
+          <div class="stat-box">
+            <span class="stat-counter text-success"><%= @genetic_stats.traits_applications_success %></span>
+            <p class="small mb-0">Applications réussies</p>
+          </div>
         </div>
-        <div class="card-body">
-          <% user_genes = current_user.user_genes.includes(:gene).where('level > 0') %>
-          <% if user_genes.any? %>
-            <div class="row">
-              <% user_genes.each do |ug| %>
-                <div class="col-md-4 col-sm-6 mb-2">
-                  <div class="d-flex align-items-center">
-                    <span class="badge bg-success me-2">Nv.<%= ug.level %></span>
-                    <span><%= ug.gene.property %></span>
-                  </div>
-                </div>
-              <% end %>
-            </div>
-          <% else %>
-            <p class="text-muted text-center">Aucun gène débloqué pour le moment.</p>
-          <% end %>
+        <div class="col-6 col-md-3 mb-3">
+          <div class="stat-box">
+            <span class="stat-counter text-warning"><%= @genetic_stats.traits_applications_partial %></span>
+            <p class="small mb-0">Réussites partielles</p>
+          </div>
+        </div>
+        <div class="col-6 col-md-3 mb-3">
+          <div class="stat-box">
+            <span class="stat-counter text-danger"><%= @genetic_stats.traits_applications_failed %></span>
+            <p class="small mb-0">Échecs</p>
+          </div>
+        </div>
+        <div class="col-6 col-md-3 mb-3">
+          <% total_apps = @genetic_stats.traits_applications_success + @genetic_stats.traits_applications_partial + @genetic_stats.traits_applications_failed %>
+          <% success_rate = total_apps > 0 ? ((@genetic_stats.traits_applications_success + @genetic_stats.traits_applications_partial).to_f / total_apps * 100).round : 0 %>
+          <div class="stat-box">
+            <span class="stat-counter text-info"><%= success_rate %>%</span>
+            <p class="small mb-0">Taux de réussite</p>
+          </div>
         </div>
       </div>
+      
+      <hr class="border-secondary">
+      
+      <div class="row text-center">
+        <div class="col-6 col-md-3 mb-3">
+          <div class="stat-box">
+            <span class="stat-counter text-primary"><%= @genetic_stats.gestations_completed %></span>
+            <p class="small mb-0">Gestations terminées</p>
+          </div>
+        </div>
+        <div class="col-6 col-md-3 mb-3">
+          <div class="stat-box">
+            <span class="stat-counter text-info"><%= @genetic_stats.clones_created %></span>
+            <p class="small mb-0">Clones réussis</p>
+          </div>
+        </div>
+        <div class="col-6 col-md-3 mb-3">
+          <div class="stat-box">
+            <span class="stat-counter text-danger"><%= @genetic_stats.clones_failed %></span>
+            <p class="small mb-0">Clones échoués</p>
+          </div>
+        </div>
+        <div class="col-6 col-md-3 mb-3">
+          <div class="stat-box">
+            <span class="stat-counter text-secondary"><%= @genetic_stats.embryos_recycled %></span>
+            <p class="small mb-0">Embryons recyclés</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Liste des gènes débloqués par catégorie -->
+  <div class="card bg-dark text-light border-success mb-4">
+    <div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
+      <h5 class="mb-0"><i class="fa-solid fa-microscope me-2"></i>Gènes débloqués par catégorie</h5>
+      <span class="badge bg-light text-dark"><%= @genes_debloques %> / <%= @genes_total %></span>
+    </div>
+    <div class="card-body">
+      <% user_genes = current_user.user_genes.includes(:gene).where('level > 0') %>
+      <% if user_genes.any? %>
+        <div class="row">
+          <% Gene.categories.each do |cat_name, cat_value| %>
+            <% category_genes = user_genes.select { |ug| ug.gene.category == cat_name } %>
+            <% total_in_category = Gene.where(positive: true, category: cat_value).count %>
+            <div class="col-md-6 col-lg-4 mb-3">
+              <div class="card bg-secondary">
+                <div class="card-header py-2">
+                  <strong><%= cat_name.humanize.capitalize %></strong>
+                  <span class="badge bg-info float-end"><%= category_genes.count %>/<%= total_in_category %></span>
+                </div>
+                <div class="card-body py-2" style="max-height: 150px; overflow-y: auto;">
+                  <% if category_genes.any? %>
+                    <% category_genes.each do |ug| %>
+                      <div class="d-flex justify-content-between align-items-center mb-1">
+                        <small><%= ug.gene.property %></small>
+                        <span class="badge bg-success">Nv.<%= ug.level %></span>
+                      </div>
+                    <% end %>
+                  <% else %>
+                    <small class="text-muted">Aucun gène débloqué</small>
+                  <% end %>
+                </div>
+              </div>
+            </div>
+          <% end %>
+        </div>
+      <% else %>
+        <p class="text-muted text-center py-4">Aucun gène débloqué pour le moment.</p>
+      <% end %>
     </div>
   </div>
 
@@ -93,3 +204,16 @@
     <% end %>
   </div>
 </div>
+
+<style>
+  .stat-box {
+    padding: 10px;
+    border-radius: 8px;
+    background: rgba(255,255,255,0.05);
+  }
+  .stat-counter {
+    font-size: 2rem;
+    font-weight: bold;
+    display: block;
+  }
+</style>

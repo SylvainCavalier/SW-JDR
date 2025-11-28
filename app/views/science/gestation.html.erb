@@ -1,47 +1,152 @@
-<div class="container mt-4">
+<div class="container mt-4" data-controller="gestation">
   <h1 class="text-center text-success mb-4">🥚 Cuves de Gestation</h1>
 
+  <%= link_to "Retour", genetique_dashboard_path, class: "btn btn-outline-secondary mt-4 go-back-two" %>
+
+  <!-- Les 3 cuves de gestation -->
   <div class="row justify-content-center mb-4">
-    <div class="col-lg-10">
-      <div class="card bg-dark text-light border-primary">
-        <div class="card-header bg-primary text-white">
-          <h5 class="mb-0"><i class="fa-solid fa-egg me-2"></i>Embryons en gestation (<%= @embryos_en_gestation.count %>)</h5>
+    <% @tubes.each do |tube| %>
+      <div class="col-lg-4 col-md-6 mb-4">
+        <div class="card bg-dark text-light h-100 <%= tube[:embryo] ? 'border-primary' : 'border-secondary' %> gestation-tube">
+          <div class="card-header text-center <%= tube[:embryo] ? 'bg-primary' : 'bg-secondary' %>">
+            <h5 class="mb-0">
+              <i class="fa-solid fa-flask me-2"></i>Cuve <%= tube[:number] %>
+            </h5>
+          </div>
+          
+          <div class="card-body text-center">
+            <% if tube[:embryo] %>
+              <% embryo = tube[:embryo] %>
+              
+              <!-- Animation de la cuve active -->
+              <div class="tube-animation mb-3">
+                <div class="tube-container">
+                  <div class="tube-liquid"></div>
+                  <div class="tube-embryo">🧬</div>
+                </div>
+              </div>
+              
+              <h5 class="text-info"><%= embryo.name %></h5>
+              <p class="mb-1">
+                <span class="badge bg-success"><%= embryo.creature_type.humanize %></span>
+                <span class="badge bg-info"><%= embryo.race || "Race inconnue" %></span>
+              </p>
+              
+              <!-- Barre de progression -->
+              <% progress = embryo.gestation_days_total > 0 ? ((embryo.gestation_days_total - embryo.gestation_days_remaining).to_f / embryo.gestation_days_total * 100).round : 0 %>
+              <div class="progress mb-2" style="height: 25px;">
+                <div class="progress-bar bg-success progress-bar-striped progress-bar-animated" 
+                     role="progressbar" 
+                     style="width: <%= progress %>%;"
+                     aria-valuenow="<%= progress %>" aria-valuemin="0" aria-valuemax="100">
+                  <%= progress %>%
+                </div>
+              </div>
+              
+              <p class="mb-3">
+                <i class="fa-solid fa-clock me-1"></i>
+                <strong><%= embryo.gestation_days_remaining %></strong> jours restants
+                <br>
+                <small class="text-light">(sur <%= embryo.gestation_days_total %> jours)</small>
+              </p>
+              
+              <!-- Actions -->
+              <div class="d-flex flex-column gap-2">
+                <button class="btn btn-outline-success btn-sm"
+                        data-action="click->gestation#viewEmbryo"
+                        data-embryo-id="<%= embryo.id %>">
+                  <i class="fa-solid fa-eye me-1"></i>Voir les stats
+                </button>
+                
+                <% # Trouver une cuve libre pour le clonage %>
+                <% free_tube = @tubes.find { |t| t[:embryo].nil? } %>
+                <% if free_tube %>
+                  <button class="btn btn-outline-success btn-sm"
+                          data-action="click->gestation#cloneEmbryo"
+                          data-embryo-id="<%= embryo.id %>"
+                          data-target-tube="<%= free_tube[:number] %>">
+                    <i class="fa-solid fa-clone me-1"></i>Cloner (100cr + 3 mat.)
+                  </button>
+                <% else %>
+                  <button class="btn btn-outline-success btn-sm" disabled>
+                    <i class="fa-solid fa-clone me-1"></i>Cloner (pas de cuve libre)
+                  </button>
+                <% end %>
+                
+                <button class="btn btn-outline-success btn-sm"
+                        data-action="click->gestation#accelerateGestation"
+                        data-embryo-id="<%= embryo.id %>"
+                        data-embryo-name="<%= embryo.name %>">
+                  <i class="fa-solid fa-forward-fast me-1"></i>Accélérer (500cr + 1 mat.)
+                </button>
+              </div>
+            <% else %>
+              <!-- Cuve vide -->
+              <div class="tube-empty py-5">
+                <i class="fa-solid fa-flask fa-4x text-light mb-3"></i>
+                <p class="text-light">Cuve disponible</p>
+                <small class="text-light">
+                  Appliquez des traits à un embryon puis placez-le en gestation.
+                </small>
+              </div>
+            <% end %>
+          </div>
         </div>
-        <div class="card-body">
-          <% if @embryos_en_gestation.any? %>
+      </div>
+    <% end %>
+  </div>
+
+  <!-- Embryons prêts à naître -->
+  <% if @embryos_ready.any? %>
+    <div class="row">
+      <div class="col-12">
+        <div class="card bg-dark text-light border-success">
+          <div class="card-header bg-success text-white">
+            <h5 class="mb-0"><i class="fa-solid fa-baby me-2"></i>Créatures prêtes à naître (<%= @embryos_ready.count %>)</h5>
+          </div>
+          <div class="card-body">
             <div class="row">
-              <% @embryos_en_gestation.each do |embryo| %>
-                <div class="col-md-6 mb-3">
-                  <div class="card bg-secondary text-light">
-                    <div class="card-body">
-                      <h5 class="card-title"><%= embryo.name %></h5>
-                      <p class="card-text">
-                        <span class="badge bg-info"><%= embryo.creature_type.humanize %></span>
-                        <span class="badge bg-success"><%= embryo.race || "Race inconnue" %></span>
+              <% @embryos_ready.each do |embryo| %>
+                <div class="col-md-4 mb-3">
+                  <div class="card bg-secondary">
+                    <div class="card-body text-center">
+                      <h5 class="text-success"><%= embryo.name %></h5>
+                      <p class="mb-2">
+                        <span class="badge bg-success"><%= embryo.creature_type.humanize %></span>
                       </p>
-                      <div class="progress mb-2" style="height: 20px;">
-                        <div class="progress-bar bg-success progress-bar-striped progress-bar-animated" 
-                             role="progressbar" 
-                             style="width: 0%;">
-                          En développement...
-                        </div>
-                      </div>
-                      <small class="text-muted">
-                        <i class="fa-solid fa-clock me-1"></i>
-                        Temps restant: À implémenter
-                      </small>
+                      <p class="small mb-3">
+                        PV: <%= embryo.hp_max %> | Dégâts: <%= embryo.damage_1 %>D+<%= embryo.damage_bonus_1 %>
+                      </p>
+                      <button class="btn btn-success"
+                              data-action="click->gestation#birthCreature"
+                              data-embryo-id="<%= embryo.id %>"
+                              data-embryo-name="<%= embryo.name %>">
+                        <i class="fa-solid fa-baby me-1"></i>Faire naître !
+                      </button>
                     </div>
                   </div>
                 </div>
               <% end %>
             </div>
-          <% else %>
-            <div class="text-center text-muted py-5">
-              <i class="fa-solid fa-egg fa-4x mb-3"></i>
-              <p class="lead">Aucun embryon en gestation.</p>
-              <p>Appliquez des traits génétiques à un embryon stocké pour le placer en gestation.</p>
-            </div>
-          <% end %>
+          </div>
+        </div>
+      </div>
+    </div>
+  <% end %>
+
+  <!-- Modal de visualisation -->
+  <div class="modal fade" id="embryoViewModal" tabindex="-1" data-gestation-target="viewModal">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content bg-dark text-light border-info">
+        <div class="modal-header bg-info text-dark">
+          <h5 class="modal-title" data-gestation-target="viewTitle">Détails de l'embryon</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body" data-gestation-target="viewContent">
+          <!-- Contenu chargé dynamiquement -->
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
         </div>
       </div>
     </div>
@@ -54,3 +159,57 @@
     <% end %>
   </div>
 </div>
+
+<style>
+  .gestation-tube {
+    transition: all 0.3s ease;
+  }
+  .gestation-tube:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  }
+  
+  .tube-container {
+    position: relative;
+    width: 100px;
+    height: 150px;
+    margin: 0 auto;
+    border: 3px solid #444;
+    border-radius: 0 0 50px 50px;
+    overflow: hidden;
+    background: rgba(0, 50, 100, 0.3);
+  }
+  
+  .tube-liquid {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 80%;
+    background: linear-gradient(to top, rgba(0, 200, 150, 0.6), rgba(0, 150, 200, 0.3));
+    animation: bubbles 3s ease-in-out infinite;
+  }
+  
+  .tube-embryo {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 2.5rem;
+    animation: float 2s ease-in-out infinite;
+  }
+  
+  @keyframes bubbles {
+    0%, 100% { opacity: 0.6; }
+    50% { opacity: 0.9; }
+  }
+  
+  @keyframes float {
+    0%, 100% { transform: translate(-50%, -50%); }
+    50% { transform: translate(-50%, -60%); }
+  }
+  
+  .tube-empty {
+    opacity: 0.5;
+  }
+</style>

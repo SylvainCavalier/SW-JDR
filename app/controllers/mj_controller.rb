@@ -864,6 +864,37 @@ class MjController < ApplicationController
     params.require(:xp).permit(:xp, :user_id, :give_to_all)
   end
 
+  # ==================== SCIENCE ====================
+  
+  def science
+    @bio_savants = User.joins(:classe_perso).where(classe_persos: { name: "Bio-savant" })
+    @all_gestations = Embryo.in_gestation.includes(:user).order(:gestation_days_remaining)
+    @ready_embryos = Embryo.where(status: 'éclos').includes(:user)
+  end
+
+  def advance_gestation
+    embryo = Embryo.find(params[:embryo_id])
+    days = params[:days].to_i || 1
+    
+    embryo.advance_gestation!(days)
+    
+    respond_to do |format|
+      format.json { render json: { success: true, days_remaining: embryo.gestation_days_remaining, status: embryo.status } }
+      format.html { redirect_to mj_science_path, notice: "Gestation avancée de #{days} jour(s)." }
+    end
+  end
+
+  def complete_gestation
+    embryo = Embryo.find(params[:embryo_id])
+    embryo.update!(gestation_days_remaining: 0)
+    embryo.send(:complete_gestation!)
+    
+    respond_to do |format|
+      format.json { render json: { success: true, message: "Gestation terminée !" } }
+      format.html { redirect_to mj_science_path, notice: "Gestation terminée pour #{embryo.name}." }
+    end
+  end
+
   def authorize_mj
     unless current_user.group.name == "MJ"
       redirect_to root_path, alert: "Accès refusé."

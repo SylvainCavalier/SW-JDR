@@ -114,6 +114,18 @@ Rails.application.routes.draw do
   get "science/labo", to: "science#labo", as: :science_labo
   post "science/recherche_gene", to: "science#recherche_gene", as: :recherche_gene
   post "science/create_embryo", to: "science#create_embryo", as: :create_embryo
+  
+  # Génétique - Application des traits
+  post "science/calculate_probabilities", to: "science#calculate_probabilities", as: :calculate_probabilities
+  post "science/apply_traits", to: "science#apply_traits", as: :apply_traits
+  post "science/start_gestation", to: "science#start_gestation", as: :start_gestation
+  post "science/recycle_embryo", to: "science#recycle_embryo", as: :recycle_embryo
+  get "science/embryo/:id", to: "science#show_embryo", as: :show_embryo
+  
+  # Génétique - Gestation
+  post "science/clone_embryo", to: "science#clone_embryo", as: :clone_embryo
+  post "science/accelerate_gestation", to: "science#accelerate_gestation", as: :accelerate_gestation
+  post "science/birth_creature", to: "science#birth_creature", as: :birth_creature
 
   resources :science, only: [] do
     collection do
@@ -188,6 +200,11 @@ Rails.application.routes.draw do
 
   get "mj/sphero", to: "mj#sphero", as: "mj_sphero"
   post "mj/sphero/create", to: "mj#create_sphero", as: "mj_create_sphero"
+  
+  # MJ Science - Gestion des gestations
+  get "mj/science", to: "mj#science", as: "mj_science"
+  post "mj/advance_gestation", to: "mj#advance_gestation", as: "mj_advance_gestation"
+  post "mj/complete_gestation", to: "mj#complete_gestation", as: "mj_complete_gestation"
 
   get 'mj/vaisseaux', to: 'mj#vaisseaux', as: 'mj_vaisseaux'
   patch 'mj/vaisseaux/:id/update_ship', to: 'mj#update_ship', as: 'mj_update_ship'
