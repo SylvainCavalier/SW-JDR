@@ -109,10 +109,11 @@ Rails.application.routes.draw do
   get "science/labo",      to: "science#labo",      as: :labo_genetique
   get "science/cultiver",  to: "science#cultiver",  as: :cultiver_embryon
   get "science/traits",    to: "science#traits",    as: :appliquer_traits
-  get "science/clonage",   to: "science#clonage",   as: :clonage
+  get "science/gestation",   to: "science#gestation",   as: :gestation
   get "science/stats",     to: "science#stats",     as: :genetique_stats
   get "science/labo", to: "science#labo", as: :science_labo
   post "science/recherche_gene", to: "science#recherche_gene", as: :recherche_gene
+  post "science/create_embryo", to: "science#create_embryo", as: :create_embryo
 
   resources :science, only: [] do
     collection do

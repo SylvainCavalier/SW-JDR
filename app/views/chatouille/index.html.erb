@@ -1,0 +1,113 @@
+<div class="chatouille-container" data-controller="chatouille">
+  <!-- Header avec titre -->
+  <div class="chatouille-header">
+    <h1 class="chatouille-title">
+      <span class="chatouille-icon">🪶</span>
+      Le Culte de Monsieur Chatouille
+      <span class="chatouille-icon">🪶</span>
+    </h1>
+    <p class="chatouille-subtitle">
+      Étape <%= @chatouille_state.current_step %> : <%= @chatouille_state.step_name %>
+    </p>
+  </div>
+
+  <!-- Panneau des ressources -->
+  <div id="resources-panel">
+    <%= render "chatouille/resources_panel" %>
+  </div>
+
+  <!-- Zone principale avec image et graphique -->
+  <div class="chatouille-main">
+    <!-- Notification d'événement -->
+    <% if @chatouille_state.event_available %>
+      <div class="chatouille-event-alert">
+        <div class="event-alert-content">
+          <%= image_tag "KessarAmazed.png", class: "kessar-mini" %>
+          <div class="event-alert-text">
+            <strong>Kessar demande audience !</strong>
+            <p>Un événement requiert votre attention divine.</p>
+          </div>
+          <%= link_to "Consulter", chatouille_event_path, class: "btn btn-chatouille" %>
+        </div>
+      </div>
+    <% end %>
+
+    <!-- Image de Monsieur Chatouille -->
+    <div class="chatouille-mascot">
+      <%= image_tag "chatouille.png", class: "chatouille-image", alt: "Monsieur Chatouille" %>
+      <div class="chatouille-glow"></div>
+    </div>
+
+    <!-- Graphique des parts de marché -->
+    <div id="market-chart">
+      <%= render "chatouille/market_chart" %>
+    </div>
+  </div>
+
+  <!-- Barre de progression -->
+  <div class="chatouille-progress-section">
+    <div class="progress-label">
+      <span>Progression vers l'étape suivante</span>
+      <span><%= @chatouille_state.step_progress %>%</span>
+    </div>
+    <div class="chatouille-progress-bar">
+      <div class="chatouille-progress-fill" style="width: <%= @chatouille_state.step_progress %>%;"></div>
+    </div>
+    <div class="progress-thresholds">
+      <span>0%</span>
+      <span><%= ChatouilleState::STEP_THRESHOLDS[@chatouille_state.current_step][:max] %>% requis</span>
+    </div>
+  </div>
+
+  <!-- Menu de navigation -->
+  <div class="chatouille-nav">
+    <%= link_to chatouille_doctrine_path, class: "chatouille-nav-btn" do %>
+      <span class="nav-icon">📖</span>
+      <span class="nav-label">Doctrine</span>
+    <% end %>
+    
+    <%= link_to chatouille_build_path, class: "chatouille-nav-btn" do %>
+      <span class="nav-icon">🏛️</span>
+      <span class="nav-label">Construire</span>
+    <% end %>
+    
+    <%= link_to chatouille_marketing_path, class: "chatouille-nav-btn" do %>
+      <span class="nav-icon">📢</span>
+      <span class="nav-label">Marketing</span>
+    <% end %>
+    
+    <%= link_to chatouille_politics_path, class: "chatouille-nav-btn" do %>
+      <span class="nav-icon">🏛️</span>
+      <span class="nav-label">Politique</span>
+    <% end %>
+    
+    <%= link_to chatouille_accounting_path, class: "chatouille-nav-btn" do %>
+      <span class="nav-icon">💰</span>
+      <span class="nav-label">Comptabilité</span>
+    <% end %>
+  </div>
+
+  <!-- Zone de résultat des actions -->
+  <div id="action-result"></div>
+
+  <!-- Statistiques -->
+  <div class="chatouille-stats">
+    <div class="stat-item">
+      <span class="stat-value"><%= @chatouille_state.total_converts %></span>
+      <span class="stat-label">Convertis totaux</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-value"><%= @chatouille_state.temples_count %></span>
+      <span class="stat-label">Temples</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-value"><%= @chatouille_state.political_influence %></span>
+      <span class="stat-label">Influence politique</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-value"><%= @chatouille_state.miracles_performed %></span>
+      <span class="stat-label">Miracles accomplis</span>
+    </div>
+  </div>
+</div>
+

@@ -1,2 +1,95 @@
-<!-- app/views/science/labo.html.erb -->
-<h2>Labo d'études génétiques</h2>
+<div class="container mt-4">
+  <h1 class="text-center text-success mb-4">📊 Statistiques Génétiques</h1>
+
+  <div class="row justify-content-center">
+    <!-- Total embryons -->
+    <div class="col-md-4 col-sm-6 mb-4">
+      <div class="card bg-dark text-light border-success h-100">
+        <div class="card-body text-center">
+          <i class="fa-solid fa-dna fa-3x text-success mb-3"></i>
+          <p class="stat-counter"><%= @total_embryos %></p>
+          <p class="text-muted">Embryons créés au total</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Embryons stockés -->
+    <div class="col-md-4 col-sm-6 mb-4">
+      <div class="card bg-dark text-light border-info h-100">
+        <div class="card-body text-center">
+          <i class="fa-solid fa-box fa-3x text-info mb-3"></i>
+          <p class="stat-counter text-info"><%= @embryos_stockes %></p>
+          <p class="text-muted">Embryons stockés</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- En culture -->
+    <div class="col-md-4 col-sm-6 mb-4">
+      <div class="card bg-dark text-light border-warning h-100">
+        <div class="card-body text-center">
+          <i class="fa-solid fa-flask fa-3x text-warning mb-3"></i>
+          <p class="stat-counter text-warning"><%= @embryos_en_culture %></p>
+          <p class="text-muted">En culture</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- En gestation -->
+    <div class="col-md-4 col-sm-6 mb-4">
+      <div class="card bg-dark text-light border-primary h-100">
+        <div class="card-body text-center">
+          <i class="fa-solid fa-egg fa-3x text-primary mb-3"></i>
+          <p class="stat-counter text-primary"><%= @embryos_en_gestation %></p>
+          <p class="text-muted">En gestation</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Éclos -->
+    <div class="col-md-4 col-sm-6 mb-4">
+      <div class="card bg-dark text-light border-success h-100">
+        <div class="card-body text-center">
+          <i class="fa-solid fa-paw fa-3x text-success mb-3"></i>
+          <p class="stat-counter"><%= @embryos_eclos %></p>
+          <p class="text-muted">Créatures écloses</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tableau récapitulatif des gènes débloqués -->
+  <div class="row mt-4">
+    <div class="col-12">
+      <div class="card bg-dark text-light border-success">
+        <div class="card-header bg-success text-white">
+          <h5 class="mb-0"><i class="fa-solid fa-microscope me-2"></i>Gènes débloqués</h5>
+        </div>
+        <div class="card-body">
+          <% user_genes = current_user.user_genes.includes(:gene).where('level > 0') %>
+          <% if user_genes.any? %>
+            <div class="row">
+              <% user_genes.each do |ug| %>
+                <div class="col-md-4 col-sm-6 mb-2">
+                  <div class="d-flex align-items-center">
+                    <span class="badge bg-success me-2">Nv.<%= ug.level %></span>
+                    <span><%= ug.gene.property %></span>
+                  </div>
+                </div>
+              <% end %>
+            </div>
+          <% else %>
+            <p class="text-muted text-center">Aucun gène débloqué pour le moment.</p>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Lien retour -->
+  <div class="text-center mt-4">
+    <%= link_to genetique_dashboard_path, class: "btn btn-outline-secondary" do %>
+      <i class="fa-solid fa-arrow-left me-2"></i>Retour au Dashboard Génétique
+    <% end %>
+  </div>
+</div>

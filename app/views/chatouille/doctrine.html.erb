@@ -1,0 +1,91 @@
+<div class="chatouille-page doctrine-page">
+  <!-- Header -->
+  <div class="page-header">
+    <%= link_to chatouille_path, class: "back-link" do %>
+      ← Retour au Temple
+    <% end %>
+    <h1 class="page-title">📖 Doctrine Sacrée</h1>
+    <p class="page-subtitle">Les enseignements de la Grande Chatouille</p>
+  </div>
+
+  <!-- Ressources actuelles -->
+  <div id="resources-panel">
+    <%= render "chatouille/resources_panel" %>
+  </div>
+
+  <!-- Actions de doctrine -->
+  <div class="actions-grid">
+    <% @faith_actions.each do |action| %>
+      <div class="action-card">
+        <div class="action-header">
+          <h3 class="action-name"><%= action[:name] %></h3>
+        </div>
+        
+        <p class="action-description"><%= action[:description] %></p>
+        
+        <div class="action-details">
+          <div class="action-cost">
+            <strong>Coût :</strong>
+            <% if action[:cost].values.all?(&:zero?) %>
+              <span class="free">Gratuit</span>
+            <% else %>
+              <% action[:cost].each do |resource, amount| %>
+                <% next if amount == 0 %>
+                <span class="cost-item">
+                  <%= resource_icon(resource) %> <%= amount %>
+                </span>
+              <% end %>
+            <% end %>
+          </div>
+          
+          <div class="action-effect">
+            <strong>Effet :</strong>
+            <% action[:effect].each do |effect, value| %>
+              <span class="effect-item positive">
+                <%= effect_icon(effect) %> +<%= value %>
+              </span>
+            <% end %>
+          </div>
+        </div>
+        
+        <%= form_with url: chatouille_perform_action_path, method: :post, data: { turbo_frame: "_top" } do |f| %>
+          <%= hidden_field_tag :action_type, "doctrine" %>
+          <%= hidden_field_tag :action_id, action[:id] %>
+          <button type="submit" class="btn btn-chatouille">
+            Exécuter
+          </button>
+        <% end %>
+      </div>
+    <% end %>
+  </div>
+
+  <!-- Zone de résultat -->
+  <div id="action-result"></div>
+
+  <!-- Texte d'ambiance -->
+  <div class="doctrine-lore">
+    <h3>Les Trois Piliers de la Chatouille</h3>
+    <div class="pillar">
+      <span class="pillar-icon">🪶</span>
+      <div class="pillar-content">
+        <strong>Le Toucher Sacré</strong>
+        <p>La chatouille est le langage universel de la joie. Par elle, les âmes se connectent.</p>
+      </div>
+    </div>
+    <div class="pillar">
+      <span class="pillar-icon">😄</span>
+      <div class="pillar-content">
+        <strong>Le Rire Éternel</strong>
+        <p>Le rire est la prière la plus pure. Celui qui rit touche le divin.</p>
+      </div>
+    </div>
+    <div class="pillar">
+      <span class="pillar-icon">🌟</span>
+      <div class="pillar-content">
+        <strong>La Légèreté Cosmique</strong>
+        <p>Ne prenez rien trop au sérieux. L'univers lui-même est une vaste plaisanterie.</p>
+      </div>
+    </div>
+  </div>
+</div>
+

@@ -1,0 +1,113 @@
+<div class="chatouille-page politics-page">
+  <!-- Header -->
+  <div class="page-header">
+    <%= link_to chatouille_path, class: "back-link" do %>
+      ← Retour au Temple
+    <% end %>
+    <h1 class="page-title">🏛️ Influence Politique</h1>
+    <p class="page-subtitle">Le Conseil des Cultes de Mirial</p>
+  </div>
+
+  <!-- Ressources actuelles -->
+  <div id="resources-panel">
+    <%= render "chatouille/resources_panel" %>
+  </div>
+
+  <!-- Statut politique -->
+  <div class="politics-status">
+    <div class="politics-stat">
+      <span class="stat-value"><%= @chatouille_state.political_influence %></span>
+      <span class="stat-label">Points d'influence</span>
+    </div>
+    <div class="politics-stat">
+      <span class="stat-icon">
+        <% if @chatouille_state.council_member %>
+          🪑 Membre du Conseil
+        <% elsif @chatouille_state.council_observer %>
+          👁️ Observateur au Conseil
+        <% else %>
+          ❌ Pas de siège au Conseil
+        <% end %>
+      </span>
+    </div>
+  </div>
+
+  <!-- Actions politiques -->
+  <div class="actions-grid">
+    <% @political_actions.each do |action| %>
+      <div class="action-card politics-card">
+        <div class="action-header">
+          <h3 class="action-name"><%= action[:name] %></h3>
+          <% if action[:available_step] && action[:available_step] > 1 %>
+            <span class="unlock-badge">Étape <%= action[:available_step] %>+</span>
+          <% end %>
+          <% if action[:requires] %>
+            <span class="requires-badge">Requiert : <%= action[:requires].to_s.humanize %></span>
+          <% end %>
+        </div>
+        
+        <p class="action-description"><%= action[:description] %></p>
+        
+        <div class="action-details">
+          <div class="action-cost">
+            <strong>Coût :</strong>
+            <% action[:cost].each do |resource, amount| %>
+              <% next if amount == 0 %>
+              <span class="cost-item <%= can_afford?(resource, amount) ? '' : 'insufficient' %>">
+                <%= resource_icon(resource) %> <%= amount %>
+              </span>
+            <% end %>
+          </div>
+          
+          <div class="action-effect">
+            <strong>Effet :</strong>
+            <% action[:effect].each do |effect, value| %>
+              <span class="effect-item positive">
+                <%= effect_icon(effect) %> +<%= value %>
+              </span>
+            <% end %>
+          </div>
+        </div>
+        
+        <%= form_with url: chatouille_perform_action_path, method: :post, data: { turbo_frame: "_top" } do |f| %>
+          <%= hidden_field_tag :action_type, "politics" %>
+          <%= hidden_field_tag :action_id, action[:id] %>
+          <button type="submit" class="btn btn-chatouille" <%= can_afford_action?(action) ? '' : 'disabled' %>>
+            Exécuter
+          </button>
+        <% end %>
+      </div>
+    <% end %>
+  </div>
+
+  <!-- Zone de résultat -->
+  <div id="action-result"></div>
+
+  <!-- Information sur le Conseil -->
+  <div class="council-info">
+    <h3>Le Conseil des Cultes de Mirial</h3>
+    <p>
+      Sur Mirial, la politique et la religion sont intimement liées. Le Conseil des Cultes 
+      rassemble les représentants de toutes les religions reconnues de la planète. 
+      Plus votre religion gagne en influence, plus votre voix compte dans les décisions 
+      qui affectent toute la planète.
+    </p>
+    <div class="council-levels">
+      <div class="council-level <%= @chatouille_state.council_observer || @chatouille_state.council_member ? 'achieved' : '' %>">
+        <span class="level-icon">👁️</span>
+        <div class="level-info">
+          <strong>Observateur</strong>
+          <p>Assister aux réunions sans droit de vote</p>
+        </div>
+      </div>
+      <div class="council-level <%= @chatouille_state.council_member ? 'achieved' : '' %>">
+        <span class="level-icon">🪑</span>
+        <div class="level-info">
+          <strong>Membre</strong>
+          <p>Droit de vote et propositions</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+

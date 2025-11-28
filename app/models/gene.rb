@@ -9,8 +9,9 @@ class Gene < ApplicationRecord
     deplacement: 3,
     perception: 4,
     social: 5,
-    psychique: 6,
-    insolite: 7,
-    esthetique: 8
+    adaptation: 6,
+    psychique: 7,
+    insolite: 8,
+    esthetique: 9
   }
 end

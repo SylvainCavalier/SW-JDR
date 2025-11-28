@@ -1,2 +1,93 @@
-<!-- app/views/science/labo.html.erb -->
-<h2>Labo d'études génétiques</h2>
+<div class="container mt-4">
+  <h1 class="text-center text-success mb-4">🧬 Appliquer les Traits Génétiques</h1>
+
+  <div class="row">
+    <!-- Liste des embryons -->
+    <div class="col-lg-6 mb-4">
+      <div class="card bg-dark text-light border-info h-100">
+        <div class="card-header bg-info text-dark">
+          <h5 class="mb-0"><i class="fa-solid fa-box me-2"></i>Embryons disponibles (<%= @embryos.count %>)</h5>
+        </div>
+        <div class="card-body" style="max-height: 500px; overflow-y: auto;">
+          <% if @embryos.any? %>
+            <% @embryos.each do |embryo| %>
+              <div class="card bg-secondary mb-2">
+                <div class="card-body py-2">
+                  <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                      <strong><%= embryo.name %></strong>
+                      <span class="badge bg-success ms-2"><%= embryo.creature_type.humanize %></span>
+                      <span class="badge bg-<%= embryo.status == 'stocké' ? 'info' : 'warning' %>"><%= embryo.status %></span>
+                    </div>
+                    <button class="btn btn-sm btn-outline-success" disabled>
+                      <i class="fa-solid fa-dna me-1"></i>Sélectionner
+                    </button>
+                  </div>
+                  <small class="text-muted">
+                    PV: <%= embryo.hp_max %> | Arme: <%= embryo.weapon || "-" %> | Race: <%= embryo.race || "-" %>
+                  </small>
+                </div>
+              </div>
+            <% end %>
+          <% else %>
+            <div class="text-center text-muted py-4">
+              <i class="fa-solid fa-flask fa-3x mb-3"></i>
+              <p>Aucun embryon disponible.</p>
+              <p class="small">Créez des embryons dans la page "Cultiver un embryon".</p>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+
+    <!-- Liste des gènes débloqués -->
+    <div class="col-lg-6 mb-4">
+      <div class="card bg-dark text-light border-success h-100">
+        <div class="card-header bg-success text-white">
+          <h5 class="mb-0"><i class="fa-solid fa-microscope me-2"></i>Gènes débloqués (<%= @user_genes.count %>)</h5>
+        </div>
+        <div class="card-body" style="max-height: 500px; overflow-y: auto;">
+          <% if @user_genes.any? %>
+            <% @user_genes.group_by { |ug| ug.gene.category }.each do |category, genes| %>
+              <h6 class="text-info mt-3"><%= Gene.categories.key(category)&.humanize || "Autre" %></h6>
+              <% genes.each do |ug| %>
+                <div class="card bg-secondary mb-2">
+                  <div class="card-body py-2">
+                    <div class="d-flex justify-content-between align-items-center">
+                      <div>
+                        <strong><%= ug.gene.property %></strong>
+                        <span class="badge bg-success ms-2">Nv.<%= ug.level %></span>
+                      </div>
+                      <button class="btn btn-sm btn-outline-warning" disabled>
+                        <i class="fa-solid fa-plus me-1"></i>Appliquer
+                      </button>
+                    </div>
+                    <small class="text-muted"><%= ug.gene.description %></small>
+                  </div>
+                </div>
+              <% end %>
+            <% end %>
+          <% else %>
+            <div class="text-center text-muted py-4">
+              <i class="fa-solid fa-lock fa-3x mb-3"></i>
+              <p>Aucun gène débloqué.</p>
+              <p class="small">Débloquez des gènes dans le Labo de recherche.</p>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="alert alert-info text-center">
+    <i class="fa-solid fa-info-circle me-2"></i>
+    <strong>En développement</strong> - L'application des traits génétiques sera disponible prochainement.
+  </div>
+
+  <!-- Lien retour -->
+  <div class="text-center mt-4">
+    <%= link_to genetique_dashboard_path, class: "btn btn-outline-secondary" do %>
+      <i class="fa-solid fa-arrow-left me-2"></i>Retour au Dashboard Génétique
+    <% end %>
+  </div>
+</div>

@@ -1,0 +1,1361 @@
+// ==========================================
+// Monsieur Chatouille - Mini-jeu religieux
+// ==========================================
+
+// Variables
+$chatouille-orange: #FF6B35;
+$chatouille-gold: #FFD93D;
+$chatouille-purple: #6B5B95;
+$chatouille-dark: #1a1a2e;
+$chatouille-darker: #0f0f1a;
+$chatouille-light: #f4f4f8;
+$chatouille-faith: #9B59B6;
+$chatouille-credits: #3498DB;
+$chatouille-missionaries: #27AE60;
+
+// Font import for distinctive style
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Quicksand:wght@400;500;600&display=swap');
+
+// ==========================================
+// Container principal
+// ==========================================
+.chatouille-container {
+  min-height: 100vh;
+  background: linear-gradient(135deg, $chatouille-darker 0%, $chatouille-dark 50%, darken($chatouille-purple, 30%) 100%);
+  padding: 1rem;
+  position: relative;
+  overflow-x: hidden;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: 
+      radial-gradient(circle at 20% 80%, rgba($chatouille-orange, 0.1) 0%, transparent 50%),
+      radial-gradient(circle at 80% 20%, rgba($chatouille-gold, 0.1) 0%, transparent 50%);
+    pointer-events: none;
+  }
+}
+
+// ==========================================
+// Header
+// ==========================================
+.chatouille-header {
+  text-align: center;
+  padding: 1.5rem 0;
+  margin-bottom: 1rem;
+}
+
+.chatouille-title {
+  font-family: 'Cinzel', serif;
+  font-size: 2rem;
+  font-weight: 700;
+  color: $chatouille-gold;
+  text-shadow: 0 0 20px rgba($chatouille-orange, 0.5), 0 0 40px rgba($chatouille-orange, 0.3);
+  margin: 0;
+  letter-spacing: 2px;
+
+  .chatouille-icon {
+    display: inline-block;
+    animation: feather-float 3s ease-in-out infinite;
+    margin: 0 0.5rem;
+  }
+}
+
+.chatouille-subtitle {
+  font-family: 'Quicksand', sans-serif;
+  color: rgba(white, 0.7);
+  font-size: 1.1rem;
+  margin-top: 0.5rem;
+}
+
+@keyframes feather-float {
+  0%, 100% { transform: translateY(0) rotate(-5deg); }
+  50% { transform: translateY(-8px) rotate(5deg); }
+}
+
+// ==========================================
+// Panneau des ressources
+// ==========================================
+.chatouille-resources {
+  display: flex;
+  justify-content: center;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+  margin-bottom: 2rem;
+}
+
+.resource-card {
+  background: linear-gradient(135deg, rgba(white, 0.1) 0%, rgba(white, 0.05) 100%);
+  border: 1px solid rgba(white, 0.1);
+  border-radius: 12px;
+  padding: 1rem 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  backdrop-filter: blur(10px);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+
+  &:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  }
+
+  &.faith {
+    border-color: rgba($chatouille-faith, 0.5);
+    .resource-icon { color: $chatouille-faith; }
+  }
+
+  &.missionaries {
+    border-color: rgba($chatouille-missionaries, 0.5);
+    .resource-icon { color: $chatouille-missionaries; }
+  }
+
+  &.credits {
+    border-color: rgba($chatouille-credits, 0.5);
+    .resource-icon { color: $chatouille-credits; }
+  }
+}
+
+.resource-icon {
+  font-size: 2rem;
+}
+
+.resource-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.resource-value {
+  font-family: 'Cinzel', serif;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: white;
+}
+
+.resource-name {
+  font-family: 'Quicksand', sans-serif;
+  font-size: 0.85rem;
+  color: rgba(white, 0.6);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+// ==========================================
+// Zone principale
+// ==========================================
+.chatouille-main {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 2rem;
+  margin-bottom: 2rem;
+}
+
+// ==========================================
+// Alerte d'événement
+// ==========================================
+.chatouille-event-alert {
+  width: 100%;
+  margin-bottom: 1rem;
+
+  .event-alert-content {
+    background: linear-gradient(135deg, rgba($chatouille-orange, 0.2) 0%, rgba($chatouille-gold, 0.1) 100%);
+    border: 2px solid $chatouille-orange;
+    border-radius: 12px;
+    padding: 1rem 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    animation: pulse-border 2s ease-in-out infinite;
+  }
+
+  .kessar-mini {
+    width: 60px;
+    height: auto;
+    border-radius: 50%;
+    border: 2px solid $chatouille-gold;
+  }
+
+  .event-alert-text {
+    flex: 1;
+    
+    strong {
+      color: $chatouille-gold;
+      font-family: 'Cinzel', serif;
+    }
+    
+    p {
+      margin: 0.25rem 0 0;
+      color: rgba(white, 0.8);
+      font-size: 0.9rem;
+    }
+  }
+}
+
+@keyframes pulse-border {
+  0%, 100% { box-shadow: 0 0 10px rgba($chatouille-orange, 0.5); }
+  50% { box-shadow: 0 0 25px rgba($chatouille-orange, 0.8); }
+}
+
+// ==========================================
+// Mascotte Monsieur Chatouille
+// ==========================================
+.chatouille-mascot {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.chatouille-image {
+  max-width: 250px;
+  height: auto;
+  filter: drop-shadow(0 0 30px rgba($chatouille-orange, 0.5));
+  animation: chatouille-bounce 4s ease-in-out infinite;
+  z-index: 2;
+  position: relative;
+}
+
+.chatouille-glow {
+  position: absolute;
+  width: 200px;
+  height: 200px;
+  background: radial-gradient(circle, rgba($chatouille-orange, 0.4) 0%, transparent 70%);
+  border-radius: 50%;
+  animation: glow-pulse 3s ease-in-out infinite;
+}
+
+@keyframes chatouille-bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-15px); }
+}
+
+@keyframes glow-pulse {
+  0%, 100% { transform: scale(1); opacity: 0.6; }
+  50% { transform: scale(1.2); opacity: 0.9; }
+}
+
+// ==========================================
+// Graphique des parts de marché
+// ==========================================
+.market-chart-container {
+  background: rgba(white, 0.05);
+  border-radius: 16px;
+  padding: 1.5rem;
+  border: 1px solid rgba(white, 0.1);
+  min-width: 300px;
+  max-width: 400px;
+}
+
+.chart-title {
+  font-family: 'Cinzel', serif;
+  color: $chatouille-gold;
+  text-align: center;
+  margin-bottom: 1rem;
+  font-size: 1.1rem;
+}
+
+.chart-wrapper {
+  max-width: 200px;
+  margin: 0 auto 1rem;
+}
+
+.chart-legend {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.85rem;
+  color: rgba(white, 0.8);
+}
+
+.legend-color {
+  width: 12px;
+  height: 12px;
+  border-radius: 3px;
+  flex-shrink: 0;
+}
+
+.legend-name {
+  flex: 1;
+}
+
+.legend-value {
+  font-weight: 600;
+  color: white;
+}
+
+.chatouille-share-highlight {
+  margin-top: 1rem;
+  padding: 1rem;
+  background: linear-gradient(135deg, rgba($chatouille-orange, 0.3) 0%, rgba($chatouille-gold, 0.2) 100%);
+  border-radius: 8px;
+  text-align: center;
+  border: 1px solid $chatouille-orange;
+}
+
+.share-label {
+  display: block;
+  font-family: 'Cinzel', serif;
+  color: $chatouille-gold;
+  font-size: 0.9rem;
+  margin-bottom: 0.25rem;
+}
+
+.share-value {
+  font-family: 'Cinzel', serif;
+  font-size: 2rem;
+  font-weight: 700;
+  color: white;
+  text-shadow: 0 0 10px rgba($chatouille-orange, 0.5);
+}
+
+// ==========================================
+// Barre de progression
+// ==========================================
+.chatouille-progress-section {
+  max-width: 600px;
+  margin: 0 auto 2rem;
+  padding: 0 1rem;
+}
+
+.progress-label {
+  display: flex;
+  justify-content: space-between;
+  color: rgba(white, 0.7);
+  font-size: 0.9rem;
+  margin-bottom: 0.5rem;
+}
+
+.chatouille-progress-bar {
+  height: 20px;
+  background: rgba(white, 0.1);
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid rgba(white, 0.2);
+}
+
+.chatouille-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, $chatouille-orange, $chatouille-gold);
+  border-radius: 10px;
+  transition: width 0.5s ease;
+  box-shadow: 0 0 15px rgba($chatouille-orange, 0.5);
+}
+
+.progress-thresholds {
+  display: flex;
+  justify-content: space-between;
+  color: rgba(white, 0.5);
+  font-size: 0.8rem;
+  margin-top: 0.25rem;
+}
+
+// ==========================================
+// Navigation
+// ==========================================
+.chatouille-nav {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.chatouille-nav-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1rem 1.5rem;
+  background: linear-gradient(135deg, rgba(white, 0.1) 0%, rgba(white, 0.05) 100%);
+  border: 1px solid rgba(white, 0.2);
+  border-radius: 12px;
+  color: white;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  min-width: 100px;
+
+  &:hover {
+    background: linear-gradient(135deg, rgba($chatouille-orange, 0.3) 0%, rgba($chatouille-gold, 0.2) 100%);
+    border-color: $chatouille-orange;
+    transform: translateY(-3px);
+    box-shadow: 0 10px 30px rgba($chatouille-orange, 0.3);
+    color: white;
+    text-decoration: none;
+  }
+
+  .nav-icon {
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .nav-label {
+    font-family: 'Quicksand', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 600;
+  }
+}
+
+// ==========================================
+// Statistiques
+// ==========================================
+.chatouille-stats {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 2rem;
+  padding: 1.5rem;
+  background: rgba(white, 0.03);
+  border-radius: 12px;
+  margin-top: 1rem;
+}
+
+.stat-item {
+  text-align: center;
+
+  .stat-value {
+    display: block;
+    font-family: 'Cinzel', serif;
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: $chatouille-gold;
+  }
+
+  .stat-label {
+    font-family: 'Quicksand', sans-serif;
+    font-size: 0.85rem;
+    color: rgba(white, 0.6);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+}
+
+// ==========================================
+// Bouton Chatouille
+// ==========================================
+.btn-chatouille {
+  background: linear-gradient(135deg, $chatouille-orange 0%, darken($chatouille-orange, 10%) 100%);
+  border: none;
+  color: white;
+  font-family: 'Quicksand', sans-serif;
+  font-weight: 600;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-decoration: none;
+  display: inline-block;
+
+  &:hover:not(:disabled) {
+    background: linear-gradient(135deg, $chatouille-gold 0%, $chatouille-orange 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 20px rgba($chatouille-orange, 0.4);
+    color: white;
+    text-decoration: none;
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  &.btn-lg {
+    padding: 1rem 2rem;
+    font-size: 1.1rem;
+  }
+}
+
+// ==========================================
+// Page d'événement
+// ==========================================
+.chatouille-event-page,
+.chatouille-event-result {
+  min-height: 100vh;
+  background: linear-gradient(135deg, $chatouille-darker 0%, $chatouille-dark 50%, darken($chatouille-purple, 30%) 100%);
+  padding: 1rem;
+}
+
+.event-header {
+  text-align: center;
+  padding: 1rem 0;
+  margin-bottom: 1rem;
+
+  .back-link {
+    display: inline-block;
+    color: rgba(white, 0.7);
+    text-decoration: none;
+    margin-bottom: 1rem;
+    transition: color 0.3s ease;
+
+    &:hover {
+      color: $chatouille-gold;
+    }
+  }
+
+  .event-title {
+    font-family: 'Cinzel', serif;
+    color: $chatouille-gold;
+    font-size: 1.8rem;
+    margin: 0;
+  }
+}
+
+.event-content,
+.result-content {
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+.kessar-portrait {
+  text-align: center;
+  margin-bottom: 1.5rem;
+
+  .kessar-image {
+    max-width: 180px;
+    height: auto;
+    filter: drop-shadow(0 0 20px rgba($chatouille-gold, 0.4));
+    animation: kessar-idle 3s ease-in-out infinite;
+  }
+
+  .kessar-name-tag {
+    margin-top: 0.5rem;
+    font-family: 'Cinzel', serif;
+    color: $chatouille-gold;
+    font-size: 1.1rem;
+  }
+}
+
+@keyframes kessar-idle {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.02); }
+}
+
+.dialogue-bubble {
+  background: rgba(white, 0.08);
+  border: 2px solid rgba($chatouille-gold, 0.4);
+  border-radius: 20px;
+  padding: 1.5rem 2rem;
+  margin-bottom: 2rem;
+  position: relative;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: -12px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 0;
+    border-left: 12px solid transparent;
+    border-right: 12px solid transparent;
+    border-bottom: 12px solid rgba($chatouille-gold, 0.4);
+  }
+
+  .dialogue-title {
+    font-family: 'Cinzel', serif;
+    color: $chatouille-gold;
+    font-size: 1.3rem;
+    margin-bottom: 1rem;
+    text-align: center;
+  }
+
+  .dialogue-text {
+    color: rgba(white, 0.9);
+    font-size: 1.1rem;
+    line-height: 1.6;
+    text-align: center;
+  }
+}
+
+.event-choices {
+  h3 {
+    font-family: 'Cinzel', serif;
+    color: rgba(white, 0.8);
+    text-align: center;
+    margin-bottom: 1.5rem;
+    font-size: 1.1rem;
+  }
+}
+
+.choice-form {
+  margin-bottom: 1rem;
+}
+
+.choice-btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 1.5rem;
+  background: rgba(white, 0.05);
+  border: 1px solid rgba(white, 0.2);
+  border-radius: 12px;
+  color: white;
+  text-align: left;
+  cursor: pointer;
+  transition: all 0.3s ease;
+
+  &:hover {
+    background: rgba($chatouille-orange, 0.2);
+    border-color: $chatouille-orange;
+    transform: translateX(5px);
+  }
+
+  .choice-number {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: $chatouille-orange;
+    border-radius: 50%;
+    font-family: 'Cinzel', serif;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+
+  .choice-text {
+    flex: 1;
+    font-family: 'Quicksand', sans-serif;
+    font-size: 1rem;
+  }
+
+  .choice-effects {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    opacity: 0.7;
+    transition: opacity 0.3s ease;
+
+    .effect {
+      font-size: 0.8rem;
+      padding: 0.2rem 0.5rem;
+      border-radius: 4px;
+
+      &.positive {
+        background: rgba($chatouille-missionaries, 0.3);
+        color: lighten($chatouille-missionaries, 20%);
+      }
+
+      &.negative {
+        background: rgba(#e74c3c, 0.3);
+        color: lighten(#e74c3c, 20%);
+      }
+    }
+  }
+}
+
+// ==========================================
+// Résultat d'événement
+// ==========================================
+.result-bubble {
+  .dialogue-choice {
+    background: rgba($chatouille-orange, 0.2);
+    border: 1px solid $chatouille-orange;
+    border-radius: 8px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    color: white;
+  }
+
+  .kessar-reaction {
+    color: rgba(white, 0.9);
+    font-size: 1.1rem;
+    font-style: italic;
+    text-align: center;
+  }
+}
+
+.effects-summary {
+  background: rgba(white, 0.05);
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+
+  h3 {
+    font-family: 'Cinzel', serif;
+    color: $chatouille-gold;
+    text-align: center;
+    margin-bottom: 1rem;
+  }
+}
+
+.effects-grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.effect-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  font-family: 'Quicksand', sans-serif;
+
+  &.positive {
+    background: rgba($chatouille-missionaries, 0.2);
+    border: 1px solid $chatouille-missionaries;
+    color: lighten($chatouille-missionaries, 20%);
+  }
+
+  &.negative {
+    background: rgba(#e74c3c, 0.2);
+    border: 1px solid #e74c3c;
+    color: lighten(#e74c3c, 20%);
+  }
+
+  .effect-icon {
+    font-size: 1.2rem;
+  }
+
+  .effect-name {
+    font-size: 0.9rem;
+  }
+
+  .effect-value {
+    font-weight: 700;
+    font-size: 1.1rem;
+  }
+}
+
+// ==========================================
+// Pages internes (doctrine, build, etc.)
+// ==========================================
+.chatouille-page {
+  min-height: 100vh;
+  background: linear-gradient(135deg, $chatouille-darker 0%, $chatouille-dark 50%, darken($chatouille-purple, 30%) 100%);
+  padding: 1rem;
+}
+
+.page-header {
+  text-align: center;
+  padding: 1rem 0;
+  margin-bottom: 1.5rem;
+
+  .back-link {
+    display: inline-block;
+    color: rgba(white, 0.7);
+    text-decoration: none;
+    margin-bottom: 1rem;
+    transition: color 0.3s ease;
+
+    &:hover {
+      color: $chatouille-gold;
+    }
+  }
+
+  .page-title {
+    font-family: 'Cinzel', serif;
+    color: $chatouille-gold;
+    font-size: 1.8rem;
+    margin: 0 0 0.5rem;
+  }
+
+  .page-subtitle {
+    color: rgba(white, 0.6);
+    font-size: 1rem;
+    margin: 0;
+  }
+}
+
+// ==========================================
+// Grille d'actions
+// ==========================================
+.actions-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.5rem;
+  max-width: 1000px;
+  margin: 0 auto 2rem;
+  padding: 0 1rem;
+}
+
+.action-card {
+  background: rgba(white, 0.05);
+  border: 1px solid rgba(white, 0.1);
+  border-radius: 12px;
+  padding: 1.5rem;
+  transition: all 0.3s ease;
+
+  &:hover {
+    border-color: rgba($chatouille-orange, 0.5);
+    background: rgba(white, 0.08);
+    transform: translateY(-3px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  }
+
+  .action-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.75rem;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .action-name {
+    font-family: 'Cinzel', serif;
+    color: $chatouille-gold;
+    font-size: 1.1rem;
+    margin: 0;
+  }
+
+  .unlock-badge,
+  .requires-badge {
+    font-size: 0.75rem;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    background: rgba($chatouille-purple, 0.3);
+    color: lighten($chatouille-purple, 30%);
+  }
+
+  .action-description {
+    color: rgba(white, 0.7);
+    font-size: 0.9rem;
+    margin-bottom: 1rem;
+    line-height: 1.5;
+  }
+
+  .action-details {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+    padding: 0.75rem;
+    background: rgba(white, 0.03);
+    border-radius: 8px;
+  }
+
+  .action-cost,
+  .action-effect {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    font-size: 0.85rem;
+
+    strong {
+      color: rgba(white, 0.6);
+      margin-right: 0.5rem;
+    }
+  }
+
+  .cost-item {
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    background: rgba(white, 0.1);
+    color: rgba(white, 0.9);
+
+    &.insufficient {
+      background: rgba(#e74c3c, 0.3);
+      color: #e74c3c;
+    }
+  }
+
+  .effect-item {
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+
+    &.positive {
+      background: rgba($chatouille-missionaries, 0.2);
+      color: lighten($chatouille-missionaries, 20%);
+    }
+  }
+
+  .free {
+    color: $chatouille-missionaries;
+    font-style: italic;
+  }
+}
+
+// ==========================================
+// Sections spécifiques
+// ==========================================
+.doctrine-lore {
+  max-width: 600px;
+  margin: 2rem auto;
+  padding: 1.5rem;
+  background: rgba(white, 0.03);
+  border-radius: 12px;
+
+  h3 {
+    font-family: 'Cinzel', serif;
+    color: $chatouille-gold;
+    text-align: center;
+    margin-bottom: 1.5rem;
+  }
+
+  .pillar {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid rgba(white, 0.1);
+
+    &:last-child {
+      margin-bottom: 0;
+      padding-bottom: 0;
+      border-bottom: none;
+    }
+
+    .pillar-icon {
+      font-size: 2rem;
+    }
+
+    .pillar-content {
+      strong {
+        display: block;
+        color: $chatouille-gold;
+        margin-bottom: 0.25rem;
+        font-family: 'Cinzel', serif;
+      }
+
+      p {
+        color: rgba(white, 0.7);
+        margin: 0;
+        font-size: 0.9rem;
+        line-height: 1.5;
+      }
+    }
+  }
+}
+
+// Stats de construction
+.build-stats,
+.marketing-stats,
+.politics-status {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  flex-wrap: wrap;
+  margin-bottom: 2rem;
+
+  .build-stat,
+  .marketing-stat,
+  .politics-stat {
+    text-align: center;
+    padding: 1rem 2rem;
+    background: rgba(white, 0.05);
+    border-radius: 8px;
+
+    &.special {
+      background: linear-gradient(135deg, rgba($chatouille-orange, 0.2) 0%, rgba($chatouille-gold, 0.1) 100%);
+      border: 1px solid $chatouille-orange;
+    }
+
+    .stat-value {
+      display: block;
+      font-family: 'Cinzel', serif;
+      font-size: 1.5rem;
+      color: $chatouille-gold;
+    }
+
+    .stat-label {
+      font-size: 0.85rem;
+      color: rgba(white, 0.6);
+    }
+
+    .stat-icon {
+      color: $chatouille-gold;
+      font-size: 0.95rem;
+    }
+  }
+}
+
+// Marketing slogans
+.marketing-slogans {
+  max-width: 500px;
+  margin: 2rem auto;
+  text-align: center;
+
+  h3 {
+    font-family: 'Cinzel', serif;
+    color: $chatouille-gold;
+    margin-bottom: 1rem;
+  }
+
+  .slogans-carousel {
+    .slogan {
+      padding: 1rem;
+      margin: 0.5rem 0;
+      background: rgba(white, 0.05);
+      border-radius: 8px;
+      color: rgba(white, 0.8);
+      font-style: italic;
+      font-size: 0.95rem;
+      border-left: 3px solid $chatouille-orange;
+    }
+  }
+}
+
+// Council info
+.council-info {
+  max-width: 600px;
+  margin: 2rem auto;
+  padding: 1.5rem;
+  background: rgba(white, 0.03);
+  border-radius: 12px;
+
+  h3 {
+    font-family: 'Cinzel', serif;
+    color: $chatouille-gold;
+    text-align: center;
+    margin-bottom: 1rem;
+  }
+
+  > p {
+    color: rgba(white, 0.7);
+    text-align: center;
+    margin-bottom: 1.5rem;
+    line-height: 1.6;
+  }
+
+  .council-levels {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .council-level {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    background: rgba(white, 0.05);
+    border-radius: 8px;
+    border: 1px solid rgba(white, 0.1);
+    opacity: 0.5;
+    transition: all 0.3s ease;
+
+    &.achieved {
+      opacity: 1;
+      border-color: $chatouille-gold;
+      background: rgba($chatouille-gold, 0.1);
+    }
+
+    .level-icon {
+      font-size: 2rem;
+    }
+
+    .level-info {
+      strong {
+        display: block;
+        color: $chatouille-gold;
+        font-family: 'Cinzel', serif;
+      }
+
+      p {
+        margin: 0;
+        color: rgba(white, 0.7);
+        font-size: 0.85rem;
+      }
+    }
+  }
+}
+
+// ==========================================
+// Comptabilité
+// ==========================================
+.accounting-overview {
+  display: flex;
+  justify-content: center;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+  margin-bottom: 2rem;
+}
+
+.account-card {
+  background: rgba(white, 0.05);
+  border: 1px solid rgba(white, 0.1);
+  border-radius: 12px;
+  padding: 1.5rem 2rem;
+  text-align: center;
+
+  h3 {
+    font-family: 'Quicksand', sans-serif;
+    color: rgba(white, 0.7);
+    font-size: 1rem;
+    margin: 0 0 0.5rem;
+    font-weight: 600;
+  }
+
+  .account-value {
+    font-family: 'Cinzel', serif;
+    color: $chatouille-gold;
+    font-size: 1.5rem;
+  }
+}
+
+.income-section {
+  max-width: 600px;
+  margin: 0 auto 2rem;
+  padding: 1.5rem;
+  background: rgba(white, 0.03);
+  border-radius: 12px;
+
+  h3 {
+    font-family: 'Cinzel', serif;
+    color: $chatouille-gold;
+    margin-bottom: 1rem;
+    text-align: center;
+  }
+}
+
+.income-table {
+  width: 100%;
+  border-collapse: collapse;
+
+  th, td {
+    padding: 0.75rem 1rem;
+    text-align: left;
+  }
+
+  th {
+    color: rgba(white, 0.5);
+    font-weight: 600;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    border-bottom: 1px solid rgba(white, 0.1);
+  }
+
+  td {
+    color: rgba(white, 0.8);
+    border-bottom: 1px solid rgba(white, 0.05);
+  }
+
+  .amount {
+    color: $chatouille-missionaries;
+    font-weight: 600;
+  }
+
+  .frequency {
+    color: rgba(white, 0.5);
+    font-size: 0.85rem;
+  }
+
+  .total-row {
+    td {
+      border-top: 2px solid $chatouille-gold;
+      border-bottom: none;
+    }
+
+    .amount {
+      color: $chatouille-gold;
+    }
+  }
+}
+
+.collect-section {
+  max-width: 500px;
+  margin: 0 auto 2rem;
+  text-align: center;
+  padding: 2rem;
+  background: linear-gradient(135deg, rgba($chatouille-orange, 0.1) 0%, rgba($chatouille-gold, 0.05) 100%);
+  border-radius: 12px;
+  border: 1px solid rgba($chatouille-orange, 0.3);
+
+  h3 {
+    font-family: 'Cinzel', serif;
+    color: $chatouille-gold;
+    margin-bottom: 0.5rem;
+  }
+
+  > p {
+    color: rgba(white, 0.7);
+    margin-bottom: 1.5rem;
+  }
+}
+
+.collect-preview {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  margin-bottom: 1.5rem;
+
+  .collect-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+
+    .collect-icon {
+      font-size: 1.5rem;
+    }
+
+    .collect-amount {
+      font-family: 'Cinzel', serif;
+      color: $chatouille-gold;
+      font-size: 1.2rem;
+    }
+  }
+}
+
+.historical-stats {
+  max-width: 700px;
+  margin: 0 auto;
+  padding: 1.5rem;
+  background: rgba(white, 0.03);
+  border-radius: 12px;
+
+  h3 {
+    font-family: 'Cinzel', serif;
+    color: $chatouille-gold;
+    text-align: center;
+    margin-bottom: 1.5rem;
+  }
+
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 1rem;
+  }
+
+  .hist-stat {
+    text-align: center;
+    padding: 1rem;
+    background: rgba(white, 0.05);
+    border-radius: 8px;
+
+    .hist-value {
+      display: block;
+      font-family: 'Cinzel', serif;
+      font-size: 1.5rem;
+      color: $chatouille-gold;
+    }
+
+    .hist-label {
+      font-size: 0.8rem;
+      color: rgba(white, 0.6);
+    }
+  }
+}
+
+// ==========================================
+// Résultats d'actions
+// ==========================================
+.action-result-card {
+  max-width: 500px;
+  margin: 1rem auto;
+  padding: 1.5rem;
+  border-radius: 12px;
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+
+  &.success {
+    background: rgba($chatouille-missionaries, 0.1);
+    border: 1px solid $chatouille-missionaries;
+  }
+
+  &.error {
+    background: rgba(#e74c3c, 0.1);
+    border: 1px solid #e74c3c;
+  }
+
+  .result-icon {
+    font-size: 2rem;
+    flex-shrink: 0;
+  }
+
+  .result-content {
+    flex: 1;
+
+    h4 {
+      margin: 0 0 0.5rem;
+      font-family: 'Cinzel', serif;
+      color: white;
+    }
+
+    p {
+      margin: 0;
+      color: rgba(white, 0.8);
+    }
+  }
+
+  .result-cost,
+  .result-effect {
+    margin-top: 0.75rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    align-items: center;
+
+    strong {
+      color: rgba(white, 0.6);
+      font-size: 0.85rem;
+    }
+  }
+}
+
+// ==========================================
+// Responsive
+// ==========================================
+@media (max-width: 768px) {
+  .chatouille-title {
+    font-size: 1.5rem;
+  }
+
+  .chatouille-resources {
+    gap: 1rem;
+  }
+
+  .resource-card {
+    padding: 0.75rem 1rem;
+  }
+
+  .resource-value {
+    font-size: 1.2rem;
+  }
+
+  .chatouille-image {
+    max-width: 180px;
+  }
+
+  .market-chart-container {
+    min-width: auto;
+    width: 100%;
+    max-width: none;
+  }
+
+  .chatouille-nav-btn {
+    min-width: 80px;
+    padding: 0.75rem 1rem;
+  }
+
+  .actions-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .choice-btn {
+    flex-direction: column;
+    text-align: center;
+
+    .choice-number {
+      margin: 0;
+    }
+  }
+
+  .accounting-overview {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .account-card {
+    width: 100%;
+    max-width: 300px;
+  }
+}
+

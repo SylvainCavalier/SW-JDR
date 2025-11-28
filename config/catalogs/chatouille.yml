@@ -1,0 +1,604 @@
+############################################
+# ÉTAPE 1 — Fondation (1% → 5%)
+# Échelle crédits : 5cr=bière, 100cr=medipack, 500cr=blaster, 10000cr=arme rare, 20000cr=maison, 50000cr=vaisseau
+############################################
+events:
+  - step: 1
+    title: "Premiers convertis"
+    description: "Ô grande Entité Chatouilleuse, nos trois premiers fidèles pensent que le salut passe par les chatouilles de pieds quotidiennes… On leur dit quoi ?"
+    choices:
+      - text: "Laisse-les faire, l'odeur fait partie du mystère."
+        kessar_reaction: "Une foi qui pique un peu les narines, c'est une foi sincère, non ?"
+        kessar_mood: "happy"
+        effects:
+          market_share: 0.3
+          converts: 3
+
+      - text: "Institutionnalise les pédiluves sacrés (coût foi)."
+        kessar_reaction: "Je vais faire bénir de l'eau tiède. À défaut d'encens, ça fera le job."
+        kessar_mood: "amazed"
+        effects:
+          faith: -3
+          market_share: 0.5
+          converts: 5
+
+      - text: "Envoie Kessar expliquer où se trouvent les zones chatouillables homologuées."
+        kessar_reaction: "Ha… encore une tournée de pédagogie corporelle. Je prends mes plumes."
+        kessar_mood: "upset"
+        effects:
+          market_share: 0.4
+          converts: 4
+          influence: 1
+
+  - step: 1
+    title: "Tracts ridicules"
+    description: "Un fidèle distribue des tracts dessinés avec un crayon mal taillé. C'est moche, mais ça marche un peu."
+    choices:
+      - text: "Apprécie l'effort (gain minime de fidèles)."
+        kessar_reaction: "Il dessine comme un Ewok, mais avec la ferveur d'un prophète. J'aime."
+        kessar_mood: "happy"
+        effects:
+          market_share: 0.2
+          converts: 2
+
+      - text: "Fais imprimer des autocollants fluo (coût crédits)."
+        kessar_reaction: "Nous allons chatouiller les rétines autant que les âmes !"
+        kessar_mood: "amazed"
+        effects:
+          credits: -200
+          market_share: 0.6
+          converts: 8
+
+      - text: "Propose des tampons chatouille-sanction pour les récalcitrants."
+        kessar_reaction: "Je commande immédiatement un modèle 'petite rigolade punitive'."
+        kessar_mood: "happy"
+        effects:
+          credits: -50
+          market_share: 0.3
+          influence: 2
+
+  - step: 1
+    title: "Graffiti sacré"
+    description: "Le slogan 'La Chatouille est Grande' est apparu… en rose fluo… sur le mur du Conseil."
+    choices:
+      - text: "C'est un signe divin ! (+influence)"
+        kessar_reaction: "Je le savais ! Le rose fluo est la couleur de la révélation cosmique !"
+        kessar_mood: "amazed"
+        effects:
+          influence: 5
+          market_share: 0.4
+
+      - text: "On nettoie et on fait profil bas."
+        kessar_reaction: "Très bien, mais qu'on le nettoie doucement… avec des plumes."
+        kessar_mood: "upset"
+        effects:
+          market_share: 0.1
+          influence: -1
+
+      - text: "On en fait des posters collector (gain de crédits)."
+        kessar_reaction: "J'ajoute ça à la boutique spirituelle. Une édition limitée 'Mur du Miracle' !"
+        kessar_mood: "happy"
+        effects:
+          credits: 500
+          market_share: 0.3
+
+  - step: 1
+    title: "Temple en carton"
+    description: "Les fidèles ont construit le premier temple avec… des boîtes de céréales recyclées."
+    choices:
+      - text: "On inaugure fièrement !"
+        kessar_reaction: "Je prépare mon discours. Et peut-être quelques biscuits bénis."
+        kessar_mood: "happy"
+        effects:
+          market_share: 0.5
+          converts: 5
+          faith: 2
+
+      - text: "On attend des matériaux plus solides (coût crédits)."
+        kessar_reaction: "Soit. Mais qu'on garde les boîtes. Pour les offrandes sucrées."
+        kessar_mood: "amazed"
+        effects:
+          credits: -2000
+          temples: 1
+          market_share: 0.8
+          converts: 10
+
+      - text: "On appelle ça « une structure conceptuelle »."
+        kessar_reaction: "Oui ! L'art sacré de l'architecture croustillante. Une révélation esthétique !"
+        kessar_mood: "amazed"
+        effects:
+          influence: 3
+          market_share: 0.4
+
+  - step: 1
+    title: "Chanson officielle"
+    description: "Un musicien amateur a composé un hymne : « Chatouille-moi encore ». C'est très… particulier."
+    choices:
+      - text: "On diffuse partout (petit boost de parts)."
+        kessar_reaction: "C'est dans la justesse du cœur, pas de la voix, que réside le message… heureusement."
+        kessar_mood: "happy"
+        effects:
+          market_share: 0.5
+          converts: 6
+
+      - text: "On change les paroles, vite !"
+        kessar_reaction: "Très bien. Moins de soupirs, plus de révérences sacrées."
+        kessar_mood: "upset"
+        effects:
+          faith: -2
+          market_share: 0.3
+          converts: 3
+
+      - text: "On en fait une version remix dansante (coût foi)."
+        kessar_reaction: "Ô oui ! On fera trembler les dancefloors mystiques de Mirial !"
+        kessar_mood: "amazed"
+        effects:
+          faith: -4
+          market_share: 0.7
+          converts: 12
+          influence: 2
+
+############################################
+# ÉTAPE 2 — Expansion régionale (5% → 20%)
+############################################
+
+  - step: 2
+    title: "Attaque hérétique"
+    description: "On a tagué « Chatouille-toi toi-même ! » sur ton temple. Qu'on leur chatouille les côtes ?"
+    choices:
+      - text: "Campagne de câlins correctifs."
+        kessar_reaction: "L'amour chatouilleur est toujours plus fort que la haine taguée. Préparez les plumes."
+        kessar_mood: "happy"
+        effects:
+          faith: -3
+          market_share: 0.8
+          converts: 15
+          influence: 2
+
+      - text: "Ignore-les, ils sont juste jaloux."
+        kessar_reaction: "Le silence est une arme… mais je garde quand même la liste des noms."
+        kessar_mood: "upset"
+        effects:
+          market_share: 0.2
+          faith: 2
+
+      - text: "Embargo sur les plumes d'oie rivales (+crédits)."
+        kessar_reaction: "Les affaires sont les affaires. Vive les sanctions spirituelles !"
+        kessar_mood: "amazed"
+        effects:
+          credits: 1500
+          market_share: 0.4
+          influence: 3
+
+  - step: 2
+    title: "Temple officiel"
+    description: "Une ville propose un emplacement au centre pour un VRAI temple. Gros coup de pub possible."
+    choices:
+      - text: "Construisons ! (coût : crédits)"
+        kessar_reaction: "Je vais bénir chaque pierre moi-même. Et peut-être quelques passants."
+        kessar_mood: "amazed"
+        effects:
+          credits: -8000
+          temples: 1
+          market_share: 1.5
+          converts: 25
+          influence: 5
+
+      - text: "Tente une construction bénévole (risque d'échec)."
+        kessar_reaction: "Des fidèles motivés, des clous, et beaucoup de foi… Qu'est-ce qui pourrait mal tourner ?"
+        kessar_mood: "happy"
+        effects:
+          faith: -5
+          temples: 1
+          market_share: 1.0
+          converts: 15
+
+      - text: "Exige un temple en forme de pied sacré."
+        kessar_reaction: "Audacieux. Controversé. Absolument dans l'esprit de la Chatouille."
+        kessar_mood: "amazed"
+        effects:
+          credits: -15000
+          temples: 1
+          market_share: 2.0
+          converts: 30
+          influence: 8
+
+  - step: 2
+    title: "Émissaire louche"
+    description: "Une autre religion t'offre un cadeau diplomatique : un coussin péteur sacré… Suspect."
+    choices:
+      - text: "Accepte, c'est marrant."
+        kessar_reaction: "Un message universel : l'humour unit les croyants… et les sièges."
+        kessar_mood: "happy"
+        effects:
+          market_share: 0.3
+          influence: 2
+          faith: 1
+
+      - text: "Refuse, trop puéril… peut-être."
+        kessar_reaction: "La Chatouille n'est pas un cirque ! Bon… pas toujours."
+        kessar_mood: "upset"
+        effects:
+          influence: 3
+          faith: 2
+
+      - text: "Espionner la provenance du coussin."
+        kessar_reaction: "J'ai déjà envoyé deux moines en infiltration. Déguisés en fauteuils."
+        kessar_mood: "amazed"
+        effects:
+          credits: -500
+          influence: 5
+          market_share: 0.2
+
+  - step: 2
+    title: "Kessar invité"
+    description: "Le Conseil des Cultes t'invite comme observateur. On y va ?"
+    choices:
+      - text: "Oui : robe de cérémonie et tout."
+        kessar_reaction: "Je vais ressortir la toge avec les pompons mystiques !"
+        kessar_mood: "amazed"
+        effects:
+          influence: 10
+          market_share: 0.8
+          council_observer: true
+
+      - text: "Non, on prépare un meilleur plan."
+        kessar_reaction: "Tu as raison, on va leur faire une entrée divine… plus tard."
+        kessar_mood: "upset"
+        effects:
+          faith: 5
+          market_share: 0.3
+
+      - text: "On envoie un pigeon spécialement chatouillé."
+        kessar_reaction: "Le message est clair : la paix par les frissons."
+        kessar_mood: "happy"
+        effects:
+          influence: 3
+          market_share: 0.5
+          credits: -100
+
+  - step: 2
+    title: "Festival de la Rigolade"
+    description: "Un grand festival comique accueille ta religion. Stand Chatouille obligatoire !"
+    choices:
+      - text: "Parfait ! (+fidèles)"
+        kessar_reaction: "J'ai commandé 300 plumes, 2 coussins géants et une scène gonflable."
+        kessar_mood: "amazed"
+        effects:
+          credits: -1000
+          market_share: 1.2
+          converts: 30
+
+      - text: "On impose une taxe rire (gain crédits)."
+        kessar_reaction: "Rire spirituel… mais pas gratuit !"
+        kessar_mood: "happy"
+        effects:
+          credits: 2000
+          market_share: 0.4
+          converts: 10
+
+      - text: "Focus temple au lieu des clowneries (bonus foi)."
+        kessar_reaction: "La foi, c'est sérieux. Enfin… presque."
+        kessar_mood: "upset"
+        effects:
+          faith: 8
+          market_share: 0.5
+          influence: 2
+
+############################################
+# ÉTAPE 3 — Influence majeure (20% → 30%)
+############################################
+
+  - step: 3
+    title: "Mission spatiale"
+    description: "Une colonie spatiale veut découvrir la Chatouille. Mission interstellaire ?"
+    choices:
+      - text: "Envoi d'un missionnaire."
+        kessar_reaction: "J'espère qu'il a le foie solide et des plumes antigravité."
+        kessar_mood: "amazed"
+        effects:
+          missionaries: -1
+          credits: -10000
+          market_share: 1.5
+          converts: 40
+          influence: 5
+
+      - text: "Vidéo tuto des chatouilles sacrées."
+        kessar_reaction: "J'ai déjà le titre : 'Révèle ton toi-tique intérieur'."
+        kessar_mood: "happy"
+        effects:
+          credits: -3000
+          market_share: 1.0
+          converts: 25
+          influence: 3
+
+      - text: "On attend un vaisseau plus… confortable."
+        kessar_reaction: "Bonne idée. Je refuse de voyager sans siège massant sanctifié."
+        kessar_mood: "upset"
+        effects:
+          faith: 3
+          market_share: 0.3
+
+  - step: 3
+    title: "Alliance du Coussin"
+    description: "Les Pousse-Loths veulent une fusion religieuse totale. Leur dieu est un Loth, un petit félin mignon qui parle…"
+    choices:
+      - text: "Alliance ! (gain foi, perte dignité)"
+        kessar_reaction: "Tant pis pour la dignité. Ce Loth parle mieux que la moitié du Conseil."
+        kessar_mood: "happy"
+        effects:
+          faith: 10
+          market_share: 2.0
+          converts: 50
+          influence: -5
+
+      - text: "Non merci, on a déjà une mascotte, et c'est moi."
+        kessar_reaction: "C'est vrai. Et j'ai moins de poils. Enfin, normalement."
+        kessar_mood: "upset"
+        effects:
+          faith: 5
+          influence: 3
+          market_share: 0.5
+
+      - text: "Absorption totale (+influence)."
+        kessar_reaction: "J'espère qu'ils miaulent le dogme correctement."
+        kessar_mood: "amazed"
+        effects:
+          influence: 12
+          market_share: 2.5
+          converts: 60
+          missionaries: 2
+
+  - step: 3
+    title: "Influence politique"
+    description: "On t'offre un rôle officiel au Conseil ! Cela augmenterait ton pouvoir."
+    choices:
+      - text: "Accepter avec cérémonie ridicule."
+        kessar_reaction: "Je vais préparer un discours en rimes... et en paillettes."
+        kessar_mood: "amazed"
+        effects:
+          influence: 15
+          market_share: 1.5
+          council_member: true
+
+      - text: "Refuser pour garder liberté (gain foi)."
+        kessar_reaction: "La liberté, c'est sacré. Et ça permet d'improviser des miracles."
+        kessar_mood: "happy"
+        effects:
+          faith: 12
+          market_share: 0.8
+          converts: 20
+
+      - text: "Envoyer Kessar trôner à ta place."
+        kessar_reaction: "Très bien. Je prendrai le coussin du centre et je ferai semblant de méditer."
+        kessar_mood: "happy"
+        effects:
+          influence: 10
+          market_share: 1.0
+          missionaries: -1
+
+  - step: 3
+    title: "Temple volant"
+    description: "Un inventeur fou propose un temple aéroporté… en forme de plume géante."
+    choices:
+      - text: "Let's go ! (coût élevé mais prestige)."
+        kessar_reaction: "Enfin un lieu de culte à la hauteur céleste de notre mission !"
+        kessar_mood: "amazed"
+        effects:
+          credits: -40000
+          influence: 20
+          market_share: 3.0
+          converts: 80
+          flying_temple: 1
+
+      - text: "Non, on reste sur du solide."
+        kessar_reaction: "Un sol stable, c'est mieux pour les rituels impliquant des bassines d'eau bénite."
+        kessar_mood: "upset"
+        effects:
+          faith: 5
+          market_share: 0.5
+          credits: 500
+
+      - text: "Propose un temple sous-marin plutôt."
+        kessar_reaction: "Original. Il faudra juste imperméabiliser les fidèles."
+        kessar_mood: "happy"
+        effects:
+          credits: -25000
+          temples: 1
+          market_share: 2.0
+          converts: 45
+          influence: 8
+
+  - step: 3
+    title: "Théologie académique"
+    description: "Une université propose un cours : « Chatouille et Métaphysique »."
+    choices:
+      - text: "Fonce ! (gain influence culturelle)"
+        kessar_reaction: "J'ai toujours rêvé d'être cité dans un article de revue savante… ou presque."
+        kessar_mood: "amazed"
+        effects:
+          influence: 10
+          market_share: 1.2
+          converts: 30
+          missionaries: 1
+
+      - text: "On garde le dogme simple."
+        kessar_reaction: "Simple, efficace, et rigolard : la sainte trinité !"
+        kessar_mood: "happy"
+        effects:
+          faith: 8
+          market_share: 0.6
+          converts: 15
+
+      - text: "Demande un cursus complet en chatouillologie."
+        kessar_reaction: "Licence, master, doctorat. Et pour les plus méritants : le doigt d'or du prophète."
+        kessar_mood: "amazed"
+        effects:
+          credits: -5000
+          influence: 15
+          market_share: 1.8
+          converts: 40
+          missionaries: 2
+
+############################################
+# ÉTAPE 4 — Expansion interplanétaire (≥30%)
+############################################
+
+  - step: 4
+    title: "Schisme du Coussin"
+    description: "Une faction exige un coussin péteur dans chaque rituel. Menace interne !"
+    choices:
+      - text: "Purge (coût important mais unité)."
+        kessar_reaction: "On garde l'esprit moelleux, mais la main ferme. Le vent sacré sera purifié."
+        kessar_mood: "upset"
+        effects:
+          faith: -15
+          credits: -10000
+          missionaries: -2
+          market_share: -1.0
+          influence: 10
+
+      - text: "Intégration (perte crédibilité)."
+        kessar_reaction: "Bon… au moins ça fera rire les enfants. Et les moins regardants."
+        kessar_mood: "happy"
+        effects:
+          influence: -8
+          market_share: 1.5
+          converts: 30
+          faith: 5
+
+      - text: "Diplomatie moelleuse avec plumes."
+        kessar_reaction: "Envoyons des émissaires bien rembourrés. Et un petit coussin en gage de paix."
+        kessar_mood: "amazed"
+        effects:
+          credits: -3000
+          faith: -5
+          market_share: 0.8
+          influence: 5
+
+  - step: 4
+    title: "Corruption du clergé"
+    description: "Un prêtre vend des bénédictions chatouilleuses contre massages."
+    choices:
+      - text: "Réforme sévère."
+        kessar_reaction: "Je vais leur rappeler que la foi ne se monnaye pas. Même contre une séance relaxante."
+        kessar_mood: "upset"
+        effects:
+          missionaries: -1
+          faith: 10
+          influence: 8
+          market_share: 0.5
+
+      - text: "On ferme les yeux… pour l'instant."
+        kessar_reaction: "Hum… faisons semblant de ne rien voir. Tant qu'il masse bien les statistiques."
+        kessar_mood: "happy"
+        effects:
+          credits: 5000
+          market_share: 0.3
+          influence: -5
+
+      - text: "Enquête officielle menée par Kessar."
+        kessar_reaction: "Je prends mon bâton d'encens et mon carnet d'interrogatoire. La lumière jaillira."
+        kessar_mood: "amazed"
+        effects:
+          faith: -5
+          influence: 12
+          market_share: 0.8
+          converts: 20
+
+  - step: 4
+    title: "Crise de foi"
+    description: "Certains doutent de l'existence de la Grande Chatouille Cosmique…"
+    choices:
+      - text: "Miracle public (coût foi, grand boost)."
+        kessar_reaction: "Préparez les projecteurs et les plumes bénites. On va frissonner les sceptiques."
+        kessar_mood: "amazed"
+        effects:
+          faith: -20
+          market_share: 4.0
+          converts: 100
+          influence: 15
+          miracles: 1
+
+      - text: "Propagande holovid haute qualité."
+        kessar_reaction: "Effets spéciaux, voix solennelle, flou divin… Netflix n'a qu'à bien se tenir."
+        kessar_mood: "happy"
+        effects:
+          credits: -15000
+          market_share: 2.5
+          converts: 60
+          influence: 8
+
+      - text: "Sacrée tournée de chatouilles."
+        kessar_reaction: "Rien de tel qu'un contact direct. Une foi bien placée entre les côtes, ça réveille."
+        kessar_mood: "happy"
+        effects:
+          faith: -10
+          missionaries: -1
+          market_share: 3.0
+          converts: 80
+          influence: 5
+
+  - step: 4
+    title: "Invasion concurrente"
+    description: "Une mégareligion galactique s'intéresse à Mirial… pas pour te féliciter."
+    choices:
+      - text: "Milice des plumes aiguisées."
+        kessar_reaction: "C'est l'heure de transformer les rituels en défense tactique. À vos plumeaux !"
+        kessar_mood: "upset"
+        effects:
+          credits: -20000
+          missionaries: -3
+          faith: -10
+          market_share: 1.0
+          influence: 15
+
+      - text: "Diplomatie douce (mais risquée)."
+        kessar_reaction: "Un banquet interreligieux avec jeux de mots sacrés. Ça passe ou ça casse."
+        kessar_mood: "happy"
+        effects:
+          credits: -8000
+          market_share: 2.0
+          converts: 40
+          influence: 5
+
+      - text: "Temple fortifié avec pièges rigolos."
+        kessar_reaction: "J'adore. L'entrée déclenche un rire automatique. Et les murs font des guilis."
+        kessar_mood: "amazed"
+        effects:
+          credits: -18000
+          temples: 1
+          market_share: 1.5
+          influence: 10
+          converts: 30
+
+  - step: 4
+    title: "Révolte des fidèles"
+    description: "Ils veulent voter sur les dogmes… La démocratie chatouilleuse est-elle une bonne idée ?"
+    choices:
+      - text: "Non. Jamais. Autorité divine uniquement."
+        kessar_reaction: "Une seule voix doit s'imposer. Et elle a un accent prophétique bien affirmé."
+        kessar_mood: "upset"
+        effects:
+          influence: 20
+          faith: 15
+          market_share: -0.5
+          converts: -20
+
+      - text: "Référendum : ça fera du buzz."
+        kessar_reaction: "Parfait. On glisse des options absurdes pour s'assurer du bon choix."
+        kessar_mood: "happy"
+        effects:
+          credits: -2000
+          market_share: 3.0
+          converts: 70
+          influence: 8
+
+      - text: "Lancer des élections trapézoïdales (personne ne comprendra)."
+        kessar_reaction: "Astucieux. Quand tout le monde est confus, la volonté divine triomphe."
+        kessar_mood: "amazed"
+        effects:
+          faith: 10
+          influence: 12
+          market_share: 2.0
+          converts: 50

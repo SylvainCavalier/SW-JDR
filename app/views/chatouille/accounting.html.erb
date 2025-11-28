@@ -1,0 +1,109 @@
+<div class="chatouille-page accounting-page">
+  <!-- Header -->
+  <div class="page-header">
+    <%= link_to chatouille_path, class: "back-link" do %>
+      ← Retour au Temple
+    <% end %>
+    <h1 class="page-title">💰 Comptabilité Sacrée</h1>
+    <p class="page-subtitle">Les finances de la Chatouille</p>
+  </div>
+
+  <!-- Ressources actuelles -->
+  <div id="resources-panel">
+    <%= render "chatouille/resources_panel" %>
+  </div>
+
+  <!-- Trésorerie détaillée -->
+  <div class="accounting-overview">
+    <div class="account-card">
+      <h3>💎 Trésorerie</h3>
+      <div class="account-value"><%= @chatouille_state.religion_credits %> crédits</div>
+    </div>
+    <div class="account-card">
+      <h3>🙏 Réserve de Foi</h3>
+      <div class="account-value"><%= @chatouille_state.faith_points %> points</div>
+    </div>
+    <div class="account-card">
+      <h3>🧑‍🦲 Personnel</h3>
+      <div class="account-value"><%= @chatouille_state.missionaries %> missionnaires</div>
+    </div>
+  </div>
+
+  <!-- Sources de revenus -->
+  <div class="income-section">
+    <h3>📈 Sources de revenus (par session)</h3>
+    <table class="income-table">
+      <thead>
+        <tr>
+          <th>Source</th>
+          <th>Montant</th>
+          <th>Détails</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @income_sources.each do |source| %>
+          <tr>
+            <td><%= source[:name] %></td>
+            <td class="amount">+<%= source[:amount] %> crédits</td>
+            <td class="frequency"><%= source[:frequency] %></td>
+          </tr>
+        <% end %>
+        <tr class="total-row">
+          <td><strong>Total</strong></td>
+          <td class="amount"><strong>+<%= @total_income %> crédits</strong></td>
+          <td></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Collecte des revenus -->
+  <div class="collect-section">
+    <h3>💸 Collecte des Dîmes</h3>
+    <p>Collectez les revenus générés par vos fidèles et vos temples.</p>
+    
+    <div class="collect-preview">
+      <div class="collect-item">
+        <span class="collect-icon">💎</span>
+        <span class="collect-amount">+<%= @total_income %> crédits</span>
+      </div>
+      <div class="collect-item">
+        <span class="collect-icon">🙏</span>
+        <span class="collect-amount">+<%= (@chatouille_state.temples_count * 2) + @chatouille_state.missionaries %> foi</span>
+      </div>
+    </div>
+    
+    <%= form_with url: chatouille_collect_income_path, method: :post, data: { turbo_frame: "_top" } do |f| %>
+      <button type="submit" class="btn btn-chatouille btn-lg">
+        💰 Collecter les revenus
+      </button>
+    <% end %>
+  </div>
+
+  <!-- Zone de résultat -->
+  <div id="action-result"></div>
+
+  <!-- Statistiques historiques -->
+  <div class="historical-stats">
+    <h3>📊 Statistiques historiques</h3>
+    <div class="stats-grid">
+      <div class="hist-stat">
+        <span class="hist-value"><%= @chatouille_state.total_converts %></span>
+        <span class="hist-label">Convertis totaux</span>
+      </div>
+      <div class="hist-stat">
+        <span class="hist-value"><%= @chatouille_state.temples_count %></span>
+        <span class="hist-label">Temples construits</span>
+      </div>
+      <div class="hist-stat">
+        <span class="hist-value"><%= @chatouille_state.scandals_survived %></span>
+        <span class="hist-label">Scandales survécus</span>
+      </div>
+      <div class="hist-stat">
+        <span class="hist-value"><%= @chatouille_state.miracles_performed %></span>
+        <span class="hist-label">Miracles accomplis</span>
+      </div>
+    </div>
+  </div>
+</div>
+

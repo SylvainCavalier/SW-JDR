@@ -1,0 +1,23 @@
+<div class="market-chart-container" data-controller="pie-chart" data-pie-chart-data-value="<%= @chatouille_state.market_chart_data.to_json %>">
+  <h3 class="chart-title">Parts de marché sur Mirial</h3>
+  
+  <div class="chart-wrapper">
+    <canvas id="market-pie-chart" data-pie-chart-target="canvas"></canvas>
+  </div>
+  
+  <div class="chart-legend">
+    <% @chatouille_state.market_chart_data.each do |religion| %>
+      <div class="legend-item">
+        <span class="legend-color" style="background-color: <%= religion[:color] %>;"></span>
+        <span class="legend-name"><%= religion[:name] %></span>
+        <span class="legend-value"><%= religion[:share].round(1) %>%</span>
+      </div>
+    <% end %>
+  </div>
+  
+  <div class="chatouille-share-highlight">
+    <span class="share-label">Monsieur Chatouille</span>
+    <span class="share-value"><%= @chatouille_state.market_share.round(1) %>%</span>
+  </div>
+</div>
+

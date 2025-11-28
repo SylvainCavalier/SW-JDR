@@ -1,0 +1,43 @@
+<div class="chatouille-event-result">
+  <!-- Header -->
+  <div class="event-header">
+    <h1 class="event-title">Décision Divine</h1>
+  </div>
+
+  <div class="result-content">
+    <!-- Portrait de Kessar -->
+    <div class="kessar-portrait">
+      <% kessar_mood = @choice["kessar_mood"] || "happy" %>
+      <%= image_tag "Kessar#{kessar_mood.capitalize}.png", class: "kessar-image", alt: "Kessar le Prophète" %>
+      <div class="kessar-name-tag">Kessar le Prophète</div>
+    </div>
+
+    <!-- Réaction de Kessar -->
+    <div class="dialogue-bubble result-bubble">
+      <div class="dialogue-title">Votre choix</div>
+      <div class="dialogue-choice"><%= @choice["text"] %></div>
+      
+      <div class="kessar-reaction">
+        <em>"<%= @choice["kessar_reaction"] %>"</em>
+      </div>
+    </div>
+
+    <!-- Effets appliqués -->
+    <div class="effects-summary">
+      <h3>Conséquences de votre sagesse</h3>
+      <div class="effects-grid">
+        <% @effects.each do |effect, value| %>
+          <% next if value == 0 %>
+          <div class="effect-item <%= value > 0 ? 'positive' : 'negative' %>">
+            <span class="effect-icon"><%= effect_icon(effect) %></span>
+            <span class="effect-name"><%= effect_name(effect) %></span>
+            <span class="effect-value"><%= value > 0 ? "+#{value}" : value %></span>
+          </div>
+        <% end %>
+      </div>
+    </div>
+
+    <%= link_to "Retour au Temple", chatouille_path, class: "btn btn-chatouille btn-lg" %>
+  </div>
+</div>
+

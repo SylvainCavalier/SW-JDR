@@ -1,0 +1,56 @@
+<div class="container mt-4">
+  <h1 class="text-center text-success mb-4">🥚 Cuves de Gestation</h1>
+
+  <div class="row justify-content-center mb-4">
+    <div class="col-lg-10">
+      <div class="card bg-dark text-light border-primary">
+        <div class="card-header bg-primary text-white">
+          <h5 class="mb-0"><i class="fa-solid fa-egg me-2"></i>Embryons en gestation (<%= @embryos_en_gestation.count %>)</h5>
+        </div>
+        <div class="card-body">
+          <% if @embryos_en_gestation.any? %>
+            <div class="row">
+              <% @embryos_en_gestation.each do |embryo| %>
+                <div class="col-md-6 mb-3">
+                  <div class="card bg-secondary text-light">
+                    <div class="card-body">
+                      <h5 class="card-title"><%= embryo.name %></h5>
+                      <p class="card-text">
+                        <span class="badge bg-info"><%= embryo.creature_type.humanize %></span>
+                        <span class="badge bg-success"><%= embryo.race || "Race inconnue" %></span>
+                      </p>
+                      <div class="progress mb-2" style="height: 20px;">
+                        <div class="progress-bar bg-success progress-bar-striped progress-bar-animated" 
+                             role="progressbar" 
+                             style="width: 0%;">
+                          En développement...
+                        </div>
+                      </div>
+                      <small class="text-muted">
+                        <i class="fa-solid fa-clock me-1"></i>
+                        Temps restant: À implémenter
+                      </small>
+                    </div>
+                  </div>
+                </div>
+              <% end %>
+            </div>
+          <% else %>
+            <div class="text-center text-muted py-5">
+              <i class="fa-solid fa-egg fa-4x mb-3"></i>
+              <p class="lead">Aucun embryon en gestation.</p>
+              <p>Appliquez des traits génétiques à un embryon stocké pour le placer en gestation.</p>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Lien retour -->
+  <div class="text-center mt-4">
+    <%= link_to genetique_dashboard_path, class: "btn btn-outline-secondary" do %>
+      <i class="fa-solid fa-arrow-left me-2"></i>Retour au Dashboard Génétique
+    <% end %>
+  </div>
+</div>

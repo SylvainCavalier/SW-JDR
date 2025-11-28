@@ -1,0 +1,78 @@
+<div class="chatouille-page build-page">
+  <!-- Header -->
+  <div class="page-header">
+    <%= link_to chatouille_path, class: "back-link" do %>
+      ← Retour au Temple
+    <% end %>
+    <h1 class="page-title">🏛️ Construction</h1>
+    <p class="page-subtitle">Bâtir l'empire de la Chatouille</p>
+  </div>
+
+  <!-- Ressources actuelles -->
+  <div id="resources-panel">
+    <%= render "chatouille/resources_panel" %>
+  </div>
+
+  <!-- Statistiques de construction -->
+  <div class="build-stats">
+    <div class="build-stat">
+      <span class="stat-value"><%= @chatouille_state.temples_count %></span>
+      <span class="stat-label">Temples construits</span>
+    </div>
+    <% if @chatouille_state.flying_temple > 0 %>
+      <div class="build-stat special">
+        <span class="stat-value">✓</span>
+        <span class="stat-label">Temple Volant</span>
+      </div>
+    <% end %>
+  </div>
+
+  <!-- Options de construction -->
+  <div class="actions-grid">
+    <% @buildings.each do |building| %>
+      <div class="action-card building-card">
+        <div class="action-header">
+          <h3 class="action-name"><%= building[:name] %></h3>
+          <% if building[:available_step] && building[:available_step] > 1 %>
+            <span class="unlock-badge">Étape <%= building[:available_step] %>+</span>
+          <% end %>
+        </div>
+        
+        <p class="action-description"><%= building[:description] %></p>
+        
+        <div class="action-details">
+          <div class="action-cost">
+            <strong>Coût :</strong>
+            <% building[:cost].each do |resource, amount| %>
+              <% next if amount == 0 %>
+              <span class="cost-item <%= can_afford?(resource, amount) ? '' : 'insufficient' %>">
+                <%= resource_icon(resource) %> <%= amount %>
+              </span>
+            <% end %>
+          </div>
+          
+          <div class="action-effect">
+            <strong>Effet :</strong>
+            <% building[:effect].each do |effect, value| %>
+              <span class="effect-item positive">
+                <%= effect_icon(effect) %> +<%= value %>
+              </span>
+            <% end %>
+          </div>
+        </div>
+        
+        <%= form_with url: chatouille_perform_action_path, method: :post, data: { turbo_frame: "_top" } do |f| %>
+          <%= hidden_field_tag :action_type, "build" %>
+          <%= hidden_field_tag :action_id, building[:id] %>
+          <button type="submit" class="btn btn-chatouille" <%= can_afford_action?(building) ? '' : 'disabled' %>>
+            Construire
+          </button>
+        <% end %>
+      </div>
+    <% end %>
+  </div>
+
+  <!-- Zone de résultat -->
+  <div id="action-result"></div>
+</div>
+

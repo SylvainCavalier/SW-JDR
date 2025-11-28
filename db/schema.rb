@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_11_26_014500) do
+ActiveRecord::Schema[7.1].define(version: 2025_11_28_000002) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -85,6 +85,30 @@ ActiveRecord::Schema[7.1].define(version: 2025_11_26_014500) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "chatouille_states", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.integer "faith_points", default: 10, null: false
+    t.integer "missionaries", default: 1, null: false
+    t.integer "religion_credits", default: 5000, null: false
+    t.decimal "market_share", precision: 5, scale: 2, default: "1.0", null: false
+    t.integer "political_influence", default: 0, null: false
+    t.integer "current_step", default: 1, null: false
+    t.integer "temples_count", default: 0, null: false
+    t.integer "flying_temple", default: 0, null: false
+    t.boolean "council_observer", default: false, null: false
+    t.boolean "council_member", default: false, null: false
+    t.integer "current_event_index"
+    t.boolean "event_available", default: false, null: false
+    t.jsonb "completed_events", default: []
+    t.jsonb "planets_reached", default: []
+    t.integer "total_converts", default: 0, null: false
+    t.integer "scandals_survived", default: 0, null: false
+    t.integer "miracles_performed", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_chatouille_states_on_user_id"
+  end
+
   create_table "classe_persos", force: :cascade do |t|
     t.string "name"
     t.text "description"
@@ -121,6 +145,16 @@ ActiveRecord::Schema[7.1].define(version: 2025_11_26_014500) do
     t.index ["ship_id"], name: "index_crew_members_on_ship_id"
   end
 
+  create_table "crew_members", force: :cascade do |t|
+    t.bigint "ship_id", null: false
+    t.string "assignable_type"
+    t.integer "assignable_id"
+    t.string "position"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["ship_id"], name: "index_crew_members_on_ship_id"
+  end
+
   create_table "defenses", force: :cascade do |t|
     t.string "name", null: false
     t.integer "price", null: false
@@ -130,6 +164,38 @@ ActiveRecord::Schema[7.1].define(version: 2025_11_26_014500) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["headquarter_id"], name: "index_defenses_on_headquarter_id"
+  end
+
+  create_table "embryo_skills", force: :cascade do |t|
+    t.bigint "embryo_id", null: false
+    t.bigint "skill_id", null: false
+    t.integer "mastery", default: 0, null: false
+    t.integer "bonus", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["embryo_id", "skill_id"], name: "index_embryo_skills_on_embryo_id_and_skill_id", unique: true
+    t.index ["embryo_id"], name: "index_embryo_skills_on_embryo_id"
+    t.index ["skill_id"], name: "index_embryo_skills_on_skill_id"
+  end
+
+  create_table "embryos", force: :cascade do |t|
+    t.string "name", null: false
+    t.string "creature_type", null: false
+    t.string "race"
+    t.string "gender"
+    t.string "status", default: "stocké"
+    t.string "weapon"
+    t.integer "damage_1", default: 0
+    t.integer "damage_bonus_1", default: 0
+    t.jsonb "special_traits", default: []
+    t.boolean "force", default: false
+    t.integer "size"
+    t.integer "weight"
+    t.integer "hp_max", default: 0
+    t.bigint "user_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_embryos_on_user_id"
   end
 
   create_table "enemies", force: :cascade do |t|
@@ -177,6 +243,17 @@ ActiveRecord::Schema[7.1].define(version: 2025_11_26_014500) do
     t.jsonb "special_traits", default: []
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "goods_crates", force: :cascade do |t|
+    t.string "content"
+    t.integer "quantity"
+    t.string "origin_planet"
+    t.integer "price_per_crate"
+    t.bigint "user_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_goods_crates_on_user_id"
   end
 
   create_table "goods_crates", force: :cascade do |t|
@@ -256,6 +333,79 @@ ActiveRecord::Schema[7.1].define(version: 2025_11_26_014500) do
     t.string "rarity"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "catalog_id"
+    t.index ["catalog_id"], name: "index_inventory_objects_on_catalog_id"
+  end
+
+  create_table "pazaak_games", force: :cascade do |t|
+    t.bigint "host_id", null: false
+    t.bigint "guest_id"
+    t.integer "status", default: 0, null: false
+    t.integer "current_turn_user_id"
+    t.integer "round_number", default: 1, null: false
+    t.integer "wins_host", default: 0, null: false
+    t.integer "wins_guest", default: 0, null: false
+    t.text "host_state", default: "{}", null: false
+    t.text "guest_state", default: "{}", null: false
+    t.integer "last_drawn_card"
+    t.datetime "started_at"
+    t.datetime "finished_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer "first_player_id"
+    t.index ["first_player_id"], name: "index_pazaak_games_on_first_player_id"
+    t.index ["guest_id"], name: "index_pazaak_games_on_guest_id"
+    t.index ["host_id"], name: "index_pazaak_games_on_host_id"
+  end
+
+  create_table "pazaak_invitations", force: :cascade do |t|
+    t.bigint "inviter_id", null: false
+    t.bigint "invitee_id", null: false
+    t.bigint "pazaak_game_id"
+    t.integer "status", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer "stake", default: 0, null: false
+    t.index ["invitee_id"], name: "index_pazaak_invitations_on_invitee_id"
+    t.index ["inviter_id", "invitee_id", "status"], name: "idx_on_inviter_id_invitee_id_status_362b576a3f"
+    t.index ["inviter_id"], name: "index_pazaak_invitations_on_inviter_id"
+    t.index ["pazaak_game_id"], name: "index_pazaak_invitations_on_pazaak_game_id"
+  end
+
+  create_table "pazaak_presences", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.datetime "last_seen_at", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_pazaak_presences_on_user_id", unique: true
+  end
+
+  create_table "pazaak_stats", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.integer "games_played", default: 0, null: false
+    t.integer "games_won", default: 0, null: false
+    t.integer "games_lost", default: 0, null: false
+    t.integer "rounds_won", default: 0, null: false
+    t.integer "rounds_lost", default: 0, null: false
+    t.integer "rounds_tied", default: 0, null: false
+    t.integer "games_abandoned", default: 0, null: false
+    t.integer "best_win_streak", default: 0, null: false
+    t.integer "worst_lose_streak", default: 0, null: false
+    t.integer "current_win_streak", default: 0, null: false
+    t.integer "current_lose_streak", default: 0, null: false
+    t.integer "credits_won", default: 0, null: false
+    t.integer "credits_lost", default: 0, null: false
+    t.integer "stake_max", default: 0, null: false
+    t.integer "stake_min", default: 0, null: false
+    t.integer "stake_sum", default: 0, null: false
+    t.integer "stake_count", default: 0, null: false
+    t.integer "playmate_user_id"
+    t.integer "nemesis_user_id"
+    t.integer "victim_user_id"
+    t.jsonb "opponent_counters", default: {}
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_pazaak_stats_on_user_id", unique: true
     t.string "catalog_id"
     t.index ["catalog_id"], name: "index_inventory_objects_on_catalog_id"
   end
@@ -426,6 +576,9 @@ ActiveRecord::Schema[7.1].define(version: 2025_11_26_014500) do
     t.integer "price", default: 0, null: false
     t.integer "damage_upgrade_level", default: 0, null: false
     t.integer "aim_upgrade_level", default: 0, null: false
+    t.integer "price", default: 0, null: false
+    t.integer "damage_upgrade_level", default: 0, null: false
+    t.integer "aim_upgrade_level", default: 0, null: false
     t.index ["ship_id"], name: "index_ship_weapons_on_ship_id"
   end
 
@@ -461,6 +614,13 @@ ActiveRecord::Schema[7.1].define(version: 2025_11_26_014500) do
     t.integer "scale", default: 0, null: false
     t.integer "capacity", default: 0, null: false
     t.integer "used_capacity", default: 0, null: false
+    t.integer "thruster_level", default: 0, null: false
+    t.integer "hull_level", default: 0, null: false
+    t.integer "circuits_level", default: 0, null: false
+    t.integer "shield_system_level", default: 0, null: false
+    t.integer "hp_max_upgrades", default: 0, null: false
+    t.integer "astromech_droids", default: 0, null: false
+    t.string "current_damage_cause"
     t.integer "thruster_level", default: 0, null: false
     t.integer "hull_level", default: 0, null: false
     t.integer "circuits_level", default: 0, null: false
@@ -642,6 +802,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_11_26_014500) do
     t.integer "study_points", default: 0
     t.jsonb "pazaak_deck", default: []
     t.jsonb "discovered_drinks", default: []
+    t.boolean "chatouille_enabled", default: false, null: false
     t.index ["classe_perso_id"], name: "index_users_on_classe_perso_id"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["group_id"], name: "index_users_on_group_id"
@@ -657,11 +818,16 @@ ActiveRecord::Schema[7.1].define(version: 2025_11_26_014500) do
   add_foreign_key "building_pets", "pets"
   add_foreign_key "buildings", "headquarters"
   add_foreign_key "buildings", "pets", column: "chief_pet_id"
+  add_foreign_key "chatouille_states", "users"
   add_foreign_key "crew_members", "ships"
   add_foreign_key "defenses", "headquarters"
+  add_foreign_key "embryo_skills", "embryos"
+  add_foreign_key "embryo_skills", "skills"
+  add_foreign_key "embryos", "users"
   add_foreign_key "enemy_skills", "enemies"
   add_foreign_key "enemy_skills", "skills"
   add_foreign_key "equipments", "users"
+  add_foreign_key "goods_crates", "users"
   add_foreign_key "goods_crates", "users"
   add_foreign_key "headquarter_inventory_objects", "headquarters"
   add_foreign_key "headquarter_inventory_objects", "inventory_objects"
@@ -669,6 +835,13 @@ ActiveRecord::Schema[7.1].define(version: 2025_11_26_014500) do
   add_foreign_key "holonew_reads", "holonews"
   add_foreign_key "holonew_reads", "users"
   add_foreign_key "holonews", "users"
+  add_foreign_key "pazaak_games", "users", column: "guest_id"
+  add_foreign_key "pazaak_games", "users", column: "host_id"
+  add_foreign_key "pazaak_invitations", "pazaak_games"
+  add_foreign_key "pazaak_invitations", "users", column: "invitee_id"
+  add_foreign_key "pazaak_invitations", "users", column: "inviter_id"
+  add_foreign_key "pazaak_presences", "users"
+  add_foreign_key "pazaak_stats", "users"
   add_foreign_key "pazaak_games", "users", column: "guest_id"
   add_foreign_key "pazaak_games", "users", column: "host_id"
   add_foreign_key "pazaak_invitations", "pazaak_games"

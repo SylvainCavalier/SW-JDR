@@ -1,0 +1,32 @@
+<div class="action-result-card success">
+  <div class="result-icon">✅</div>
+  <div class="result-content">
+    <h4>Action réussie !</h4>
+    <p><%= result[:action][:name] %></p>
+    
+    <% if result[:cost].present? %>
+      <div class="result-cost">
+        <strong>Dépensé :</strong>
+        <% result[:cost].each do |resource, amount| %>
+          <% next if amount == 0 %>
+          <span class="cost-item">
+            <%= resource_icon(resource) %> <%= amount %>
+          </span>
+        <% end %>
+      </div>
+    <% end %>
+    
+    <% if result[:effect].present? %>
+      <div class="result-effect">
+        <strong>Gagné :</strong>
+        <% result[:effect].each do |effect, value| %>
+          <% next if value == 0 %>
+          <span class="effect-item positive">
+            <%= effect_icon(effect) %> +<%= value %>
+          </span>
+        <% end %>
+      </div>
+    <% end %>
+  </div>
+</div>
+

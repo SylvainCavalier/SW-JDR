@@ -7,6 +7,8 @@ class Skill < ApplicationRecord
   has_many :spheros, through: :sphero_skills
   has_many :enemy_skills, dependent: :destroy
   has_many :enemies, through: :enemy_skills
+  has_many :embryo_skills, dependent: :destroy
+  has_many :embryos, through: :embryo_skills
 
   belongs_to :carac, optional: true
 

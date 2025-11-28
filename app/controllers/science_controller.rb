@@ -248,15 +248,103 @@ class ScienceController < ApplicationController
   end
 
   def cultiver
+    @embryos = current_user.embryos.where(status: 'stocké').order(created_at: :desc)
+    @creature_types = Embryo::CREATURE_TYPES
+    @eprouvettes = current_user.user_inventory_objects.joins(:inventory_object)
+                              .find_by(inventory_objects: { name: "Jeu d'éprouvettes" })&.quantity || 0
+    @matiere_organique = current_user.user_inventory_objects.joins(:inventory_object)
+                                    .find_by(inventory_objects: { name: "Matière organique" })&.quantity || 0
+  end
+
+  def create_embryo
+    # Vérifier les ingrédients
+    eprouvettes = current_user.user_inventory_objects.joins(:inventory_object)
+                             .find_by(inventory_objects: { name: "Jeu d'éprouvettes" })
+    matiere = current_user.user_inventory_objects.joins(:inventory_object)
+                         .find_by(inventory_objects: { name: "Matière organique" })
+
+    if eprouvettes.nil? || eprouvettes.quantity < 1
+      render json: { success: false, error: "Vous n'avez pas de jeu d'éprouvettes." }, status: :unprocessable_entity
+      return
+    end
+
+    if matiere.nil? || matiere.quantity < 1
+      render json: { success: false, error: "Vous n'avez pas de matière organique." }, status: :unprocessable_entity
+      return
+    end
+
+    # Consommer les ingrédients
+    eprouvettes.decrement!(:quantity)
+    matiere.decrement!(:quantity)
+
+    # Jet de chance (1d12)
+    luck_bonus = current_user.luck ? 1 : 0
+    dice_roll = rand(1..12) + luck_bonus
+    success_threshold = 4 # Réussite si >= 4
+
+    if dice_roll >= success_threshold
+      # Succès - Créer l'embryon
+      creature_type = embryo_params[:creature_type]
+      creature_stats = Embryo::CREATURE_TYPES[creature_type] || {}
+
+      embryo = current_user.embryos.create!(
+        name: embryo_params[:name],
+        creature_type: creature_type,
+        race: embryo_params[:race],
+        gender: embryo_params[:gender],
+        status: 'stocké',
+        weapon: creature_stats['weapon'],
+        damage_1: creature_stats['damage'] || 0,
+        damage_bonus_1: creature_stats['damage_bonus'] || 0,
+        special_traits: creature_stats['special_traits'] || [],
+        force: false,
+        size: creature_stats['size'],
+        weight: creature_stats['weight'],
+        hp_max: creature_stats['hp_max'] || 0
+      )
+
+      render json: {
+        success: true,
+        dice_roll: dice_roll,
+        message: "Embryon créé avec succès !",
+        embryo: {
+          id: embryo.id,
+          name: embryo.name,
+          creature_type: embryo.creature_type,
+          race: embryo.race,
+          gender: embryo.gender
+        },
+        new_eprouvettes: eprouvettes.quantity,
+        new_matiere: matiere.quantity
+      }
+    else
+      # Échec
+      render json: {
+        success: false,
+        dice_roll: dice_roll,
+        error: "La culture a échoué... Les ingrédients ont été consommés."
+      }
+    end
+  end
+
+  def gestation
+    @embryos_en_gestation = current_user.embryos.where(status: 'en_gestation').order(created_at: :desc)
   end
 
   def traits
+    @embryos = current_user.embryos.where(status: ['stocké', 'en_culture']).order(created_at: :desc)
+    @user_genes = current_user.user_genes.includes(:gene).where('level > 0')
   end
 
   def clonage
   end
 
   def stats
+    @total_embryos = current_user.embryos.count
+    @embryos_stockes = current_user.embryos.where(status: 'stocké').count
+    @embryos_en_culture = current_user.embryos.where(status: 'en_culture').count
+    @embryos_en_gestation = current_user.embryos.where(status: 'en_gestation').count
+    @embryos_eclos = current_user.embryos.where(status: 'éclos').count
   end
   
   private
@@ -287,6 +375,10 @@ class ScienceController < ApplicationController
 
   def skill_params
     params.require(:engineering).permit(:mastery, :bonus)
+  end
+
+  def embryo_params
+    params.require(:embryo).permit(:name, :creature_type, :race, :gender)
   end
 
   def verify_bio_savant

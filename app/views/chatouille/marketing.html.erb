@@ -1,0 +1,87 @@
+<div class="chatouille-page marketing-page">
+  <!-- Header -->
+  <div class="page-header">
+    <%= link_to chatouille_path, class: "back-link" do %>
+      ← Retour au Temple
+    <% end %>
+    <h1 class="page-title">📢 Marketing Divin</h1>
+    <p class="page-subtitle">Répandre la bonne parole chatouilleuse</p>
+  </div>
+
+  <!-- Ressources actuelles -->
+  <div id="resources-panel">
+    <%= render "chatouille/resources_panel" %>
+  </div>
+
+  <!-- Statistiques marketing -->
+  <div class="marketing-stats">
+    <div class="marketing-stat">
+      <span class="stat-value"><%= @chatouille_state.total_converts %></span>
+      <span class="stat-label">Fidèles convertis</span>
+    </div>
+    <div class="marketing-stat">
+      <span class="stat-value"><%= @chatouille_state.market_share.round(1) %>%</span>
+      <span class="stat-label">Parts de marché</span>
+    </div>
+  </div>
+
+  <!-- Campagnes marketing -->
+  <div class="actions-grid">
+    <% @campaigns.each do |campaign| %>
+      <div class="action-card marketing-card">
+        <div class="action-header">
+          <h3 class="action-name"><%= campaign[:name] %></h3>
+          <% if campaign[:available_step] && campaign[:available_step] > 1 %>
+            <span class="unlock-badge">Étape <%= campaign[:available_step] %>+</span>
+          <% end %>
+        </div>
+        
+        <p class="action-description"><%= campaign[:description] %></p>
+        
+        <div class="action-details">
+          <div class="action-cost">
+            <strong>Coût :</strong>
+            <% campaign[:cost].each do |resource, amount| %>
+              <% next if amount == 0 %>
+              <span class="cost-item <%= can_afford?(resource, amount) ? '' : 'insufficient' %>">
+                <%= resource_icon(resource) %> <%= amount %>
+              </span>
+            <% end %>
+          </div>
+          
+          <div class="action-effect">
+            <strong>Effet :</strong>
+            <% campaign[:effect].each do |effect, value| %>
+              <span class="effect-item positive">
+                <%= effect_icon(effect) %> +<%= value %>
+              </span>
+            <% end %>
+          </div>
+        </div>
+        
+        <%= form_with url: chatouille_perform_action_path, method: :post, data: { turbo_frame: "_top" } do |f| %>
+          <%= hidden_field_tag :action_type, "marketing" %>
+          <%= hidden_field_tag :action_id, campaign[:id] %>
+          <button type="submit" class="btn btn-chatouille" <%= can_afford_action?(campaign) ? '' : 'disabled' %>>
+            Lancer la campagne
+          </button>
+        <% end %>
+      </div>
+    <% end %>
+  </div>
+
+  <!-- Zone de résultat -->
+  <div id="action-result"></div>
+
+  <!-- Slogans inspirants -->
+  <div class="marketing-slogans">
+    <h3>Slogans officiels de la Chatouille</h3>
+    <div class="slogans-carousel">
+      <div class="slogan">"La Chatouille est Grande !"</div>
+      <div class="slogan">"Riez, car demain vous chatouillera."</div>
+      <div class="slogan">"Un monde sans chatouilles est un monde sans joie."</div>
+      <div class="slogan">"Monsieur Chatouille vous aime. Laissez-vous toucher."</div>
+    </div>
+  </div>
+</div>
+

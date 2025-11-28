@@ -1,0 +1,60 @@
+<div class="chatouille-event-page" data-controller="chatouille-event">
+  <!-- Header -->
+  <div class="event-header">
+    <%= link_to chatouille_path, class: "back-link" do %>
+      ← Retour au Temple
+    <% end %>
+    <h1 class="event-title">Audience Divine</h1>
+  </div>
+
+  <div class="event-content">
+    <!-- Portrait de Kessar -->
+    <div class="kessar-portrait">
+      <% kessar_mood = @event.dig("choices", 0, "kessar_mood") || "happy" %>
+      <%= image_tag "Kessar#{kessar_mood.capitalize}.png", class: "kessar-image", id: "kessar-portrait", alt: "Kessar le Prophète" %>
+      <div class="kessar-name-tag">Kessar le Prophète</div>
+    </div>
+
+    <!-- Bulle de dialogue -->
+    <div class="dialogue-bubble">
+      <div class="dialogue-title"><%= @event["title"] %></div>
+      <div class="dialogue-text">
+        <p><%= @event["description"] %></p>
+      </div>
+    </div>
+
+    <!-- Choix disponibles -->
+    <div class="event-choices">
+      <h3>Que décidez-vous, ô Chatouille Cosmique ?</h3>
+      
+      <% @event["choices"].each_with_index do |choice, index| %>
+        <%= form_with url: chatouille_resolve_event_path, method: :post, data: { turbo: false }, class: "choice-form" do |f| %>
+          <%= hidden_field_tag :choice_index, index %>
+          <button type="submit" class="choice-btn" data-action="click->chatouille-event#selectChoice" data-mood="<%= choice['kessar_mood'] || 'happy' %>">
+            <span class="choice-number"><%= index + 1 %></span>
+            <span class="choice-text"><%= choice["text"] %></span>
+            <% if choice["effects"] %>
+              <div class="choice-effects">
+                <% choice["effects"].each do |effect, value| %>
+                  <% next if value == 0 %>
+                  <span class="effect <%= value > 0 ? 'positive' : 'negative' %>">
+                    <%= effect_icon(effect) %> <%= value > 0 ? "+#{value}" : value %>
+                  </span>
+                <% end %>
+              </div>
+            <% end %>
+          </button>
+        <% end %>
+      <% end %>
+    </div>
+  </div>
+</div>
+
+<% content_for :head do %>
+<style>
+  .choice-btn:hover .choice-effects {
+    opacity: 1;
+  }
+</style>
+<% end %>
+

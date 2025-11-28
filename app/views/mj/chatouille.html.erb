@@ -1,0 +1,148 @@
+<div class="frame-container" style="position: relative; width: 100%; height: 100vh;">
+  <!-- Username -->
+  <p class="username-display mt-1 text-primary fw-bold">
+    <%= current_user.username.titleize %>
+  </p>
+
+  <!-- Cadre principal SVG -->
+  <img src="<%= asset_path('cadre2.svg') %>" alt="Cadre" class="ui-frame">
+
+  <div class="go-back">
+    <%= link_to mj_dashboard_path, class: "btn btn-outline-success" do %>
+      <i class="fa-solid fa-arrow-left"></i> Retour
+    <% end %>
+  </div>
+
+  <div class="content-container">
+    <div class="chatouille-mj-container">
+      <h2 class="text-warning text-center mb-4">
+        <span>🪶</span> Mini-jeu Monsieur Chatouille <span>🪶</span>
+      </h2>
+
+      <div class="row">
+        <!-- Activer/Désactiver l'accès -->
+        <div class="col-md-6">
+          <div class="card bg-dark border-primary mb-3">
+            <div class="card-header bg-primary text-white">
+              <h5 class="mb-0">🔐 Activer l'accès au mini-jeu</h5>
+            </div>
+            <div class="card-body">
+              <p class="text-light">Sélectionnez le joueur qui aura accès au mini-jeu Monsieur Chatouille (Mas Tandor).</p>
+              
+              <%= form_with url: mj_chatouille_toggle_access_path, method: :post, local: true do |f| %>
+                <div class="mb-3">
+                  <label for="access_user_id" class="form-label text-success">Joueur</label>
+                  <select name="user_id" id="access_user_id" class="form-select bg-dark text-success border-success">
+                    <% @all_players.each do |user| %>
+                      <option value="<%= user.id %>" <%= 'selected' if user.chatouille_enabled? %>>
+                        <%= user.username %> 
+                        <%= user.chatouille_enabled? ? '✅ (Activé)' : '' %>
+                      </option>
+                    <% end %>
+                  </select>
+                </div>
+                
+                <div class="d-flex gap-2">
+                  <button type="submit" name="action" value="enable" class="btn btn-success flex-fill">
+                    ✅ Activer
+                  </button>
+                  <button type="submit" name="action" value="disable" class="btn btn-danger flex-fill">
+                    ❌ Désactiver
+                  </button>
+                </div>
+              <% end %>
+              
+              <% if @chatouille_player %>
+                <div class="alert alert-success mt-3 mb-0">
+                  <strong>Joueur actif :</strong> <%= @chatouille_player.username %>
+                </div>
+              <% else %>
+                <div class="alert alert-warning mt-3 mb-0">
+                  Aucun joueur n'a accès au mini-jeu.
+                </div>
+              <% end %>
+            </div>
+          </div>
+        </div>
+
+        <!-- Déclencher un événement -->
+        <div class="col-md-6">
+          <div class="card bg-dark border-warning mb-3">
+            <div class="card-header bg-warning text-dark">
+              <h5 class="mb-0">📣 Déclencher un événement</h5>
+            </div>
+            <div class="card-body">
+              <% if @chatouille_player %>
+                <p class="text-light">
+                  Déclencher un événement aléatoire pour <strong class="text-warning"><%= @chatouille_player.username %></strong>.
+                </p>
+                
+                <% state = @chatouille_player.chatouille_state %>
+                <% if state %>
+                  <div class="mb-3 p-2 bg-secondary rounded">
+                    <div class="d-flex justify-content-between text-light">
+                      <span>Étape : <strong><%= state.step_name %></strong></span>
+                      <span>Parts : <strong><%= state.market_share.round(1) %>%</strong></span>
+                    </div>
+                    <div class="d-flex justify-content-between text-light mt-1">
+                      <span>Foi : <%= state.faith_points %></span>
+                      <span>Missionnaires : <%= state.missionaries %></span>
+                      <span>Crédits : <%= number_with_delimiter(state.religion_credits) %></span>
+                    </div>
+                  </div>
+                  
+                  <% if state.event_available %>
+                    <div class="alert alert-info">
+                      ⏳ Un événement est déjà en attente de résolution.
+                    </div>
+                  <% else %>
+                    <%= form_with url: mj_chatouille_trigger_event_path, method: :post, local: true do |f| %>
+                      <%= hidden_field_tag :user_id, @chatouille_player.id %>
+                      <button type="submit" class="btn btn-warning w-100">
+                        🎲 Déclencher un événement aléatoire
+                      </button>
+                    <% end %>
+                  <% end %>
+                <% else %>
+                  <div class="alert alert-secondary">
+                    Le joueur n'a pas encore initialisé sa religion.
+                  </div>
+                <% end %>
+              <% else %>
+                <div class="alert alert-warning">
+                  Aucun joueur n'a accès au mini-jeu. Activez d'abord l'accès pour un joueur.
+                </div>
+              <% end %>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Aide MJ -->
+      <div class="card bg-dark border-info mt-3">
+        <div class="card-header bg-info text-dark">
+          <h5 class="mb-0">ℹ️ Guide du MJ</h5>
+        </div>
+        <div class="card-body text-light">
+          <ul>
+            <li><strong>Accès :</strong> Seul le joueur avec l'accès activé verra le bouton Chatouille sur sa page d'accueil.</li>
+            <li><strong>Événements :</strong> Déclenchez des événements pour faire avancer l'histoire de la religion.</li>
+            <li><strong>Notification :</strong> Le joueur reçoit une Holonews de Kessar l'invitant à consulter son temple.</li>
+            <li><strong>Équilibre :</strong> Ne déclenchez pas trop d'événements à la suite, laissez le temps au joueur de gérer sa religion.</li>
+          </ul>
+          
+          <div class="mt-3">
+            <h6 class="text-success">Paliers de progression :</h6>
+            <div class="d-flex gap-2 flex-wrap">
+              <span class="badge bg-secondary">Étape 1 : 1-5%</span>
+              <span class="badge bg-primary">Étape 2 : 5-20%</span>
+              <span class="badge bg-warning text-dark">Étape 3 : 20-30%</span>
+              <span class="badge bg-danger">Étape 4 : 30%+</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+

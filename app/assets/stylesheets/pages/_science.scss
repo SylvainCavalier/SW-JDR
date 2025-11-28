@@ -1,0 +1,133 @@
+// Science & Genetique styles
+
+.science-buttons {
+  .btn {
+    min-width: 180px;
+    transition: all 0.3s ease;
+    
+    &:hover {
+      transform: translateX(5px);
+      box-shadow: 0 0 15px rgba(var(--bs-success-rgb), 0.5);
+    }
+  }
+}
+
+// Embryo cultivation page
+.resource-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  
+  i {
+    font-size: 1.2rem;
+  }
+}
+
+// Preview card animation
+[data-embryo-target="preview"] {
+  transition: all 0.3s ease;
+  animation: slideIn 0.3s ease;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// Dice result display
+.dice-result-display {
+  .display-1 {
+    font-size: 5rem;
+    font-weight: bold;
+    text-shadow: 0 0 20px currentColor;
+    animation: pulseGlow 1s ease-in-out infinite alternate;
+  }
+}
+
+@keyframes pulseGlow {
+  from {
+    text-shadow: 0 0 10px currentColor;
+  }
+  to {
+    text-shadow: 0 0 30px currentColor, 0 0 50px currentColor;
+  }
+}
+
+// Embryo table styling
+.table-dark {
+  --bs-table-bg: transparent;
+  
+  tbody tr {
+    transition: all 0.2s ease;
+    
+    &:hover {
+      background-color: rgba(var(--bs-success-rgb), 0.15) !important;
+    }
+    
+    &.table-success {
+      animation: highlightNew 0.5s ease;
+    }
+  }
+}
+
+@keyframes highlightNew {
+  from {
+    background-color: rgba(var(--bs-success-rgb), 0.5);
+  }
+  to {
+    background-color: rgba(var(--bs-success-rgb), 0.2);
+  }
+}
+
+// Form styling
+.form-control, .form-select {
+  &.bg-secondary {
+    &:focus {
+      border-color: var(--bs-success);
+      box-shadow: 0 0 0 0.25rem rgba(var(--bs-success-rgb), 0.25);
+    }
+  }
+}
+
+// Card animations
+.card {
+  transition: all 0.3s ease;
+  
+  &.border-success:hover,
+  &.border-info:hover {
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+  }
+}
+
+// Labo genetique
+.gene-card {
+  transition: all 0.3s ease;
+  
+  &:hover {
+    transform: scale(1.02);
+  }
+  
+  &.unlocked {
+    border-color: var(--bs-success) !important;
+  }
+  
+  &.locked {
+    opacity: 0.6;
+    filter: grayscale(50%);
+  }
+}
+
+// Stats page
+.stat-counter {
+  font-size: 2.5rem;
+  font-weight: bold;
+  color: var(--bs-success);
+  text-shadow: 0 0 10px rgba(var(--bs-success-rgb), 0.5);
+}
+

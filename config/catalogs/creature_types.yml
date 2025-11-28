@@ -1,0 +1,207 @@
+humanoide:
+  size: 170
+  weight: 70
+  hp_max: 10
+  damage: 1
+  damage_bonus: 2
+  weapon: "mains"
+  res_corp: 1
+  precision: 2
+  esquive: 2
+  vitesse: 2
+  special_traits: []
+
+rongeur:
+  size: 30
+  weight: 2
+  hp_max: 4
+  damage: 1
+  damage_bonus: 0
+  weapon: "morsure"
+  res_corp: 0
+  precision: 2
+  esquive: 4
+  vitesse: 3
+  special_traits: []
+
+félin:
+  size: 90
+  weight: 40
+  hp_max: 8
+  damage: 3
+  damage_bonus: 0
+  res_corp: 1
+  precision: 3
+  esquive: 4
+  vitesse: 4
+  weapon: "griffes"
+  special_traits: []
+
+canidé:
+  size: 100
+  weight: 35
+  hp_max: 9
+  damage: 3
+  damage_bonus: 2
+  res_corp: 1
+  precision: 3
+  esquive: 3
+  vitesse: 3
+  weapon: "morsure"
+  special_traits: []
+
+grand_herbivore:
+  size: 300
+  weight: 800
+  hp_max: 20
+  damage: 3
+  damage_bonus: 0
+  weapon: "charge"
+  res_corp: 2
+  precision: 1
+  esquive: 1
+  vitesse: 2
+  special_traits: []
+
+mammifère_aquatique:
+  size: 250
+  weight: 500
+  hp_max: 15
+  damage: 2
+  damage_bonus: 2
+  weapon: "queue"
+  res_corp: 2
+  precision: 2
+  esquive: 2
+  vitesse: 3
+  special_traits: ["respiration aquatique"]
+
+serpent:
+  size: 150
+  weight: 20
+  hp_max: 6
+  damage: 2
+  damage_bonus: 2
+  weapon: "morsure"
+  res_corp: 1
+  precision: 3
+  esquive: 3
+  vitesse: 3
+  special_traits: []
+
+lézard:
+  size: 80
+  weight: 10
+  hp_max: 7
+  damage: 1
+  damage_bonus: 2
+  weapon: "morsure"
+  res_corp: 1
+  precision: 2
+  esquive: 3
+  vitesse: 2
+  special_traits: []
+
+amphibien:
+  size: 60
+  weight: 8
+  hp_max: 6
+  damage: 1
+  damage_bonus: 0
+  weapon: "langue"
+  res_corp: 0
+  precision: 2
+  esquive: 2
+  vitesse: 3
+  special_traits: ["respiration aquatique"]
+
+rapace:
+  size: 70
+  weight: 5
+  hp_max: 6
+  damage: 2
+  damage_bonus: 1
+  weapon: "griffes"
+  res_corp: 0
+  precision: 4
+  esquive: 3
+  vitesse: 4
+  special_traits: ["vol"]
+
+insectoïde:
+  size: 40
+  weight: 3
+  hp_max: 5
+  damage: 1
+  damage_bonus: 0
+  weapon: "dard"
+  res_corp: 0
+  precision: 2
+  esquive: 3
+  vitesse: 2
+  special_traits: ["carapace chitineuse"]
+
+grand_carnivore:
+  size: 280
+  weight: 600
+  hp_max: 18
+  damage: 4
+  damage_bonus: 2
+  weapon: "morsure"
+  res_corp: 2
+  precision: 2
+  esquive: 1
+  vitesse: 2
+  special_traits: []
+
+créature_énergétique:
+  size: 200
+  weight: 0
+  hp_max: 12
+  damage: 3
+  damage_bonus: 2
+  weapon: "énergie pure"
+  res_corp: 1
+  precision: 4
+  esquive: 3
+  vitesse: 3
+  special_traits: ["lévitation"]
+
+plantoïde:
+  size: 220
+  weight: 150
+  hp_max: 14
+  damage: 2
+  damage_bonus: 1
+  weapon: "lianes"
+  res_corp: 1
+  precision: 2
+  esquive: 1
+  vitesse: 1
+  special_traits: []
+
+cristallin:
+  size: 180
+  weight: 300
+  hp_max: 16
+  damage: 2
+  damage_bonus: 2
+  weapon: "pointe cristalline"
+  res_corp: 2
+  precision: 2
+  esquive: 1
+  vitesse: 1
+  special_traits: []
+
+mycélien:
+  size: 100
+  weight: 40
+  hp_max: 7
+  damage: 1
+  damage_bonus: 1
+  weapon: "spores"
+  res_corp: 1
+  precision: 2
+  esquive: 1
+  vitesse: 1
+  special_traits: []

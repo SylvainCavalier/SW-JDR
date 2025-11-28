@@ -27,8 +27,12 @@ class User < ApplicationRecord
   has_many :equipments, dependent: :destroy
   has_many :user_genes, dependent: :destroy
   has_many :genes, through: :user_genes
+<<<<<<< HEAD
   has_many :crew_members, as: :assignable, dependent: :destroy
   has_many :goods_crates, dependent: :destroy
+=======
+  has_many :embryos, dependent: :destroy
+>>>>>>> cedbb47 (Add Embryos)
   has_one_attached :avatar
 
   validates :username, presence: true, uniqueness: true
