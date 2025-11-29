@@ -75,23 +75,20 @@
     </div>
   <% end %>
 
-  <div class="force-field-container">
-    <div class="force_field">
-      <div class="sword">
-        <div class="grip"></div>
-        <div class="beam"></div>
-      </div>
-    </div>
-  </div>
-
   <% participants = (
        User.where.not(vitesse: nil).to_a +
        Enemy.where.not(vitesse: nil).to_a +
        Pet.where.not(vitesse: nil).to_a
      ).sort_by { |p| 
+       type_priority = case p
+                       when User then 0
+                       when Pet then 1
+                       when Enemy then 2
+                       else 3
+                       end
        [
-         -(p.vitesse || 0),  # Tri décroissant par vitesse, avec gestion des nil
-         p.class.name,       # Tri par type de participant
+         -(p.vitesse || 0),  # Tri décroissant par vitesse
+         type_priority,      # À vitesse égale : Users > Pets > Ennemis
          p.try(:enemy_type) || '',  # Tri par type d'ennemi si applicable
          p.try(:number) || 0        # Tri par numéro si applicable
        ]
