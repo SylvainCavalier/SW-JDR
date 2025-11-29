@@ -843,45 +843,44 @@ class MjController < ApplicationController
       redirect_to mj_vaisseaux_path, alert: "Erreur lors de la suppression de l'arme."
     end
   end
-  
-  private
-  
-  def sphero_params
-    params.require(:sphero).permit(:name, :category, :quality, :user_id)
-  end
-  
-  def calculate_damage(damage, resistance_bonus)
-    if resistance_bonus >= damage * 2
-      Rails.logger.debug "🎯 Résistance corporelle annule complètement les dégâts."
-      0
-    elsif resistance_bonus >= damage
-      Rails.logger.debug "⚡ Résistance corporelle réduit les dégâts à un minimum de 1 PV."
-      1
-    else
-      Rails.logger.debug "🔥 Dégâts normaux après résistance corporelle."
-      damage - resistance_bonus
-    end
-  end
-  
-  def xp_params
-    params.require(:xp).permit(:xp, :user_id, :give_to_all)
-  end
 
   # ==================== SCIENCE ====================
   
   def science
+    puts "🔬🔬🔬 MJ SCIENCE ACTION STARTED 🔬🔬🔬"
+    
     # Initialiser avec des valeurs par défaut
     @bio_savants = []
     @all_gestations = []
     @ready_embryos = []
     
-    # Charger les données - utiliser ILIKE pour ignorer la casse
-    @bio_savants = User.joins(:classe_perso).where("classe_persos.name ILIKE ?", "%bio%savant%").includes(:embryos, :user_genes)
+    # Trouver la classe Bio-savant
+    puts "🔬 Recherche de ClassePerso..."
+    all_classes = ClassePerso.pluck(:id, :name)
+    puts "🔬 Toutes les classes: #{all_classes.inspect}"
+    
+    bio_savant_classe = ClassePerso.find_by(name: "Bio-savant")
+    puts "🔬 ClassePerso Bio-savant: #{bio_savant_classe&.inspect}"
+    
+    # Charger les données
+    if bio_savant_classe
+      @bio_savants = User.where(classe_perso_id: bio_savant_classe.id).includes(:embryos, :user_genes)
+      puts "🔬 Bio-savants trouvés: #{@bio_savants.count}"
+      @bio_savants.each { |u| puts "  - #{u.username} (classe_perso_id: #{u.classe_perso_id})" }
+    else
+      puts "🔬 Aucune classe Bio-savant trouvée!"
+      # Chercher les users qui ont une classe
+      users_with_classes = User.where.not(classe_perso_id: nil).pluck(:username, :classe_perso_id)
+      puts "🔬 Users avec classe: #{users_with_classes.inspect}"
+    end
+    
     @all_gestations = Embryo.where(status: 'en_gestation').includes(:user).order(:gestation_days_remaining)
     @ready_embryos = Embryo.where(status: 'éclos').includes(:user)
+    
+    puts "🔬🔬🔬 MJ SCIENCE ACTION ENDED 🔬🔬🔬"
   rescue => e
-    Rails.logger.error "Erreur MJ Science: #{e.message}"
-    Rails.logger.error e.backtrace.first(5).join("\n")
+    puts "❌ ERREUR MJ Science: #{e.message}"
+    puts e.backtrace.first(5).join("\n")
     flash.now[:alert] = "Erreur lors du chargement des données: #{e.message}"
   end
 
@@ -906,6 +905,29 @@ class MjController < ApplicationController
       format.json { render json: { success: true, message: "Gestation terminée !" } }
       format.html { redirect_to mj_science_path, notice: "Gestation terminée pour #{embryo.name}." }
     end
+  end
+  
+  private
+  
+  def sphero_params
+    params.require(:sphero).permit(:name, :category, :quality, :user_id)
+  end
+  
+  def calculate_damage(damage, resistance_bonus)
+    if resistance_bonus >= damage * 2
+      Rails.logger.debug "🎯 Résistance corporelle annule complètement les dégâts."
+      0
+    elsif resistance_bonus >= damage
+      Rails.logger.debug "⚡ Résistance corporelle réduit les dégâts à un minimum de 1 PV."
+      1
+    else
+      Rails.logger.debug "🔥 Dégâts normaux après résistance corporelle."
+      damage - resistance_bonus
+    end
+  end
+  
+  def xp_params
+    params.require(:xp).permit(:xp, :user_id, :give_to_all)
   end
 
   def authorize_mj
