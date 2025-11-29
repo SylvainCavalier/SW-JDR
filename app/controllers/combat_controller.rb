@@ -226,39 +226,30 @@ class CombatController < ApplicationController
     participant = participant_type.constantize.find(params[:participant_id])
     status = Status.find(params[:status_id])
 
+    success = false
+
     if participant.is_a?(Enemy)
-      old_status = participant.status
-      if participant.update(status: status.name)
-        # Création de l'action de combat pour le changement de statut
-        CombatAction.create!(
-          actor: current_user,
-          target: participant,
-          action_type: "status",
-          value: status.name
-        )
-        
-        broadcast_participant_update(participant)
-        render json: { success: true }
-      else
-        render json: { success: false, error: participant.errors.full_messages }, status: :unprocessable_entity
-      end
-    else
-      old_status = participant.statuses.last&.name
+      success = participant.update(status: status.name)
+    elsif participant.is_a?(User)
       participant.user_statuses.destroy_all
-      if participant.user_statuses.create(status: status)
-        # Création de l'action de combat pour le changement de statut
-        CombatAction.create!(
-          actor: current_user,
-          target: participant,
-          action_type: "status",
-          value: status.name
-        )
-        
-        broadcast_participant_update(participant)
-        render json: { success: true }
-      else
-        render json: { success: false, error: "Erreur lors de la mise à jour du statut" }, status: :unprocessable_entity
-      end
+      success = participant.user_statuses.create(status: status)
+    elsif participant.is_a?(Pet)
+      participant.pet_statuses.destroy_all
+      success = participant.pet_statuses.create(status: status)
+    end
+
+    if success
+      CombatAction.create!(
+        actor: current_user,
+        target: participant,
+        action_type: "status",
+        value: status.name
+      )
+      
+      broadcast_participant_update(participant)
+      render json: { success: true }
+    else
+      render json: { success: false, error: "Erreur lors de la mise à jour du statut" }, status: :unprocessable_entity
     end
   end
 

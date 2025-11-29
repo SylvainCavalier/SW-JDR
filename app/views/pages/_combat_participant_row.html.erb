@@ -17,7 +17,7 @@
         <% elsif participant.is_a?(Pet) %>
           <% owner = User.find_by(pet_id: participant.id) %>
           <% if owner %>
-            <%= link_to participant.name, pet_path(participant), class: "text-warning fw-bold" %>
+            <%= link_to participant.name, pet_path(participant), class: "text-warning fw-bold", data: { turbo_frame: "_top" } %>
             <small class="text-white">(<%= owner.username %>)</small>
           <% else %>
             <%= participant.name %>
@@ -109,6 +109,7 @@
             <option value="<%= status.id %>" 
                     style="color: <%= status.color %>;"
                     <%= participant.is_a?(User) && participant.statuses.last&.id == status.id ? 'selected' : '' %>
+                    <%= participant.is_a?(Pet) && participant.statuses.last&.id == status.id ? 'selected' : '' %>
                     <%= participant.is_a?(Enemy) && participant.status == status.name ? 'selected' : '' %>>
               <%= status.name %>
             </option>

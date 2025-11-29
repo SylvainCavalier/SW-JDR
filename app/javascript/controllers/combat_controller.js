@@ -36,7 +36,7 @@ export default class extends Controller {
     const currentValue = this.getCurrentValue(participantId, type)
     if (currentValue === null) return
 
-    const newValue = increment ? currentValue + 1 : Math.max(0, currentValue - 1)
+    const newValue = increment ? currentValue + 1 : Math.max(-10, currentValue - 1)
     const field = fieldOverride || (type === 'hp' ? 'hp_current' : 'shield_current')
 
     try {
