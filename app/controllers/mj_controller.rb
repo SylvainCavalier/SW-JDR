@@ -875,8 +875,8 @@ class MjController < ApplicationController
     @all_gestations = []
     @ready_embryos = []
     
-    # Charger les données
-    @bio_savants = User.joins(:classe_perso).where(classe_persos: { name: "Bio-savant" }).includes(:embryos, :user_genes)
+    # Charger les données - utiliser ILIKE pour ignorer la casse
+    @bio_savants = User.joins(:classe_perso).where("classe_persos.name ILIKE ?", "%bio%savant%").includes(:embryos, :user_genes)
     @all_gestations = Embryo.where(status: 'en_gestation').includes(:user).order(:gestation_days_remaining)
     @ready_embryos = Embryo.where(status: 'éclos').includes(:user)
   rescue => e
