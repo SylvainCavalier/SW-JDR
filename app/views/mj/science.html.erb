@@ -6,7 +6,7 @@
     <div class="col-md-4">
       <div class="card bg-dark text-light border-info">
         <div class="card-body text-center">
-          <h3 class="text-info"><%= @all_gestations.count %></h3>
+          <h3 class="text-info"><%= @all_gestations&.count || 0 %></h3>
           <p class="mb-0">Embryons en gestation</p>
         </div>
       </div>
@@ -14,7 +14,7 @@
     <div class="col-md-4">
       <div class="card bg-dark text-light border-success">
         <div class="card-body text-center">
-          <h3 class="text-success"><%= @ready_embryos.count %></h3>
+          <h3 class="text-success"><%= @ready_embryos&.count || 0 %></h3>
           <p class="mb-0">Créatures prêtes à naître</p>
         </div>
       </div>
@@ -22,7 +22,7 @@
     <div class="col-md-4">
       <div class="card bg-dark text-light border-warning">
         <div class="card-body text-center">
-          <h3 class="text-warning"><%= @bio_savants.count %></h3>
+          <h3 class="text-warning"><%= @bio_savants&.count || 0 %></h3>
           <p class="mb-0">Bio-savants actifs</p>
         </div>
       </div>
@@ -35,7 +35,7 @@
       <h5 class="mb-0"><i class="fa-solid fa-egg me-2"></i>Embryons en gestation</h5>
     </div>
     <div class="card-body">
-      <% if @all_gestations.any? %>
+      <% if @all_gestations&.any? %>
         <div class="table-responsive">
           <table class="table table-dark table-hover">
             <thead>
@@ -92,7 +92,7 @@
   </div>
 
   <!-- Créatures prêtes -->
-  <% if @ready_embryos.any? %>
+  <% if @ready_embryos&.any? %>
     <div class="card bg-dark text-light border-success mb-4">
       <div class="card-header bg-success text-white">
         <h5 class="mb-0"><i class="fa-solid fa-paw me-2"></i>Créatures prêtes à naître</h5>
@@ -132,7 +132,7 @@
       <h5 class="mb-0"><i class="fa-solid fa-user-doctor me-2"></i>Bio-savants & Points d'étude</h5>
     </div>
     <div class="card-body">
-      <% if @bio_savants.any? %>
+      <% if @bio_savants&.any? %>
         <div class="table-responsive">
           <table class="table table-dark table-hover">
             <thead>
