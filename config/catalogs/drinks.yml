@@ -425,3 +425,10 @@ drinks:
     description: "Le meilleur vin du domaine de Macharlon, produit à partir des vignobles situés sur les hauteurs du domaine familial, bénéficiant des meilleurs microclimats de la planète."
     abv: 13
     price: 300
+
+  - id: onderon_beer
+    name: "Bière d'Onderon"
+    planet: "Onderon"
+    description: "Bière rouge fermentée à base de raisins locaux, produite dans les caves de la planète depuis des siècles."
+    abv: 7
+    price: 10
