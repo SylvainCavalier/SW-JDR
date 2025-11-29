@@ -355,8 +355,43 @@ class Embryo < ApplicationRecord
       'skills' => {}
     }
 
+    # Déterminer le type de résultat pour l'aléatoire
+    is_perfect = add_random && multiplier > 1.0
+    is_success = add_random && multiplier <= 1.0
+    is_partial = !add_random && multiplier < 1.0
+
     # Appliquer des bonus/malus aléatoires de base selon le résultat
-    if add_random
+    if is_perfect
+      # RÉUSSITE PARFAITE : Variation aléatoire très positive
+      # PV : -3 à +6
+      hp_variation = rand(-3..6)
+      new_hp = [hp_max + hp_variation, 1].max
+      update!(hp_max: new_hp)
+      final_stats_data['hp_max'] = new_hp
+
+      # Skills : mastery 0 à +1, bonus 0 à +2
+      embryo_skills.each do |es|
+        caps = SKILL_CAPS[es.skill.name] || { mastery: 7, bonus: 4 }
+        random_mastery = rand(0..1)
+        random_bonus = rand(0..2)
+        
+        new_mastery = [es.mastery + random_mastery, caps[:mastery]].min
+        new_bonus = [es.bonus + random_bonus, caps[:bonus]].min
+        
+        es.update!(mastery: new_mastery, bonus: new_bonus)
+        final_stats_data['skills'][es.skill.name] = { 'mastery' => new_mastery, 'bonus' => new_bonus }
+      end
+
+      # Damage : mastery +1 à +2, bonus +1 à +3
+      random_damage = rand(1..2)
+      random_damage_bonus = rand(1..3)
+      new_dmg = [damage_1 + random_damage, DAMAGE_CAPS[:damage]].min
+      new_dmg_bonus = [damage_bonus_1 + random_damage_bonus, DAMAGE_CAPS[:damage_bonus]].min
+      update!(damage_1: new_dmg, damage_bonus_1: new_dmg_bonus)
+      final_stats_data['damage_1'] = new_dmg
+      final_stats_data['damage_bonus_1'] = new_dmg_bonus
+
+    elsif is_success
       # RÉUSSITE : Variation aléatoire positive
       # PV : -3 à +6
       hp_variation = rand(-3..6)
@@ -376,7 +411,17 @@ class Embryo < ApplicationRecord
         es.update!(mastery: new_mastery, bonus: new_bonus)
         final_stats_data['skills'][es.skill.name] = { 'mastery' => new_mastery, 'bonus' => new_bonus }
       end
-    elsif multiplier < 1.0
+
+      # Damage : mastery 0 à +1, bonus 0 à +2
+      random_damage = rand(0..1)
+      random_damage_bonus = rand(0..2)
+      new_dmg = [damage_1 + random_damage, DAMAGE_CAPS[:damage]].min
+      new_dmg_bonus = [damage_bonus_1 + random_damage_bonus, DAMAGE_CAPS[:damage_bonus]].min
+      update!(damage_1: new_dmg, damage_bonus_1: new_dmg_bonus)
+      final_stats_data['damage_1'] = new_dmg
+      final_stats_data['damage_bonus_1'] = new_dmg_bonus
+
+    elsif is_partial
       # ÉCHEC PARTIEL : Variation aléatoire négative (créature faible)
       # PV : -5 à -1
       hp_variation = rand(-5..-1)
@@ -395,13 +440,22 @@ class Embryo < ApplicationRecord
         es.update!(mastery: new_mastery, bonus: new_bonus)
         final_stats_data['skills'][es.skill.name] = { 'mastery' => new_mastery, 'bonus' => new_bonus }
       end
+
+      # Damage : mastery -1 à 0, bonus -1 à +1
+      random_damage = rand(-1..0)
+      random_damage_bonus = rand(-1..1)
+      new_dmg = [damage_1 + random_damage, 0].max
+      new_dmg_bonus = [damage_bonus_1 + random_damage_bonus, 0].max
+      update!(damage_1: new_dmg, damage_bonus_1: new_dmg_bonus)
+      final_stats_data['damage_1'] = new_dmg
+      final_stats_data['damage_bonus_1'] = new_dmg_bonus
     end
 
     genes_data.each do |gene_data|
       gene = gene_data[:gene]
       level = gene_data[:level]
 
-      # Appliquer skill_bonuses
+      # Appliquer skill_bonuses (bonus fixe du gène, l'aléatoire est déjà appliqué en base)
       gene.skill_bonuses.each do |skill_key, _|
         skill_name = skill_key_to_name(skill_key)
         next unless skill_name
@@ -410,8 +464,6 @@ class Embryo < ApplicationRecord
         next unless embryo_skill
 
         bonus_mastery = (level * multiplier).ceil
-        bonus_mastery += rand(0..1) if add_random
-
         caps = SKILL_CAPS[skill_name] || { mastery: 7, bonus: 4 }
         new_mastery = [embryo_skill.mastery + bonus_mastery, caps[:mastery]].min
         embryo_skill.update!(mastery: new_mastery)
@@ -419,30 +471,26 @@ class Embryo < ApplicationRecord
         final_stats_data['skills'][skill_name] = { 'mastery' => new_mastery, 'bonus' => embryo_skill.bonus }
       end
 
-      # Appliquer stats_bonuses
+      # Appliquer stats_bonuses (bonus fixe du gène, l'aléatoire est déjà appliqué en base)
       gene.stats_bonuses.each do |stat_key, value|
         next unless value
 
         case stat_key
         when 'hp_max'
           bonus = (level * 2 * multiplier).ceil
-          bonus += rand(0..2) if add_random
-          new_hp = hp_max + bonus
+          new_hp = [hp_max + bonus, 1].max
           update!(hp_max: new_hp)
           final_stats_data['hp_max'] = new_hp
-        when 'damage', 'damage_bonus'
-          if stat_key == 'damage'
-            bonus = (level * multiplier).ceil
-            bonus += rand(0..1) if add_random
-            new_dmg = [damage_1 + bonus, DAMAGE_CAPS[:damage]].min
-            update!(damage_1: new_dmg)
-            final_stats_data['damage_1'] = new_dmg
-          elsif stat_key == 'damage_bonus'
-            bonus = (level * multiplier).ceil
-            new_dmg_bonus = [damage_bonus_1 + bonus, DAMAGE_CAPS[:damage_bonus]].min
-            update!(damage_bonus_1: new_dmg_bonus)
-            final_stats_data['damage_bonus_1'] = new_dmg_bonus
-          end
+        when 'damage'
+          bonus = (level * multiplier).ceil
+          new_dmg = [damage_1 + bonus, DAMAGE_CAPS[:damage]].min
+          update!(damage_1: new_dmg)
+          final_stats_data['damage_1'] = new_dmg
+        when 'damage_bonus'
+          bonus = (level * multiplier).ceil
+          new_dmg_bonus = [damage_bonus_1 + bonus, DAMAGE_CAPS[:damage_bonus]].min
+          update!(damage_bonus_1: new_dmg_bonus)
+          final_stats_data['damage_bonus_1'] = new_dmg_bonus
         when 'force'
           update!(force: true) if level >= 2
         end

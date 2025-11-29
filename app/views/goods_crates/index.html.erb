@@ -89,9 +89,9 @@
                     <td class="total-cell"><%= number_with_delimiter(crate.quantity * crate.price_per_crate) %> ¢</td>
                     <td>
                       <%= button_to goods_crate_path(crate), method: :delete, 
-                          data: { turbo: false, confirm: "Jeter cette cargaison dans l'espace ?" }, 
+                          data: { turbo: false, confirm: crate.quantity > 1 ? "Retirer une caisse de #{crate.content} ? (#{crate.quantity - 1} restantes)" : "Jeter la dernière caisse de #{crate.content} ?" }, 
                           class: "btn btn-smuggler-delete" do %>
-                        <i class="fa-solid fa-trash-can"></i>
+                        <i class="fa-solid fa-minus"></i>
                       <% end %>
                     </td>
                   </tr>

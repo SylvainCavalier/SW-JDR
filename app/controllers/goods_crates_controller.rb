@@ -20,8 +20,14 @@ class GoodsCratesController < ApplicationController
 
   def destroy
     @goods_crate = current_user.goods_crates.find(params[:id])
-    @goods_crate.destroy
-    redirect_to goods_crates_path, notice: "Caisse de marchandises supprimée avec succès."
+    
+    if @goods_crate.quantity > 1
+      @goods_crate.decrement!(:quantity)
+      redirect_to goods_crates_path, notice: "Une caisse de #{@goods_crate.content} retirée de la soute."
+    else
+      @goods_crate.destroy
+      redirect_to goods_crates_path, notice: "Dernière caisse de marchandises jetée dans l'espace."
+    end
   end
 
   private
