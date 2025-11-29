@@ -430,11 +430,14 @@ class MjController < ApplicationController
     user = User.find_by(id: params[:user_id])
     points = params[:study_points].to_i
 
+    # Déterminer la page de redirection
+    redirect_path = request.referer&.include?('science') ? mj_science_path : donner_xp_path
+
     if user && points > 0
       user.increment!(:study_points, points)
-      redirect_to donner_xp_path, notice: "Points d’étude ajoutés à #{user.username}."
+      redirect_to redirect_path, notice: "#{points} point(s) d'étude ajouté(s) à #{user.username}."
     else
-      redirect_to donner_xp_path, alert: "Erreur lors de l’attribution des points."
+      redirect_to redirect_path, alert: "Erreur lors de l'attribution des points."
     end
   end
 
@@ -867,8 +870,8 @@ class MjController < ApplicationController
   # ==================== SCIENCE ====================
   
   def science
-    @bio_savants = User.joins(:classe_perso).where(classe_persos: { name: "Bio-savant" })
-    @all_gestations = Embryo.in_gestation.includes(:user).order(:gestation_days_remaining)
+    @bio_savants = User.joins(:classe_perso).where(classe_persos: { name: "Bio-savant" }).includes(:embryos, :user_genes)
+    @all_gestations = Embryo.where(status: 'en_gestation').includes(:user).order(:gestation_days_remaining)
     @ready_embryos = Embryo.where(status: 'éclos').includes(:user)
   end
 

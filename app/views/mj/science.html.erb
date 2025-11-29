@@ -124,35 +124,52 @@
     </div>
   <% end %>
 
-  <!-- Bio-savants -->
-  <div class="card bg-dark text-light border-warning">
+  <!-- Bio-savants et Points d'étude -->
+  <div class="card bg-dark text-light border-warning mb-4">
     <div class="card-header bg-warning text-dark">
-      <h5 class="mb-0"><i class="fa-solid fa-user-doctor me-2"></i>Bio-savants</h5>
+      <h5 class="mb-0"><i class="fa-solid fa-user-doctor me-2"></i>Bio-savants & Points d'étude</h5>
     </div>
     <div class="card-body">
       <% if @bio_savants.any? %>
-        <div class="row">
-          <% @bio_savants.each do |user| %>
-            <div class="col-md-4 mb-3">
-              <div class="card bg-secondary">
-                <div class="card-body">
-                  <h6 class="card-title"><%= user.username %></h6>
-                  <p class="card-text small mb-1">
-                    <i class="fa-solid fa-flask text-info me-1"></i>
-                    Embryons: <%= user.embryos.count %>
-                  </p>
-                  <p class="card-text small mb-1">
-                    <i class="fa-solid fa-egg text-primary me-1"></i>
-                    En gestation: <%= user.embryos.in_gestation.count %>
-                  </p>
-                  <p class="card-text small mb-0">
-                    <i class="fa-solid fa-graduation-cap text-warning me-1"></i>
-                    Points d'étude: <%= user.study_points %>
-                  </p>
-                </div>
-              </div>
-            </div>
-          <% end %>
+        <div class="table-responsive">
+          <table class="table table-dark table-hover">
+            <thead>
+              <tr>
+                <th>Bio-savant</th>
+                <th>Points d'étude</th>
+                <th>Embryons</th>
+                <th>En gestation</th>
+                <th>Gènes débloqués</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% @bio_savants.each do |user| %>
+                <tr>
+                  <td><strong><%= user.username %></strong></td>
+                  <td>
+                    <span class="badge bg-warning text-dark fs-6">
+                      <i class="fa-solid fa-graduation-cap me-1"></i><%= user.study_points %>
+                    </span>
+                  </td>
+                  <td><span class="badge bg-info"><%= user.embryos.count %></span></td>
+                  <td><span class="badge bg-primary"><%= user.embryos.in_gestation.count %></span></td>
+                  <td><span class="badge bg-success"><%= user.user_genes.count %></span></td>
+                  <td>
+                    <%= form_with url: attribution_study_points_path, method: :post, local: true, class: "d-flex gap-2" do |f| %>
+                      <%= f.hidden_field :user_id, value: user.id %>
+                      <div class="input-group input-group-sm" style="width: 150px;">
+                        <%= f.number_field :study_points, value: 1, min: 1, max: 100, class: "form-control form-control-sm" %>
+                        <button type="submit" class="btn btn-warning btn-sm">
+                          <i class="fa-solid fa-plus"></i>
+                        </button>
+                      </div>
+                    <% end %>
+                  </td>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
         </div>
       <% else %>
         <p class="text-muted text-center py-4">Aucun Bio-savant dans le jeu.</p>
