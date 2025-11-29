@@ -52,17 +52,19 @@
             <tbody>
               <% @all_gestations.each do |embryo| %>
                 <tr>
-                  <td><%= embryo.user.username %></td>
+                  <td><%= embryo.user&.username || 'Inconnu' %></td>
                   <td><strong><%= embryo.name %></strong></td>
-                  <td><span class="badge bg-success"><%= embryo.creature_type.humanize %></span></td>
-                  <td><span class="badge bg-info">Cuve <%= embryo.gestation_tube %></span></td>
+                  <td><span class="badge bg-success"><%= embryo.creature_type&.humanize || 'N/A' %></span></td>
+                  <td><span class="badge bg-info">Cuve <%= embryo.gestation_tube || '?' %></span></td>
                   <td>
-                    <span class="badge bg-<%= embryo.gestation_days_remaining <= 3 ? 'warning' : 'secondary' %>">
-                      <%= embryo.gestation_days_remaining %> / <%= embryo.gestation_days_total %> jours
+                    <% days_remaining = embryo.gestation_days_remaining || 0 %>
+                    <% days_total = embryo.gestation_days_total || 1 %>
+                    <span class="badge bg-<%= days_remaining <= 3 ? 'warning' : 'secondary' %>">
+                      <%= days_remaining %> / <%= days_total %> jours
                     </span>
                   </td>
                   <td style="width: 150px;">
-                    <% progress = embryo.gestation_days_total > 0 ? ((embryo.gestation_days_total - embryo.gestation_days_remaining).to_f / embryo.gestation_days_total * 100).round : 0 %>
+                    <% progress = days_total > 0 ? ((days_total - days_remaining).to_f / days_total * 100).round : 0 %>
                     <div class="progress" style="height: 20px;">
                       <div class="progress-bar bg-success" style="width: <%= progress %>%;"><%= progress %>%</div>
                     </div>
@@ -110,11 +112,11 @@
             <tbody>
               <% @ready_embryos.each do |embryo| %>
                 <tr>
-                  <td><%= embryo.user.username %></td>
+                  <td><%= embryo.user&.username || 'Inconnu' %></td>
                   <td><strong><%= embryo.name %></strong></td>
-                  <td><span class="badge bg-success"><%= embryo.creature_type.humanize %></span></td>
-                  <td><%= embryo.hp_max %></td>
-                  <td><%= embryo.damage_1 %>D+<%= embryo.damage_bonus_1 %></td>
+                  <td><span class="badge bg-success"><%= embryo.creature_type&.humanize || 'N/A' %></span></td>
+                  <td><%= embryo.hp_max || 0 %></td>
+                  <td><%= embryo.damage_1 || 0 %>D+<%= embryo.damage_bonus_1 || 0 %></td>
                 </tr>
               <% end %>
             </tbody>
@@ -149,7 +151,7 @@
                   <td><strong><%= user.username %></strong></td>
                   <td>
                     <span class="badge bg-warning text-dark fs-6">
-                      <i class="fa-solid fa-graduation-cap me-1"></i><%= user.study_points %>
+                      <i class="fa-solid fa-graduation-cap me-1"></i><%= user.study_points || 0 %>
                     </span>
                   </td>
                   <td><span class="badge bg-info"><%= user.embryos.count %></span></td>

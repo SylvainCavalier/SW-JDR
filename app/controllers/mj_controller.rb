@@ -871,8 +871,14 @@ class MjController < ApplicationController
   
   def science
     @bio_savants = User.joins(:classe_perso).where(classe_persos: { name: "Bio-savant" }).includes(:embryos, :user_genes)
-    @all_gestations = Embryo.where(status: 'en_gestation').includes(:user).order(:gestation_days_remaining)
+    @all_gestations = Embryo.where(status: 'en_gestation').includes(:user).order(Arel.sql('COALESCE(gestation_days_remaining, 999)'))
     @ready_embryos = Embryo.where(status: 'éclos').includes(:user)
+  rescue => e
+    Rails.logger.error "Erreur MJ Science: #{e.message}"
+    @bio_savants = []
+    @all_gestations = []
+    @ready_embryos = []
+    flash.now[:alert] = "Erreur lors du chargement des données: #{e.message}"
   end
 
   def advance_gestation
