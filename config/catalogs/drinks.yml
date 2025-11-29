@@ -418,3 +418,10 @@ drinks:
     description: "Bière ordinaire d’Alderaan, aujourd’hui surtout collectionnée et rarement ouverte."
     abv: 5
     price: 25
+
+  - id: macharlon_special
+    name: "Macharlon Rouge Spécial"
+    planet: "Alderande"
+    description: "Le meilleur vin du domaine de Macharlon, produit à partir des vignobles situés sur les hauteurs du domaine familial, bénéficiant des meilleurs microclimats de la planète."
+    abv: 13
+    price: 300

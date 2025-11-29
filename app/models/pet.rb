@@ -39,12 +39,48 @@ class Pet < ApplicationRecord
 
   def update_status_based_on_hp
     if saved_change_to_hp_current?
-      set_status_based_on_hp
+      set_status # Utilise la méthode avec préservation des statuts spéciaux
     end
   end
 
   def current_status
     pet_statuses.order(created_at: :desc).first&.status
+  end
+
+  # Statuts automatiques basés sur les HP (ne doivent pas écraser les statuts spéciaux)
+  HP_BASED_STATUSES = ["En forme", "Inconscient", "Agonisant", "Mort"].freeze
+  # Statuts critiques qui doivent toujours être appliqués (quand HP <= 0)
+  CRITICAL_STATUSES = ["Inconscient", "Agonisant", "Mort"].freeze
+
+  def set_status(status_name = nil, force: false)
+    # Si aucun statut n'est spécifié, déterminer en fonction des PV
+    if status_name.blank?
+      status_name = case hp_current
+                    when 1..Float::INFINITY then "En forme"
+                    when 0 then "Inconscient"
+                    when -9..-1 then "Agonisant"
+                    else "Mort"
+                    end
+
+      # Si le statut actuel n'est pas un statut HP et qu'on ne force pas, ne pas écraser
+      # SAUF si le nouveau statut est critique (Inconscient, Agonisant, Mort)
+      current = current_status&.name
+      if current.present? && !HP_BASED_STATUSES.include?(current) && !force && !CRITICAL_STATUSES.include?(status_name)
+        Rails.logger.info "⚠️ Statut '#{current}' préservé pour le familier #{name}."
+        return
+      end
+    end
+
+    # Appliquer le statut
+    status = Status.find_by(name: status_name)
+    if status
+      pet_statuses.destroy_all
+      pet_statuses.create!(status: status)
+      update_column(:status_id, status.id)
+      Rails.logger.info "✔️ Statut '#{status_name}' appliqué au familier #{name}."
+    else
+      Rails.logger.warn "⚠️ Aucun statut trouvé pour '#{status_name}'."
+    end
   end
   
   def hunger_description
@@ -313,33 +349,6 @@ class Pet < ApplicationRecord
     end
   end
 
-  def update_status_based_on_hp
-    if saved_change_to_hp_current?
-      set_status_based_on_hp
-    end
-  end
-
-  def set_status_based_on_hp
-    auto_statuses = ["En forme", "Inconscient", "Agonisant", "Mort"]
-  
-    new_status_name = case hp_current
-                      when 1..Float::INFINITY then "En forme"
-                      when 0 then "Inconscient"
-                      when -9..-1 then "Agonisant"
-                      else "Mort"
-                      end
-  
-    new_status = Status.find_by(name: new_status_name)
-    return unless new_status
-  
-    # Supprime tous les anciens statuts automatiques
-    pet_statuses.joins(:status).where(statuses: { name: auto_statuses - [new_status_name] }).destroy_all
-  
-    # Ajoute le nouveau statut s’il n’est pas déjà là
-    pet_statuses.find_or_create_by(status: new_status)
-    # Synchronise aussi la colonne pets.status_id pour les usages qui la lisent
-    self.update_column(:status_id, new_status.id)
-  end
 
   def roll_dice(number, sides)
     Array.new(number) { rand(1..sides) }.sum

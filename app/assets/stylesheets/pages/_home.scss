@@ -41,7 +41,7 @@
   top: 12%;
   left: 10%;
   right: 10%;
-  bottom: 13%; // Utiliser bottom au lieu de height
+  bottom: 15%; // Utiliser bottom au lieu de height
   display: block !important; // Pas de flexbox, on utilise position absolute pour les enfants
   z-index: 2;
   
@@ -393,59 +393,15 @@
   font-size: clamp(0.7em, 1.2vw, 1em);
 }
 
-.hp-bar-container {
-  position: relative;
-  width: 100%;
+// Surcharges spécifiques à la page home pour la barre HP
+.hp-status-container .hp-bar-container {
   max-width: 350px;
   min-height: 35px;
-  height: auto;
-  aspect-ratio: 1001.46 / 140.26; // Ratio de la barre SVG
+  aspect-ratio: 1001.46 / 140.26;
 }
 
-.hp-bar-background {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 1;
-  
-  img {
-    width: 100%;
-    height: auto;
-  }
-}
-
-.hp-bar-svg {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 2;
-}
-
-.hp-fill {
-  transition: width 0.3s ease;
-}
-
-.hp-text-container {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  display: flex;
-  justify-content: flex-start;
-  align-items: center;
-  z-index: 3;
-}
-
-.hp-text {
-  position: relative;
-  margin-left: 15%;
+.hp-status-container .hp-text {
   font-size: clamp(0.6em, 1vw, 0.8em);
-  color: white;
-  font-weight: bold;
-  pointer-events: auto;
 }
 
 // Bloc centre : Dé
@@ -525,11 +481,6 @@
   100% { opacity: 0; }
 }
 
-.negative-hp {
-  color: #b22222;
-  font-weight: bold;
-}
-
 // ===========================================
 // RESPONSIVE ADJUSTMENTS
 // ===========================================
@@ -550,7 +501,7 @@
     gap: 3vw;
   }
   
-  .hp-bar-container {
+  .hp-status-container .hp-bar-container {
     min-height: 50px;
   }
 }

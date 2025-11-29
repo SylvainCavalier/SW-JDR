@@ -49,7 +49,12 @@ class User < ApplicationRecord
   attr_accessor :vitesse_mastery, :vitesse_bonus
   attr_accessor :reparation_mastery, :reparation_bonus
 
-  def set_status(status_name = nil)
+  # Statuts automatiques basés sur les HP (ne doivent pas écraser les statuts spéciaux)
+  HP_BASED_STATUSES = ["En forme", "Inconscient", "Agonisant", "Mort"].freeze
+  # Statuts critiques qui doivent toujours être appliqués (quand HP <= 0)
+  CRITICAL_STATUSES = ["Inconscient", "Agonisant", "Mort"].freeze
+
+  def set_status(status_name = nil, force: false)
     # Si aucun statut n'est spécifié, déterminer en fonction des PV
     if status_name.blank?
       status_name = case hp_current
@@ -58,6 +63,15 @@ class User < ApplicationRecord
                     when -9..-1 then "Agonisant"
                     else "Mort"
                     end
+
+      # Si le statut actuel n'est pas un statut HP et qu'on ne force pas, ne pas écraser
+      # SAUF si le nouveau statut est critique (Inconscient, Agonisant, Mort)
+      # Cela préserve les statuts comme "Empoisonné", "Malade", etc. tant que les HP > 0
+      current = current_status&.name
+      if current.present? && !HP_BASED_STATUSES.include?(current) && !force && !CRITICAL_STATUSES.include?(status_name)
+        Rails.logger.info "⚠️ Statut '#{current}' préservé (non écrasé par le statut HP automatique '#{status_name}')."
+        return
+      end
     end
   
     # Gestion des statuts protégés par les injections

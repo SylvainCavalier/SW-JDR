@@ -1,6 +1,6 @@
 <h1 class="container text-center mt-4">Tableau de Bord Génétique</h1>
 
-<%= link_to "Retour", science_path, class: "btn btn-outline-secondary mt-4 go-back-two" %>
+<%= back_link(current_user.group&.name == "MJ" ? mj_dashboard_path : science_path) %>
 
 <div class="d-flex flex-column justify-content-center align-items-center mt-4">
   <img src="<%= asset_path('genetiqueillus2.png') %>" alt="Génétique" class="img-fluid mb-4" style="max-width: 40vw;">

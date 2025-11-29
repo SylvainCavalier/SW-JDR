@@ -292,20 +292,23 @@ class Embryo < ApplicationRecord
     :perfect
   end
 
-  def handle_failure(user_genes_to_consume)
-    # Consommer les gènes sans effet
-    consume_user_genes(user_genes_to_consume)
+  def handle_failure(_user_genes_to_consume)
+    # Échec total : l'embryon est détruit, les matériaux sont perdus
+    # Les gènes ne sont PAS consommés (ce sont des découvertes permanentes)
     GeneticStatistic.for_user(user).increment_stat!(:traits_applications_failed)
+    
+    # Détruire l'embryon
+    destroy!
     
     { 
       success: false, 
       result_type: :failure, 
-      message: "L'application des traits a échoué. Les gènes et matériaux ont été perdus." 
+      message: "L'application des traits a échoué. L'embryon et les matériaux ont été perdus." 
     }
   end
 
-  def handle_partial_success(gene_ids_with_levels, user_genes_to_consume)
-    consume_user_genes(user_genes_to_consume)
+  def handle_partial_success(gene_ids_with_levels, _user_genes_to_consume)
+    # Les gènes ne sont PAS consommés
     
     # Créature faible - appliquer seulement une partie des bonus avec malus
     apply_genes_to_stats(gene_ids_with_levels, multiplier: 0.3, add_random: false)
@@ -321,8 +324,8 @@ class Embryo < ApplicationRecord
     }
   end
 
-  def handle_success(gene_ids_with_levels, user_genes_to_consume, bonus_multiplier:)
-    consume_user_genes(user_genes_to_consume)
+  def handle_success(gene_ids_with_levels, _user_genes_to_consume, bonus_multiplier:)
+    # Les gènes ne sont PAS consommés
     
     apply_genes_to_stats(gene_ids_with_levels, multiplier: bonus_multiplier, add_random: true)
     
@@ -337,20 +340,6 @@ class Embryo < ApplicationRecord
       message: bonus_multiplier > 1.0 ? "Réussite parfaite ! La créature est exceptionnelle !" : "Réussite ! La créature est viable.",
       embryo: reload_with_skills
     }
-  end
-
-  def consume_user_genes(user_genes_to_consume)
-    user_genes_to_consume.each do |ug_data|
-      user_gene = user.user_genes.find_by(gene_id: ug_data[:gene_id])
-      next unless user_gene
-      
-      # Réduire le niveau du gène de 1 (consommation partielle)
-      if user_gene.level > 1
-        user_gene.decrement!(:level)
-      else
-        user_gene.destroy!
-      end
-    end
   end
 
   def apply_genes_to_stats(gene_ids_with_levels, multiplier:, add_random:)

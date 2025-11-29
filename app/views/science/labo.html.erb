@@ -1,29 +1,36 @@
-<h2 class="text-center mt-4">Labo de recherche génétique</h2>
+<div class="labo-container">
+  <h2 class="labo-title">Labo de recherche génétique</h2>
 
-<%= link_to "Retour", genetique_dashboard_path, class: "btn btn-outline-secondary mt-4 go-back-two" %>
+  <div class="labo-header">
+    <%= link_to "Retour", genetique_dashboard_path, class: "btn btn-outline-secondary go-back-two" %>
 
-<p class="text-center">
-  Points d’étude : <strong><%= @study_points %></strong> | Fioles disponibles : <strong><%= @fioles %></strong>
-</p>
+    <div class="labo-stats">
+      <span class="stat-badge">
+        <i class="fas fa-flask"></i> Points d'étude : <strong><%= @study_points %></strong>
+      </span>
+      <span class="stat-badge">
+        <i class="fas fa-vial"></i> Fioles disponibles : <strong><%= @fioles %></strong>
+      </span>
+    </div>
 
-<div class="text-center">
-  <button class="btn btn-primary my-3" data-controller="recherche" data-action="click->recherche#lancer">
-    🔍 Rechercher de nouveaux traits génétiques
-  </button>
-</div>
-
-<% Gene.categories.keys.each do |cat| %>
-  <h4 class="mt-4"><%= cat.titleize %></h4>
-  <div class="d-flex flex-wrap justify-content-center">
-    <% @genes.select { |gene| gene.category == cat }.each do |gene| %>
-      <% user_gene = @user_genes[gene.id] %>
-      <div class="card m-2 p-2" style="width: 200px; background-color: <%= user_gene ? '#fff' : '#ccc' %>;">
-        <strong><%= gene.property %></strong><br>
-        Niveau : <%= user_gene&.level || 0 %>
-      </div>
-    <% end %>
+    <button class="btn btn-success recherche-btn" data-controller="recherche" data-action="click->recherche#lancer">
+      <i class="fas fa-search"></i> Rechercher de nouveaux traits génétiques
+    </button>
   </div>
-<% end %>
+
+  <% Gene.categories.keys.each do |cat| %>
+    <h4 class="category-title"><%= cat.titleize %></h4>
+    <div class="genes-grid">
+      <% @genes.select { |gene| gene.category == cat }.each do |gene| %>
+        <% user_gene = @user_genes[gene.id] %>
+        <div class="gene-card <%= user_gene ? 'unlocked' : 'locked' %>">
+          <span class="gene-name"><%= gene.property %></span>
+          <span class="gene-level">Niveau : <%= user_gene&.level || 0 %></span>
+        </div>
+      <% end %>
+    </div>
+  <% end %>
+</div>
 
 <!-- Modale de résultat -->
 <div class="modal fade" id="rechercheResultModal" tabindex="-1">

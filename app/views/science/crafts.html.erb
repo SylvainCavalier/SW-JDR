@@ -70,5 +70,5 @@
     </div>
   </div>
 
-  <%= link_to "Retour", science_path, class: "btn btn-outline-secondary go-back mt-3" %>
+  <%= back_link(current_user.group&.name == "MJ" ? mj_dashboard_path : science_path) %>
 </div>
