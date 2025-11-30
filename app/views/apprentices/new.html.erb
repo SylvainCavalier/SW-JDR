@@ -38,26 +38,12 @@
       <h3 class="text-info mb-3">
         <i class="fa-solid fa-id-card me-2"></i>Identité Jedi
       </h3>
-
-      <div class="row">
-        <div class="col-12 col-md-6 mb-3">
-          <label for="apprentice_jedi_name" class="form-label text-light">Nom de Jedi</label>
-          <%= f.text_field :jedi_name, 
-              class: "form-control bg-dark text-light border-secondary", 
-              placeholder: "Nom que portera l'apprenti en tant que Jedi",
-              required: true %>
-          <small class="text-secondary">Par défaut, le nom du familier (<%= @pet.name %>)</small>
-        </div>
-
-        <div class="col-12 col-md-6 mb-3">
-          <label for="apprentice_saber_style" class="form-label text-light">Style de sabre laser (optionnel)</label>
-          <%= f.select :saber_style, 
-              options_for_select([["Non défini", nil]] + Apprentice::SABER_STYLES.map { |s| [s, s] }),
-              {},
-              class: "form-select bg-dark text-light border-secondary" %>
-          <small class="text-secondary">Peut être défini plus tard</small>
-        </div>
-      </div>
+        <label for="apprentice_jedi_name" class="form-label text-light">Nom de Jedi</label>
+        <%= f.text_field :jedi_name, 
+            class: "form-control bg-dark text-light border-secondary", 
+            placeholder: "Nom que portera l'apprenti en tant que Jedi",
+            required: true %>
+        <small class="text-secondary">Par défaut, le nom du familier (<%= @pet.name %>)</small>
     </div>
 
     <!-- Section Caractéristiques -->
@@ -87,21 +73,12 @@
       </div>
     </div>
 
-    <!-- Info sur les midi-chloriens -->
-    <div class="alert alert-info bg-dark border-info text-light">
-      <h5><i class="fa-solid fa-dna me-2"></i>Potentiel de la Force</h5>
-      <p class="mb-0">
-        Le nombre de midi-chloriens de votre apprenti sera déterminé aléatoirement entre <strong>5 000</strong> et <strong>20 000</strong> lors de sa création.
-        Ce potentiel influencera sa progression dans la Force.
-      </p>
-    </div>
-
     <!-- Boutons de soumission -->
     <div class="d-flex justify-content-center gap-3 mt-4">
       <%= link_to pet_path(@pet), class: "btn btn-outline-secondary btn-lg" do %>
         <i class="fa-solid fa-xmark me-2"></i>Annuler
       <% end %>
-      <%= f.submit "Commencer l'apprentissage", class: "btn btn-info btn-lg" %>
+      <%= f.submit "Commencer l'apprentissage", class: "btn btn-outline-success btn-lg" %>
     </div>
   <% end %>
 </div>

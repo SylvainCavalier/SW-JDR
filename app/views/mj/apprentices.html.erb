@@ -1,5 +1,5 @@
 <div class="container-fluid mt-4 mj-apprentices">
-  <%= back_link(mj_path) %>
+  <%= back_link(mj_dashboard_path) %>
 
   <div class="text-center mb-4">
     <h1 class="text-info">
@@ -94,6 +94,16 @@
                   <div class="mini-stat-box">
                     <span class="mini-stat-label">Midi-chloriens</span>
                     <span class="mini-stat-value text-success"><%= number_with_delimiter(apprentice.midi_chlorians) %></span>
+                    <% if apprentice.midi_chlorians_revealed? %>
+                      <small class="text-success"><i class="fa-solid fa-eye"></i> Révélé</small>
+                    <% else %>
+                      <%= button_to mj_reveal_midi_chlorians_path(apprentice), 
+                          method: :post, 
+                          class: "btn btn-outline-success btn-sm mt-1",
+                          data: { turbo_confirm: "Révéler les midi-chloriens de #{apprentice.jedi_name} ? (#{number_with_delimiter(apprentice.midi_chlorians)})" } do %>
+                        <i class="fa-solid fa-eye me-1"></i>Révéler
+                      <% end %>
+                    <% end %>
                   </div>
                 </div>
                 <div class="col-6 col-md-3 mb-2">
@@ -102,12 +112,6 @@
                     <span class="mini-stat-value" style="color: <%= apprentice.alignment_color %>;">
                       <%= apprentice.side > 0 ? "+#{apprentice.side}" : apprentice.side %>
                     </span>
-                  </div>
-                </div>
-                <div class="col-6 col-md-3 mb-2">
-                  <div class="mini-stat-box">
-                    <span class="mini-stat-label">Points Obscurs</span>
-                    <span class="mini-stat-value text-danger"><%= apprentice.dark_side_points %></span>
                   </div>
                 </div>
               </div>
@@ -133,10 +137,6 @@
                           <div class="col-6 mb-3">
                             <%= f.label :side, "Alignement Force (-100 à +100)", class: "form-label text-secondary" %>
                             <%= f.number_field :side, min: -100, max: 100, class: "form-control bg-dark text-light" %>
-                          </div>
-                          <div class="col-6 mb-3">
-                            <%= f.label :dark_side_points, "Points Côté Obscur", class: "form-label text-secondary" %>
-                            <%= f.number_field :dark_side_points, min: 0, class: "form-control bg-dark text-light" %>
                           </div>
                           <div class="col-6 mb-3">
                             <%= f.label :speciality, "Spécialité", class: "form-label text-secondary" %>

@@ -3,9 +3,8 @@
 
   <div class="text-center mb-4">
     <h1 class="text-info">
-      <i class="fa-solid fa-jedi me-2"></i>Formation Jedi
+      <i class="fa-solid fa-jedi me-2"></i>Apprenti
     </h1>
-    <p class="text-secondary">Gérez l'apprentissage de votre padawan</p>
   </div>
 
   <% if @apprentice.present? %>
@@ -116,33 +115,33 @@
       <div class="col-12 col-lg-10">
         <div class="row">
           <!-- Stat cards -->
-          <div class="col-6 col-md-3 mb-3">
+          <div class="col-6 col-md-4 mb-3">
             <div class="stat-card" style="border-color: <%= frame_color %>;">
               <i class="fa-solid fa-hat-wizard stat-icon" style="color: <%= frame_color %>;"></i>
               <span class="stat-label">Spécialité</span>
               <span class="stat-value"><%= @apprentice.speciality %></span>
             </div>
           </div>
-          <div class="col-6 col-md-3 mb-3">
+          <div class="col-6 col-md-4 mb-3">
             <div class="stat-card" style="border-color: <%= frame_color %>;">
               <i class="fa-solid fa-wand-sparkles stat-icon" style="color: <%= frame_color %>;"></i>
               <span class="stat-label">Style de sabre</span>
               <span class="stat-value"><%= @apprentice.saber_style&.gsub(/Forme \w+ - /, '') || "Non défini" %></span>
             </div>
           </div>
-          <div class="col-6 col-md-3 mb-3">
+          <div class="col-6 col-md-4 mb-3">
             <div class="stat-card" style="border-color: <%= frame_color %>;">
               <i class="fa-solid fa-dna stat-icon" style="color: <%= frame_color %>;"></i>
               <span class="stat-label">Midi-chloriens</span>
-              <span class="stat-value"><%= number_with_delimiter(@apprentice.midi_chlorians) %></span>
-              <small class="stat-sublabel"><%= @apprentice.midi_chlorian_potential %></small>
-            </div>
-          </div>
-          <div class="col-6 col-md-3 mb-3">
-            <div class="stat-card" style="border-color: #E53935;">
-              <i class="fa-solid fa-skull stat-icon text-danger"></i>
-              <span class="stat-label">Points Obscurs</span>
-              <span class="stat-value text-danger"><%= @apprentice.dark_side_points %></span>
+              <% if @apprentice.midi_chlorians_revealed? %>
+                <span class="stat-value"><%= number_with_delimiter(@apprentice.midi_chlorians) %></span>
+                <small class="stat-sublabel"><%= @apprentice.midi_chlorian_potential %></small>
+              <% else %>
+                <span class="stat-value text-secondary">
+                  <i class="fa-solid fa-question"></i> Inconnu
+                </span>
+                <small class="stat-sublabel text-secondary">Non mesuré</small>
+              <% end %>
             </div>
           </div>
         </div>
@@ -404,9 +403,6 @@
         <div class="d-flex justify-content-center gap-3 mt-4 mb-4 flex-wrap">
           <%= link_to apprentice_path(@apprentice), class: "btn btn-lg", style: "background-color: #{frame_color}; color: #000;" do %>
             <i class="fa-solid fa-eye me-2"></i>Voir les détails
-          <% end %>
-          <%= link_to edit_apprentice_path(@apprentice), class: "btn btn-outline-warning btn-lg" do %>
-            <i class="fa-solid fa-edit me-2"></i>Modifier
           <% end %>
           <%= button_tag type: "button", class: "btn btn-outline-danger btn-lg", data: { 
                 bs_toggle: "modal", 

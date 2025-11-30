@@ -17,6 +17,7 @@
 @import "combat";
 @import "pazaak";
 @import "apprentices";
+@import "devise";
 
 @media screen and (orientation: portrait) {
   body {
@@ -547,16 +548,188 @@ input#buy_hp.form-control.pv-max-input {
 
 /* Page de Settings */
 
+// ===========================================
+// SETTINGS - Optimisé mode paysage
+// ===========================================
+
 .settings-container {
-  position: absolute;
+  position: relative;
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  top: 17%;
-  left: 10%;
-  width: 600px;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 1rem;
+  margin: 12vh auto 3vh auto;
+  width: 95%;
+  max-width: 900px;
   height: auto;
   z-index: 2;
+  padding: 1.25rem 1.5rem;
+  background: rgba(5, 15, 25, 0.95);
+  border: 2px solid rgba(0, 255, 204, 0.4);
+  border-radius: 12px;
+  box-shadow: 0 0 20px rgba(0, 255, 204, 0.2);
+}
+
+.settings-container h1 {
+  width: 100%;
+  font-family: "Audiowide", sans-serif;
+  color: #00ffcc;
+  font-size: 1.2rem;
+  text-shadow: 0 0 10px rgba(0, 255, 204, 0.5);
+  margin-bottom: 0.5rem;
+  text-align: center;
+}
+
+.settings-section {
+  background: rgba(0, 20, 40, 0.6);
+  border: 1px solid rgba(0, 255, 204, 0.2);
+  border-radius: 8px;
+  padding: 0.75rem 1rem;
+  flex: 1 1 280px;
+  max-width: 400px;
+  min-width: 250px;
+}
+
+.settings-section-title {
+  font-family: "Audiowide", sans-serif;
+  color: rgba(0, 255, 204, 0.9);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 0.5rem;
+  padding-bottom: 0.4rem;
+  border-bottom: 1px solid rgba(0, 255, 204, 0.2);
+  
+  i {
+    margin-right: 0.4rem;
+  }
+}
+
+.settings-hint {
+  font-size: 0.65rem;
+  color: rgba(0, 255, 204, 0.5);
+  margin-bottom: 0.5rem;
+  font-style: italic;
+  line-height: 1.3;
+}
+
+.settings-form {
+  .settings-field {
+    margin-bottom: 0.6rem;
+  }
+  
+  .form-label {
+    display: block;
+    font-family: "Audiowide", sans-serif;
+    font-size: 0.6rem;
+    color: rgba(0, 255, 204, 0.7);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 0.25rem;
+  }
+  
+  .form-control {
+    width: 100%;
+    padding: 0.45rem 0.6rem;
+    background: rgba(0, 20, 40, 0.8);
+    border: 1px solid rgba(0, 255, 204, 0.3);
+    border-radius: 6px;
+    color: #00ffcc;
+    font-size: 0.8rem;
+    transition: all 0.3s ease;
+    
+    &::placeholder {
+      color: rgba(0, 255, 204, 0.3);
+    }
+    
+    &:focus {
+      outline: none;
+      border-color: #00ffcc;
+      box-shadow: 0 0 10px rgba(0, 255, 204, 0.3);
+      background: rgba(0, 30, 50, 0.9);
+    }
+  }
+  
+  .form-text {
+    font-size: 0.55rem;
+    color: rgba(0, 255, 204, 0.4);
+    margin-top: 0.2rem;
+  }
+  
+  .btn {
+    font-size: 0.7rem;
+    padding: 0.4rem 0.8rem;
+  }
+}
+
+.settings-checkbox {
+  display: flex;
+  align-items: center;
+  margin-bottom: 0.35rem;
+  padding: 0.3rem 0.5rem;
+  background: rgba(0, 40, 60, 0.4);
+  border-radius: 5px;
+  transition: all 0.2s ease;
+  
+  &:hover {
+    background: rgba(0, 60, 80, 0.5);
+  }
+  
+  .form-check-input {
+    width: 16px;
+    height: 16px;
+    appearance: none;
+    background: rgba(0, 20, 40, 0.8);
+    border: 2px solid rgba(0, 255, 204, 0.4);
+    border-radius: 3px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    flex-shrink: 0;
+    
+    &:checked {
+      background: rgba(0, 255, 204, 0.2);
+      border-color: #00ffcc;
+      position: relative;
+      
+      &::after {
+        content: '✓';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        color: #00ffcc;
+        font-size: 10px;
+        font-weight: bold;
+      }
+    }
+    
+    &:hover {
+      border-color: rgba(0, 255, 204, 0.7);
+    }
+  }
+  
+  .form-check-label {
+    font-family: "Audiowide", sans-serif;
+    font-size: 0.7rem;
+    color: rgba(0, 255, 204, 0.8);
+    cursor: pointer;
+  }
+}
+
+// Mode portrait
+@media screen and (orientation: portrait) {
+  .settings-container {
+    flex-direction: column;
+    max-width: 450px;
+    margin-top: 15vh;
+  }
+  
+  .settings-section {
+    max-width: 100%;
+    width: 100%;
+  }
 }
 
 /* Page Fixer Statut */

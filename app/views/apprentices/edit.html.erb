@@ -62,19 +62,6 @@
                   Actuellement : <span style="color: <%= @apprentice.alignment_color %>;"><%= @apprentice.force_alignment %></span>
                 </small>
               </div>
-              <div class="col-12 col-md-6 mb-3">
-                <label for="apprentice_dark_side_points" class="form-label text-light">
-                  Points Côté Obscur
-                </label>
-                <div class="input-group" data-controller="increment">
-                  <button type="button" class="btn btn-outline-danger" data-action="click->increment#decrement">-</button>
-                  <%= f.number_field :dark_side_points, 
-                      min: 0, 
-                      class: "form-control bg-dark text-light text-center border-danger",
-                      data: { "increment-target": "input" } %>
-                  <button type="button" class="btn btn-outline-danger" data-action="click->increment#increment">+</button>
-                </div>
-              </div>
             </div>
           </div>
         </div>

@@ -79,7 +79,7 @@ class ApprenticesController < ApplicationController
         @apprentice.initialize_caracs(carac_values)
         @apprentice.initialize_skills
 
-        redirect_to apprentice_path(@apprentice), notice: "#{@apprentice.jedi_name} est désormais votre apprenti !"
+        redirect_to apprentices_path, notice: "#{@apprentice.jedi_name} est désormais votre apprenti !"
       else
         @caracs = Carac.all
         render :new, status: :unprocessable_entity
@@ -119,7 +119,7 @@ class ApprenticesController < ApplicationController
           end
         end
 
-        redirect_to apprentice_path(@apprentice), notice: "Apprenti mis à jour avec succès."
+        redirect_to apprentices_path, notice: "Apprenti mis à jour avec succès."
       else
         @caracs = Carac.all
         render :edit, status: :unprocessable_entity

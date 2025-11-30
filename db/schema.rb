@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_11_30_130000) do
+ActiveRecord::Schema[7.1].define(version: 2025_11_30_140000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -79,6 +79,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_11_30_130000) do
     t.bigint "user_id", null: false
     t.integer "dark_side_points", default: 0
     t.integer "fatigue", default: 100, null: false
+    t.boolean "midi_chlorians_revealed", default: false, null: false
     t.index ["pet_id"], name: "index_apprentices_on_pet_id"
     t.index ["user_id"], name: "index_apprentices_on_user_id"
   end

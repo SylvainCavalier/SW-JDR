@@ -926,6 +926,126 @@ class MjController < ApplicationController
       format.html { redirect_to mj_science_path, notice: "Gestation terminée pour #{embryo.name}." }
     end
   end
+
+  # ============================================
+  # GESTION DES APPRENTIS JEDI
+  # ============================================
+
+  def apprentices
+    @apprentices = Apprentice.includes(:user, :pet).all
+  end
+
+  def restore_apprentice_fatigue
+    @apprentice = Apprentice.find(params[:id])
+    amount = params[:amount].to_i
+
+    if amount > 0 && amount <= 100
+      new_fatigue = @apprentice.restore_fatigue(amount)
+      redirect_to mj_apprentices_path, notice: "#{@apprentice.jedi_name} a récupéré #{amount} points d'énergie. (#{new_fatigue}/100)"
+    else
+      redirect_to mj_apprentices_path, alert: "Montant invalide."
+    end
+  end
+
+  def full_rest_apprentice
+    @apprentice = Apprentice.find(params[:id])
+    @apprentice.full_rest!
+    redirect_to mj_apprentices_path, notice: "#{@apprentice.jedi_name} est complètement reposé ! (100/100)"
+  end
+
+  def update_apprentice_stats
+    @apprentice = Apprentice.find(params[:id])
+
+    if @apprentice.update(apprentice_stats_params)
+      redirect_to mj_apprentices_path, notice: "Stats de #{@apprentice.jedi_name} mises à jour."
+    else
+      redirect_to mj_apprentices_path, alert: "Erreur lors de la mise à jour."
+    end
+  end
+
+  def update_apprentice_saber
+    @apprentice = Apprentice.find(params[:id])
+    
+    if @apprentice.light_saber.present?
+      if @apprentice.light_saber.update(light_saber_params)
+        redirect_to mj_apprentices_path, notice: "Sabre laser de #{@apprentice.jedi_name} mis à jour."
+      else
+        redirect_to mj_apprentices_path, alert: "Erreur lors de la mise à jour du sabre."
+      end
+    else
+      @light_saber = @apprentice.build_light_saber(light_saber_params)
+      if @light_saber.save
+        redirect_to mj_apprentices_path, notice: "Sabre laser créé pour #{@apprentice.jedi_name} !"
+      else
+        redirect_to mj_apprentices_path, alert: "Erreur lors de la création du sabre: #{@light_saber.errors.full_messages.join(', ')}"
+      end
+    end
+  end
+
+  def delete_apprentice_saber
+    @apprentice = Apprentice.find(params[:id])
+    
+    if @apprentice.light_saber.present?
+      @apprentice.light_saber.destroy
+      redirect_to mj_apprentices_path, notice: "Sabre laser de #{@apprentice.jedi_name} supprimé."
+    else
+      redirect_to mj_apprentices_path, alert: "Cet apprenti n'a pas de sabre laser."
+    end
+  end
+
+  def update_apprentice_caracs
+    @apprentice = Apprentice.find(params[:id])
+    
+    ActiveRecord::Base.transaction do
+      params[:caracs]&.each do |carac_id, values|
+        apprentice_carac = @apprentice.apprentice_caracs.find_by(carac_id: carac_id)
+        if apprentice_carac
+          apprentice_carac.update!(
+            mastery: values[:mastery].to_i,
+            bonus: values[:bonus].to_i
+          )
+        end
+      end
+    end
+
+    redirect_to mj_apprentices_path, notice: "Caractéristiques de #{@apprentice.jedi_name} mises à jour."
+  rescue ActiveRecord::RecordInvalid => e
+    redirect_to mj_apprentices_path, alert: "Erreur: #{e.message}"
+  end
+
+  def update_apprentice_skills
+    @apprentice = Apprentice.find(params[:id])
+    
+    ActiveRecord::Base.transaction do
+      params[:skills]&.each do |skill_id, values|
+        apprentice_skill = @apprentice.apprentice_skills.find_by(skill_id: skill_id)
+        if apprentice_skill
+          talent_value = values[:talent].present? ? values[:talent] : nil
+          
+          apprentice_skill.update!(
+            mastery: values[:mastery].to_i,
+            bonus: values[:bonus].to_i,
+            talent: talent_value
+          )
+        end
+      end
+    end
+
+    redirect_to mj_apprentices_path, notice: "Compétences et talents de #{@apprentice.jedi_name} mis à jour."
+  rescue ActiveRecord::RecordInvalid => e
+    redirect_to mj_apprentices_path, alert: "Erreur: #{e.message}"
+  end
+
+  def reveal_midi_chlorians
+    @apprentice = Apprentice.find(params[:id])
+    
+    if @apprentice.midi_chlorians_revealed?
+      redirect_to mj_apprentices_path, alert: "Les midi-chloriens de #{@apprentice.jedi_name} sont déjà révélés."
+    else
+      @apprentice.update!(midi_chlorians_revealed: true)
+      redirect_to mj_apprentices_path, notice: "Les midi-chloriens de #{@apprentice.jedi_name} ont été révélés : #{view_context.number_with_delimiter(@apprentice.midi_chlorians)} (#{@apprentice.midi_chlorian_potential})"
+    end
+  end
   
   private
   
@@ -990,118 +1110,6 @@ class MjController < ApplicationController
     )
   
     Rails.logger.info "✔️ Patch automatique activé : #{equipped_patch.name} pour #{user.username}, statut '#{status_name}' annulé."
-  end
-
-  # ============================================
-  # GESTION DES APPRENTIS JEDI
-  # ============================================
-
-  def apprentices
-    @apprentices = Apprentice.includes(:user, :pet).all
-  end
-
-  def restore_apprentice_fatigue
-    @apprentice = Apprentice.find(params[:id])
-    amount = params[:amount].to_i
-
-    if amount > 0 && amount <= 100
-      new_fatigue = @apprentice.restore_fatigue(amount)
-      redirect_to mj_apprentices_path, notice: "#{@apprentice.jedi_name} a récupéré #{amount} points d'énergie. (#{new_fatigue}/100)"
-    else
-      redirect_to mj_apprentices_path, alert: "Montant invalide."
-    end
-  end
-
-  def full_rest_apprentice
-    @apprentice = Apprentice.find(params[:id])
-    @apprentice.full_rest!
-    redirect_to mj_apprentices_path, notice: "#{@apprentice.jedi_name} est complètement reposé ! (100/100)"
-  end
-
-  def update_apprentice_stats
-    @apprentice = Apprentice.find(params[:id])
-
-    if @apprentice.update(apprentice_stats_params)
-      redirect_to mj_apprentices_path, notice: "Stats de #{@apprentice.jedi_name} mises à jour."
-    else
-      redirect_to mj_apprentices_path, alert: "Erreur lors de la mise à jour."
-    end
-  end
-
-  def update_apprentice_saber
-    @apprentice = Apprentice.find(params[:id])
-    
-    if @apprentice.light_saber.present?
-      # Mise à jour du sabre existant
-      if @apprentice.light_saber.update(light_saber_params)
-        redirect_to mj_apprentices_path, notice: "Sabre laser de #{@apprentice.jedi_name} mis à jour."
-      else
-        redirect_to mj_apprentices_path, alert: "Erreur lors de la mise à jour du sabre."
-      end
-    else
-      # Création d'un nouveau sabre
-      @light_saber = @apprentice.build_light_saber(light_saber_params)
-      if @light_saber.save
-        redirect_to mj_apprentices_path, notice: "Sabre laser créé pour #{@apprentice.jedi_name} !"
-      else
-        redirect_to mj_apprentices_path, alert: "Erreur lors de la création du sabre: #{@light_saber.errors.full_messages.join(', ')}"
-      end
-    end
-  end
-
-  def delete_apprentice_saber
-    @apprentice = Apprentice.find(params[:id])
-    
-    if @apprentice.light_saber.present?
-      @apprentice.light_saber.destroy
-      redirect_to mj_apprentices_path, notice: "Sabre laser de #{@apprentice.jedi_name} supprimé."
-    else
-      redirect_to mj_apprentices_path, alert: "Cet apprenti n'a pas de sabre laser."
-    end
-  end
-
-  def update_apprentice_caracs
-    @apprentice = Apprentice.find(params[:id])
-    
-    ActiveRecord::Base.transaction do
-      params[:caracs]&.each do |carac_id, values|
-        apprentice_carac = @apprentice.apprentice_caracs.find_by(carac_id: carac_id)
-        if apprentice_carac
-          apprentice_carac.update!(
-            mastery: values[:mastery].to_i,
-            bonus: values[:bonus].to_i
-          )
-        end
-      end
-    end
-
-    redirect_to mj_apprentices_path, notice: "Caractéristiques de #{@apprentice.jedi_name} mises à jour."
-  rescue ActiveRecord::RecordInvalid => e
-    redirect_to mj_apprentices_path, alert: "Erreur: #{e.message}"
-  end
-
-  def update_apprentice_skills
-    @apprentice = Apprentice.find(params[:id])
-    
-    ActiveRecord::Base.transaction do
-      params[:skills]&.each do |skill_id, values|
-        apprentice_skill = @apprentice.apprentice_skills.find_by(skill_id: skill_id)
-        if apprentice_skill
-          # Gérer le talent (chaîne vide = nil)
-          talent_value = values[:talent].present? ? values[:talent] : nil
-          
-          apprentice_skill.update!(
-            mastery: values[:mastery].to_i,
-            bonus: values[:bonus].to_i,
-            talent: talent_value
-          )
-        end
-      end
-    end
-
-    redirect_to mj_apprentices_path, notice: "Compétences et talents de #{@apprentice.jedi_name} mis à jour."
-  rescue ActiveRecord::RecordInvalid => e
-    redirect_to mj_apprentices_path, alert: "Erreur: #{e.message}"
   end
 
   def ship_basic_params

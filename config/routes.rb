@@ -17,6 +17,8 @@ Rails.application.routes.draw do
       post :purchase_hp
       get :settings
       patch :update_settings
+      patch :update_account
+      patch :update_password
       get :medipack
       get :healobjects
       post :buy_inventory_object
@@ -219,6 +221,7 @@ Rails.application.routes.draw do
   delete "mj/apprentices/:id/delete_saber", to: "mj#delete_apprentice_saber", as: "mj_delete_apprentice_saber"
   patch "mj/apprentices/:id/update_caracs", to: "mj#update_apprentice_caracs", as: "mj_update_apprentice_caracs"
   patch "mj/apprentices/:id/update_skills", to: "mj#update_apprentice_skills", as: "mj_update_apprentice_skills"
+  post "mj/apprentices/:id/reveal_midi_chlorians", to: "mj#reveal_midi_chlorians", as: "mj_reveal_midi_chlorians"
 
   get 'mj/vaisseaux', to: 'mj#vaisseaux', as: 'mj_vaisseaux'
   patch 'mj/vaisseaux/:id/update_ship', to: 'mj#update_ship', as: 'mj_update_ship'

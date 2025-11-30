@@ -229,6 +229,46 @@ class UsersController < ApplicationController
     @user = current_user
   end
   
+  def update_account
+    @user = current_user
+
+    if @user.update(email: params[:user][:email])
+      redirect_to settings_user_path(@user), notice: 'Email mis à jour avec succès.'
+    else
+      redirect_to settings_user_path(@user), alert: "Erreur lors de la mise à jour de l'email: #{@user.errors.full_messages.join(', ')}"
+    end
+  end
+
+  def update_password
+    @user = current_user
+
+    # Vérifier que le mot de passe actuel est correct
+    unless @user.valid_password?(params[:user][:current_password])
+      redirect_to settings_user_path(@user), alert: 'Le mot de passe actuel est incorrect.'
+      return
+    end
+
+    # Vérifier que les nouveaux mots de passe correspondent
+    if params[:user][:password].blank?
+      redirect_to settings_user_path(@user), alert: 'Le nouveau mot de passe ne peut pas être vide.'
+      return
+    end
+
+    if params[:user][:password] != params[:user][:password_confirmation]
+      redirect_to settings_user_path(@user), alert: 'Les mots de passe ne correspondent pas.'
+      return
+    end
+
+    # Mettre à jour le mot de passe
+    if @user.update(password: params[:user][:password], password_confirmation: params[:user][:password_confirmation])
+      # Bypass sign_in pour éviter de déconnecter l'utilisateur
+      bypass_sign_in(@user)
+      redirect_to settings_user_path(@user), notice: 'Mot de passe mis à jour avec succès.'
+    else
+      redirect_to settings_user_path(@user), alert: "Erreur lors de la mise à jour du mot de passe: #{@user.errors.full_messages.join(', ')}"
+    end
+  end
+
   def update_settings
     @user = current_user
   
