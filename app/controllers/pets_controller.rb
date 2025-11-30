@@ -235,7 +235,7 @@ class PetsController < ApplicationController
     params.require(:pet).permit(
       :name, :race, :age, :description, :category, :url_image, 
       :hp_max, :shield_max, :weapon_1, :damage_1, :damage_1_bonus, 
-      :weapon_2, :damage_2, :damage_2_bonus, :image, :size, :weight
+      :weapon_2, :damage_2, :damage_2_bonus, :image, :size, :weight, :force
     )
   end
 

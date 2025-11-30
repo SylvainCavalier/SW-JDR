@@ -1,6 +1,9 @@
 <div class="content-container">
   <h2 class="audiowide-regular">Statistiques Pazaak</h2>
-  <div class="row g-3 mt-2">
+  
+  <!-- Statistiques personnelles -->
+  <h4 class="mt-4 mb-3"><i class="fa-solid fa-user me-2"></i>Mes statistiques</h4>
+  <div class="row g-3">
     <div class="col-md-4">
       <ul class="list-group">
         <li class="list-group-item d-flex justify-content-between"><span>Parties jouées</span><strong><%= @stats.games_played %></strong></li>
@@ -33,7 +36,156 @@
       </ul>
     </div>
   </div>
-  <div class="mt-3">
+
+  <!-- Classements des joueurs -->
+  <h4 class="mt-5 mb-3"><i class="fa-solid fa-ranking-star me-2"></i>Classements des joueurs</h4>
+  <div class="row g-3">
+    <!-- Classement par parties gagnées -->
+    <div class="col-md-4">
+      <div class="card bg-dark border-secondary">
+        <div class="card-header bg-secondary text-white">
+          <i class="fa-solid fa-trophy text-warning me-2"></i>Parties gagnées
+        </div>
+        <ul class="list-group list-group-flush">
+          <% @rankings[:games_won].each_with_index do |stat, index| %>
+            <li class="list-group-item d-flex justify-content-between align-items-center <%= stat.user_id == current_user.id ? 'bg-primary bg-opacity-25' : '' %>">
+              <span>
+                <% if index == 0 && stat.games_won > 0 %>
+                  <i class="fa-solid fa-trophy text-warning me-1"></i>
+                <% else %>
+                  <span class="badge bg-secondary me-1"><%= index + 1 %></span>
+                <% end %>
+                <%= stat.user.username %>
+              </span>
+              <strong><%= stat.games_won %></strong>
+            </li>
+          <% end %>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Classement par taux de victoire -->
+    <div class="col-md-4">
+      <div class="card bg-dark border-secondary">
+        <div class="card-header bg-secondary text-white">
+          <i class="fa-solid fa-trophy text-warning me-2"></i>Taux de victoire
+        </div>
+        <ul class="list-group list-group-flush">
+          <% @rankings[:win_rate].each_with_index do |stat, index| %>
+            <li class="list-group-item d-flex justify-content-between align-items-center <%= stat.user_id == current_user.id ? 'bg-primary bg-opacity-25' : '' %>">
+              <span>
+                <% if index == 0 && stat.win_rate > 0 %>
+                  <i class="fa-solid fa-trophy text-warning me-1"></i>
+                <% else %>
+                  <span class="badge bg-secondary me-1"><%= index + 1 %></span>
+                <% end %>
+                <%= stat.user.username %>
+              </span>
+              <strong><%= (stat.win_rate * 100).round(1) %>%</strong>
+            </li>
+          <% end %>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Classement par crédits gagnés -->
+    <div class="col-md-4">
+      <div class="card bg-dark border-secondary">
+        <div class="card-header bg-secondary text-white">
+          <i class="fa-solid fa-trophy text-warning me-2"></i>Crédits gagnés
+        </div>
+        <ul class="list-group list-group-flush">
+          <% @rankings[:credits_won].each_with_index do |stat, index| %>
+            <li class="list-group-item d-flex justify-content-between align-items-center <%= stat.user_id == current_user.id ? 'bg-primary bg-opacity-25' : '' %>">
+              <span>
+                <% if index == 0 && stat.credits_won > 0 %>
+                  <i class="fa-solid fa-trophy text-warning me-1"></i>
+                <% else %>
+                  <span class="badge bg-secondary me-1"><%= index + 1 %></span>
+                <% end %>
+                <%= stat.user.username %>
+              </span>
+              <strong><%= number_with_delimiter(stat.credits_won) %></strong>
+            </li>
+          <% end %>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Classement par meilleure série -->
+    <div class="col-md-4">
+      <div class="card bg-dark border-secondary">
+        <div class="card-header bg-secondary text-white">
+          <i class="fa-solid fa-trophy text-warning me-2"></i>Meilleure série
+        </div>
+        <ul class="list-group list-group-flush">
+          <% @rankings[:best_win_streak].each_with_index do |stat, index| %>
+            <li class="list-group-item d-flex justify-content-between align-items-center <%= stat.user_id == current_user.id ? 'bg-primary bg-opacity-25' : '' %>">
+              <span>
+                <% if index == 0 && stat.best_win_streak > 0 %>
+                  <i class="fa-solid fa-trophy text-warning me-1"></i>
+                <% else %>
+                  <span class="badge bg-secondary me-1"><%= index + 1 %></span>
+                <% end %>
+                <%= stat.user.username %>
+              </span>
+              <strong><%= stat.best_win_streak %></strong>
+            </li>
+          <% end %>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Classement par manches gagnées -->
+    <div class="col-md-4">
+      <div class="card bg-dark border-secondary">
+        <div class="card-header bg-secondary text-white">
+          <i class="fa-solid fa-trophy text-warning me-2"></i>Manches gagnées
+        </div>
+        <ul class="list-group list-group-flush">
+          <% @rankings[:rounds_won].each_with_index do |stat, index| %>
+            <li class="list-group-item d-flex justify-content-between align-items-center <%= stat.user_id == current_user.id ? 'bg-primary bg-opacity-25' : '' %>">
+              <span>
+                <% if index == 0 && stat.rounds_won > 0 %>
+                  <i class="fa-solid fa-trophy text-warning me-1"></i>
+                <% else %>
+                  <span class="badge bg-secondary me-1"><%= index + 1 %></span>
+                <% end %>
+                <%= stat.user.username %>
+              </span>
+              <strong><%= stat.rounds_won %></strong>
+            </li>
+          <% end %>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Classement par parties jouées -->
+    <div class="col-md-4">
+      <div class="card bg-dark border-secondary">
+        <div class="card-header bg-secondary text-white">
+          <i class="fa-solid fa-trophy text-warning me-2"></i>Parties jouées
+        </div>
+        <ul class="list-group list-group-flush">
+          <% @rankings[:games_played].each_with_index do |stat, index| %>
+            <li class="list-group-item d-flex justify-content-between align-items-center <%= stat.user_id == current_user.id ? 'bg-primary bg-opacity-25' : '' %>">
+              <span>
+                <% if index == 0 && stat.games_played > 0 %>
+                  <i class="fa-solid fa-trophy text-warning me-1"></i>
+                <% else %>
+                  <span class="badge bg-secondary me-1"><%= index + 1 %></span>
+                <% end %>
+                <%= stat.user.username %>
+              </span>
+              <strong><%= stat.games_played %></strong>
+            </li>
+          <% end %>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="mt-4">
     <%= link_to 'Retour', pazaak_menu_path, class: 'btn btn-outline-light' %>
   </div>
 </div>
