@@ -49,30 +49,50 @@ class ApprenticeSkill < ApplicationRecord
     }
   }.freeze
 
-  # Détermine aléatoirement le talent lors du premier entraînement
+  # Révèle le talent lors du premier entraînement
+  # Si le MJ a pré-défini le talent, on le révèle simplement
+  # Sinon, on le génère aléatoirement puis on le révèle
   def discover_talent!
-    return talent if talent.present? # Déjà découvert
+    return talent if talent_revealed? # Déjà révélé au joueur
 
-    roll = rand(1..100)
-    cumulative = 0
+    if talent.present?
+      # Le MJ avait pré-défini le talent, on le révèle maintenant
+      update!(talent_revealed: true)
+    else
+      # Génération aléatoire du talent
+      roll = rand(1..100)
+      cumulative = 0
 
-    discovered = TALENTS.find do |key, data|
-      cumulative += data[:chance]
-      roll <= cumulative
-    end&.first || "ordinaire"
+      discovered = TALENTS.find do |key, data|
+        cumulative += data[:chance]
+        roll <= cumulative
+      end&.first || "ordinaire"
 
-    update!(talent: discovered)
-    discovered
+      update!(talent: discovered, talent_revealed: true)
+    end
+    
+    talent
   end
 
-  # Vérifie si le talent a été découvert
+  # Vérifie si le talent a été révélé au joueur (après le premier entraînement)
   def talent_discovered?
-    talent.present?
+    talent_revealed?
   end
 
-  # Informations sur le talent
+  # Vérifie si le talent a été pré-défini par le MJ (mais pas encore révélé)
+  def talent_predefined?
+    talent.present? && !talent_revealed?
+  end
+
+  # Informations sur le talent (pour l'affichage au joueur)
   def talent_info
     return nil unless talent_discovered?
+    TALENTS[talent]
+  end
+
+  # Informations sur le talent réel (pour les calculs, même si pas révélé)
+  def actual_talent_info
+    return nil unless talent.present?
     TALENTS[talent]
   end
 
@@ -88,14 +108,14 @@ class ApprenticeSkill < ApplicationRecord
     talent_info&.dig(:color) || "#888888"
   end
 
-  # Modificateur de réussite basé sur le talent
+  # Modificateur de réussite basé sur le talent (utilise le talent réel, même si pas révélé)
   def success_modifier
-    talent_info&.dig(:success_modifier) || 0
+    actual_talent_info&.dig(:success_modifier) || 0
   end
 
-  # Chance de gagner +2 au lieu de +1
+  # Chance de gagner +2 au lieu de +1 (utilise le talent réel, même si pas révélé)
   def double_bonus_chance
-    talent_info&.dig(:double_bonus_chance) || 0
+    actual_talent_info&.dig(:double_bonus_chance) || 0
   end
 
   # Affichage formaté de la valeur

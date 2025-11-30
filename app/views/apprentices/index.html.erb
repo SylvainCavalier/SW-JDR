@@ -311,6 +311,7 @@
                         <% 
                           success_rate = @apprentice.training_success_rate(as)
                           is_force_skill = @apprentice.force_skill?(as.skill.name)
+                          is_trainable = @apprentice.trainable_skill?(as.skill.name)
                           can_train_force = is_force_skill ? @apprentice.can_train_force_skill?(as) : true
                           master_mastery = is_force_skill ? @apprentice.master_skill_mastery(as.skill.name) : 0
                         %>
@@ -363,7 +364,13 @@
                                title="Lancer <%= as.display_value %>"></i>
                           </td>
                           <td class="text-center px-2">
-                            <% if !can_train_force %>
+                            <% if !is_trainable %>
+                              <%# Compétence non entraînable %>
+                              <button class="btn btn-sm btn-outline-secondary" disabled 
+                                      title="Cette compétence ne peut pas être entraînée">
+                                <i class="fa-solid fa-ban"></i>
+                              </button>
+                            <% elsif !can_train_force %>
                               <%# Bloqué car niveau maître atteint %>
                               <button class="btn btn-sm btn-outline-warning" disabled 
                                       title="Niveau du Maître atteint (#{master_mastery}D) - L'élève ne peut surpasser le maître">

@@ -287,6 +287,7 @@
                                 <th class="text-center" style="width: 80px;">Maîtrise</th>
                                 <th class="text-center" style="width: 70px;">Bonus</th>
                                 <th class="text-center" style="width: 130px;">Talent</th>
+                                <th class="text-center" style="width: 50px;"><i class="fa-solid fa-eye" title="Révélé"></i></th>
                               </tr>
                             </thead>
                             <tbody>
@@ -308,16 +309,28 @@
                                   <td>
                                     <%= select_tag "skills[#{as.skill_id}][talent]", 
                                         options_for_select(
-                                          [["Non découvert", ""]] + ApprenticeSkill::TALENTS.map { |k, v| [v[:label], k] },
+                                          [["Non défini", ""]] + ApprenticeSkill::TALENTS.map { |k, v| [v[:label], k] },
                                           as.talent
                                         ), 
                                         class: "form-select form-select-sm bg-dark text-light",
-                                        style: as.talent ? "color: #{as.talent_color} !important;" : "" %>
+                                        style: as.talent.present? ? "color: #{ApprenticeSkill::TALENTS.dig(as.talent, :color) || '#888'} !important;#{'opacity:0.6;' unless as.talent_revealed?}" : "" %>
+                                  </td>
+                                  <td class="text-center align-middle">
+                                    <% if as.talent.blank? %>
+                                      <span class="text-secondary">—</span>
+                                    <% elsif as.talent_revealed? %>
+                                      <i class="fa-solid fa-eye text-success" title="Visible"></i>
+                                    <% else %>
+                                      <i class="fa-solid fa-eye-slash text-warning" title="Pré-défini (caché)"></i>
+                                    <% end %>
                                   </td>
                                 </tr>
                               <% end %>
                             </tbody>
                           </table>
+                          <small class="text-secondary d-block mt-2">
+                            <i class="fa-solid fa-eye-slash text-warning"></i> = Talent pré-défini mais caché du joueur (sera révélé au 1er entraînement)
+                          </small>
                         </div>
                         <div class="text-end mt-3">
                           <%= submit_tag "Mettre à jour les compétences", class: "btn btn-success btn-sm" %>

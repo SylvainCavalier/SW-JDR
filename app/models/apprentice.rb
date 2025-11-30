@@ -23,6 +23,9 @@ class Apprentice < ApplicationRecord
   # Compétences de Force (règles spéciales d'entraînement)
   FORCE_SKILLS = ["Contrôle", "Sens", "Altération"].freeze
   FORCE_SKILL_FATIGUE_MULTIPLIER = 2 # Coût en fatigue x2 pour les skills de Force
+  
+  # Compétences non entraînables
+  NON_TRAINABLE_SKILLS = ["Résistance Corporelle"].freeze
 
   SPECIALITIES = %w[Commun Gardien Consulaire Sentinelle].freeze
   SABER_STYLES = [
@@ -136,6 +139,11 @@ class Apprentice < ApplicationRecord
     FORCE_SKILLS.include?(skill_name)
   end
 
+  # Vérifie si une compétence est entraînable
+  def trainable_skill?(skill_name)
+    !NON_TRAINABLE_SKILLS.include?(skill_name)
+  end
+
   # Récupère la mastery du maître sur une compétence donnée
   def master_skill_mastery(skill_name)
     skill = Skill.find_by(name: skill_name)
@@ -178,6 +186,15 @@ class Apprentice < ApplicationRecord
 
     skill_name = apprentice_skill.skill.name
     is_force_skill = force_skill?(skill_name)
+
+    # Vérifier si la compétence est entraînable
+    unless trainable_skill?(skill_name)
+      return { 
+        success: false, 
+        message: "#{skill_name} ne peut pas être entraînée. Cette compétence s'améliore uniquement par d'autres moyens.",
+        non_trainable: true
+      }
+    end
 
     unless can_train?
       return { 

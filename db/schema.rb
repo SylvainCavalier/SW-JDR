@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_11_30_140000) do
+ActiveRecord::Schema[7.1].define(version: 2025_11_30_150000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -62,6 +62,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_11_30_140000) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "talent"
+    t.boolean "talent_revealed", default: false, null: false
     t.index ["apprentice_id", "skill_id"], name: "index_apprentice_skills_on_apprentice_id_and_skill_id", unique: true
     t.index ["apprentice_id"], name: "index_apprentice_skills_on_apprentice_id"
     t.index ["skill_id"], name: "index_apprentice_skills_on_skill_id"

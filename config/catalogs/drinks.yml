@@ -432,3 +432,39 @@ drinks:
     description: "Bière rouge fermentée à base de raisins locaux, produite dans les caves de la planète depuis des siècles."
     abv: 7
     price: 10
+  
+  - id: mirial_ice
+    name: "Cocktail glacé de Mirial"
+    planet: "Mirial"
+    description: "Cocktail glacé de Mirial, produit à partir de fleurs de glace"
+    abv: 12
+    price: 20
+
+  - id: cocktail_fusion
+    name: "Cocktail de lave en fusion"
+    planet: "Mustafar"
+    description: "Cocktail de lave en fusion, produit à partir de créatures vivant dans la lave de Mustafar"
+    abv: 15
+    price: 20
+
+  - id: liqueur_piringisi
+    name: "Liqueur Piringisi"
+    planet: "Sullust"
+    description: "distillé dans la lave à partir d'herbes souterraines"
+    abv: 25
+    price: 30
+
+  - id: brandy_kortik
+    name: "Brandy Kortik"
+    planet: "Kashyyyk"
+    description: "Brandy Kortikan, produit à partir de fruits locaux et de spiritueux, très apprécié des wookies."
+    abv: 15
+    price: 10
+
+  - id: juma_juice
+    name: "Jus de Juma"
+    planet: "Nar Shaddaa"
+    description: "Alcool fort, une petite fiole suffit"
+    abv: 50
+    price: 30
+
