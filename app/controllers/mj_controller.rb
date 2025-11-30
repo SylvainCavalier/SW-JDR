@@ -495,6 +495,7 @@ class MjController < ApplicationController
     @objects = InventoryObject.select(:id, :name, :category).map do |obj|
       { id: obj.id, name: obj.name, category: obj.category.downcase }
     end
+    @rarities = ["Commun", "Unco", "Rare", "Très rare", "Légendaire", "Don"]
   
     Rails.logger.debug "Catégories disponibles : #{@categories}"
   end
@@ -520,6 +521,25 @@ class MjController < ApplicationController
   rescue ActiveRecord::RecordNotFound => e
     respond_to do |format|
       format.json { render json: { success: false, error: "Erreur : #{e.message}" }, status: :unprocessable_entity }
+    end
+  end
+
+  def create_inventory_object
+    object_params = inventory_object_params.to_h
+    
+    # Si une catégorie personnalisée est renseignée, l'utiliser à la place
+    if params[:inventory_object][:custom_category].present?
+      object_params[:category] = params[:inventory_object][:custom_category].downcase.strip
+    end
+    
+    @inventory_object = InventoryObject.new(object_params)
+    
+    if @inventory_object.save
+      Rails.logger.info "✅ Nouvel objet créé : #{@inventory_object.name}"
+      redirect_to donner_objet_path, notice: "Objet '#{@inventory_object.name}' créé avec succès !"
+    else
+      Rails.logger.error "❌ Erreur création objet : #{@inventory_object.errors.full_messages.join(', ')}"
+      redirect_to donner_objet_path, alert: "Erreur lors de la création : #{@inventory_object.errors.full_messages.join(', ')}"
     end
   end
 
@@ -990,5 +1010,9 @@ class MjController < ApplicationController
       :weapons_disabled, :sensors_damaged, :life_support_damaged,
       :shields_down, :power_core_damaged
     )
+  end
+
+  def inventory_object_params
+    params.require(:inventory_object).permit(:name, :category, :price, :rarity, :description)
   end
 end

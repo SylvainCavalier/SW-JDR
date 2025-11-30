@@ -193,6 +193,7 @@ Rails.application.routes.draw do
 
   get 'donner_objet', to: 'mj#donner_objet'
   post 'update_objet', to: 'mj#update_objet'
+  post 'mj/create_inventory_object', to: 'mj#create_inventory_object', as: 'mj_create_inventory_object'
 
   get 'fix_pets', to: 'mj#fix_pets'
   patch 'fix_pets/:id', to: 'mj#fix_pets', as: 'fix_pet'

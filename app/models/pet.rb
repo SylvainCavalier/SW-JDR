@@ -10,19 +10,19 @@ class Pet < ApplicationRecord
 
   has_many :pet_statuses, dependent: :destroy
   has_many :statuses, through: :pet_statuses
-  belongs_to :user, optional: true  # créateur
+  belongs_to :user, optional: true
   belongs_to :origin_embryo, class_name: 'Embryo', optional: true
   has_one :user_as_active_pet, class_name: "User", foreign_key: :pet_id
 
   validates :name, presence: true, length: { maximum: 20 }
-  validates :race, presence: true, length: { maximum: 12 }
+  validates :race, presence: true, length: { maximum: 15 }
   validates :category, inclusion: { in: %w[animal droïde bio-armure humanoïde], message: "%{value} n'est pas une catégorie valide." }
   validates :hp_max, numericality: { only_integer: true, greater_than: 0 }
   validates :hp_current, numericality: { greater_than_or_equal_to: -20 }
   validates :damage_1, :damage_2, numericality: { only_integer: true, greater_than_or_equal_to: 0 }
   validates :damage_1_bonus, :damage_2_bonus, numericality: { only_integer: true, greater_than_or_equal_to: 0 }
-  validates :size, numericality: { greater_than: 0, less_than_or_equal_to: 1000, message: "La taille doit être comprise entre 0 et 10 mètres." }
-  validates :weight, numericality: { greater_than: 0, less_than_or_equal_to: 500, message: "Le poids doit être compris entre 1 et 500 kg." }
+  validates :size, numericality: { greater_than: 0, less_than_or_equal_to: 2000, message: "La taille doit être comprise entre 0 et 20 mètres." }
+  validates :weight, numericality: { greater_than: 0, less_than_or_equal_to: 1000, message: "Le poids doit être compris entre 1 et 1000 kg." }
   validates :vitesse, numericality: { only_integer: true, greater_than_or_equal_to: 0 }, allow_nil: true
   validates :shield_current, :shield_max, numericality: { only_integer: true, greater_than_or_equal_to: 0 }
   validates :age, numericality: { greater_than_or_equal_to: 1, only_integer: true }

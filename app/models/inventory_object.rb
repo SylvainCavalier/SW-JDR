@@ -84,9 +84,10 @@ class InventoryObject < ApplicationRecord
     when "Trompe-la-mort"
       if user.hp_current <= -10 && user.hp_current > -20
         heal_points = 2.times.map { rand(1..6) }.sum
-        Rails.logger.info "✔️ Trompe-la-mort utilisé pour ressusciter #{user.username}."
+        new_status = "Agonisant" # Ressuscite en état Agonisant
+        Rails.logger.info "✔️ Trompe-la-mort utilisé pour ressusciter #{user.name}."
       else
-        Rails.logger.info "⚠️ Trompe-la-mort non applicable sur #{user.username} (HP actuels : #{user.hp_current})."
+        Rails.logger.info "⚠️ Trompe-la-mort non applicable sur #{user.name} (HP actuels : #{user.hp_current})."
       end
   
     else

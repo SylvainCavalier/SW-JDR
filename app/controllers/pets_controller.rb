@@ -11,23 +11,25 @@ class PetsController < ApplicationController
     @associated_pet = Pet.joins(:pet_statuses)
                          .where.not(pet_statuses: { status_id: dead_status.id })
                          .where(id: user_pet_id)
+                         .distinct
   
     @humanoids = Pet.joins(:pet_statuses)
                 .where(category: "humanoïde")
                 .where.not(pet_statuses: { status_id: dead_status.id })
                 .yield_self { |q| user_pet_id.present? ? q.where.not(id: user_pet_id) : q }
+                .distinct
                 .order(:name)
-    @animals   = Pet.joins(:pet_statuses).where(category: "animal").where.not(pet_statuses: { status_id: dead_status.id }).yield_self { |q| user_pet_id.present? ? q.where.not(id: user_pet_id) : q }.order(:name)
-    @droids    = Pet.joins(:pet_statuses).where(category: "droïde").where.not(pet_statuses: { status_id: dead_status.id }).yield_self { |q| user_pet_id.present? ? q.where.not(id: user_pet_id) : q }.order(:name)
+    @animals   = Pet.joins(:pet_statuses).where(category: "animal").where.not(pet_statuses: { status_id: dead_status.id }).yield_self { |q| user_pet_id.present? ? q.where.not(id: user_pet_id) : q }.distinct.order(:name)
+    @droids    = Pet.joins(:pet_statuses).where(category: "droïde").where.not(pet_statuses: { status_id: dead_status.id }).yield_self { |q| user_pet_id.present? ? q.where.not(id: user_pet_id) : q }.distinct.order(:name)
   end
   
   def graveyard
     dead_status = Status.find_by(name: "Mort")
   
-    @dead_humanoids   = Pet.joins(:pet_statuses).where(category: "humanoïde", pet_statuses: { status_id: dead_status.id }).order(:name)
-    @dead_animals     = Pet.joins(:pet_statuses).where(category: "animal", pet_statuses: { status_id: dead_status.id }).order(:name)
-    @dead_droids      = Pet.joins(:pet_statuses).where(category: "droïde", pet_statuses: { status_id: dead_status.id }).order(:name)
-    @dead_bio_armors  = Pet.joins(:pet_statuses).where(category: "bio-armure", pet_statuses: { status_id: dead_status.id }).order(:name)
+    @dead_humanoids   = Pet.joins(:pet_statuses).where(category: "humanoïde", pet_statuses: { status_id: dead_status.id }).distinct.order(:name)
+    @dead_animals     = Pet.joins(:pet_statuses).where(category: "animal", pet_statuses: { status_id: dead_status.id }).distinct.order(:name)
+    @dead_droids      = Pet.joins(:pet_statuses).where(category: "droïde", pet_statuses: { status_id: dead_status.id }).distinct.order(:name)
+    @dead_bio_armors  = Pet.joins(:pet_statuses).where(category: "bio-armure", pet_statuses: { status_id: dead_status.id }).distinct.order(:name)
   end
 
   def new
