@@ -227,7 +227,7 @@ class ScienceController < ApplicationController
     fiole.decrement!(:quantity)
 
     # Tentative d’étude (40% de succès)
-    if rand < 0.4
+    if rand < 0.5
       gene = Gene.where(positive: true).sample
       user_gene = current_user.user_genes.find_by(gene: gene)
 
