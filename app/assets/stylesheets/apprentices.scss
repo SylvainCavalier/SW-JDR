@@ -1,0 +1,1203 @@
+// ===========================================
+// Styles pour la gestion des Apprentis Jedi
+// ===========================================
+
+// Variables de couleur Force
+$force-light: #4FC3F7;
+$force-dark: #E53935;
+$force-balance: #FFD54F;
+$jedi-primary: #17a2b8;
+
+// ============================================
+// AURA SYSTEM - Avatar avec effet de Force
+// ============================================
+
+.apprentice-aura-container {
+  position: relative;
+  width: 280px;
+  height: 280px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  // Aura externe - la plus grande
+  .aura-outer {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background: radial-gradient(circle, var(--aura-glow) 0%, transparent 70%);
+    animation: aura-pulse-outer 4s ease-in-out infinite;
+    filter: blur(20px);
+  }
+
+  // Aura moyenne
+  .aura-middle {
+    position: absolute;
+    width: 85%;
+    height: 85%;
+    border-radius: 50%;
+    background: radial-gradient(circle, var(--aura-glow) 0%, transparent 60%);
+    animation: aura-pulse-middle 3s ease-in-out infinite;
+    filter: blur(12px);
+  }
+
+  // Aura interne - proche de l'avatar
+  .aura-inner {
+    position: absolute;
+    width: 70%;
+    height: 70%;
+    border-radius: 50%;
+    background: radial-gradient(circle, var(--aura-glow) 20%, transparent 70%);
+    animation: aura-pulse-inner 2s ease-in-out infinite;
+    filter: blur(6px);
+  }
+
+  // Cadre de l'avatar
+  .avatar-frame {
+    position: relative;
+    z-index: 10;
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    padding: 5px;
+    background: linear-gradient(135deg, var(--frame-color), rgba(0,0,0,0.8), var(--frame-color));
+    box-shadow: 
+      0 0 30px var(--aura-glow),
+      inset 0 0 20px rgba(0, 0, 0, 0.5);
+    animation: frame-glow 3s ease-in-out infinite;
+  }
+
+  .apprentice-central-avatar {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid rgba(255, 255, 255, 0.2);
+  }
+
+  .apprentice-central-placeholder {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #2a2a2a, #1a1a1a);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--frame-color);
+  }
+
+  // Particules de Force
+  .force-particles {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+
+    .particle {
+      position: absolute;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--aura-primary);
+      box-shadow: 0 0 10px var(--aura-primary);
+      opacity: 0.8;
+    }
+
+    @for $i from 1 through 8 {
+      .particle-#{$i} {
+        animation: particle-float-#{$i} #{3 + random(3)}s ease-in-out infinite;
+        animation-delay: #{$i * 0.3}s;
+      }
+    }
+  }
+
+  // Thème Côté Lumineux
+  &.light-side {
+    .aura-outer {
+      background: radial-gradient(circle, 
+        rgba(79, 195, 247, 0.4) 0%, 
+        rgba(227, 242, 253, 0.2) 40%,
+        transparent 70%
+      );
+    }
+    .aura-middle {
+      background: radial-gradient(circle, 
+        rgba(227, 242, 253, 0.5) 0%, 
+        rgba(79, 195, 247, 0.3) 50%,
+        transparent 70%
+      );
+    }
+    .avatar-frame {
+      background: linear-gradient(135deg, #4FC3F7, #1a3a4a, #E3F2FD, #1a3a4a, #4FC3F7);
+      background-size: 200% 200%;
+      animation: frame-glow 3s ease-in-out infinite, gradient-shift 6s ease infinite;
+    }
+  }
+
+  // Thème Côté Obscur
+  &.dark-side {
+    .aura-outer {
+      background: radial-gradient(circle, 
+        rgba(229, 57, 53, 0.5) 0%, 
+        rgba(26, 0, 0, 0.3) 40%,
+        transparent 70%
+      );
+    }
+    .aura-middle {
+      background: radial-gradient(circle, 
+        rgba(229, 57, 53, 0.4) 0%, 
+        rgba(0, 0, 0, 0.5) 50%,
+        transparent 70%
+      );
+    }
+    .aura-inner {
+      background: radial-gradient(circle, 
+        rgba(229, 57, 53, 0.6) 0%, 
+        rgba(26, 0, 0, 0.4) 50%,
+        transparent 70%
+      );
+    }
+    .avatar-frame {
+      background: linear-gradient(135deg, #E53935, #1a0000, #8B0000, #1a0000, #E53935);
+      background-size: 200% 200%;
+      animation: frame-glow 3s ease-in-out infinite, gradient-shift 4s ease infinite;
+    }
+    .particle {
+      box-shadow: 0 0 15px #E53935, 0 0 30px rgba(139, 0, 0, 0.5);
+    }
+  }
+
+  // Thème Équilibre
+  &.balance {
+    .aura-outer {
+      background: radial-gradient(circle, 
+        rgba(255, 213, 79, 0.3) 0%, 
+        rgba(255, 248, 225, 0.2) 40%,
+        transparent 70%
+      );
+    }
+    .avatar-frame {
+      background: linear-gradient(135deg, #FFD54F, #2a2a1a, #FFF8E1, #2a2a1a, #FFD54F);
+      background-size: 200% 200%;
+      animation: frame-glow 3s ease-in-out infinite, gradient-shift 8s ease infinite;
+    }
+  }
+}
+
+// Animations Aura
+@keyframes aura-pulse-outer {
+  0%, 100% { 
+    transform: scale(1); 
+    opacity: 0.6;
+  }
+  50% { 
+    transform: scale(1.15); 
+    opacity: 0.9;
+  }
+}
+
+@keyframes aura-pulse-middle {
+  0%, 100% { 
+    transform: scale(1); 
+    opacity: 0.7;
+  }
+  50% { 
+    transform: scale(1.1); 
+    opacity: 1;
+  }
+}
+
+@keyframes aura-pulse-inner {
+  0%, 100% { 
+    transform: scale(1); 
+    opacity: 0.8;
+  }
+  50% { 
+    transform: scale(1.05); 
+    opacity: 1;
+  }
+}
+
+@keyframes frame-glow {
+  0%, 100% {
+    box-shadow: 
+      0 0 30px var(--aura-glow),
+      inset 0 0 20px rgba(0, 0, 0, 0.5);
+  }
+  50% {
+    box-shadow: 
+      0 0 50px var(--aura-glow),
+      0 0 80px var(--aura-glow),
+      inset 0 0 30px rgba(0, 0, 0, 0.3);
+  }
+}
+
+@keyframes gradient-shift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+// Animations des particules
+@keyframes particle-float-1 {
+  0%, 100% { top: 10%; left: 50%; opacity: 0; transform: scale(0); }
+  20% { opacity: 1; transform: scale(1); }
+  80% { opacity: 1; transform: scale(1); }
+  100% { top: -20%; left: 30%; opacity: 0; transform: scale(0); }
+}
+
+@keyframes particle-float-2 {
+  0%, 100% { top: 50%; left: 90%; opacity: 0; transform: scale(0); }
+  20% { opacity: 1; transform: scale(1); }
+  80% { opacity: 1; transform: scale(1); }
+  100% { top: 20%; left: 110%; opacity: 0; transform: scale(0); }
+}
+
+@keyframes particle-float-3 {
+  0%, 100% { top: 90%; left: 50%; opacity: 0; transform: scale(0); }
+  20% { opacity: 1; transform: scale(1); }
+  80% { opacity: 1; transform: scale(1); }
+  100% { top: 110%; left: 70%; opacity: 0; transform: scale(0); }
+}
+
+@keyframes particle-float-4 {
+  0%, 100% { top: 50%; left: 10%; opacity: 0; transform: scale(0); }
+  20% { opacity: 1; transform: scale(1); }
+  80% { opacity: 1; transform: scale(1); }
+  100% { top: 80%; left: -10%; opacity: 0; transform: scale(0); }
+}
+
+@keyframes particle-float-5 {
+  0%, 100% { top: 20%; left: 80%; opacity: 0; transform: scale(0); }
+  20% { opacity: 1; transform: scale(1); }
+  80% { opacity: 1; transform: scale(1); }
+  100% { top: -10%; left: 100%; opacity: 0; transform: scale(0); }
+}
+
+@keyframes particle-float-6 {
+  0%, 100% { top: 80%; left: 20%; opacity: 0; transform: scale(0); }
+  20% { opacity: 1; transform: scale(1); }
+  80% { opacity: 1; transform: scale(1); }
+  100% { top: 100%; left: 0%; opacity: 0; transform: scale(0); }
+}
+
+@keyframes particle-float-7 {
+  0%, 100% { top: 30%; left: 10%; opacity: 0; transform: scale(0); }
+  20% { opacity: 1; transform: scale(1); }
+  80% { opacity: 1; transform: scale(1); }
+  100% { top: 10%; left: -15%; opacity: 0; transform: scale(0); }
+}
+
+@keyframes particle-float-8 {
+  0%, 100% { top: 70%; left: 85%; opacity: 0; transform: scale(0); }
+  20% { opacity: 1; transform: scale(1); }
+  80% { opacity: 1; transform: scale(1); }
+  100% { top: 90%; left: 105%; opacity: 0; transform: scale(0); }
+}
+
+// ============================================
+// STAT CARDS
+// ============================================
+
+.stat-card {
+  background: rgba(0, 0, 0, 0.4);
+  border: 2px solid;
+  border-radius: 12px;
+  padding: 15px 10px;
+  text-align: center;
+  transition: all 0.3s ease;
+  height: 100%;
+
+  &:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+  }
+
+  .stat-icon {
+    font-size: 1.8rem;
+    margin-bottom: 8px;
+    display: block;
+  }
+
+  .stat-label {
+    display: block;
+    font-size: 0.7rem;
+    color: #888;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 5px;
+  }
+
+  .stat-value {
+    display: block;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #fff;
+  }
+
+  .stat-sublabel {
+    display: block;
+    font-size: 0.7rem;
+    color: #666;
+    margin-top: 2px;
+  }
+}
+
+// ============================================
+// FORCE ALIGNMENT BAR (version large)
+// ============================================
+
+.force-alignment-bar-large {
+  .force-progress {
+    position: relative;
+    overflow: visible;
+    border-radius: 15px;
+    border: 2px solid rgba(255, 255, 255, 0.2);
+  }
+
+  .alignment-indicator {
+    position: absolute;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 10;
+    pointer-events: none;
+
+    .indicator-dot {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      border: 3px solid white;
+      box-shadow: 0 0 15px currentColor, 0 0 30px currentColor;
+      animation: indicator-pulse 2s ease-in-out infinite;
+    }
+  }
+}
+
+@keyframes indicator-pulse {
+  0%, 100% {
+    box-shadow: 0 0 10px currentColor, 0 0 20px currentColor;
+    transform: scale(1);
+  }
+  50% {
+    box-shadow: 0 0 20px currentColor, 0 0 40px currentColor;
+    transform: scale(1.1);
+  }
+}
+
+// ============================================
+// DASHBOARD EXISTANT (MIS À JOUR)
+// ============================================
+
+.apprentice-dashboard {
+  .apprentice-card {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 20px rgba($jedi-primary, 0.3);
+    }
+  }
+
+  .apprentice-avatar {
+    width: 180px;
+    height: 180px;
+    object-fit: cover;
+    border: 3px solid $jedi-primary;
+    box-shadow: 0 0 20px rgba($jedi-primary, 0.4);
+  }
+
+  .apprentice-placeholder {
+    width: 180px;
+    height: 180px;
+    background: linear-gradient(135deg, #2a2a2a, #1a1a1a);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 3px solid #555;
+    margin: 0 auto;
+    color: #666;
+  }
+
+  .stat-box {
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 8px;
+    padding: 10px;
+    text-align: center;
+
+    .stat-label {
+      display: block;
+      font-size: 0.75rem;
+      color: #888;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .stat-value {
+      display: block;
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-top: 4px;
+    }
+  }
+
+  .candidate-card {
+    transition: transform 0.2s ease;
+    
+    &:hover {
+      transform: translateY(-3px);
+      border-color: $jedi-primary !important;
+    }
+  }
+
+  .candidate-placeholder {
+    width: 60px;
+    height: 60px;
+    background: #333;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto;
+    color: #666;
+  }
+
+  .no-apprentice-icon {
+    animation: float-gentle 3s ease-in-out infinite;
+  }
+}
+
+@keyframes float-gentle {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+// ============================================
+// PAGE SHOW APPRENTI
+// ============================================
+
+.apprentice-show {
+  .apprentice-header {
+    .force-indicator {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      color: white;
+      box-shadow: 0 0 15px currentColor;
+    }
+  }
+
+  .apprentice-avatar {
+    width: 180px;
+    height: 180px;
+    object-fit: cover;
+    border: 3px solid $jedi-primary;
+    box-shadow: 0 0 20px rgba($jedi-primary, 0.4);
+  }
+
+  .apprentice-placeholder-lg {
+    width: 180px;
+    height: 180px;
+    background: linear-gradient(135deg, #2a2a2a, #1a1a1a);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 3px solid #555;
+    margin: 0 auto;
+    color: #666;
+  }
+
+  .midi-chlorian-display {
+    .midi-count {
+      display: block;
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: #28a745;
+      text-shadow: 0 0 10px rgba(40, 167, 69, 0.5);
+    }
+
+    .midi-label {
+      display: block;
+      font-size: 0.8rem;
+      color: #888;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+  }
+
+  .carac-box {
+    background: rgba(0, 0, 0, 0.4);
+    border: 1px solid #ffc107;
+    border-radius: 8px;
+    padding: 12px;
+    text-align: center;
+    transition: transform 0.2s ease;
+
+    &:hover {
+      transform: scale(1.02);
+    }
+
+    .carac-name {
+      display: block;
+      font-size: 0.85rem;
+      color: #aaa;
+      margin-bottom: 5px;
+    }
+
+    .carac-value {
+      display: block;
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #ffc107;
+    }
+  }
+
+  .skill-group {
+    h6 {
+      cursor: pointer;
+      transition: color 0.2s ease;
+
+      &:hover {
+        filter: brightness(1.2);
+      }
+
+      .fa-chevron-down {
+        transition: transform 0.2s ease;
+      }
+
+      &[aria-expanded="false"] .fa-chevron-down {
+        transform: rotate(-90deg);
+      }
+    }
+  }
+}
+
+// ============================================
+// FORMULAIRES
+// ============================================
+
+.apprentice-form,
+.apprentice-edit {
+  .form-section {
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 12px;
+    padding: 20px;
+    border: 1px solid rgba(23, 162, 184, 0.3);
+  }
+
+  .form-control,
+  .form-select {
+    &:focus {
+      border-color: $jedi-primary;
+      box-shadow: 0 0 0 0.2rem rgba($jedi-primary, 0.25);
+    }
+  }
+}
+
+// ============================================
+// BARRE D'ALIGNEMENT (version standard)
+// ============================================
+
+.force-alignment-bar {
+  position: relative;
+
+  .progress {
+    position: relative;
+    overflow: visible;
+    border-radius: 10px;
+    background: linear-gradient(to right, 
+      rgba($force-dark, 0.3) 0%, 
+      rgba($force-balance, 0.3) 50%, 
+      rgba($force-light, 0.3) 100%
+    );
+  }
+
+  .alignment-marker {
+    position: absolute;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 10;
+    pointer-events: none;
+  }
+
+  .marker-dot {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    border: 3px solid white;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    animation: pulse-glow 2s ease-in-out infinite;
+  }
+}
+
+@keyframes pulse-glow {
+  0%, 100% {
+    box-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
+  }
+  50% {
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.8);
+  }
+}
+
+// ============================================
+// SKILLS SECTION APPRENTI (style similaire aux users)
+// ============================================
+
+.apprentice-skill-section {
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid;
+  border-radius: 12px;
+  transition: all 0.3s ease;
+
+  &:hover {
+    box-shadow: 0 0 20px rgba(40, 167, 69, 0.3);
+    transform: translateY(-2px);
+  }
+
+  h3 {
+    cursor: pointer;
+    transition: color 0.2s ease;
+
+    .fa-chevron-down {
+      transition: transform 0.2s ease;
+    }
+
+    &[aria-expanded="false"] .fa-chevron-down {
+      transform: rotate(-90deg);
+    }
+  }
+
+  .table.table-dark {
+    border-collapse: separate !important;
+    border-spacing: 0;
+    background: rgba(33, 37, 41, 0.95) !important;
+    margin: 0;
+    border-radius: 0.5rem !important;
+    overflow: hidden;
+
+    th {
+      background: rgba(40, 167, 69, 0.1) !important;
+      padding: 1rem !important;
+      font-size: 1.1em;
+    }
+
+    td {
+      padding: 0.8rem 1rem !important;
+      vertical-align: middle;
+    }
+
+    tbody tr:hover {
+      background: rgba(40, 167, 69, 0.1) !important;
+    }
+  }
+
+  // Style pour les compétences spéciales (Force)
+  &[style*="#4FC3F7"] {
+    .table.table-dark th {
+      background: rgba(79, 195, 247, 0.15) !important;
+    }
+    .table.table-dark tbody tr:hover {
+      background: rgba(79, 195, 247, 0.1) !important;
+    }
+  }
+
+  &[style*="#E53935"] {
+    .table.table-dark th {
+      background: rgba(229, 57, 53, 0.15) !important;
+    }
+    .table.table-dark tbody tr:hover {
+      background: rgba(229, 57, 53, 0.1) !important;
+    }
+  }
+
+  &[style*="#FFD54F"] {
+    .table.table-dark th {
+      background: rgba(255, 213, 79, 0.15) !important;
+    }
+    .table.table-dark tbody tr:hover {
+      background: rgba(255, 213, 79, 0.1) !important;
+    }
+  }
+}
+
+// Animation chevron pour les sections
+[data-bs-toggle="collapse"] .fa-chevron-down {
+  transition: transform 0.2s ease-in-out;
+}
+
+[data-bs-toggle="collapse"][aria-expanded="false"] .fa-chevron-down {
+  transform: rotate(-90deg);
+}
+
+// ============================================
+// SECTION "PRENDRE COMME APPRENTI"
+// ============================================
+
+.apprentice-action {
+  background: rgba(23, 162, 184, 0.1);
+  border: 1px solid rgba(23, 162, 184, 0.3);
+  border-radius: 12px;
+  padding: 20px;
+  
+  .btn-info {
+    transition: all 0.3s ease;
+    
+    &:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 20px rgba($jedi-primary, 0.5);
+    }
+  }
+}
+
+// ============================================
+// ANIMATIONS D'ENTRÉE
+// ============================================
+
+.apprentice-dashboard,
+.apprentice-show,
+.apprentice-form {
+  .card {
+    animation: fadeInUp 0.4s ease-out;
+  }
+
+  @for $i from 1 through 5 {
+    .card:nth-child(#{$i}) {
+      animation-delay: #{$i * 0.1}s;
+    }
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// ============================================
+// RESPONSIVE
+// ============================================
+
+@media (max-width: 768px) {
+  .apprentice-aura-container {
+    width: 220px;
+    height: 220px;
+
+    .avatar-frame {
+      width: 160px;
+      height: 160px;
+    }
+
+    .particle {
+      width: 4px;
+      height: 4px;
+    }
+  }
+
+  .stat-card {
+    .stat-icon {
+      font-size: 1.4rem;
+    }
+    .stat-value {
+      font-size: 0.9rem;
+    }
+  }
+
+  .force-alignment-bar-large .alignment-indicator .indicator-dot {
+    width: 18px;
+    height: 18px;
+  }
+
+  .apprentice-dashboard,
+  .apprentice-show {
+    .apprentice-avatar,
+    .apprentice-placeholder,
+    .apprentice-placeholder-lg {
+      width: 120px;
+      height: 120px;
+    }
+
+    .midi-chlorian-display .midi-count {
+      font-size: 1.8rem;
+    }
+
+    .carac-box .carac-value {
+      font-size: 1.2rem;
+    }
+  }
+
+  .force-alignment-bar .marker-dot {
+    width: 14px;
+    height: 14px;
+  }
+}
+
+// ============================================
+// SYSTÈME D'ENTRAÎNEMENT
+// ============================================
+
+.fatigue-container {
+  transition: border-color 0.3s ease;
+  
+  .alert {
+    background: rgba(255, 193, 7, 0.15);
+    border-color: rgba(255, 193, 7, 0.3);
+  }
+}
+
+.train-btn {
+  transition: all 0.2s ease;
+  padding: 0.25rem 0.5rem;
+
+  &:hover:not(:disabled) {
+    transform: scale(1.1);
+    box-shadow: 0 0 10px rgba(23, 162, 184, 0.5);
+  }
+
+  &:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+
+  i {
+    font-size: 0.85rem;
+  }
+}
+
+// Animation pour le bouton d'entraînement après un succès
+@keyframes training-success {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.2);
+    box-shadow: 0 0 20px rgba(40, 167, 69, 0.7);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+// Animation de la barre de fatigue
+.progress-bar {
+  transition: width 0.5s ease, background-color 0.3s ease;
+}
+
+// Style amélioré pour les tables de compétences avec entraînement
+.apprentice-skill-section {
+  table {
+    th, td {
+      vertical-align: middle;
+    }
+
+    .badge {
+      font-size: 0.75rem;
+      min-width: 45px;
+    }
+  }
+}
+
+// ============================================
+// SYSTÈME DE TALENTS
+// ============================================
+
+.talent-badge {
+  display: inline-flex;
+  align-items: center;
+  font-weight: 500;
+  transition: all 0.2s ease;
+
+  i {
+    font-size: 0.9rem;
+  }
+
+  .talent-label {
+    font-size: 0.75rem;
+  }
+
+  &:hover {
+    filter: brightness(1.3);
+    transform: scale(1.1);
+  }
+}
+
+// Animation pour la découverte d'un talent
+@keyframes talent-reveal {
+  0% {
+    transform: scale(0);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.3);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.talent-discovered {
+  animation: talent-reveal 0.5s ease-out;
+}
+
+// Couleurs spécifiques pour chaque talent
+.talent-ordinaire { color: #888888; }
+.talent-sous_doue { color: #E53935; }
+.talent-talentueux { color: #4FC3F7; }
+.talent-genial { 
+  color: #FFD700; 
+  text-shadow: 0 0 5px rgba(255, 215, 0, 0.5);
+}
+
+// ============================================
+// SECTION SABRE LASER
+// ============================================
+
+.lightsaber-section {
+  transition: all 0.3s ease;
+
+  &:hover {
+    box-shadow: 0 0 30px rgba(79, 195, 247, 0.2);
+  }
+
+  // Container de l'image du sabre
+  .lightsaber-image-container {
+    position: relative;
+    display: inline-block;
+    padding: 20px;
+
+    .lightsaber-image {
+      max-width: 280px;
+      width: 100%;
+      position: relative;
+      z-index: 2;
+      filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.5));
+      transition: transform 0.3s ease;
+    }
+
+    // Effet de lame (overlay coloré)
+    .lightsaber-blade {
+      position: absolute;
+      top: 50%;
+      left: -30%;
+      width: 60%;
+      height: 8px;
+      transform: translateY(-50%);
+      border-radius: 4px;
+      z-index: 1;
+      opacity: 0.9;
+      filter: blur(2px);
+      animation: blade-pulse 2s ease-in-out infinite;
+    }
+
+    // Halo lumineux autour du sabre
+    .lightsaber-glow {
+      position: absolute;
+      top: 50%;
+      left: -35%;
+      width: 65%;
+      height: 30px;
+      transform: translateY(-50%);
+      border-radius: 50%;
+      z-index: 0;
+      filter: blur(15px);
+      opacity: 0.6;
+      animation: glow-pulse 2s ease-in-out infinite alternate;
+    }
+
+    &:hover {
+      .lightsaber-image {
+        transform: rotate(-5deg) scale(1.05);
+      }
+
+      .lightsaber-blade {
+        animation: blade-ignite 0.5s ease-out forwards;
+      }
+
+      .lightsaber-glow {
+        opacity: 0.9;
+      }
+    }
+  }
+
+  // Stats du sabre
+  .lightsaber-stats {
+    .saber-stat-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 15px;
+      background: rgba(0, 0, 0, 0.3);
+      border-radius: 8px;
+      transition: all 0.2s ease;
+
+      &:hover {
+        background: rgba(0, 0, 0, 0.5);
+        transform: translateX(5px);
+      }
+
+      .saber-stat-label {
+        color: #888;
+        font-size: 0.9rem;
+      }
+
+      .saber-stat-value {
+        font-weight: 600;
+        font-size: 1rem;
+      }
+    }
+
+    .saber-description {
+      border-left: 3px solid var(--saber-color, #4FC3F7);
+    }
+  }
+}
+
+// Animations du sabre
+@keyframes blade-pulse {
+  0%, 100% {
+    opacity: 0.7;
+    transform: translateY(-50%) scaleX(0.95);
+  }
+  50% {
+    opacity: 1;
+    transform: translateY(-50%) scaleX(1);
+  }
+}
+
+@keyframes blade-ignite {
+  0% {
+    width: 60%;
+    opacity: 0.9;
+  }
+  50% {
+    width: 75%;
+    opacity: 1;
+  }
+  100% {
+    width: 65%;
+    opacity: 0.95;
+  }
+}
+
+@keyframes glow-pulse {
+  0% {
+    opacity: 0.4;
+    filter: blur(15px);
+  }
+  100% {
+    opacity: 0.7;
+    filter: blur(20px);
+  }
+}
+
+// Image désactivée (pas de sabre)
+.lightsaber-image-disabled {
+  filter: grayscale(100%) opacity(0.3);
+  transition: all 0.3s ease;
+
+  &:hover {
+    filter: grayscale(50%) opacity(0.5);
+  }
+}
+
+// Responsive pour la section sabre
+@media (max-width: 768px) {
+  .lightsaber-section {
+    .lightsaber-image-container {
+      .lightsaber-image {
+        max-width: 200px;
+      }
+
+      .lightsaber-blade {
+        height: 6px;
+      }
+
+      .lightsaber-glow {
+        height: 20px;
+      }
+    }
+
+    .lightsaber-stats {
+      .saber-stat-row {
+        padding: 8px 12px;
+
+        .saber-stat-label {
+          font-size: 0.8rem;
+        }
+
+        .saber-stat-value {
+          font-size: 0.9rem;
+        }
+      }
+    }
+  }
+}
+
+// ============================================
+// COMPÉTENCES DE FORCE
+// ============================================
+
+.force-skill-row {
+  background: rgba(79, 195, 247, 0.05) !important;
+  
+  &:hover {
+    background: rgba(79, 195, 247, 0.1) !important;
+  }
+}
+
+.force-skill-badge {
+  display: inline-flex;
+  align-items: center;
+  font-size: 0.8rem;
+  
+  i {
+    animation: force-pulse 2s ease-in-out infinite;
+  }
+}
+
+@keyframes force-pulse {
+  0%, 100% {
+    opacity: 0.7;
+    filter: drop-shadow(0 0 2px currentColor);
+  }
+  50% {
+    opacity: 1;
+    filter: drop-shadow(0 0 5px currentColor);
+  }
+}
+
+// Bouton bloqué (niveau maître atteint)
+.btn-outline-warning:disabled {
+  opacity: 0.6;
+  
+  i.fa-lock {
+    animation: lock-shake 2s ease-in-out infinite;
+  }
+}
+
+@keyframes lock-shake {
+  0%, 100% {
+    transform: rotate(0deg);
+  }
+  10%, 30% {
+    transform: rotate(-5deg);
+  }
+  20%, 40% {
+    transform: rotate(5deg);
+  }
+  50% {
+    transform: rotate(0deg);
+  }
+}

@@ -1,0 +1,478 @@
+<div class="container-fluid mt-4 apprentice-dashboard">
+  <%= back_link(root_path) %>
+
+  <div class="text-center mb-4">
+    <h1 class="text-info">
+      <i class="fa-solid fa-jedi me-2"></i>Formation Jedi
+    </h1>
+    <p class="text-secondary">Gérez l'apprentissage de votre padawan</p>
+  </div>
+
+  <% if @apprentice.present? %>
+    <%# Calcul de l'intensité de l'aura basée sur la valeur absolue du side %>
+    <% aura_intensity = (@apprentice.side.abs / 100.0) %>
+    <% 
+      if @apprentice.side > 30
+        # Côté Lumineux - Bleu/Blanc
+        aura_color_primary = "#4FC3F7"
+        aura_color_secondary = "#E3F2FD"
+        aura_color_glow = "rgba(79, 195, 247, #{0.3 + aura_intensity * 0.5})"
+        frame_color = "#4FC3F7"
+        theme_class = "light-side"
+      elsif @apprentice.side < -30
+        # Côté Obscur - Rouge/Noir
+        aura_color_primary = "#E53935"
+        aura_color_secondary = "#1a0000"
+        aura_color_glow = "rgba(229, 57, 53, #{0.3 + aura_intensity * 0.5})"
+        frame_color = "#E53935"
+        theme_class = "dark-side"
+      else
+        # Équilibre - Jaune/Doré
+        aura_color_primary = "#FFD54F"
+        aura_color_secondary = "#FFF8E1"
+        aura_color_glow = "rgba(255, 213, 79, #{0.3 + aura_intensity * 0.3})"
+        frame_color = "#FFD54F"
+        theme_class = "balance"
+      end
+    %>
+
+    <!-- Section Avatar Central avec Aura -->
+    <div class="row justify-content-center mb-4">
+      <div class="col-12 text-center">
+        <div class="apprentice-aura-container <%= theme_class %>" 
+             style="--aura-primary: <%= aura_color_primary %>; 
+                    --aura-secondary: <%= aura_color_secondary %>; 
+                    --aura-glow: <%= aura_color_glow %>;
+                    --frame-color: <%= frame_color %>;
+                    --aura-intensity: <%= aura_intensity %>;">
+          
+          <!-- Aura externe animée -->
+          <div class="aura-outer"></div>
+          <div class="aura-middle"></div>
+          <div class="aura-inner"></div>
+          
+          <!-- Cadre de l'avatar -->
+          <div class="avatar-frame">
+            <% if @apprentice.pet.image.attached? %>
+              <%= image_tag @apprentice.pet.image.variant(resize_to_limit: [250, 250]), class: "apprentice-central-avatar" %>
+            <% else %>
+              <div class="apprentice-central-placeholder">
+                <i class="fa-solid fa-user fa-5x"></i>
+              </div>
+            <% end %>
+          </div>
+
+          <!-- Particules de Force (effet décoratif) -->
+          <div class="force-particles">
+            <% 8.times do |i| %>
+              <div class="particle particle-<%= i + 1 %>"></div>
+            <% end %>
+          </div>
+        </div>
+
+        <!-- Nom et titre -->
+        <h2 class="mt-4 mb-1" style="color: <%= frame_color %>;">
+          <%= @apprentice.jedi_name %>
+        </h2>
+        <p class="text-secondary mb-0"><%= @apprentice.pet.race %></p>
+        <span class="badge mt-2" style="background-color: <%= @apprentice.alignment_color %>; font-size: 1rem;">
+          <%= @apprentice.force_alignment %>
+        </span>
+      </div>
+    </div>
+
+    <!-- Barre d'alignement de la Force -->
+    <div class="row justify-content-center mb-4">
+      <div class="col-12 col-md-8 col-lg-6">
+        <div class="force-alignment-bar-large">
+          <div class="d-flex justify-content-between mb-2">
+            <span class="text-danger"><i class="fa-solid fa-moon me-1"></i>Côté Obscur</span>
+            <span class="text-info"><i class="fa-solid fa-sun me-1"></i>Côté Lumineux</span>
+          </div>
+          <div class="progress force-progress" style="height: 30px;">
+            <% alignment_percent = ((@apprentice.side + 100) / 200.0 * 100).round %>
+            <div class="progress-bar" 
+                 role="progressbar" 
+                 style="width: 100%; background: linear-gradient(to right, #1a0000, #E53935 30%, #FFD54F 50%, #4FC3F7 70%, #E3F2FD);"
+                 aria-valuenow="<%= @apprentice.side %>" 
+                 aria-valuemin="-100" 
+                 aria-valuemax="100">
+            </div>
+            <div class="alignment-indicator" style="left: <%= alignment_percent %>%;">
+              <div class="indicator-dot" style="background-color: <%= frame_color %>;"></div>
+            </div>
+          </div>
+          <div class="text-center mt-2">
+            <span class="fs-5" style="color: <%= frame_color %>;">
+              <%= @apprentice.side > 0 ? "+#{@apprentice.side}" : @apprentice.side %>
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Stats de l'apprenti -->
+    <div class="row justify-content-center">
+      <div class="col-12 col-lg-10">
+        <div class="row">
+          <!-- Stat cards -->
+          <div class="col-6 col-md-3 mb-3">
+            <div class="stat-card" style="border-color: <%= frame_color %>;">
+              <i class="fa-solid fa-hat-wizard stat-icon" style="color: <%= frame_color %>;"></i>
+              <span class="stat-label">Spécialité</span>
+              <span class="stat-value"><%= @apprentice.speciality %></span>
+            </div>
+          </div>
+          <div class="col-6 col-md-3 mb-3">
+            <div class="stat-card" style="border-color: <%= frame_color %>;">
+              <i class="fa-solid fa-wand-sparkles stat-icon" style="color: <%= frame_color %>;"></i>
+              <span class="stat-label">Style de sabre</span>
+              <span class="stat-value"><%= @apprentice.saber_style&.gsub(/Forme \w+ - /, '') || "Non défini" %></span>
+            </div>
+          </div>
+          <div class="col-6 col-md-3 mb-3">
+            <div class="stat-card" style="border-color: <%= frame_color %>;">
+              <i class="fa-solid fa-dna stat-icon" style="color: <%= frame_color %>;"></i>
+              <span class="stat-label">Midi-chloriens</span>
+              <span class="stat-value"><%= number_with_delimiter(@apprentice.midi_chlorians) %></span>
+              <small class="stat-sublabel"><%= @apprentice.midi_chlorian_potential %></small>
+            </div>
+          </div>
+          <div class="col-6 col-md-3 mb-3">
+            <div class="stat-card" style="border-color: #E53935;">
+              <i class="fa-solid fa-skull stat-icon text-danger"></i>
+              <span class="stat-label">Points Obscurs</span>
+              <span class="stat-value text-danger"><%= @apprentice.dark_side_points %></span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section Sabre Laser -->
+        <div class="row justify-content-center mt-4 mb-4">
+          <div class="col-12 col-md-10 col-lg-8">
+            <div class="lightsaber-section p-4 rounded" style="background: rgba(0,0,0,0.4); border: 1px solid <%= frame_color %>;">
+              <h4 class="text-center mb-4" style="color: <%= frame_color %>;">
+                <i class="fa-solid fa-wand-sparkles me-2"></i>Sabre Laser
+              </h4>
+              
+              <% if @apprentice.light_saber.present? %>
+                <% saber = @apprentice.light_saber %>
+                <div class="row align-items-center">
+                  <!-- Image du sabre avec effet de couleur -->
+                  <div class="col-12 col-md-6 text-center mb-4 mb-md-0">
+                    <div class="lightsaber-image-container" 
+                         style="--saber-color: <%= saber.color_hex %>; --saber-glow: <%= saber.color_glow %>;">
+                      <%= image_tag "SabreLaser.png", class: "lightsaber-image", alt: "Sabre laser" %>
+                      <div class="lightsaber-blade" style="background: linear-gradient(90deg, transparent 0%, <%= saber.color_hex %> 20%, white 50%, <%= saber.color_hex %> 80%, transparent 100%);"></div>
+                      <div class="lightsaber-glow" style="background: <%= saber.color_glow %>;"></div>
+                    </div>
+                    <p class="mt-3 mb-0 fw-bold" style="color: <%= saber.color_hex %>;">
+                      <i class="fa-solid fa-circle me-1" style="font-size: 0.6rem;"></i>
+                      Lame <%= saber.color_label %>
+                    </p>
+                  </div>
+
+                  <!-- Informations du sabre -->
+                  <div class="col-12 col-md-6">
+                    <div class="lightsaber-stats">
+                      <div class="saber-stat-row mb-3">
+                        <span class="saber-stat-label">
+                          <i class="fa-solid fa-signature me-2"></i>Nom
+                        </span>
+                        <span class="saber-stat-value text-light"><%= saber.name %></span>
+                      </div>
+                      
+                      <div class="saber-stat-row mb-3">
+                        <span class="saber-stat-label">
+                          <i class="fa-solid fa-gem me-2"></i>Cristal
+                        </span>
+                        <span class="saber-stat-value" style="color: <%= saber.color_hex %>;"><%= saber.crystal %></span>
+                      </div>
+                      
+                      <div class="saber-stat-row mb-3">
+                        <span class="saber-stat-label">
+                          <i class="fa-solid fa-burst me-2"></i>Dégâts
+                        </span>
+                        <span class="saber-stat-value text-danger fw-bold"><%= saber.damage_display %></span>
+                      </div>
+                      
+                      <% if saber.has_special_attribute? %>
+                        <div class="saber-stat-row mb-3">
+                          <span class="saber-stat-label">
+                            <i class="fa-solid fa-star me-2"></i>Spécial
+                          </span>
+                          <span class="saber-stat-value text-warning"><%= saber.special_attribute %></span>
+                        </div>
+                      <% end %>
+                      
+                      <% if saber.description.present? %>
+                        <div class="saber-description mt-3 p-2 rounded" style="background: rgba(0,0,0,0.3);">
+                          <small class="text-secondary fst-italic"><%= saber.description %></small>
+                        </div>
+                      <% end %>
+                    </div>
+                  </div>
+                </div>
+              <% else %>
+                <!-- Pas de sabre laser -->
+                <div class="text-center py-4">
+                  <div class="no-saber-icon mb-3">
+                    <%= image_tag "SabreLaser.png", class: "lightsaber-image-disabled", alt: "Sabre laser", style: "max-width: 200px; opacity: 0.3; filter: grayscale(100%);" %>
+                  </div>
+                  <p class="text-secondary mb-0">
+                    <i class="fa-solid fa-circle-info me-2"></i>
+                    <%= @apprentice.jedi_name %> n'a pas encore construit son sabre laser.
+                  </p>
+                  <small class="text-secondary">Le MJ peut lui attribuer un sabre depuis l'interface de gestion.</small>
+                </div>
+              <% end %>
+            </div>
+          </div>
+        </div>
+
+        <!-- Jauge de Fatigue -->
+        <div class="row justify-content-center mt-4 mb-4">
+          <div class="col-12 col-md-8 col-lg-6">
+            <div class="fatigue-container p-4 rounded" style="background: rgba(0,0,0,0.3); border: 1px solid <%= @apprentice.fatigue_color %>;">
+              <div class="d-flex justify-content-between align-items-center mb-2">
+                <h5 class="mb-0" style="color: <%= @apprentice.fatigue_color %>;">
+                  <i class="fa-solid fa-battery-<%= @apprentice.fatigue >= 75 ? 'full' : @apprentice.fatigue >= 50 ? 'three-quarters' : @apprentice.fatigue >= 25 ? 'half' : @apprentice.fatigue >= 10 ? 'quarter' : 'empty' %> me-2"></i>
+                  Énergie
+                </h5>
+                <span class="badge" style="background-color: <%= @apprentice.fatigue_color %>;">
+                  <%= @apprentice.fatigue_description %>
+                </span>
+              </div>
+              <div class="progress" style="height: 25px; background-color: rgba(0,0,0,0.5);">
+                <div class="progress-bar" 
+                     role="progressbar" 
+                     style="width: <%= @apprentice.fatigue %>%; background-color: <%= @apprentice.fatigue_color %>; transition: width 0.5s ease;"
+                     aria-valuenow="<%= @apprentice.fatigue %>" 
+                     aria-valuemin="0" 
+                     aria-valuemax="100">
+                  <span class="fw-bold"><%= @apprentice.fatigue %> / 100</span>
+                </div>
+              </div>
+              <% unless @apprentice.can_train? %>
+                <div class="alert alert-warning mt-3 mb-0 py-2">
+                  <i class="fa-solid fa-triangle-exclamation me-2"></i>
+                  <%= @apprentice.jedi_name %> est trop fatigué pour s'entraîner. Il lui faut au moins 10 d'énergie.
+                </div>
+              <% end %>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section Compétences avec Entraînement -->
+        <section class="mt-4 mb-4">
+          <h2 class="text-center mb-4" style="color: <%= frame_color %>;" role="button" data-bs-toggle="collapse" data-bs-target="#skillsSection" aria-expanded="true" aria-controls="skillsSection">
+            <i class="fa-solid fa-chevron-down me-2"></i>Compétences
+          </h2>
+          <div class="collapse show" id="skillsSection">
+            <% @grouped_skills.each_with_index do |(carac_name, apprentice_skills), index| %>
+              <% next if apprentice_skills.empty? %>
+              <% apprentice_carac = @apprentice_caracs[carac_name] %>
+              <% 
+                # Couleur selon le type de compétence
+                if carac_name == "Spécial"
+                  section_color = frame_color
+                  text_class = ""
+                else
+                  section_color = "#28a745"
+                  text_class = "text-success"
+                end
+              %>
+              <div class="mb-3 p-4 skill-section apprentice-skill-section" style="border-color: <%= section_color %> !important;">
+                <h3 class="<%= text_class %> mb-3" role="button" data-bs-toggle="collapse" data-bs-target="#apprenticeCarac<%= index %>" aria-expanded="<%= index < 2 ? 'true' : 'false' %>" aria-controls="apprenticeCarac<%= index %>" style="cursor: pointer; <%= 'color: ' + frame_color + ';' if carac_name == 'Spécial' %>">
+                  <i class="fa-solid fa-chevron-down me-2"></i>
+                  <%= carac_name %>
+                  <% if apprentice_carac %>
+                    : <%= apprentice_carac.mastery %>D<% if apprentice_carac.bonus > 0 %>+<%= apprentice_carac.bonus %><% end %>
+                  <% end %>
+                </h3>
+
+                <div class="collapse <%= 'show' if index < 2 %>" id="apprenticeCarac<%= index %>">
+                  <table class="table table-dark table-hover rounded-3 overflow-hidden">
+                    <thead>
+                      <tr style="color: <%= section_color %>;">
+                        <th class="px-4">Compétence</th>
+                        <th class="text-center px-3">Valeur</th>
+                        <th class="text-center px-3">Talent</th>
+                        <th class="text-center px-3">Réussite</th>
+                        <th class="text-center px-2">
+                          <i class="fa-solid fa-dice" title="Lancer"></i>
+                        </th>
+                        <th class="text-center px-2">
+                          <i class="fa-solid fa-dumbbell" title="Entraîner"></i>
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <% apprentice_skills.each do |as| %>
+                        <% 
+                          success_rate = @apprentice.training_success_rate(as)
+                          is_force_skill = @apprentice.force_skill?(as.skill.name)
+                          can_train_force = is_force_skill ? @apprentice.can_train_force_skill?(as) : true
+                          master_mastery = is_force_skill ? @apprentice.master_skill_mastery(as.skill.name) : 0
+                        %>
+                        <tr class="<%= 'force-skill-row' if is_force_skill %>">
+                          <td class="px-4">
+                            <%= as.skill.name %>
+                            <% if is_force_skill %>
+                              <span class="force-skill-badge ms-1" title="Compétence de Force - Coût en fatigue x2<%= !can_train_force ? ' | Bloqué par le niveau du Maître' : '' %>">
+                                <i class="fa-solid fa-jedi" style="color: <%= frame_color %>;"></i>
+                              </span>
+                            <% end %>
+                          </td>
+                          <td class="text-center px-3">
+                            <span class="text-light fw-bold">
+                              <%= as.display_value %>
+                            </span>
+                            <% if is_force_skill %>
+                              <small class="d-block text-secondary" style="font-size: 0.7rem;">
+                                Maître: <%= master_mastery %>D
+                              </small>
+                            <% end %>
+                          </td>
+                          <td class="text-center px-3">
+                            <% if as.talent_discovered? %>
+                              <span class="talent-badge" 
+                                    style="color: <%= as.talent_color %>;" 
+                                    title="<%= as.talent_label %> (<%= as.success_modifier > 0 ? '+' : '' %><%= as.success_modifier %>% réussite<%= as.double_bonus_chance > 0 ? ", #{as.double_bonus_chance}% chance de +2" : '' %>)">
+                                <i class="fa-solid <%= as.talent_icon %>"></i>
+                                <span class="talent-label d-none d-lg-inline ms-1"><%= as.talent_label %></span>
+                              </span>
+                            <% else %>
+                              <span class="text-secondary" title="Talent non découvert - Entraînez cette compétence pour le révéler">
+                                <i class="fa-solid fa-question"></i>
+                              </span>
+                            <% end %>
+                          </td>
+                          <td class="text-center px-3">
+                            <span class="badge <%= success_rate >= 70 ? 'bg-success' : success_rate >= 40 ? 'bg-warning text-dark' : 'bg-danger' %>">
+                              <%= success_rate %>%
+                            </span>
+                          </td>
+                          <td class="text-center px-2">
+                            <i class="fa-solid fa-dice" 
+                               style="cursor: pointer; color: <%= section_color %>;"
+                               data-bs-toggle="modal" 
+                               data-bs-target="#diceModal"
+                               data-dice-count="<%= as.mastery %>"
+                               data-dice-bonus-value="<%= as.bonus %>"
+                               data-action="click->dice#prepareRoll"
+                               title="Lancer <%= as.display_value %>"></i>
+                          </td>
+                          <td class="text-center px-2">
+                            <% if !can_train_force %>
+                              <%# Bloqué car niveau maître atteint %>
+                              <button class="btn btn-sm btn-outline-warning" disabled 
+                                      title="Niveau du Maître atteint (#{master_mastery}D) - L'élève ne peut surpasser le maître">
+                                <i class="fa-solid fa-lock"></i>
+                              </button>
+                            <% elsif @apprentice.can_train? %>
+                              <% 
+                                talent_info = as.talent_discovered? ? " | #{as.talent_label}" : " | Talent: ?"
+                                fatigue_info = is_force_skill ? "20-80 énergie (x2 Force)" : "10-40 énergie"
+                                force_info = is_force_skill ? "\n⚠️ Compétence de Force (coût x2)" : ""
+                              %>
+                              <%= button_to train_apprentice_path(@apprentice, skill_id: as.skill_id), 
+                                  method: :post, 
+                                  class: "btn btn-sm #{is_force_skill ? 'btn-outline-warning' : 'btn-outline-info'} train-btn",
+                                  data: { 
+                                    turbo_confirm: "Entraîner #{as.skill.name} ?\n\nCoût: #{fatigue_info}\nRéussite: #{success_rate}%#{talent_info}#{force_info}"
+                                  } do %>
+                                <i class="fa-solid fa-dumbbell"></i>
+                              <% end %>
+                            <% else %>
+                              <button class="btn btn-sm btn-outline-secondary" disabled title="Énergie insuffisante">
+                                <i class="fa-solid fa-dumbbell"></i>
+                              </button>
+                            <% end %>
+                          </td>
+                        </tr>
+                      <% end %>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            <% end %>
+          </div>
+        </section>
+
+        <!-- Boutons d'action -->
+        <div class="d-flex justify-content-center gap-3 mt-4 mb-4 flex-wrap">
+          <%= link_to apprentice_path(@apprentice), class: "btn btn-lg", style: "background-color: #{frame_color}; color: #000;" do %>
+            <i class="fa-solid fa-eye me-2"></i>Voir les détails
+          <% end %>
+          <%= link_to edit_apprentice_path(@apprentice), class: "btn btn-outline-warning btn-lg" do %>
+            <i class="fa-solid fa-edit me-2"></i>Modifier
+          <% end %>
+          <%= button_tag type: "button", class: "btn btn-outline-danger btn-lg", data: { 
+                bs_toggle: "modal", 
+                bs_target: "#genericModal",
+                modal_title: "Abandonner l'apprentissage",
+                modal_message: "Êtes-vous sûr de vouloir abandonner #{@apprentice.jedi_name} ? Cette action est irréversible.",
+                modal_confirm_button: "Abandonner",
+                modal_confirm_action: "delete#confirm",
+                delete_path: abandon_apprentice_path(@apprentice)
+              } do %>
+            <i class="fa-solid fa-user-slash me-2"></i>Abandonner
+          <% end %>
+        </div>
+      </div>
+    </div>
+
+  <% else %>
+    <!-- Pas d'apprenti -->
+    <div class="row justify-content-center">
+      <div class="col-12 col-lg-8">
+        <div class="card bg-dark text-light border-secondary">
+          <div class="card-body text-center py-5">
+            <div class="no-apprentice-icon mb-4">
+              <i class="fa-solid fa-user-plus fa-4x text-secondary"></i>
+            </div>
+            <h3 class="text-secondary">Vous n'avez pas encore d'apprenti</h3>
+            <p class="text-secondary mb-4">
+              Pour prendre un apprenti, rendez-vous sur la fiche d'un familier humanoïde sensible à la Force.
+            </p>
+            <%= link_to pets_path, class: "btn btn-info btn-lg" do %>
+              <i class="fa-solid fa-paw me-2"></i>Voir les familiers
+            <% end %>
+          </div>
+        </div>
+
+        <% if @force_sensitive_pets.any? %>
+          <div class="mt-4">
+            <h4 class="text-info mb-3">
+              <i class="fa-solid fa-users me-2"></i>Candidats potentiels
+            </h4>
+            <div class="row">
+              <% @force_sensitive_pets.each do |pet| %>
+                <div class="col-12 col-md-6 col-lg-4 mb-3">
+                  <div class="card bg-dark text-light border-secondary candidate-card">
+                    <div class="card-body text-center">
+                      <% if pet.image.attached? %>
+                        <%= image_tag pet.image.variant(resize_to_limit: [80, 80]), class: "rounded-circle mb-2" %>
+                      <% else %>
+                        <div class="candidate-placeholder mb-2">
+                          <i class="fa-solid fa-user fa-2x"></i>
+                        </div>
+                      <% end %>
+                      <h5 class="text-warning"><%= pet.name %></h5>
+                      <p class="text-secondary small mb-2"><%= pet.race %></p>
+                      <%= link_to pet_path(pet), class: "btn btn-outline-info btn-sm" do %>
+                        <i class="fa-solid fa-eye"></i> Voir
+                      <% end %>
+                    </div>
+                  </div>
+                </div>
+              <% end %>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  <% end %>
+</div>
+

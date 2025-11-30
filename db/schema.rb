@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_11_28_100003) do
+ActiveRecord::Schema[7.1].define(version: 2025_11_30_130000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -42,6 +42,31 @@ ActiveRecord::Schema[7.1].define(version: 2025_11_28_100003) do
     t.index ["blob_id", "variation_digest"], name: "index_active_storage_variant_records_uniqueness", unique: true
   end
 
+  create_table "apprentice_caracs", force: :cascade do |t|
+    t.bigint "apprentice_id", null: false
+    t.bigint "carac_id", null: false
+    t.integer "mastery", default: 0, null: false
+    t.integer "bonus", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["apprentice_id", "carac_id"], name: "index_apprentice_caracs_on_apprentice_id_and_carac_id", unique: true
+    t.index ["apprentice_id"], name: "index_apprentice_caracs_on_apprentice_id"
+    t.index ["carac_id"], name: "index_apprentice_caracs_on_carac_id"
+  end
+
+  create_table "apprentice_skills", force: :cascade do |t|
+    t.bigint "apprentice_id", null: false
+    t.bigint "skill_id", null: false
+    t.integer "mastery", default: 0, null: false
+    t.integer "bonus", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "talent"
+    t.index ["apprentice_id", "skill_id"], name: "index_apprentice_skills_on_apprentice_id_and_skill_id", unique: true
+    t.index ["apprentice_id"], name: "index_apprentice_skills_on_apprentice_id"
+    t.index ["skill_id"], name: "index_apprentice_skills_on_skill_id"
+  end
+
   create_table "apprentices", force: :cascade do |t|
     t.string "jedi_name"
     t.bigint "pet_id", null: false
@@ -51,7 +76,11 @@ ActiveRecord::Schema[7.1].define(version: 2025_11_28_100003) do
     t.string "speciality", default: "Commun"
     t.integer "midi_chlorians"
     t.string "saber_style"
+    t.bigint "user_id", null: false
+    t.integer "dark_side_points", default: 0
+    t.integer "fatigue", default: 100, null: false
     t.index ["pet_id"], name: "index_apprentices_on_pet_id"
+    t.index ["user_id"], name: "index_apprentices_on_user_id"
   end
 
   create_table "building_pets", force: :cascade do |t|
@@ -336,6 +365,20 @@ ActiveRecord::Schema[7.1].define(version: 2025_11_28_100003) do
     t.datetime "updated_at", null: false
     t.string "catalog_id"
     t.index ["catalog_id"], name: "index_inventory_objects_on_catalog_id"
+  end
+
+  create_table "light_sabers", force: :cascade do |t|
+    t.bigint "apprentice_id"
+    t.string "name", default: "Sabre laser"
+    t.string "color", default: "bleu"
+    t.string "crystal", default: "Cristal Kyber"
+    t.integer "damage", default: 5
+    t.integer "damage_bonus", default: 0
+    t.string "special_attribute"
+    t.text "description"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["apprentice_id"], name: "index_light_sabers_on_apprentice_id"
   end
 
   create_table "pazaak_games", force: :cascade do |t|
@@ -734,7 +777,12 @@ ActiveRecord::Schema[7.1].define(version: 2025_11_28_100003) do
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "apprentice_caracs", "apprentices"
+  add_foreign_key "apprentice_caracs", "caracs"
+  add_foreign_key "apprentice_skills", "apprentices"
+  add_foreign_key "apprentice_skills", "skills"
   add_foreign_key "apprentices", "pets"
+  add_foreign_key "apprentices", "users"
   add_foreign_key "building_pets", "buildings"
   add_foreign_key "building_pets", "pets"
   add_foreign_key "buildings", "headquarters"
@@ -756,6 +804,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_11_28_100003) do
   add_foreign_key "holonew_reads", "holonews"
   add_foreign_key "holonew_reads", "users"
   add_foreign_key "holonews", "users"
+  add_foreign_key "light_sabers", "apprentices"
   add_foreign_key "pazaak_games", "users", column: "guest_id"
   add_foreign_key "pazaak_games", "users", column: "host_id"
   add_foreign_key "pazaak_invitations", "pazaak_games"

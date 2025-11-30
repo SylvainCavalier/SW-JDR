@@ -1,0 +1,402 @@
+<div class="container-fluid mt-4 mj-apprentices">
+  <%= back_link(mj_path) %>
+
+  <div class="text-center mb-4">
+    <h1 class="text-info">
+      <i class="fa-solid fa-jedi me-2"></i>Gestion des Apprentis Jedi
+    </h1>
+    <p class="text-secondary">Gérez l'énergie et les stats des apprentis</p>
+  </div>
+
+  <% if @apprentices.empty? %>
+    <div class="row justify-content-center">
+      <div class="col-12 col-lg-8">
+        <div class="card bg-dark text-light border-secondary">
+          <div class="card-body text-center py-5">
+            <i class="fa-solid fa-user-slash fa-4x text-secondary mb-4"></i>
+            <h3 class="text-secondary">Aucun apprenti dans le groupe</h3>
+            <p class="text-secondary">Les joueurs Jedi n'ont pas encore pris d'apprentis.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  <% else %>
+    <div class="row">
+      <% @apprentices.each do |apprentice| %>
+        <div class="col-12 col-lg-6 mb-4">
+          <div class="card bg-dark text-light border-info apprentice-mj-card">
+            <div class="card-header bg-info bg-opacity-25 d-flex justify-content-between align-items-center">
+              <div class="d-flex align-items-center">
+                <% if apprentice.pet.image.attached? %>
+                  <%= image_tag apprentice.pet.image.variant(resize_to_limit: [50, 50]), class: "rounded-circle me-3" %>
+                <% else %>
+                  <div class="apprentice-mini-placeholder me-3">
+                    <i class="fa-solid fa-user"></i>
+                  </div>
+                <% end %>
+                <div>
+                  <h5 class="mb-0 text-warning"><%= apprentice.jedi_name %></h5>
+                  <small class="text-secondary">Maître : <%= apprentice.user.username %></small>
+                </div>
+              </div>
+              <span class="badge" style="background-color: <%= apprentice.alignment_color %>;">
+                <%= apprentice.force_alignment %>
+              </span>
+            </div>
+
+            <div class="card-body">
+              <!-- Jauge d'énergie -->
+              <div class="mb-4">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                  <h6 class="mb-0" style="color: <%= apprentice.fatigue_color %>;">
+                    <i class="fa-solid fa-battery-<%= apprentice.fatigue >= 75 ? 'full' : apprentice.fatigue >= 50 ? 'three-quarters' : apprentice.fatigue >= 25 ? 'half' : apprentice.fatigue >= 10 ? 'quarter' : 'empty' %> me-2"></i>
+                    Énergie
+                  </h6>
+                  <span class="badge" style="background-color: <%= apprentice.fatigue_color %>;">
+                    <%= apprentice.fatigue %>/100 - <%= apprentice.fatigue_description %>
+                  </span>
+                </div>
+                <div class="progress" style="height: 20px; background-color: rgba(0,0,0,0.5);">
+                  <div class="progress-bar" 
+                       role="progressbar" 
+                       style="width: <%= apprentice.fatigue %>%; background-color: <%= apprentice.fatigue_color %>;"
+                       aria-valuenow="<%= apprentice.fatigue %>" 
+                       aria-valuemin="0" 
+                       aria-valuemax="100">
+                  </div>
+                </div>
+
+                <!-- Boutons de restauration de fatigue -->
+                <div class="d-flex gap-2 mt-3 flex-wrap">
+                  <%= button_to mj_full_rest_apprentice_path(apprentice), 
+                      method: :post, 
+                      class: "btn btn-success btn-sm",
+                      data: { turbo_confirm: "Restaurer complètement l'énergie de #{apprentice.jedi_name} ?" } do %>
+                    <i class="fa-solid fa-bed me-1"></i>Repos complet (100)
+                  <% end %>
+
+                  <%= form_with url: mj_restore_apprentice_fatigue_path(apprentice), method: :post, class: "d-flex gap-2", local: true do %>
+                    <%= number_field_tag :amount, 25, min: 1, max: 100, class: "form-control form-control-sm", style: "width: 70px;" %>
+                    <%= submit_tag "Restaurer", class: "btn btn-outline-success btn-sm" %>
+                  <% end %>
+                </div>
+              </div>
+
+              <!-- Stats rapides -->
+              <div class="row mb-3">
+                <div class="col-6 col-md-3 mb-2">
+                  <div class="mini-stat-box">
+                    <span class="mini-stat-label">Spécialité</span>
+                    <span class="mini-stat-value text-info"><%= apprentice.speciality %></span>
+                  </div>
+                </div>
+                <div class="col-6 col-md-3 mb-2">
+                  <div class="mini-stat-box">
+                    <span class="mini-stat-label">Midi-chloriens</span>
+                    <span class="mini-stat-value text-success"><%= number_with_delimiter(apprentice.midi_chlorians) %></span>
+                  </div>
+                </div>
+                <div class="col-6 col-md-3 mb-2">
+                  <div class="mini-stat-box">
+                    <span class="mini-stat-label">Côté</span>
+                    <span class="mini-stat-value" style="color: <%= apprentice.alignment_color %>;">
+                      <%= apprentice.side > 0 ? "+#{apprentice.side}" : apprentice.side %>
+                    </span>
+                  </div>
+                </div>
+                <div class="col-6 col-md-3 mb-2">
+                  <div class="mini-stat-box">
+                    <span class="mini-stat-label">Points Obscurs</span>
+                    <span class="mini-stat-value text-danger"><%= apprentice.dark_side_points %></span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Accordéons de gestion -->
+              <div class="accordion" id="accordionApprentice<%= apprentice.id %>">
+                <!-- Modifier les stats -->
+                <div class="accordion-item bg-dark border-secondary">
+                  <h2 class="accordion-header">
+                    <button class="accordion-button collapsed bg-dark text-light" type="button" 
+                            data-bs-toggle="collapse" 
+                            data-bs-target="#collapseStats<%= apprentice.id %>" 
+                            aria-expanded="false" 
+                            aria-controls="collapseStats<%= apprentice.id %>">
+                      <i class="fa-solid fa-sliders me-2"></i>Modifier les stats
+                    </button>
+                  </h2>
+                  <div id="collapseStats<%= apprentice.id %>" class="accordion-collapse collapse" 
+                       data-bs-parent="#accordionApprentice<%= apprentice.id %>">
+                    <div class="accordion-body">
+                      <%= form_with model: apprentice, url: mj_update_apprentice_stats_path(apprentice), method: :patch, local: true do |f| %>
+                        <div class="row">
+                          <div class="col-6 mb-3">
+                            <%= f.label :side, "Alignement Force (-100 à +100)", class: "form-label text-secondary" %>
+                            <%= f.number_field :side, min: -100, max: 100, class: "form-control bg-dark text-light" %>
+                          </div>
+                          <div class="col-6 mb-3">
+                            <%= f.label :dark_side_points, "Points Côté Obscur", class: "form-label text-secondary" %>
+                            <%= f.number_field :dark_side_points, min: 0, class: "form-control bg-dark text-light" %>
+                          </div>
+                          <div class="col-6 mb-3">
+                            <%= f.label :speciality, "Spécialité", class: "form-label text-secondary" %>
+                            <%= f.select :speciality, Apprentice::SPECIALITIES, {}, class: "form-select bg-dark text-light" %>
+                          </div>
+                          <div class="col-6 mb-3">
+                            <%= f.label :saber_style, "Style de sabre", class: "form-label text-secondary" %>
+                            <%= f.select :saber_style, [["Non défini", nil]] + Apprentice::SABER_STYLES.map { |s| [s, s] }, {}, class: "form-select bg-dark text-light" %>
+                          </div>
+                          <div class="col-6 mb-3">
+                            <%= f.label :fatigue, "Énergie actuelle", class: "form-label text-secondary" %>
+                            <%= f.number_field :fatigue, min: 0, max: 100, class: "form-control bg-dark text-light" %>
+                          </div>
+                        </div>
+                        <div class="text-end">
+                          <%= f.submit "Mettre à jour", class: "btn btn-info" %>
+                        </div>
+                      <% end %>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Gérer le sabre laser -->
+                <div class="accordion-item bg-dark border-secondary">
+                  <h2 class="accordion-header">
+                    <button class="accordion-button collapsed bg-dark text-light" type="button" 
+                            data-bs-toggle="collapse" 
+                            data-bs-target="#collapseSaber<%= apprentice.id %>" 
+                            aria-expanded="false" 
+                            aria-controls="collapseSaber<%= apprentice.id %>">
+                      <i class="fa-solid fa-wand-sparkles me-2"></i>
+                      <%= apprentice.light_saber.present? ? "Modifier le sabre laser" : "Créer un sabre laser" %>
+                      <% if apprentice.light_saber.present? %>
+                        <span class="badge ms-2" style="background-color: <%= apprentice.light_saber.color_hex %>;">
+                          <%= apprentice.light_saber.color_label %>
+                        </span>
+                      <% end %>
+                    </button>
+                  </h2>
+                  <div id="collapseSaber<%= apprentice.id %>" class="accordion-collapse collapse" 
+                       data-bs-parent="#accordionApprentice<%= apprentice.id %>">
+                    <div class="accordion-body">
+                      <% saber = apprentice.light_saber || LightSaber.new %>
+                      <%= form_with model: saber, url: mj_update_apprentice_saber_path(apprentice), method: :patch, local: true do |f| %>
+                        <div class="row">
+                          <div class="col-6 mb-3">
+                            <%= f.label :name, "Nom du sabre", class: "form-label text-secondary" %>
+                            <%= f.text_field :name, class: "form-control bg-dark text-light", placeholder: "Sabre laser" %>
+                          </div>
+                          <div class="col-6 mb-3">
+                            <%= f.label :color, "Couleur de la lame", class: "form-label text-secondary" %>
+                            <%= f.select :color, LightSaber::COLORS.map { |k, v| [v[:label], k] }, {}, class: "form-select bg-dark text-light" %>
+                          </div>
+                          <div class="col-6 mb-3">
+                            <%= f.label :crystal, "Cristal", class: "form-label text-secondary" %>
+                            <%= f.select :crystal, LightSaber::CRYSTALS, {}, class: "form-select bg-dark text-light" %>
+                          </div>
+                          <div class="col-3 mb-3">
+                            <%= f.label :damage, "Dégâts (D)", class: "form-label text-secondary" %>
+                            <%= f.number_field :damage, min: 1, max: 20, class: "form-control bg-dark text-light" %>
+                          </div>
+                          <div class="col-3 mb-3">
+                            <%= f.label :damage_bonus, "Bonus (+)", class: "form-label text-secondary" %>
+                            <%= f.number_field :damage_bonus, min: 0, max: 10, class: "form-control bg-dark text-light" %>
+                          </div>
+                          <div class="col-6 mb-3">
+                            <%= f.label :special_attribute, "Attribut spécial", class: "form-label text-secondary" %>
+                            <%= f.select :special_attribute, [["Aucun", nil]] + LightSaber::SPECIAL_ATTRIBUTES.map { |s| [s, s] }, {}, class: "form-select bg-dark text-light" %>
+                          </div>
+                          <div class="col-12 mb-3">
+                            <%= f.label :description, "Description (optionnel)", class: "form-label text-secondary" %>
+                            <%= f.text_area :description, class: "form-control bg-dark text-light", rows: 2, placeholder: "Histoire ou particularités du sabre..." %>
+                          </div>
+                        </div>
+                        <div class="d-flex justify-content-between">
+                          <% if apprentice.light_saber.present? %>
+                            <%= button_to mj_delete_apprentice_saber_path(apprentice), 
+                                method: :delete, 
+                                class: "btn btn-outline-danger",
+                                data: { turbo_confirm: "Supprimer le sabre laser de #{apprentice.jedi_name} ?" } do %>
+                              <i class="fa-solid fa-trash me-1"></i>Supprimer
+                            <% end %>
+                          <% else %>
+                            <span></span>
+                          <% end %>
+                          <%= f.submit apprentice.light_saber.present? ? "Mettre à jour" : "Créer le sabre", class: "btn btn-info" %>
+                        </div>
+                      <% end %>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Modifier les caractéristiques -->
+                <div class="accordion-item bg-dark border-secondary">
+                  <h2 class="accordion-header">
+                    <button class="accordion-button collapsed bg-dark text-light" type="button" 
+                            data-bs-toggle="collapse" 
+                            data-bs-target="#collapseCaracs<%= apprentice.id %>" 
+                            aria-expanded="false" 
+                            aria-controls="collapseCaracs<%= apprentice.id %>">
+                      <i class="fa-solid fa-star me-2 text-warning"></i>Modifier les caractéristiques
+                    </button>
+                  </h2>
+                  <div id="collapseCaracs<%= apprentice.id %>" class="accordion-collapse collapse" 
+                       data-bs-parent="#accordionApprentice<%= apprentice.id %>">
+                    <div class="accordion-body">
+                      <%= form_with url: mj_update_apprentice_caracs_path(apprentice), method: :patch, local: true do %>
+                        <div class="row">
+                          <% apprentice.apprentice_caracs.includes(:carac).each do |ac| %>
+                            <div class="col-6 col-md-4 mb-3">
+                              <label class="form-label text-warning small"><%= ac.carac.name %></label>
+                              <div class="input-group input-group-sm">
+                                <%= number_field_tag "caracs[#{ac.carac_id}][mastery]", ac.mastery, min: 0, max: 15, class: "form-control bg-dark text-light text-center", placeholder: "D" %>
+                                <span class="input-group-text bg-dark text-secondary">D+</span>
+                                <%= number_field_tag "caracs[#{ac.carac_id}][bonus]", ac.bonus, min: 0, max: 2, class: "form-control bg-dark text-light text-center", placeholder: "+" %>
+                              </div>
+                            </div>
+                          <% end %>
+                        </div>
+                        <div class="text-end mt-2">
+                          <%= submit_tag "Mettre à jour les caractéristiques", class: "btn btn-warning btn-sm" %>
+                        </div>
+                      <% end %>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Modifier les compétences et talents -->
+                <div class="accordion-item bg-dark border-secondary">
+                  <h2 class="accordion-header">
+                    <button class="accordion-button collapsed bg-dark text-light" type="button" 
+                            data-bs-toggle="collapse" 
+                            data-bs-target="#collapseSkills<%= apprentice.id %>" 
+                            aria-expanded="false" 
+                            aria-controls="collapseSkills<%= apprentice.id %>">
+                      <i class="fa-solid fa-lightbulb me-2 text-success"></i>Modifier les compétences & talents
+                    </button>
+                  </h2>
+                  <div id="collapseSkills<%= apprentice.id %>" class="accordion-collapse collapse" 
+                       data-bs-parent="#accordionApprentice<%= apprentice.id %>">
+                    <div class="accordion-body">
+                      <%= form_with url: mj_update_apprentice_skills_path(apprentice), method: :patch, local: true do %>
+                        <div class="table-responsive">
+                          <table class="table table-dark table-sm mb-0">
+                            <thead>
+                              <tr class="text-success">
+                                <th>Compétence</th>
+                                <th class="text-center" style="width: 80px;">Maîtrise</th>
+                                <th class="text-center" style="width: 70px;">Bonus</th>
+                                <th class="text-center" style="width: 130px;">Talent</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <% apprentice.apprentice_skills.includes(:skill).order('skills.name').each do |as| %>
+                                <% is_force = Apprentice::FORCE_SKILLS.include?(as.skill.name) %>
+                                <tr class="<%= 'table-info bg-opacity-10' if is_force %>">
+                                  <td class="align-middle">
+                                    <%= as.skill.name %>
+                                    <% if is_force %>
+                                      <i class="fa-solid fa-jedi text-info ms-1" title="Compétence de Force"></i>
+                                    <% end %>
+                                  </td>
+                                  <td>
+                                    <%= number_field_tag "skills[#{as.skill_id}][mastery]", as.mastery, min: 0, max: 15, class: "form-control form-control-sm bg-dark text-light text-center" %>
+                                  </td>
+                                  <td>
+                                    <%= number_field_tag "skills[#{as.skill_id}][bonus]", as.bonus, min: 0, max: 2, class: "form-control form-control-sm bg-dark text-light text-center" %>
+                                  </td>
+                                  <td>
+                                    <%= select_tag "skills[#{as.skill_id}][talent]", 
+                                        options_for_select(
+                                          [["Non découvert", ""]] + ApprenticeSkill::TALENTS.map { |k, v| [v[:label], k] },
+                                          as.talent
+                                        ), 
+                                        class: "form-select form-select-sm bg-dark text-light",
+                                        style: as.talent ? "color: #{as.talent_color} !important;" : "" %>
+                                  </td>
+                                </tr>
+                              <% end %>
+                            </tbody>
+                          </table>
+                        </div>
+                        <div class="text-end mt-3">
+                          <%= submit_tag "Mettre à jour les compétences", class: "btn btn-success btn-sm" %>
+                        </div>
+                      <% end %>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="card-footer text-end">
+              <%= link_to apprentice_path(apprentice), class: "btn btn-outline-info btn-sm" do %>
+                <i class="fa-solid fa-eye me-1"></i>Voir détails
+              <% end %>
+            </div>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  <% end %>
+</div>
+
+<style>
+  .mj-apprentices {
+    .apprentice-mj-card {
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+      &:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 20px rgba(23, 162, 184, 0.2);
+      }
+    }
+
+    .apprentice-mini-placeholder {
+      width: 50px;
+      height: 50px;
+      background: #333;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #666;
+    }
+
+    .mini-stat-box {
+      background: rgba(0, 0, 0, 0.3);
+      border-radius: 8px;
+      padding: 8px;
+      text-align: center;
+
+      .mini-stat-label {
+        display: block;
+        font-size: 0.7rem;
+        color: #888;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+
+      .mini-stat-value {
+        display: block;
+        font-size: 0.95rem;
+        font-weight: 600;
+        margin-top: 2px;
+      }
+    }
+
+    .accordion-button:not(.collapsed) {
+      background-color: rgba(23, 162, 184, 0.2) !important;
+      color: #17a2b8 !important;
+    }
+
+    .accordion-button::after {
+      filter: invert(1);
+    }
+
+    .accordion-button:focus {
+      box-shadow: 0 0 0 0.25rem rgba(23, 162, 184, 0.25);
+    }
+  }
+</style>
+

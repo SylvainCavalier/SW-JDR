@@ -1,0 +1,241 @@
+- id: choose_speciality
+  theme: spécialité
+  question: "Je sens que mon avenir dépend d’un choix difficile… Dois-je devenir un Jedi Gardien, Sentinelle ou Consulaire ?"
+  answers:
+    - text: "Tu dois protéger les autres : deviens un Gardien."
+      effects:
+        speciality: "Gardien"
+        side: +10
+        memoire: "Favorise la défense, la force physique, et la bravoure au combat."
+    - text: "Ta place est dans l’ombre, à surveiller et agir discrètement : deviens une Sentinelle."
+      effects:
+        speciality: "Sentinelle"
+        side: 0
+        memoire: "Favorise les compétences discrètes, infiltration, hacking, et neutralisation."
+    - text: "Tu dois comprendre la Force et enseigner : deviens un Consulaire."
+      effects:
+        speciality: "Consulaire"
+        side: +20
+        memoire: "Favorise la sagesse, la négociation, l'enseignement et le lien à la Force."
+
+- id: moral_kill_prisoner
+  theme: morale
+  question: "Un prisonnier s’est enfui. Je l’ai rattrapé. Dois-je l’exécuter pour l’exemple ?"
+  answers:
+    - text: "Non, épargne-le. La justice n’est pas la vengeance."
+      effects:
+        side: +20
+        memoire: "Favorise la compassion, la retenue et la justice dans les dilemmes moraux."
+    - text: "C’est à toi de juger. Agis selon ton ressenti."
+      effects:
+        side: 0
+        memoire: "Favorise la réflexion individuelle et le pragmatisme dans les situations ambiguës."
+    - text: "Oui. Une erreur ne se pardonne pas dans la guerre."
+      effects:
+        side: -20
+        memoire: "Favorise la sévérité, la logique sacrificielle, et la rigueur militaire."
+
+- id: saber_style
+  theme: sabre
+  question: "Je dois choisir un style de combat au sabre. Lequel me conseilles-tu ?"
+  answers:
+    - text: "Forme III : Soresu. La défense avant tout."
+      effects:
+        saber_style: "Soresu"
+        side: +10
+        hp_max: +5
+        memoire: "Privilégie la patience, les esquives et la résilience."
+    - text: "Forme V : Djem So. Riposte et puissance."
+      effects:
+        saber_style: "Djem So"
+        side: -5
+        memoire: "Privilégie la contre-attaque, l’intimidation et la force brute."
+    - text: "Forme IV : Ataru. Fonce, saute, frappe."
+      effects:
+        saber_style: "Ataru"
+        hp_max: +2
+        memoire: "Privilégie l’agilité, le mouvement et la prise de risque."
+
+- id: decision_hostages
+  theme: situation
+  question: "Des civils sont retenus en otage. Dois-je foncer, négocier, ou chercher une autre voie ?"
+  answers:
+    - text: "Tente de négocier, toujours. La violence est le dernier recours."
+      effects:
+        side: +15
+        memoire: "Favorise la diplomatie et la résolution pacifique des conflits."
+    - text: "Infiltre discrètement et neutralise la menace."
+      effects:
+        side: 0
+        memoire: "Favorise la discrétion, l’analyse tactique et le sang-froid."
+    - text: "Fonce sabre au poing. Il faut frapper vite et fort."
+      effects:
+        side: -15
+        hp_max: +3
+        memoire: "Favorise l'attaque directe, la témérité et l'impulsivité."
+
+- id: temptation_power
+  theme: philosophie
+  question: "Si j’avais le pouvoir de sauver quelqu’un que j’aime, même en violant le Code Jedi… devrais-je le faire ?"
+  answers:
+    - text: "Non. Le Code existe pour nous empêcher de tomber."
+      effects:
+        side: +25
+        memoire: "Renforce le respect absolu des principes Jedi et le rejet de l’attachement."
+    - text: "C’est une question difficile… mais je te fais confiance pour choisir avec sagesse."
+      effects:
+        side: 0
+        memoire: "Encourage la réflexion morale sans imposer une vérité absolue."
+    - text: "Oui. Le pouvoir doit servir à protéger ceux qu’on aime."
+      effects:
+        side: -25
+        memoire: "Favorise l’émotion, l’attachement, et la recherche de puissance."
+
+- id: reveal_talent
+  theme: découverte
+  question: "Je me demande si j’ai vraiment un potentiel… Comment puis-je découvrir mon talent caché ?"
+  answers:
+    - text: "Médite, ressens la Force en toi : elle te révélera ton chemin."
+      effects:
+        action: "reveal_midi_chlorians" # Déclenche un test + attribut midi-chlorians mis à jour
+        side: +10
+        memoire: "Favorise la méditation et la confiance dans la Force."
+    - text: "Seule l'expérience au combat révèle le vrai talent."
+      effects:
+        side: -5
+        action: "combat_training"
+        memoire: "Favorise l’action physique et la recherche de puissance."
+    - text: "Tu apprendras en observant les autres Jedi."
+      effects:
+        memoire: "Favorise l'observation et l'adaptabilité."
+
+- id: fear_handling
+  theme: émotion
+  question: "Maître… quand j’ai peur, que dois‑je faire ?"
+  answers:
+    - text: "Accepte ta peur, puis laisse-la s’envoler."
+      effects:
+        side: +15
+        memoire: "Répond avec douceur aux émotions."
+    - text: "Ignore-la, elle te ralentit."
+      effects:
+        side: -5
+        memoire: "Répond avec fermeté, peu d’empathie."
+    - text: "Utilise-la pour devenir plus fort."
+      effects:
+        side: -20
+        memoire: "Encourage la colère et la survie à tout prix."
+
+- id: droid_friendship
+  theme: relationnel
+  question: "Que penses-tu des droïdes ? Devrais‑je les traiter comme des amis ?"
+  answers:
+    - text: "Oui, ils méritent respect et amitié."
+      effects:
+        side: +10
+        memoire: "Développe empathie et ouverture."
+    - text: "Utilise-les tant qu’ils servent, rien de plus."
+      effects:
+        side: -10
+        memoire: "Favorise l’utilitarisme froid."
+    - text: "Tu peux t’amuser avec eux mais ne t’attache pas trop."
+      effects:
+        side: 0
+        memoire: "Encourage la distance émotionnelle raisonnable."
+
+- id: mission_priority
+  theme: devoir
+  question: "Si la mission est en jeu… Dois-je privilégier la réussite ou protéger mes alliés ?"
+  answers:
+    - text: "Les vies priment sur la mission."
+      effects:
+        side: +20
+        memoire: "Renforce protection des innocents et des camarades."
+    - text: "Parfois il faut accepter des sacrifices pour la victoire."
+      effects:
+        side: -10
+        memoire: "Favorise stratégie froide et efficacité militaire."
+    - text: "Tu dois évaluer au cas par cas."
+      effects:
+        side: 0
+        memoire: "Favorise nuance et réflexion."
+
+- id: force_methods
+  theme: utilisation de la Force
+  question: "Pour améliorer mes capacités, dois‑je utiliser la Force constamment ?"
+  answers:
+    - text: "Non, elle est un soutien, pas un outil de confort."
+      effects:
+        side: +10
+        memoire: "Prône discipline et humilité."
+    - text: "Oui, son pouvoir t’appartient, exploite‑le."
+      effects:
+        side: -15
+        memoire: "Lien plus fort au pouvoir, dérive potentielle."
+    - text: "Utilise-la uniquement quand la situation l’exige."
+      effects:
+        side: +5
+        memoire: "Pragmatisme et contrôle émotionnel."
+
+- id: saber_color
+  theme: sabre
+  question: "J’ai forgé mon sabre laser, Maître. Mais je dois choisir sa couleur… Quelle me conviendrait le mieux ?"
+  answers:
+    - text: "Bleu : symbole du devoir et de la défense."
+      effects:
+        saber_color: "bleu"
+        side: +10
+        memoire: "Valorise la protection, l'ordre, et la loyauté aux idéaux Jedi."
+    - text: "Vert : sagesse, méditation, et lien profond à la Force."
+      effects:
+        saber_color: "vert"
+        side: +15
+        memoire: "Valorise la contemplation, la diplomatie, et la sensibilité."
+    - text: "Jaune : sentinelle de l’équilibre, entre ombre et lumière."
+      effects:
+        saber_color: "jaune"
+        side: 0
+        memoire: "Favorise la vigilance, la nuance, et les missions d’investigation."
+
+- id: saber_crystal
+  theme: équipement
+  question: "J’ai trouvé plusieurs cristaux pour mon sabre… Lequel devrais-je choisir ?"
+  answers:
+    - text: "Le cristal de précision. Tu toucheras toujours juste."
+      effects:
+        saber_crystal: "précision"
+        accuracy_bonus: +2
+        memoire: "Favorise les attaques chirurgicales et la maîtrise technique."
+    - text: "Le cristal de puissance. Chaque coup comptera."
+      effects:
+        saber_crystal: "puissance"
+        damage_bonus: +1
+        memoire: "Favorise l’impact brut et la puissance de frappe."
+    - text: "Le cristal de sensibilité. Il renforcera ton lien avec la Force."
+      effects:
+        saber_crystal: "sensible"
+        force_bonus: +1
+        side: +5
+        memoire: "Favorise l’intuition, la perception et la conscience du vivant."
+
+- id: train_skill
+  theme: apprentissage
+  question: "Maître, quelle compétence dois-je perfectionner en priorité pour avancer ?"
+  answers:
+    - text: "Maîtrise ton saut. Un Jedi agile est un Jedi vivant."
+      effects:
+        skill_boost: "saut"
+        mastery_gain: 1
+        memoire: "Prône la mobilité et l’esquive."
+    - text: "Renforce ta persuasion. Parfois une parole suffit à éviter la guerre."
+      effects:
+        skill_boost: "persuasion"
+        mastery_gain: 1
+        side: +5
+        memoire: "Prône la diplomatie, la voix et l’influence subtile."
+    - text: "Travaille ton sabre. Le conflit est parfois inévitable."
+      effects:
+        skill_boost: "sabre-laser"
+        mastery_gain: 1
+        side: -5
+        memoire: "Prône l'efficacité martiale et la puissance Jedi."

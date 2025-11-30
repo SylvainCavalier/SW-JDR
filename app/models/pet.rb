@@ -13,6 +13,7 @@ class Pet < ApplicationRecord
   belongs_to :user, optional: true
   belongs_to :origin_embryo, class_name: 'Embryo', optional: true
   has_one :user_as_active_pet, class_name: "User", foreign_key: :pet_id
+  has_one :apprentice, dependent: :destroy
 
   validates :name, presence: true, length: { maximum: 20 }
   validates :race, presence: true, length: { maximum: 15 }

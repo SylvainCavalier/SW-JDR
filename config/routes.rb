@@ -82,7 +82,10 @@ Rails.application.routes.draw do
   resources :enemies, only: [:create, :update, :destroy]
 
   resources :apprentices do
-    post :create_from_pet, on: :collection, as: :create
+    member do
+      delete :abandon
+      post :train
+    end
   end
 
   resources :pets do
@@ -206,6 +209,16 @@ Rails.application.routes.draw do
   get "mj/science", to: "mj#science", as: "mj_science"
   post "mj/advance_gestation", to: "mj#advance_gestation", as: "mj_advance_gestation"
   post "mj/complete_gestation", to: "mj#complete_gestation", as: "mj_complete_gestation"
+
+  # MJ Apprentis - Gestion des apprentis Jedi
+  get "mj/apprentices", to: "mj#apprentices", as: "mj_apprentices"
+  post "mj/apprentices/:id/restore_fatigue", to: "mj#restore_apprentice_fatigue", as: "mj_restore_apprentice_fatigue"
+  post "mj/apprentices/:id/full_rest", to: "mj#full_rest_apprentice", as: "mj_full_rest_apprentice"
+  patch "mj/apprentices/:id/update_stats", to: "mj#update_apprentice_stats", as: "mj_update_apprentice_stats"
+  patch "mj/apprentices/:id/update_saber", to: "mj#update_apprentice_saber", as: "mj_update_apprentice_saber"
+  delete "mj/apprentices/:id/delete_saber", to: "mj#delete_apprentice_saber", as: "mj_delete_apprentice_saber"
+  patch "mj/apprentices/:id/update_caracs", to: "mj#update_apprentice_caracs", as: "mj_update_apprentice_caracs"
+  patch "mj/apprentices/:id/update_skills", to: "mj#update_apprentice_skills", as: "mj_update_apprentice_skills"
 
   get 'mj/vaisseaux', to: 'mj#vaisseaux', as: 'mj_vaisseaux'
   patch 'mj/vaisseaux/:id/update_ship', to: 'mj#update_ship', as: 'mj_update_ship'

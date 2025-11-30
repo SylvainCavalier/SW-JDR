@@ -248,6 +248,23 @@
         </div>
       <% end %>
 
+      <!-- Bouton Prendre comme apprenti (pour Jedi et Sénateurs) -->
+      <% if %w[Jedi Sénateur].include?(current_user.classe_perso&.name) && @pet.category == "humanoïde" && @pet.force? && @pet.apprentice.nil? && !is_dead %>
+        <div class="apprentice-action mt-4 text-center">
+          <% if current_user.apprentice.present? %>
+            <p class="text-warning">
+              <i class="fa-solid fa-circle-info"></i> 
+              Vous avez déjà un apprenti (<%= current_user.apprentice.jedi_name %>). 
+              Abandonnez-le d'abord pour en prendre un nouveau.
+            </p>
+          <% else %>
+            <%= link_to new_apprentice_path(pet_id: @pet.id), class: "btn btn-info btn-lg" do %>
+              <i class="fa-solid fa-jedi me-2"></i>Prendre comme apprenti
+            <% end %>
+          <% end %>
+        </div>
+      <% end %>
+
       <!-- Boutons d'actions -->
       <div class="action-buttons mt-4 text-center">
         <% if current_user.pet_id == @pet.id %>

@@ -1,0 +1,108 @@
+<div class="container-fluid mt-4 apprentice-form">
+  <%= back_link(pet_path(@pet)) %>
+
+  <div class="text-center mb-4">
+    <h1 class="text-info">
+      <i class="fa-solid fa-jedi me-2"></i>Nouvel Apprenti
+    </h1>
+    <p class="text-light">
+      Vous vous apprêtez à prendre <strong class="text-warning"><%= @pet.name %></strong> comme apprenti.
+    </p>
+  </div>
+
+  <!-- Aperçu du pet -->
+  <div class="row justify-content-center mb-4">
+    <div class="col-12 col-md-6">
+      <div class="card bg-dark text-light border-info">
+        <div class="card-body text-center">
+          <% if @pet.image.attached? %>
+            <%= image_tag @pet.image.variant(resize_to_limit: [150, 150]), class: "rounded-circle mb-3" %>
+          <% else %>
+            <div class="avatar-placeholder mb-3" style="width: 150px; height: 150px; margin: 0 auto;">
+              <i class="fa-solid fa-user fa-3x"></i>
+            </div>
+          <% end %>
+          <h4><%= @pet.name %></h4>
+          <p class="text-secondary"><%= @pet.race %></p>
+          <span class="badge bg-info">Sensible à la Force</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <%= form_with model: @apprentice, url: apprentices_path, method: :post, local: true, class: "apprentice-creation-form" do |f| %>
+    <%= hidden_field_tag :pet_id, @pet.id %>
+
+    <!-- Section Identité -->
+    <div class="form-section mb-4">
+      <h3 class="text-info mb-3">
+        <i class="fa-solid fa-id-card me-2"></i>Identité Jedi
+      </h3>
+
+      <div class="row">
+        <div class="col-12 col-md-6 mb-3">
+          <label for="apprentice_jedi_name" class="form-label text-light">Nom de Jedi</label>
+          <%= f.text_field :jedi_name, 
+              class: "form-control bg-dark text-light border-secondary", 
+              placeholder: "Nom que portera l'apprenti en tant que Jedi",
+              required: true %>
+          <small class="text-secondary">Par défaut, le nom du familier (<%= @pet.name %>)</small>
+        </div>
+
+        <div class="col-12 col-md-6 mb-3">
+          <label for="apprentice_saber_style" class="form-label text-light">Style de sabre laser (optionnel)</label>
+          <%= f.select :saber_style, 
+              options_for_select([["Non défini", nil]] + Apprentice::SABER_STYLES.map { |s| [s, s] }),
+              {},
+              class: "form-select bg-dark text-light border-secondary" %>
+          <small class="text-secondary">Peut être défini plus tard</small>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section Caractéristiques -->
+    <div class="form-section mb-4">
+      <h3 class="text-info mb-3">
+        <i class="fa-solid fa-chart-bar me-2"></i>Caractéristiques
+      </h3>
+      <p class="text-secondary mb-3">
+        Définissez les caractéristiques de base de votre apprenti. Ces valeurs détermineront ses compétences initiales.
+      </p>
+
+      <div class="row">
+        <% @caracs.each do |carac| %>
+          <div class="col-6 col-md-4 mb-3">
+            <label class="form-label text-light"><%= carac.name %></label>
+            <div class="input-group" data-controller="increment">
+              <button type="button" class="btn btn-outline-info" data-action="click->increment#decrement">-</button>
+              <%= number_field_tag "caracs[#{carac.id}]", 2, 
+                  min: 1, max: 6, 
+                  class: "form-control bg-dark text-light text-center border-info",
+                  data: { "increment-target": "input" } %>
+              <button type="button" class="btn btn-outline-info" data-action="click->increment#increment">+</button>
+            </div>
+            <small class="text-secondary">1D à 6D</small>
+          </div>
+        <% end %>
+      </div>
+    </div>
+
+    <!-- Info sur les midi-chloriens -->
+    <div class="alert alert-info bg-dark border-info text-light">
+      <h5><i class="fa-solid fa-dna me-2"></i>Potentiel de la Force</h5>
+      <p class="mb-0">
+        Le nombre de midi-chloriens de votre apprenti sera déterminé aléatoirement entre <strong>5 000</strong> et <strong>20 000</strong> lors de sa création.
+        Ce potentiel influencera sa progression dans la Force.
+      </p>
+    </div>
+
+    <!-- Boutons de soumission -->
+    <div class="d-flex justify-content-center gap-3 mt-4">
+      <%= link_to pet_path(@pet), class: "btn btn-outline-secondary btn-lg" do %>
+        <i class="fa-solid fa-xmark me-2"></i>Annuler
+      <% end %>
+      <%= f.submit "Commencer l'apprentissage", class: "btn btn-info btn-lg" %>
+    </div>
+  <% end %>
+</div>
+

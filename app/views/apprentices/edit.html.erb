@@ -1,0 +1,176 @@
+<div class="container-fluid mt-4 apprentice-edit">
+  <%= back_link(apprentice_path(@apprentice)) %>
+
+  <div class="text-center mb-4">
+    <h1 class="text-info">
+      <i class="fa-solid fa-edit me-2"></i>Modifier <%= @apprentice.jedi_name %>
+    </h1>
+  </div>
+
+  <div class="row justify-content-center">
+    <div class="col-12 col-lg-10">
+      <%= form_with model: @apprentice, url: apprentice_path(@apprentice), method: :patch, local: true do |f| %>
+        
+        <!-- Section Identité -->
+        <div class="card bg-dark text-light border-info mb-4">
+          <div class="card-header bg-info bg-opacity-25">
+            <h5 class="mb-0"><i class="fa-solid fa-id-card me-2"></i>Identité Jedi</h5>
+          </div>
+          <div class="card-body">
+            <div class="row">
+              <div class="col-12 col-md-6 mb-3">
+                <label for="apprentice_jedi_name" class="form-label text-light">Nom de Jedi</label>
+                <%= f.text_field :jedi_name, class: "form-control bg-dark text-light border-secondary" %>
+              </div>
+              <div class="col-12 col-md-6 mb-3">
+                <label for="apprentice_speciality" class="form-label text-light">Spécialité</label>
+                <%= f.select :speciality, 
+                    options_for_select(Apprentice::SPECIALITIES.map { |s| [s, s] }, @apprentice.speciality),
+                    {},
+                    class: "form-select bg-dark text-light border-secondary" %>
+              </div>
+              <div class="col-12 col-md-6 mb-3">
+                <label for="apprentice_saber_style" class="form-label text-light">Style de sabre laser</label>
+                <%= f.select :saber_style, 
+                    options_for_select([["Non défini", nil]] + Apprentice::SABER_STYLES.map { |s| [s, s] }, @apprentice.saber_style),
+                    {},
+                    class: "form-select bg-dark text-light border-secondary" %>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section Alignement -->
+        <div class="card bg-dark text-light border-secondary mb-4">
+          <div class="card-header" style="background-color: <%= @apprentice.alignment_color %>25;">
+            <h5 class="mb-0" style="color: <%= @apprentice.alignment_color %>;">
+              <i class="fa-solid fa-balance-scale me-2"></i>Alignement de la Force
+            </h5>
+          </div>
+          <div class="card-body">
+            <div class="row">
+              <div class="col-12 col-md-6 mb-3">
+                <label for="apprentice_side" class="form-label text-light">
+                  Inclinaison (-100 Obscur / +100 Lumineux)
+                </label>
+                <div class="input-group">
+                  <%= f.number_field :side, 
+                      min: -100, max: 100, 
+                      class: "form-control bg-dark text-light text-center border-secondary" %>
+                </div>
+                <small class="text-secondary">
+                  Actuellement : <span style="color: <%= @apprentice.alignment_color %>;"><%= @apprentice.force_alignment %></span>
+                </small>
+              </div>
+              <div class="col-12 col-md-6 mb-3">
+                <label for="apprentice_dark_side_points" class="form-label text-light">
+                  Points Côté Obscur
+                </label>
+                <div class="input-group" data-controller="increment">
+                  <button type="button" class="btn btn-outline-danger" data-action="click->increment#decrement">-</button>
+                  <%= f.number_field :dark_side_points, 
+                      min: 0, 
+                      class: "form-control bg-dark text-light text-center border-danger",
+                      data: { "increment-target": "input" } %>
+                  <button type="button" class="btn btn-outline-danger" data-action="click->increment#increment">+</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section Caractéristiques -->
+        <div class="card bg-dark text-light border-warning mb-4">
+          <div class="card-header bg-warning bg-opacity-25">
+            <h5 class="mb-0 text-warning"><i class="fa-solid fa-chart-bar me-2"></i>Caractéristiques</h5>
+          </div>
+          <div class="card-body">
+            <div class="row">
+              <% @apprentice.apprentice_caracs.includes(:carac).each do |ac| %>
+                <div class="col-6 col-md-4 mb-3">
+                  <label class="form-label text-light"><%= ac.carac.name %></label>
+                  <div class="input-group" data-controller="increment">
+                    <button type="button" class="btn btn-outline-warning" data-action="click->increment#decrement">-</button>
+                    <%= number_field_tag "caracs[#{ac.carac.id}]", ac.mastery, 
+                        min: 1, max: 12, 
+                        class: "form-control bg-dark text-light text-center border-warning",
+                        data: { "increment-target": "input" } %>
+                    <button type="button" class="btn btn-outline-warning" data-action="click->increment#increment">+</button>
+                  </div>
+                </div>
+              <% end %>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section Compétences -->
+        <div class="card bg-dark text-light border-info mb-4">
+          <div class="card-header bg-info bg-opacity-25">
+            <h5 class="mb-0 text-info"><i class="fa-solid fa-list-check me-2"></i>Compétences</h5>
+          </div>
+          <div class="card-body">
+            <% @apprentice.grouped_skills.each do |carac_name, skills| %>
+              <% next if skills.empty? %>
+              <div class="skill-edit-group mb-4">
+                <h6 class="<%= carac_name == 'Spécial' ? 'text-warning' : 'text-success' %> mb-3" 
+                    role="button" 
+                    data-bs-toggle="collapse" 
+                    data-bs-target="#edit-skills-<%= carac_name.parameterize %>"
+                    aria-expanded="<%= carac_name == 'Spécial' ? 'true' : 'false' %>">
+                  <i class="fa-solid fa-chevron-down me-2"></i><%= carac_name %>
+                </h6>
+                <div class="collapse <%= 'show' if carac_name == 'Spécial' %>" id="edit-skills-<%= carac_name.parameterize %>">
+                  <table class="table table-dark table-sm">
+                    <thead>
+                      <tr class="text-secondary">
+                        <th>Compétence</th>
+                        <th class="text-center" style="width: 150px;">Maîtrise (D)</th>
+                        <th class="text-center" style="width: 150px;">Bonus (+)</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <% skills.each do |as| %>
+                        <tr>
+                          <td><%= as.skill.name %></td>
+                          <td>
+                            <div class="input-group input-group-sm" data-controller="increment">
+                              <button type="button" class="btn btn-outline-info btn-sm" data-action="click->increment#decrement">-</button>
+                              <%= number_field_tag "skills[#{as.skill.id}][mastery]", as.mastery, 
+                                  min: 0, max: 15,
+                                  class: "form-control form-control-sm bg-dark text-light text-center border-info",
+                                  data: { "increment-target": "input" } %>
+                              <button type="button" class="btn btn-outline-info btn-sm" data-action="click->increment#increment">+</button>
+                            </div>
+                          </td>
+                          <td>
+                            <div class="input-group input-group-sm" data-controller="increment">
+                              <button type="button" class="btn btn-outline-info btn-sm" data-action="click->increment#decrement">-</button>
+                              <%= number_field_tag "skills[#{as.skill.id}][bonus]", as.bonus, 
+                                  min: 0, max: 15,
+                                  class: "form-control form-control-sm bg-dark text-light text-center border-info",
+                                  data: { "increment-target": "input" } %>
+                              <button type="button" class="btn btn-outline-info btn-sm" data-action="click->increment#increment">+</button>
+                            </div>
+                          </td>
+                        </tr>
+                      <% end %>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            <% end %>
+          </div>
+        </div>
+
+        <!-- Boutons de soumission -->
+        <div class="d-flex justify-content-center gap-3 mt-4 mb-4">
+          <%= link_to apprentice_path(@apprentice), class: "btn btn-outline-secondary btn-lg" do %>
+            <i class="fa-solid fa-xmark me-2"></i>Annuler
+          <% end %>
+          <%= f.submit "Enregistrer les modifications", class: "btn btn-info btn-lg" %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>
+

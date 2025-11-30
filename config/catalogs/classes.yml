@@ -24,3 +24,7 @@
   description: "Expert dans l'art de la contrebande."
   key: "smuggler"
 
+- name: "Jedi"
+  description: "Gardien de la paix, maître de la Force."
+  key: "jedi"
+

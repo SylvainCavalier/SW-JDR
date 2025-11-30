@@ -49,6 +49,10 @@
           <%= link_to wine_cellar_path do %>
             <img src="<%= asset_path('function.svg') %>" alt="Function UI" class="ui-function">
           <% end %>
+        <% elsif current_user.classe_perso&.name == "Jedi" || current_user.classe_perso&.name == "Sénateur" %>
+          <%= link_to apprentices_path do %>
+            <img src="<%= asset_path('function.svg') %>" alt="Function UI" class="ui-function">
+          <% end %>
         <% else %>
           <img src="<%= asset_path('function.svg') %>" alt="Function UI" class="ui-function">
         <% end %>
