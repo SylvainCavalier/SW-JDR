@@ -1,46 +1,47 @@
 # Regles du jeu
 
 ## Chapitre 1. Creation de perso
+
 ### Section 1. Choisir la classe
 
-La première étape est de choisir la classe. Il en existe 8 principales, dont certaines sont subdivisées en spécialités, pour un total de 19 classes différentes. 
+La première étape est de choisir la classe. Il en existe 8 principales, dont certaines sont subdivisées en spécialités, pour un total de 19 classes différentes.
 
 #### 1. Les Jedi
 
-Les Jedis sont bien souvent les personnages les plus redoutables au combat, à cause de leur capacité à utiliser la Force. Ils sont les seuls à pouvoir utiliser des pouvoirs en plus de leurs dons. La progression est cependant très coûteuse en XP par rapport aux autres classes, et ils peuvent sombrer plus facilement que les autres joueurs dans le côté obscur en faisant de mauvaises actions. Le joueur doit choisir entre 3 spécialités : Jedi Gardien, Jedi Sentinelle ou Jedi Consulaire. 
+Les Jedis sont bien souvent les personnages les plus redoutables au combat, à cause de leur capacité à utiliser la Force. Ils sont les seuls à pouvoir utiliser des pouvoirs en plus de leurs dons. La progression est cependant très coûteuse en XP par rapport aux autres classes, et ils peuvent sombrer plus facilement que les autres joueurs dans le côté obscur en faisant de mauvaises actions. Le joueur doit choisir entre 3 spécialités : Jedi Gardien, Jedi Sentinelle ou Jedi Consulaire.
 
-Le Jedi Gardien est le plus fort au combat rapproché, le sabre laser à la main. 
-Il a des dons utiles et puissants, mais peu de pouvoirs en raison de leur coût. Difficile à toucher, il est à la fois agile et résistant, et dispose de pouvoirs de protection. C'est un bon tank, puissant au corps à corps et difficile à blesser. Il manque cependant de polyvalence en dehors des combats. 
+Le Jedi Gardien est le plus fort au combat rapproché, le sabre laser à la main.
+Il a des dons utiles et puissants, mais peu de pouvoirs en raison de leur coût. Difficile à toucher, il est à la fois agile et résistant, et dispose de pouvoirs de protection. C'est un bon tank, puissant au corps à corps et difficile à blesser. Il manque cependant de polyvalence en dehors des combats.
 Bonus à la création du perso :
 +1D PV Max
 +1D Dex
 +1D Vig
 Objets de base : 1 Sabre Laser (bleu), 1 bure d'apprenti (+1 Res Corp), 1 médipack
-Don de base : Instinct du protecteur, Le Jedi Gardien sent le danger pour son allié à moins de 10m. Il intervient et se substitue à lui dans l’action de défense. 
+Don de base : Instinct du protecteur, Le Jedi Gardien sent le danger pour son allié à moins de 10m. Il intervient et se substitue à lui dans l’action de défense.
 Mais aussi Pratique des 5 formes, Le Jedi Gardien a déjà le niveau de pratique des 5 formes primordiales de combat au sabre laser.
-Pouvoir de base : Aura de force, Le Jedi repousse les dégâts dans les limites du jet de contrôle / 2 avec la paume de sa main. 
+Pouvoir de base : Aura de force, Le Jedi repousse les dégâts dans les limites du jet de contrôle / 2 avec la paume de sa main.
 
-Le Jedi Consulaire est le plus puissant utilisateur de la Force. 
+Le Jedi Consulaire est le plus puissant utilisateur de la Force.
 Il a un arbre de dons assez limité, mais peut s'acheter facilement beaucoup de pouvoirs. Toutefois moins résistant au combat que le gardien, il préfèrera souvent garder ses distances. Il est sage et charismatique, ce qui fait de lui un bon diplomate et un érudit aux connaissances étendues.
 Bonus à la création du perso :
 +2D Sav
-+1D Perc 
++1D Perc
 Objets de base : 1 Sabre Laser (vert), 1 bure d'apprenti (+1 Res Corp), 2 médipack
 Don de base : Affinité avec la Force, Le consulaire a +1 à son jet de chance d’épuisement de Force lors de l’utilisation d’un pouvoir
-Pouvoirs de base : 
-Télékinésie, Le Jedi peut déplacer et contrôler un objet léger dépendant de son jet d'Altération. 
+Pouvoirs de base :
+Télékinésie, Le Jedi peut déplacer et contrôler un objet léger dépendant de son jet d'Altération.
 Vague de Force, Envoie une vague de force, jet altération pour savoir si l'ennemi est déséquilibré, -1PV si oui.
 
 Le Jedi Sentinelle est le plus polyvalent des Jedi.
 Il a des sens exacerbés et un arbre de dons qui lui permet d'être utile dans beaucoup de domaines, et de résister plus facilement que les autres Jedis au côté obscur et à la Force en général. C’est le meilleur combattant pour affronter un autre Jedi.
 Bonus à la création du perso :
 +15 xp à répartir dans les compétences
-+1D Perc 
++1D Perc
 +1D Mec
 Objets de base : 1 Sabre Laser (jaune), 1 bure d'apprenti (+1 Res Corp), 1 médipack, Synthécorde
-Don de base : Gardien de la vraie foi, à chaque point du côté lumineux gagné, la sentinelle gagne 2 points d'xp. 
+Don de base : Gardien de la vraie foi, à chaque point du côté lumineux gagné, la sentinelle gagne 2 points d'xp.
 Mais aussi Duelliste Jedi, Le Jedi Sentinelle maîtrise déjà la forme II de combat au Sabre Laser : Makashi
-Pouvoirs de base : 
+Pouvoirs de base :
 Concentration, posé pendant 1 round, il bénéficie ensuite de +2 à tous ses jets sur 3 rounds.
 Se fier à la Force, Ajoute +1D à un jet de comp en Dex, Vig (Contrôle) ou Perc (Sens).
 
@@ -49,7 +50,7 @@ Se fier à la Force, Ajoute +1D à un jet de comp en Dex, Vig (Contrôle) ou Per
 Les chasseurs de primes sont également de redoutables combattants, surtout à distance. Leur précision de tir mortelle et leur capacité à utiliser de nombreux implants et autres gadgets les sortent de nombreuses situations et leur permet une capacité d'adaptation, d'évolution et de personnification sans égal. Ils sont également porteurs du Wantedex, un petit navordinateur qui leur permet d'avoir des informations en temps réel sur toutes les personnes recherchées de la galaxie, et de récolter facilement les primes sur leur tête. Le joueur doit choisir entre 3 spécialités : Pisteur, Techo-chasseur ou Assassin.
 
 Le Pisteur est un chasseur de primes survivaliste, un prédateur, qui compte sur ses capacités de survie en milieu naturel, sa capacité à fabriquer des pièges et ses aptitudes de pistage pour trouver ses cibles. Il s’aide généralement d’un compagnon animal avec qui il travaille en équipe pour décupler ses capacités.
-Bonus à la création du perso : 
+Bonus à la création du perso :
 +200 crédits
 +1D Dex
 +1D Perc
@@ -57,7 +58,7 @@ Objets de base : 1 Fusil Blaster, 1 machette, 1 appeau à canards, 1 veste prot
 Don de base : Compagnon animal, Le pisteur a un tel don pour le dressage, qu'il peut faire de n'importe quelle bête sauvage son animal de compagnie en peu de temps.
 
 Le Techno-chasseur a appris à compenser son manque de physique par sa maîtrise de la technologie et des objets de toutes natures. Il a des connaissances de base en réparation et fabrication d’objets divers, mais il a surtout une vision de leur application au combat, qui fera de lui le meilleur des soutiens pour ses alliés, et la pire des plaies pour ses adversaires.
-Bonus à la création du perso : 
+Bonus à la création du perso :
 +800 crédits
 +1D Dex
 +1D Tech
@@ -66,8 +67,8 @@ Bonus à la création du perso :
 Objets de base : 1 Fusil Blaster, 1 Bouclier à énergie 20, 3 Fumigènes, 1 injection de trinitine, 1 oreillette, 1 traceur, 1 brouilleur, 1 veste protectrice (+2 Res Corp), 2 médipacks, 1 wantedex
 Don de base : Chasse technique, Le techno-chasseur a une action de soutien supplémentaire par tour réservée à l’utilisation d’objets (non-armes)
 
-L'Assassin est une classe dédiée à la ruse et à la discrétion. Sa précision et son agilité sont sans égal, et sa présence furtive n'apparait bien souvent que trop tard à son malheureux adversaire. 
-Bonus à la création du perso : 
+L'Assassin est une classe dédiée à la ruse et à la discrétion. Sa précision et son agilité sont sans égal, et sa présence furtive n'apparait bien souvent que trop tard à son malheureux adversaire.
+Bonus à la création du perso :
 +200 crédits
 +2D Dex
 -5 PV Max
@@ -79,16 +80,16 @@ Don de base : Camouflage dans l'ombre, L'assassin est invisible aux yeux ennemi
 Les pilotes ne sont pas seulement des virtuoses de la conduite de vaisseaux et de tout autre véhicule, ils sont aussi capables de se battre et ne sont pas dépourvus d'un certain charisme. Ils se débrouillent également dans tous les domaines de la mécanique et de la technique. Le joueur doit choisir entre 3 spécialités : Contrebandier, Mécano-Pilote ou Officier Pilote.
 
 Le Contrebandier est le plus polyvalent et le plus débrouillard, même s'il est un peu plus faible en combat. Sa méthode de pilotage non conventionnelle est prévue pour surprendre son adversaire avec des coups de bluff renversants mais risqués. Son arbre de dons est orienté vers le pilotage, la discrétion, le marchandage, le charme et les coups fourrés.
-Bonus à la création du perso : 
+Bonus à la création du perso :
 +300 crédits
 +1 vaisseau cargo (mais il est pas à lui et il faut le rembourser à son créancier)
 +1D Mec
-+1D Perc 
++1D Perc
 Objets de base : 1 Blaster, 1 veste protectrice (+2 Res Corp), 1 médipack
 Don de base : Coup de la panne, Le vaisseau se retrouve derrière les vaisseaux qui le poursuivent. Mais jet chance 1 ou 2 = coup décisif contre lui !
 
 Le Mécano-Pilote est un pilote technicien, qui sait conduire un vaisseau tout aussi bien qu’il sait en prendre soin, l’améliorer et le booster. C’est la classe à choisir pour avoir un compromis entre technicien et pilote, mais aussi pour avoir le pilote qui a le moins de chance de perdre son vaisseau au combat. Et il a aussi la classe au sol, puisqu'il a la capacité de se déplacer et se battre au volant d'une motospeeder auto-repliable et lancer son jet de pilotage au lieu de certains autres jets !
-Bonus à la création du perso : 
+Bonus à la création du perso :
 +1 moto-speeder auto-repliable
 +2D Mec
 +1D Tech
@@ -97,54 +98,54 @@ Objets de base : 1 Blaster, 1 veste protectrice (+2 Res Corp), 1 médipack, 3 k
 Don de base : Pilote de terrain, Le mécano-pilote peut utiliser une motospeeder / airspeeder en combat au sol. Avec une moto-speeder / airspeeder, peut lancer son jet de pilotage au lieu des jets de vitesse / esquive / parade
 
 L’Officier Pilote a reçu une formation militaire terrestre et spatiale réservée à l'élite. Il est donc à la fois un virtuose du pilotage et un solide combattant au sol. Son style de pilotage est plus prévisible, mais aussi plus calculé et donc moins risqué. Il a une capacité d'entrainement de ses compétences plus élevée que la moyenne.
-Bonus à la création du perso : 
+Bonus à la création du perso :
 +1 vaisseau chasseur
 +1D Mec
 +1D Vig
 +3 PV
 Objets de base : 1 Fusil Blaster, 1 veste protectrice (+2 Res Corp), 1 casque protecteur (+1 Res Corp), 1 médipack
-Don de base : Discipline militaire, Le Pilote ne peut pas être déséquilibré en combat.	
+Don de base : Discipline militaire, Le Pilote ne peut pas être déséquilibré en combat.
 
 #### 4. Les Techniciens
 
 Les techniciens sont des éléments charnières d'une équipe, d’une grande aide au soutien technique. Capables de crafter, réparer et améliorer des objets et des pièces d'équipements, hacker des systèmes informatiques ou encore appliquer des éléments cybernétiques, ils manient avec brio tous les objets technologiques pour se sortir de n'importe quelle situation.
 Le joueur doit choisir entre 3 spécialités : Fabricant, Ingénieur ou Bio-savant.
 
-Le Mecha-Fabricant est un technicien qui a consacré son existence à bricoler et fabriquer des tas de bidules, et il connait par cœur le fonctionnement des droïdes. Conscient de sa faiblesse naturelle en combat, il utilise ses puissantes créations technologiques pour se défendre et attaquer. 
-Bonus à la création du perso : 
+Le Mecha-Fabricant est un technicien qui a consacré son existence à bricoler et fabriquer des tas de bidules, et il connait par cœur le fonctionnement des droïdes. Conscient de sa faiblesse naturelle en combat, il utilise ses puissantes créations technologiques pour se défendre et attaquer.
+Bonus à la création du perso :
 +2D Tech
 +1D Mec
 +1D Sav
 -1D Vig
 +Droïde de combat protocolaire
 +3 araignées droïdes
-Objets de base : 1 Blaster, 1 veste protectrice (+2 Res Corp), 1 médipack, 1 kit de réparation 
-Don de base : Fabricant de droïdes, Le Fabricant est féru de robotique et a la capacité de fabriquer des droïdes (voir tableau)	
+Objets de base : 1 Blaster, 1 veste protectrice (+2 Res Corp), 1 médipack, 1 kit de réparation
+Don de base : Fabricant de droïdes, Le Fabricant est féru de robotique et a la capacité de fabriquer des droïdes (voir tableau)
 
 Le Cyber-ingénieur est un technicien pur. Habile et polyvalent, il est capable de hacker n'importe quel système pour gagner sans combattre. Il est également un as de l'amélioration des pièces d'équipement, et il est capable de s'améliorer lui-même jusqu'à se transformer en véritable cyborg.
-Bonus à la création du perso : 
+Bonus à la création du perso :
 +300 crédits
-+2D Tech (choix hacker) 
-OU 
++2D Tech (choix hacker)
+OU
 +1D Tech +1D Dex (choix cyber-combattant)
 Objets de base : 1 Blaster, 1 Navordinateur portable MicroNav, 1 veste protectrice (+2 Res Corp), 1 médipack, 1 viseur laser II
 Don de base : Expertise de combat, L'ingénieur évalue la technologie ennemie et devine tous ses effets d'un simple coup d'oeil. Action de soutien.
 
 Le Bio-savant est un technicien spécialisé dans les biotechnologies. Il sait manipuler la génétique pour créer de nouveaux être vivants aux propriétés étranges, ou concocter de puissantes drogues et remèdes. En outre, ce technicien érudit et ingénieux connait par cœur l'anatomie des principales espèces de la galaxie, à l'instar d'un vrai médecin, ce qui fait de lui un soigneur de premier plan. Il est d'ailleurs la seule classe capable de pratiquer des actes de chirurgie et implanter des greffes. Au combat, il afflige ses adversaires de diverses attaques chimiques et bactériologiques.
-Bonus à la création du perso : 
+Bonus à la création du perso :
 +1D Tech
 +2D Sav
--1D Perc 
+-1D Perc
 Objets de base : 1 Blaster, 1 veste protectrice (+2 Res Corp), 3 médipack, 1 set de chimie
 Don de base : Biotechnologie, Le biotech peut fabriquer des objets biotechnologiques avec son jet d'ingénierie (voir tableau Biotechnologie)
 
-####  5. Les Mercenaires
+#### 5. Les Mercenaires
 
 Les mercenaires ne sont pas très polyvalents, mais extrêmement efficaces au combat, puisque c’est là leur raison de vivre. Etre payés pour exécuter une mission, ils savent le faire. L’argent les stimule. Souvent engagés comme gros bras par les barons du crime, les mercenaires savent intimider leurs adversaires, ou les écraser si nécessaire. Que ce soit à l’arme lourde, à l’explosif, au blaster, à l’arme blanche ou même à mains nues, les mercenaires sont redoutables, en plus d’être très résistants.
 Le joueur doit choisir entre 3 spécialités : Lutteur, Artilleur ou Démineur.
 
-Le Lutteur est une classe de brute, un véritable tank, imbattable en combat rapproché, un personnage endurci capable de mieux résister aux coups, de se battre plus facilement à mains nues ou à l'arme blanche, et de toucher plusieurs adversaires à la fois. Il manque en revanche cruellement de polyvalence en dehors des combats. 
-Bonus à la création du perso : 
+Le Lutteur est une classe de brute, un véritable tank, imbattable en combat rapproché, un personnage endurci capable de mieux résister aux coups, de se battre plus facilement à mains nues ou à l'arme blanche, et de toucher plusieurs adversaires à la fois. Il manque en revanche cruellement de polyvalence en dehors des combats.
+Bonus à la création du perso :
 +200 crédits
 +5 PV Max
 +2D Vig
@@ -156,7 +157,7 @@ Objets de base : 1 vibrolame, 1 veste protectrice (+2 Res Corp), 1 médipack,
 Don de base : À l'assaut !, Le massacreur fait un bond rapide vers un ennemi pour se mettre au contact avec lui et attirer ses coups.
 
 L’Artilleur aime les gros calibres. Armé de son arme lourde, blaster mitrailleur ou canon, il compense sa relative imprécision par le balayage de zones entières autour de lui. Très efficace contre les véhicules, c’est la seule classe à pouvoir même détruire des vaisseaux spatiaux en plein vol. Oui. Des vaisseaux spatiaux.
-Bonus à la création du perso : 
+Bonus à la création du perso :
 +3 PV Max
 +1D Vig
 +1D Dex
@@ -164,8 +165,8 @@ Bonus à la création du perso :
 Objets de base : 1 Blaster-mitrailleur moyen (3x4DD), 1 veste protectrice (+2 Res Corp), 1 médipack, 1 grenade
 Don de base : Artilleur, Peut utiliser à bras des armes lourdes normalement fixes, telles que des blasters mitrailleurs moyens/lourds, canon, mortier.
 
-Le Démineur est un combattant à distance, dangereux et suicidaire, parce qu'il excelle dans le maniement des explosifs. Il a tellement subi de blasts dans sa vie que cela ne l'affecte presque plus. Ce n'est pas le cas de ses ennemis, qui peuvent mourir par paquets de 10 sous ses pluies de bombes. Le seul problème de ce personnage est qu'il touche indistinctement ses ennemis et ses alliés, ce qui bride considérablement ses possibilités d'action en lieu clos. 
-Bonus à la création du perso : 
+Le Démineur est un combattant à distance, dangereux et suicidaire, parce qu'il excelle dans le maniement des explosifs. Il a tellement subi de blasts dans sa vie que cela ne l'affecte presque plus. Ce n'est pas le cas de ses ennemis, qui peuvent mourir par paquets de 10 sous ses pluies de bombes. Le seul problème de ce personnage est qu'il touche indistinctement ses ennemis et ses alliés, ce qui bride considérablement ses possibilités d'action en lieu clos.
+Bonus à la création du perso :
 +3 PV Max
 +1D Dex
 +1D Tech
@@ -178,16 +179,16 @@ Les leaders sont des classes de grands meneurs d’hommes, charismatiques et inf
 Le joueur doit choisir entre 2 spécialités : Sénateur ou Amiral.
 
 Le Sénateur est brillant, cultivé, influent et charismatique. Après des années passées à siéger au Sénat galactique, il est capable d'entourlouper – pardon, de convaincre – n'importe qui. Son réseau est tellement vaste qu'il peut trouver des amis bien placés sur presque n'importe quelle planète. Il est très grave de s'en prendre à un sénateur ou ancien sénateur, et peu de gens osent le faire. En combat, il se servira de son art du détournement d'attention pour embrouiller les ennemis qui le prennent pour cible.
-Bonus à la création du perso : 
+Bonus à la création du perso :
 +1000 crédits
-+2D Perc 
++2D Perc
 +1D Sav
 -5 PV Max
 Objets de base : 1 Blaster de diplomate ELG-3A, 1 robe de sénateur (+1 Res corp, +1D Persuasion), 1 passe du Sénat, 1 communicateur sub-spatial, 1 médipack
 Don de base : Immunité diplomatique, Le Sénateur ne peut pas être arrêté, fouillé ou attaqué par des soldats, Jedis ou ChdP sans mandat.
 
 L’Amiral est un officier supérieur et vétéran des forces spatiales de l’armée régulière, une pointure, qui a vu défiler de nombreuses batailles. Sa capacité à élaborer des stratégies de batailles spatiales ou de batailles au sol est telle qu’il apporte des chances de victoires largement plus importantes à ses alliés, même dans les situations qui semblent désespérées. Tandis que son aura d’amiral motive ses alliés au combat, son sang-froid et son sens de l’honneur font de lui un chef de guerre éminemment respecté.
-Bonus à la création du perso : 
+Bonus à la création du perso :
 +1D Perc
 +1D Mec
 Objets de base : 1 Blaster, 1 uniforme d’amiral (+1 Res corp, +1D Commandement), 1 passe de l’Académie militaire, 1 communicateur sub-spatial, 1 médipack
@@ -195,9 +196,9 @@ Don de base : Aura de l’Amiral, L’Amiral donne un bonus de +1D pilotage/tou
 
 #### 7. La Mascotte
 
-La mascotte est faible et insupportable, mais sa chance insolente la rend malheureusement difficile à abattre. Des enchainements de circonstances improbables viennent parfois la sauver et neutraliser ses adversaires. Son équipe est généralement partagée entre l'envie permanente de l'étriper, et l'attachement inexplicable qu'elle lui porte malgré tout... 
-Bonus à la création du perso : 
-+1D Perc 
+La mascotte est faible et insupportable, mais sa chance insolente la rend malheureusement difficile à abattre. Des enchainements de circonstances improbables viennent parfois la sauver et neutraliser ses adversaires. Son équipe est généralement partagée entre l'envie permanente de l'étriper, et l'attachement inexplicable qu'elle lui porte malgré tout...
+Bonus à la création du perso :
++1D Perc
 +1D Vig
 Objets de base : 1 Blaster, 1 veste protectrice (+2 Res Corp), 1 médipack
 Don de base : Maladroit, Tout jet de compétences qui ne comporte pas au moins un 5 ou un 6 est un échec critique
@@ -214,220 +215,220 @@ Don de base : Curiosité, Peut apprendre n’importe quel don de n’importe qu
 
 ### Section 2. Choisir la race
 
-Il y a de nombreuses races différentes dans l'univers de SW. Trop pour être toutes répertoriées. Le joueur peut choisir la race de son choix de cet univers, et discuter avec le MJ des caractéristiques et des dons propres à chaque race. 
+Il y a de nombreuses races différentes dans l'univers de SW. Trop pour être toutes répertoriées. Le joueur peut choisir la race de son choix de cet univers, et discuter avec le MJ des caractéristiques et des dons propres à chaque race.
 
-Exemples de races : 
+Exemples de races :
 
-	Abyssin 
+    Abyssin 
 Résistant à la chaleur, se régénère, agressif.
 (+1D carac au choix, Résistance aux effets des dégâts de type Brûlure, Don Régénération Abyssine / +2 PV / tour, -Mauvaise réputation)
-	Advozsec 
+    Advozsec
 Race peu appréciée, cupide, bureaucrate, résistante à la chaleur et aux radiations.
 (+1D Sav, Résistance aux dégâts et effets de brûlure et d'irradiations, +1 au jet de chance d'évasion fiscale pour la classe sénateur, -Mauvaise réputation)
-	Anx 
+    Anx
 Race intelligente et pacifique, connus comme de grands chirurgiens grâce à leur patience et leur capacité à détecter les terminaisons nerveuses.
 (+1D Tech +1D Sav -1D Vig +1D Médecine, Pacifique / Ne peut attaquer que pour se défendre)
-	Anzati 
+    Anzati
 Race détestée, télépathe, peut se régénérer en se nourrissant du cerveau de ses ennemis.
 (+1D au choix, Don Télépathie / Peut communiquer par la pensée, Don Aspiration de Cerveau / +1D PV par cerveau aspiré, --Mauvaise réputation)
-	Aqualish 
+    Aqualish
 Race agressive, forte, résiste à l’eau.
 (+1D Vig, Amphibie / respire sous l'eau, Puissance Aquatique / +1D toutes compétences sous l'eau, -Mauvaise réputation)
-	Arkanien 
+    Arkanien
 Manipulateurs, spécialistes en biotechnologies.
 (+1D Perc +1D Tech -1D Mec +1D au jet de difficulté des créations du biosavant)
-	Bésalisk 
+    Bésalisk
 4 bras, sociable, résistant au froid.
 (+1D Perc +1D Vig -1D Mec, +1D Substances, Résistance au froid)
-	Bith 
+    Bith
 Race perceptive très imaginative, artiste, fantasque, naïve.
 (+1D Perc, Don Artiste / 1x par jour, peut créer une œuvre d'art de valeur (crédits = jet chance x50), Don Musicien / Sait jouer magnifiquement bien de tout instrument qui lui passe sous la main)
-	Bothan 
+    Bothan
 Race intelligente et rusée, spécialisée dans l’espionnage.
 (+1D Tech +1D Perc, accès à l'espace Bothan et aux magasins de technologie Bothan)
-	Cathar 
+    Cathar
 Race féline, très agile.
 (+1D Dex +1D Observation, Don Yeux félins : voit dans le noir et détecte les adversaires furtifs)
-	Céréen 
+    Céréen
 Intelligent, fort, endurant. Il a une tête de bite, mais il se vexe si on lui fait remarquer.
 (+1D Sav +1D Vig -1D Mec, Don Double cœur / Le Céréen n'est jamais essouflé et ne lance son jet d'endurance qu'en opposition à une créature sauvage ou à un autre céréen)
-	Chagrien 
+    Chagrien
 Fort, grand, persévérant.
 (+1D Perc +1D Vig +1D Mec -1D Dex, +1D au jet de sang-froid)
-	Chiss
+    Chiss
 Race très intelligente et charismatique
 (+1D Perc +1D Sav -1D Tech, Don Ruse Chiss / 1x par combat au sol ou spatial, Réduit à néant une action ennemie parce qu'il avait tout prévu)
-	Clawdite 
+    Clawdite
 Race « Changeforme » assez rare et mal perçue, parfois même interdite de certaines planètes.
 (+1D Perc +1D Mec -1D Vig, -Mauvaise réputation, Don Changeforme / Peut changer de forme à condition de voir au moins une fois en vrai à moins de 10m la personne dont il veut prendre l'apparence)
-	Codru-Ji
+    Codru-Ji
 Race d'humanoïde à 6 bras, qui commence sa vie comme un louveteau à 6 pattes, qui finit par se transformer en humanoïde à l'âge adulte. Communiquent par ultrason. Espèce assez méconnue dans la galaxie et originaire de Munto Codru.
 (+1D Perc +1D Dex -1D Mec -1D Tech)
-	Dathomirien 
+    Dathomirien
 Sournois, agile, sensible à la force.
 (+1D Dex, +1D en contrôle sens ou altération au choix)
-	Defel 
+    Defel
 Race qui peut absorber la lumière et devenir invisible.
 (+1D Vig -1D Tech, +1D Armes blanches, Don Invisibilité / Disparait du spectre de la lumière visible pour la plupart des espèces sauf les perceptives. 1x par jour, peut rester invisible jusqu'à 1h, ou jusqu'à ce qu'il attaque en combat)
-	Dévaronien 
+    Dévaronien
 Race très résistante à la chaleur, forte et résistante.
 (+1D Vig, +2 res corp, Don Peau Dévaronienne / résistance aux dégâts et effets de brûlure)
-	Drall 
+    Drall
 Intelligent, grandes connaissances, curieux, honnête.
 (+1D Sav, +10% XP, Honnêteté / ne peut pas faire d'action ou de jet visant à mentir ou escroquer quelqu'un)
-	Dresselien 
+    Dresselien
 Race petite et assez faible physiquement. Très têtu, aime la liberté. Ne ressent pas la peur.
 (+1D Dex +1D Perc -1D Tech, Sang-Froid Dresselien / Ne ressent pas la peur, +3D au jet de sang-froid)
-	Dug 
+    Dug
 Race égoïste, agressive, avec de bons réflexes. Se déplace sur ses membres supérieurs.
 (+1D Dex, -Mauvaise réputation)
-	Duros 
+    Duros
 Race d’explorateurs et d’ingénieurs, vit dans des vastes cités orbitales.
 (+1D Tech +1D Mec, Don Explorateur / +1D à l'astrogation dans les zones non explorées, +1 au jet de chance en cas d'échec d'exploration)
-	Elom 
+    Elom
 Race souterraine, peut creuser et se cacher sous terre.
 (+1D Vig +1D Dex -1D Tech -1D Sav, Don Creuser / Peut rapidement creuser un trou et s'enterrer dans les sols meubles)
-	Elomin 
+    Elomin
 Race très intelligente, faisant passer la logique avant ses émotions.
 (+2D Sav, -1D Mec)
-	Ewok 
+    Ewok
 Petit, mignon, connaissance de la nature et escalade.
 (+1D Perc, +1D Escalade et Nature, Don Mignon / +1D au jet de persuasion et marchandage quand il fait ses petits yeux trop mignons)
-	Falleen 
+    Falleen
 Race reptilienne qui change de couleur selon son humeur. Ont la faculté de contrôler les phéromones pour séduire leur interlocuteur.
 (+1D Perc, Don Phéromones / 1x par jour, peut rajouter +2D à son jet de persuasion ou de marchandage grâce à ses phéromones. Si son jet dépasse 30, son interlocuteur tombe sous son charme, à moins qu'il fasse au moins 30 en psychologie)
-	Farghul 
+    Farghul
 Race féline rusée qui adore les bijoux et la mode, souvent artistes ou voleurs.
 (+1D Dex +1D Perc -1D Tech, Don Pickpocket / Il est possible de faire les poches d'un PJ ou d'un PNJ en lançant un simple jet de chance. 1-4 : Repéré)
-	Gamorréens 
+    Gamorréens
 Race stupide, pataude, mais forte et résistante.
 (+2D Vig -2D Sav, +2 res corp)
-	Gand 
+    Gand
 Race résistante aux poisons et maladies, avec des compétences spéciales pour l’intuition et la traque.
 (+1D Vig, Armure Gand incorporée +1D res corp non améliorable, Masque respirateur incorporé : résistance aux maladies et atmostphères toxiques, Don Pistage / Le Gand peut analyser un endroit pour voir tout ce qui est passé par là (race, poids, taille…) et à quel moment)
-	Gen Dai 
+    Gen Dai
 Race détestée, extrêmement résistante, qui se régénère
 (+1D Vig +1D Tech -1D Perc, Don Récupération Gen Dai / +1D PV / tour, mais doit manger un énorme repas chaque jour pour conserver sa récupération, --Mauvaise réputation)
-	Géonosien
+    Géonosien
 Race belliqueuse, peu intelligente, faible, instinct de ruche, peut voler, bons bricoleurs.
 (+1D Dex +1D Mec +1D Tech -1D Sav -1D Vig, Vol, -Mauvaise réputation)
-	Gossam
+    Gossam
 Faible, mais intelligent et négociateur.
 (+1D Sav +1D Perc -1D Vig +1D Marchandage)
-	Gotal 
+    Gotal
 Détecte les ondes électromagnétiques, sens de la psychologie hors du commun. N'aiment pas la technologie et souffrent dans les zones comportant beaucoup d'ondes électromagnétiques.
 (+2D Perc, -1D Tech, Don Empathie Gotal / +1D à la psychologie, Don Détection Gotal / Peut détecter une longueur d'ondes spécifique à plusieurs kilomètres, une espèce connue à 100m, et même son état d'esprit. S'il y a plus de 10 droïdes ou autres machines ou antennes aux alentours, le Gotal subit un malus de -1D à toutes ses compétences)
-	Gran 
-Pacifique, sociable, végan, fait passer l’intérêt général avant le sien. 
+    Gran
+Pacifique, sociable, végan, fait passer l’intérêt général avant le sien.
 (+1D Perc, Don Pacifique / Ne peut que se défendre)
-	Gungan 
+    Gungan
 Peu intelligent, amphibie, sociable.
 (+1D Perc +1D Tech -1D Sav,  Amphibie / respire sous l'eau)
-	Humain 
+    Humain
 Race la plus répandue, la mieux acceptée, et qui gagne plus vite de l’expérience.
 (+1D carac au choix, Don apprentissage rapide / +10 % gain XP, + Bonne réputation)
-	Hutt
+    Hutt
 Race manipulatrice, belliqueuse, cruelle, cupide, impotente.
 (+2D Perc +1D Vig -2D Dex, Don Peau Dure +1D Res Corp, -Mauvaise réputation)
-	Iktochi 
+    Iktochi
 Race perceptive et sensible à la Force, bons pilotes.
 (+1D Perc +1D Mec -1D Tech, +1D au contrôle sens ou altération au choix)
-	Ithorien 
+    Ithorien
 Pacifique, peu agile, experte en botanique.
 (+1D Sav +1D Perc -1D Dex, +1D Nature et Subst, Don Pacifique / Ne peut que se défendre)
-	Jawa 
+    Jawa
 Vision nocturne, insensible aux maladies et poisons, bons techniciens.
 (+2D Tech -1D Vig, Insensible aux maladies et poisons, +1D au jet d'ingénierie pour l'artisanat)
-	Kaminien 
+    Kaminien
 Grand, lent, intelligent, spécialisé en sciences et biotechnologies.
 (+1D Sav + 2D Tech, -1D Vig, Don Généticien Kaminien / +1 au jet de chance de la génétique, +2 au jet de difficulté des créations du biosavant)
-	Kel’dor
+    Kel’dor
 Race immunisée aux poisons et maladies.
 (+1D Sav, immunisé aux poisons et atmosphères toxiques)
-	Lasat 
+    Lasat
 Très fort, agile, court vite, sens de l’honneur, mais très peu sociable.
 (+2D Vig +1D Dex -2D Perc, +1D Vitesse et Endurance, Sens de l'honneur / N'attaque jamais une personne désarmée)
-	Mandalorien
+    Mandalorien
 Race guerrière redoutable et crainte.
 (+1D Vig +1D Dex -1D Sav, +1D Vitesse, -1D à toutes ses compétences quand il est privé d'armure complète (armure + tête + jambes + bras), -Mauvaise réputation)
-	Mirialan 
+    Mirialan
 Sensible à la Force, spirituel, peu matérialiste.
 (+1D Carac au choix, +1D en contrôle sens ou altération au choix, Superstitieux / doit nécessairement accomplir chaque jour un rituel de son choix à la gloire d'un des esprits de la Force, sinon -1D de malus à toutes ses compétences)
-	Mon Calamari 
+    Mon Calamari
 Amphibie, idéaliste, ingénieur, explorateur.
 (+1D Mec +1D Tech -1D au choix, +1D astrogation, Amphibie / respire sous l'eau, Don Explorateur / +1D à l'astrogation dans les zones non explorées, +1 au jet de chance en cas d'échec d'exploration)
-	Muun
+    Muun
 Race peu appréciée, cupide, calculatrice, sans émotion, spécialisés dans l’ingénierie ou le système bancaire.
 (+1D Sav +1D Tech -1D Vig, +1 Don liée à la stratégie dans la classe Leader au choix, -Mauvaise réputation)
-	Nautolan 
+    Nautolan
 Amphibie, résistant, plus puissant sous l’eau, très empathique envers les autres (transfert d’émotions).
 (+1D Perc +1 res corp, Amphibie / respire sous l'eau, Puissance Aquatique / +1D toutes compétences sous l'eau, Don Transfert d'émotions / Peut ressentir ou transmettre une émotion, +Bonne réputation)
-	Neimodien 
+    Neimodien
 Race agressive, cupide, peureuse, stimulée par la compétition.
 (+2D Perc +1D Sav + 1D Tech – 1D Dex -1D Vig, +1D aux compétences pour fuir un combat)
-	Pau’an 
+    Pau’an
 Grand, Diplomate, intimidant.
 (+2D Perc -1D Vig, +1D Intimidation)
-	Polis Massan (ou kallidahin, descendant des eellayins)
+    Polis Massan (ou kallidahin, descendant des eellayins)
 Petit, faible, mais astucieux, minutieux, bons archéologues, médecins ou scientifiques. Télépathie.
 (+1D Sav +1D Tech -1D Vig, Don Télépathie, +Bonne réputation)
-	Quaréen 
+    Quaréen
 Amphibie, résistante au froid, plus puissante sous l’eau, agressive.
 (+1D Carac au choix, Amphibie / respire sous l'eau, Puissance Aquatique / +1D toutes compétences sous l'eau, -Mauvaise réputation)
-	Quermien 
+    Quermien
 Race intelligente, sage, sensible à la force, et spécialiste des pouvoirs psychiques Jedi.
 (+2D Sav -1D Vig, +1D au sens ou à l'altération au choix, Don Spécialiste des pouvoirs psychiques / Les pouvoirs Jedi de type psychique coûtent moitié moins cher en XP)
-	Race inconnue de Yoda 
+    Race inconnue de Yoda
 Race intelligente, paisible, agile, très sensible à la force.
 (+2D Sav +1D Dex -1D Vig -1D Tech, +2D à répartir au choix entre contrôle / sens / altération)
-	Rodien
+    Rodien
 Race perceptive de chasseurs belliqueux.
 (+1D Perc +1D Tir -1D Sav, -Mauvaise réputation)
-	Selkath 
+    Selkath
 Amphibien, plus puissant sous l’eau, sensibilité à la Force, plop plop plop.
 (+1D Carac au choix, Amphibie / respire sous l'eau, Puissance Aquatique / +1D toutes compétences sous l'eau, finit ses phrases par plop plop plop)
-	Skakoan 
+    Skakoan
 Race très répandue du Noyau de la galaxie, armure personnalisée, résistants, bons techniciens.
 (+1D Vig + 1D Tech, -1D Dex, Possède une armure +1D res corp améliorable intégrée à son corps, Masque leur donnant une résistance aux atmosphères toxiques, +Bonne réputation)
-	Sullustain
+    Sullustain
 Race souterraine, résistante à la chaleur, bon sens de l’orientation et navigation spatiale.
 (+2D Mec -1D Perc, Résistance aux effets des dégâts de type brûlure)
-	Togruta 
+    Togruta
 Race très perceptive, ressemblant aux Twi'leks, mais généralement moins soumis.
 (+2D Perc -1D Mec, Don Sens Exacerbés +1D au jet d'intuition et peut esquiver les balles perdues)
-	Toydariens 
+    Toydariens
 Race perceptive, peut voler, insensible aux manipulations psychiques de la Force, bon technicien.
 (+1D Tech + 1D Mec +1D Perc -1D Sav -1D Vig, insensible aux manipulations psychiques de la Force, Don Vol / Peut voler)
-	Trandoshan 
+    Trandoshan
 Très fort et résistant, race de chasseur.
 (+2D Vig +1 Res corp, -1D Sav, Don Pistage / Peut analyser un endroit pour voir tout ce qui est passé par là (race, poids, taille…) et à quel moment)
-	Troig
+    Troig
 Race à deux têtes, perceptive mais peu agile. La seule race qui possède 2 personnalités différentes.
 (+1D Perc +1D Mec -1D Dex, Double personnalité / Chacune des têtes a une classe différente de l'autre. Si ce sont 2 spécialités d'une même classe, il suffit d'une action de soutien pour passer de l'une à l'autre, sinon il faut aussi un jet de chance 7+)
-	Twi’lek 
+    Twi’lek
 Race perceptive, agile, et très séduisante pour la plupart des autres races.
 (+1D Perc +1D Esquive, Don séduction / +1D à la persuasion lorsque la séduction est utilisée)
-	Ubese 
+    Ubese
 Race belliqueuse, avec armure personnelle, résistant aux maladies et poisons.
 (+1D carac au choix, Possède une Armure Ubese +1D res corp améliorable avec Casque Ubese : +1 res corp, Filtrage des environnements irrespirables ou toxiques, -Mauvaise réputation)
-	Wookie
+    Wookie
 Très fort, et peut devenir enragé.
 (+2D Vig +1D Mec -1D Sav -1D Perc, Don Rage du wookie / Pendant 1D tour, le wookie obtient le statut fou, et a +1D à toutes ses compétences +1DD au corps à corps ou à l'arme blanche)
-	Xexto 
+    Xexto
 Réflexes extraordinaires, vitesse de course élevée.
 (+2D Dex +1D Mec -1D Vig -1D Tech, +1D Vitesse)
-	Zabrak 
+    Zabrak
 Race guerrière, orgueilleuse, persévérante, indépendante.
 (+1D Vig +1D Dex, -1D Perc, Don Survie Zabrak / Lorsqu'un coup le fait passer en dessous de 10PV, il regagne 1D PV au début de son tour suivant, 1x/combat)
-	Zygerriens 
+    Zygerriens
 Race belliqueuse, esclavagiste, forte, excellent combattant à mains nues.
 (+1D Vig, +1D Perc -1D Mec -1D Tech, +1D Combat à mains nues, don Esclavagisme / Peut briser la résistance psychologique d'un prisonnier pour en faire un esclave, jet intimidation vs sang froid, --Mauvaise réputation)
 
 ### Section 3. Repartir les points de caracteristiques
 
-Chaque caractéristique est de base à 1D + les bonus de classe + les bonus de race. 
+Chaque caractéristique est de base à 1D + les bonus de classe + les bonus de race.
 Puis les joueurs répartissent encore 7D librement sur les caractéristiques.
-Sur ces 7D, ils ne peuvent pas allouer plus de 3D sur une même caractéristique. 
+Sur ces 7D, ils ne peuvent pas allouer plus de 3D sur une même caractéristique.
 Il n'y a cependant pas de plafond pour la somme finale (par exemple, un wookie lutteur qui alloue le max de 3D en vigueur peut se retrouver à 8D).
 Si vous vous retrouvez à 0D dans une caractéristique, cela vous causera d'importants handicaps dans ce domaine (voir chapitre 2 section 1 sur la description des caractéristiques), à commencer par le fait que vous ne pourrez plus lancer de jets de dés associés à cette caractéristique. Ainsi, un joueur ayant 0D en mécanique est incapable de démarrer ou conduire n'importe quel véhicule, et un joueur ayant 0D en technique ne saura pas se servir d'un navordinateur ou d'un wantedex.
 Si vous vous retrouvez à -1D dans une caractéristique, à la fin du choix des caractéristiques elle sera fixée à 0D et emportera donc les mêmes effets que ceux décrits au paragraphe précédent.
@@ -437,7 +438,7 @@ Attention à bien choisir : il est possible d'augmenter les caractéristiques e
 
 Les PV max de base sont de 3.
 A ce minimum vital s'ajoute un calcul basé sur la vigueur : 3 x le nombre de D de vigueur.
-Exemple : +Un joueur qui a 4D Vigueur aura 3 + (3 x 4) = 15 PV max en début de partie. 
+Exemple : +Un joueur qui a 4D Vigueur aura 3 + (3 x 4) = 15 PV max en début de partie.
 Si le joueur a 0D en Vig, alors il commence donc avec seulement les PV max de base : 3 PV.
 
 La Res corp de base dépend du D de vigueur :
@@ -449,7 +450,7 @@ La Res corp de base dépend du D de vigueur :
 5D Vig = 2D Res corp
 6D Vig = 2D+1 Res corp
 7D Vig = 2D+2 Res corp
-8D Vig = 3D Res corp 
+8D Vig = 3D Res corp
 
 Et voilà, vous êtes prêts à attaquer le jeu !
 
@@ -471,7 +472,7 @@ Le joueur peut aussi choisir un sexe (mâle – femelle – neutre) pour son per
 L’âge peut également être choisi dans une certaine mesure, tant que l’âge est réaliste et n’est pas trop jeune pour comprendre ce qu’il se passe, ni trop vieux pour marcher. Cela peut dépendre aussi des exigences de scénario du MJ bien entendu.
 Le poids et la taille sont libres aussi, tant qu’ils se trouvent dans la fourchette normale pour la race choisie. Attention aussi à rester logique, par exemple pour un humain avec 1D de vigueur il serait étrange de choisir qu’il fasse 2m10 pour 130 kg…
 
-En haut au centre : 
+En haut au centre :
 Une petite case vide sert à dessiner son personnage.
 
 En haut à droite :
@@ -506,7 +507,7 @@ Les caractéristiques et compétences sont la base des capacités du joueur dans
 Pour chaque action déterminante demandant des compétences particulières, le joueur doit lancer un jet de dés, demandé par le MJ. C’est donc le MJ qui choisit la fréquence et la complexité des jets de dés, et dans quelle mesure il se contente du rôle play ou préfère déterminer les effets d’une action des joueurs par un jet de dés. Par exemple si le joueur doit faire un discours pour convaincre des paysans de partir d’un village, le MJ peut déterminer le succès de ce discours de plusieurs façons : soit entièrement en rôle play en faisant faire le discours du mieux possible par le joueur, soit entièrement en mécanique de jeu en lui faisant lancer un jet de dé dans la compétence Persuasion, soit en faisant un mélange de rôle play et de mécanique de jeu, en rajoutant par exemple un bonus au jet de dés si le joueur fait un beau discours en rôle play.
 Il faut distinguer 2 catégories importantes de capacités du personnage ; les caractéristiques et les compétences. On ajoutera aussi les PV et la résistance corporelle, qui sont au centre de la feuille.
 
-   - Les caractéristiques
+- Les caractéristiques
 
 Les caractéristiques sont les capacités de base du personnage, son armature, ses capacités innées en quelque sorte. Il y en a 6 : le savoir (SAV), la dextérité (DEX), la perception (PERC), la technique (TECH), la vigueur (VIG) et la mécanique (MEC).
 Ce sont à la fois les plus importantes et les plus inutiles, car en fait le MJ demandera très rarement un jet pur de caractéristique, à part pour la vigueur dans certains cas particuliers. Cependant, ce sont d’elles que découlent tous les jets de compétence affiliés.
@@ -522,21 +523,21 @@ La Technique : cette caractéristique regroupe toutes les compétences techniqu
 La Vigueur : cette caractéristique est littéralement vitale pour votre personnage, puisque c’est elle qui régit ses points de vie et sa résistance corporelle. C’est aussi d’elle que dépend l’endurance de votre personnage, ou encore sa force physique et les dégâts qu’il provoque à mains nues. Les dégâts à mains nues sont égaux au jet VIG – 1D. Donc si vous avez 5D en vigueur, votre personnage fera à mains nues 4D de dégâts, soit autant de dégâts qu’un blaster classique… Veuillez noter que si vous avez moins de 2D en vigueur, vous arriverez à peine à soulever un fusil blaster, ou à trottiner sur 100 mètres.
 La Mécanique : cette caractéristique regroupe les compétences liées au pilotage. La capacité à piloter un engin, piloter ses armes, esquiver les tirs d’autres engins… Ce n’est pas une caractéristique vitale à tout un chacun, mais l’univers de Star Wars étant peuplé de nombreux vaisseaux hostiles, il est fortement recommandé d’avoir au moins un personnage qui soit bon dans cette caractéristique, afin de mener votre vaisseau à bon port.
 
-   - PV et Res Corp
+- PV et Res Corp
 
-Au centre du recto de la feuille de perso trônent fièrement les cases de PV (points de vie) et de Res Corp (résistance corporelle). La gestion attentive de ces données est essentielle à la survie de votre personnage. 
-Les PV de base dépendent de la caractéristique Vigueur. Ils représentent le nombre de dégâts que peut recevoir le personnage avant de mourir. 
-Il y a cependant plusieurs étapes à prendre en compte dans le cadre de ce triste événement : Lorsque le personnage arrive à 0, il tombe par terre inconscient et ne peut plus faire aucune action, mais il n’est pas mort pour autant. En réalité, tout comme les découverts sur votre compte en banque, vous pouvez même aller dans les valeurs négatives sans mourir. A partir de -1 et jusqu’à -9, votre personnage aura le statut « agonisant », ce qui signifie qu’en plus d’être inconscient, il perdra automatiquement 1 PV par tour de jeu en combat, tant qu’il ne sera pas stabilisé par le jet de médecine (minimum 15) d’un allié, ou carrément soigné avec un médipack. 
+Au centre du recto de la feuille de perso trônent fièrement les cases de PV (points de vie) et de Res Corp (résistance corporelle). La gestion attentive de ces données est essentielle à la survie de votre personnage.
+Les PV de base dépendent de la caractéristique Vigueur. Ils représentent le nombre de dégâts que peut recevoir le personnage avant de mourir.
+Il y a cependant plusieurs étapes à prendre en compte dans le cadre de ce triste événement : Lorsque le personnage arrive à 0, il tombe par terre inconscient et ne peut plus faire aucune action, mais il n’est pas mort pour autant. En réalité, tout comme les découverts sur votre compte en banque, vous pouvez même aller dans les valeurs négatives sans mourir. A partir de -1 et jusqu’à -9, votre personnage aura le statut « agonisant », ce qui signifie qu’en plus d’être inconscient, il perdra automatiquement 1 PV par tour de jeu en combat, tant qu’il ne sera pas stabilisé par le jet de médecine (minimum 15) d’un allié, ou carrément soigné avec un médipack.
 De plus, un personnage qui était agonisant et qui est soigné pour repasser au dessus de 0, ne reprend pas pleine conscience tout de suite, il reste sonné pour 2 rounds suite à sa réanimation.
 Mais si le personnage arrive à -10 PV sans recevoir d’aide, alors c’est fini, il est mort. A moins d’être sauvé par une ficelle improbable de scénario, cousue de fil blanc par un MJ magnanime, le joueur se verra retirer de force sa feuille de personnage et devra en choisir un nouveau !
 Voir à ce sujet le point 20- des règles du jeu en combat, « la mort, le baroud d'honneur et le wipe »
-Enfin, dernière précision à propos des PV : ceux ci peuvent être augmentés grâce aux points d’XP. Ouf ! Le prix à payer en XP pour chaque PV acheté, est basé sur la décimale du nombre total de PV du personnage. Par exemple, si votre personnage a 12 PV, cela vous coûtera 1 XP de passer à 13 PV. Par contre, si vous avez 22 PV, cela coûtera 2 XP de passer à 23. Et si vous avez 32 PV, cela coûtera 3 XP d’acheter 1 PV et passer à 33. 
+Enfin, dernière précision à propos des PV : ceux ci peuvent être augmentés grâce aux points d’XP. Ouf ! Le prix à payer en XP pour chaque PV acheté, est basé sur la décimale du nombre total de PV du personnage. Par exemple, si votre personnage a 12 PV, cela vous coûtera 1 XP de passer à 13 PV. Par contre, si vous avez 22 PV, cela coûtera 2 XP de passer à 23. Et si vous avez 32 PV, cela coûtera 3 XP d’acheter 1 PV et passer à 33.
 Si vous avez bien calculé, passer de 10 à 20 PV coûte donc 10 XP, de 20 à 30 PV c’est 20 XP, etc.
 La Res Corp : la résistance corporelle est le jet que vous lancerez quand vous serez touché et que vous subirez des dégâts, afin de réduire le jet de dégâts de l’adversaire. Plus la résistance corporelle est élevée, et moins votre personnage sera susceptible de prendre des dégâts. Sa valeur dépend de sa valeur de base, dépendant de la caractéristique Vigueur, ajouté au bonus d’armure, et aux divers bonus venant de dons ou pouvoirs. Pensez bien à séparer la valeur de base de ses bonus d’armure sur la feuille de perso, pour vous y retrouver dans les chiffres quand vous changez d’armure...
 
-  - Les compétences
+- Les compétences
 
-  Les compétences sont les valeurs phares de votre fiche de perso, celles qui occuperont le plus votre attention, puisqu’elles déterminent les jets de dés que vous pourrez lancer pour chaque action.
+Les compétences sont les valeurs phares de votre fiche de perso, celles qui occuperont le plus votre attention, puisqu’elles déterminent les jets de dés que vous pourrez lancer pour chaque action.
 Leur valeur de base dépend de la valeur de la caractéristique à laquelle elle est affiliée.
 La subtilité importante est que cette valeur peut être augmentée grâce aux points d’XP reçus pendant les scénarios, pour améliorer ces jets, et donc les capacités du personnage.
 On ne monte pas directement d’un D à l’autre, il y a 3 étapes.
@@ -557,11 +558,12 @@ Avec 25, une action très difficile.
 Avec 30, vous réussirez la plupart des actions du jeu, à moins de vraiment tenter quelque chose de surhumain où le MJ fixe une difficulté de 35 ou 40, mais cela doit rester exceptionnel et justifié par le contexte.
 Il est maintenant temps de se pencher sur chaque compétence.
 
-**SAVOIR**
+##### **SAVOIR**
 
 **Nature** : Détermine les connaissances du personnage en terme de nature, à tous les niveaux. Connaissance des animaux, des plantes, des phénomènes naturels, des catastrophes naturelles, de la survie dans la nature, etc. Une compétence qui peut être utile si votre groupe est perdu en pleine forêt, ou que vous rencontrez un animal dont vous ne savez pas s’il est herbivore ou carnivore… Compétence secondaire, à améliorer si vous avez des points en trop, ou que vous en avez besoin pour une mission particulière, ou pour le Role Play si votre personnage est censé être un amoureux de la Nature.
 
 Exemples d’actions possibles en fonction du jet de dés :
+
 | **Jet de nature** | **Action possible** |
 | --- | --- |
 | 5   | Faire la différence entre 2 animaux connus, Remarquer un problème évident en rapport avec le lieu |
@@ -578,6 +580,7 @@ Exemples d’actions possibles en fonction du jet de dés :
 **Langage** : Détermine la capacité du personnage à comprendre d’autres langues que la langue commune galactique (le français, évidemment). Votre personnage connaît de base la langue commune + les langues connues sur sa planète d’origine, en fonction de sa race donc. Ensuite, plus la langue est compliquée, plus il faudra un bon score de langage. Il suffit qu’un seul membre du groupe comprenne le langage pour que tous les autres le comprennent aussi, sans besoin de tout traduire, par souci de simplicité dans la mécanique de jeu, bien que parfois pour le Role Play, une conversation laborieuse avec des hommes des sables puisse aussi être intéressante. Compétence secondaire.
 
 Exemples :
+
 | **Jet de Langage** | **Action possible** |
 | --- | --- |
 | 5   | Vous êtes capable de baragouiner 2 ou 3 mots essentiels dans cette langue |
@@ -597,7 +600,7 @@ Exemples :
 
 **Illégalité** : Détermine la faculté à trouver des choses illégales, à vendre des choses illégales, à trouver des tripots, ou des membres de la mafia locale, voire même d’en comprendre rapidement le fonctionnement et la source de financement. Compétence secondaire.
 
-**DEXTERITE**
+##### **DEXTERITE**
 
 **Armes** **Blanches** (AB) : Détermine la compétence à l’arme blanche et la capacité à toucher son adversaire ou parer ses coups avec une arme blanche. Epée, couteau, vibrolame, vibro-hache, masse d’armes, fouet… Certes, c’est vaste. Compétence utile, voire même essentielle si c’est le mode de combat privilégié de votre personnage, évidemment.
 
@@ -621,7 +624,7 @@ Compétence essentielle, comme vous l’aurez compris.
 
 **Vitesse** (Vit) : Détermine la capacité à agir rapidement, à se déplacer rapidement d’un point A à un point B, et aussi, la rapidité d’action en combat. Le jet d’initiative qui permet d’engager un combat en bonne place dans le tour, est en fait un jet de vitesse. Donc un personnage rapide pourra agir plus rapidement dans le tour. En combat, il pourra aussi se déplacer plus loin lors d’une action de mouvement. Compétence essentielle pour un combattant.
 
-**PERCEPTION**  
+##### **PERCEPTION**  
 
 **Observation** : Détermine l’acuité visuelle du personnage, sa capacité à remarquer des choses dans son environnement. Par défaut c’est également le jet utilisé en cas de besoin pour l’ouïe ou l’odorat, dans un souci de ne pas surcharger la feuille de perso avec des compétences trop secondaires. Cette compétence est très utile, et le MJ demande souvent des jets d’observation pour voir si le personnage a remarqué un détail en jeu. Un détail qui peut être important pour la réussite de la mission, voire pour la survie du groupe. Il est donc fortement recommandé d’avoir 1 ou 2 fins observateurs au sein du groupe.
 Note : Il se pourrait qu’en demandant au joueur de réaliser un jet d’observation, même s’il rate le jet, il comprenne qu’il y a un détail qu’il n’a pas vu et qu’il se méfie, ce qui n’est pas très Role Play. Si le MJ veut éviter cela et cacher aux joueurs, par souci de réalisme, qu’il y a quelque chose à remarquer dans la pièce, il peut noter à l’avance la compétence en observation de chaque personnage du groupe, et faire lui-même les jets de compétence d’observation à la place du joueur, ainsi il ne fera part du joueur du détail en question que si le jet est réussi.
@@ -638,6 +641,7 @@ Note : Comme pour le jet d’observation, il se pourrait qu’en demandant au j
 **Commandement** : Détermine la capacité du personnage à donner des ordres et à se faire respecter, mais aussi à gérer du personnel. Un bon jet de commandement est essentiel parfois pour faire tourner correctement une base ou gérer une équipe ou faire respecter une stratégie de bataille planifiée. Un discours de motivation des troupes accompagné d’un bon jet de commandement peut aussi apporter des bonus aux combattants. Enfin, certains dons, notamment des classes de leader, requièrent des jets de commandement. Compétence utile pour les classes de leader, secondaire pour les autres. Elle peut même devenir inutile si vous n’avez pas de bataille à planifier ni de personnel non-joueur à gérer au cours de votre scénario…
 
 Tableau de commandement :
+
 | **Jet** | **Effets** |
 | --- | --- |
 | 5   | Bataille : Peu de PNJ suivent les consignes données pour la bataille. Malus de désorganisation.<br><br>Personnel PNJ : 2-3 max, éventuellement un petit vaisseau allié en combat spatial.<br><br>Bonus discours : Aucun |
@@ -650,6 +654,7 @@ Tableau de commandement :
 **Marchandage** : Détermine la capacité à marchander ou négocier. Peut faire baisser les prix de vente dans un magasin, ou faire monter les prix d’achat pour refourguer les objets inutiles trouvés en mission et obtenir ainsi un peu plus de crédits. Compétence essentielle si vous voulez vous enrichir, mais secondaire si l’argent ne vous intéresse pas… Il est cependant toujours recommandé d’avoir un au moins un bon négociant dans une équipe, histoire que le manque de crédits n’handicape pas trop l’évolution en puissance de vos personnages.
 
 Tableau de marchandage :
+
 | **Jet de Marchandage** | **Effets sur le prix** |
 | --- | --- |
 | 5   | Augmente ou baisse le prix d’environ 2 % |
@@ -663,7 +668,7 @@ Tableau de marchandage :
 
 **Dressage** : Détermine la capacité à dresser des animaux, les calmer, les comprendre, les adopter, ou s’en servir de monture. Compétence secondaire pour la plupart des personnages, mais essentielle pour la classe de pisteur, ou tout simplement si vous avez envie que votre personnage soit l’ami des animaux !
 
-**TECHNIQUE**
+##### **TECHNIQUE**
 
 **Réparation** : Détermine la faculté à réparer toutes sortes de choses : des vaisseaux, des droïdes, ou des navordinateurs cassés. Peut être utile, surtout pour le vaisseau de l’équipe, ou si l’équipe est accompagnée d’un droïde. Il est donc conseillé d’avoir au moins un réparateur dans l’équipe.
 
@@ -675,7 +680,7 @@ Tableau de marchandage :
 
 **Systèmes** : Détermine les compétences du personnage dans les systèmes informatisés, tels que les navordinateurs. Pour trouver une information, ou carrément hacker un système, ou reprogrammer un droïde ou une tourelle, c’est ce jet de compétence qui sera utilisé. Compétence secondaire.
 
-**VIGUEUR**
+##### **VIGUEUR**
 
 **Escalade** : Détermine la capacité du personnage à grimper ou descendre une pente plus ou moins verticale sans tomber et sans se faire mal. Ça peut être utile ! Détermine aussi la vitesse d’escalade. Peut permettre de se mettre hors d’atteinte d’une personne qui ne sait pas escalader, par exemple, ce qui en pratique peut s’avérer utile aussi en terme de fuite. Peut permettre aussi de grimper au dessus d’une barrière sans encombre, ou encore de pourrir le scénario du MJ en grimpant au dernier étage d’un bâtiment par la façade de l’immeuble au lieu de passer par l’ascenseur… Compétence secondaire donc, mais qui offre quand même quelques opportunités intéressantes.
 
@@ -686,6 +691,7 @@ Tableau de marchandage :
 **Survie** : Détermine la capacité du personnage à survivre dans des situations hostiles. Cette compétence bien gérée et associée à des dons ou objets pertinents, peut devenir très intéressante, tout comme elle peut être parfaitement inutile à d’autres. Voyez cela comme un moyen de compléter une bonne défense et de rendre votre personnage increvable. Voici les cas où cette compétence peut vous aider : Trouver où vous cacher au coeur d’une tempête de sable, d’un ouragan ou d’une éruption volcanique.
 
 Tableau de survie :
+
 | **Jet de Survie** | **Actions possibles** |
 | --- | --- |
 | 5   | Voir si une situation est dangereuse ou non |
@@ -698,7 +704,7 @@ Tableau de survie :
 
 **Natation** : Détermine la capacité d’un personnage à se mouvoir et survivre au sein d’un liquide, généralement de l’eau, mais qui sait ? Compétence secondaire, bien que cela puisse toujours être utile si vous tombez malencontreusement à l’eau en visitant les usines de clonage de Kamino !
 
-**MECANIQUE**
+##### **MECANIQUE**
 
 **Pilotage** : Principal intérêt de la caractéristique Mécanique, le pilotage est la compétence qui détermine la capacité à piloter tout type d’engins (landspeeder, airspeeder, TB-TT, vaisseaux…), ce qui peut s’avérer très utile dans l’univers de Star Wars, vous en conviendrez. Compétence essentielle pour au moins un personnage de l’équipe, sous peine d’exploser un jour bêtement dans l’espace. Le jet de pilotage est demandé à la fois pour réussir à piloter et contrôler un engin dans tous types de situations, mais aussi pour activer les canons principaux du vaisseau, que le pilote gère aussi en même temps que les commandes de pilotage. Comme d’habitude, un bon vieux jet à 15 permettra de piloter à peu près n’importe quel type d’engin, mais cela ne suffira pas par contre à rivaliser avec d’autres pilotes !
 
@@ -715,15 +721,17 @@ La Bordure extérieure ou Outer Rim est une zone très excentrée de la galaxie 
 Enfin, les régions inconnues de l’ouest de la galaxie, ou encore l’espace sauvage au-delà de la Bordure extérieure, sont des zones presque inexplorés et extrêmement dangereuses, où toutes sortes de choses imprévues peuvent survenir. N’oubliez pas d’embarquer un droïde astromec et un très bon pilote avant de vous y rendre !
 
 Tableau d’astrogation :
+
 | **Jet d’astrogation** | **Durée du trajet** |     |     |     |     |     |     |
-| --- | --- |     |     |     |     |     |     | --- | --- | --- | --- | --- | --- |
-| Noyau→ Noyau | Noyau→ Colonies | Noyau→ Bordure int. | Noyau→ Région d’exp | Noyau→ Mid Rim | Noyau→ Bordure ext. | Noyau→ Rég.inconnues |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+|     | Noyau→ Noyau | Noyau→ Colonies | Noyau→ Bordure int. | Noyau→ Région d’exp | Noyau→ Mid Rim | Noyau→ Bordure ext. | Noyau→ Rég.inconnues |
 | 5   | 1j  | 2j  | 3j  | 4j  | 6j  | ERROR | ERROR |
 | 10  | 12h | 1j  | 2j  | 3j  | 5j  | 7j  | ERROR |
 | 15  | 6h  | 12h | 1j  | 2j  | 3j  | 5j  | 7j  |
 | 20  | 4h  | 8h  | 12h | 1j  | 2j  | 3j  | 5j  |
 | 25  | 2h  | 4h  | 8h  | 12h | 1j  | 2j  | 4j  |
 | 30  | 1h  | 2h  | 4h  | 8h  | 16h | 1j12h | 3j  |
+
 Notes :  
 Si vous devez aller de la Bordure extérieure nord à la bordure extérieure sud en repassant par le Noyau, vous devrez donc ajouter les 2 temps de trajet Bordure extérieure → Noyau puis Noyau → Bordure extérieure. Oui, c’est long.
 La durée du trajet est divisée par 2 sur la partie du trajet comportant une route hyperespace.
@@ -752,13 +760,15 @@ Le combat se déroule selon le schéma d'une unité de temps fictive appelée le
 
 Les joueurs jouent les uns après les autres les actions qu'ils veulent faire au cours du round.
 
-#### 1. L'engagement et le jet de vitesse
+### 1. L'engagement et le jet de vitesse
+
 La phase d'engagement survient quand les ennemis attaquent les PJs, ou les Pjs attaquent les ennemis.  
 À partir de ce moment, à moins qu'il ne s'agisse d'une attaque surprise, chaque personnage doit tirer un jet de vitesse pour savoir dans quel ordre ils vont jouer leur tour. Eventuellement, ils peuvent à ce stade utiliser un don ou un objet qui a un effet sur leur jet de vitesse, mais ils doivent le déclarer avant de lancer leur jet de dés.  
 Le MJ tire les dés ou décide du score des ennemis.  
 Le combat se déroulera dans l'ordre du plus fort au plus faible jet de dés, chacun son tour.  
 
-#### 2. Le déroulement du tour d'un joueur
+### 2. Le déroulement du tour d'un joueur
+
 Lorsque vient le tour d'un joueur, celui-ci peut effectuer des actions.  
 Il y a 4 différents types d'actions : Les actions offensives, les actions de soutien, les actions en défense et les actions de mouvement.
 Les actions offensives sont les attaques, les dons ou les pouvoirs de nature offensive, au corps à corps ou à distance.
@@ -777,7 +787,8 @@ Les actions en défense sont à part, elles peuvent être utilisées à n'import
 A noter qu'il est possible de retarder son tour d'action pendant le tour de jeu, afin d'agir après un autre personnage au lieu d'agir avant. Cela retarde d'autant la durée des effets positifs et négatifs qui s'appliquent au joueur pour un certain nombre de rounds, mais aussi la remise à zéro des actions en défense, alors attention.
 Les actions combinées : Il est possible de prévoir d'interagir avec un autre personnage pour faire des actions plus complexes à plusieurs en cours de combat. Les joueurs les plus rapides devront alors retarder leur action au moment du tour du joueur le plus lent de ceux qui participent à l'action combinée.
 
-#### 3. Les dégâts et DD
+### 3. Les dégâts et DD
+
 DD signifie « Dés de Dégâts », ils représentent le nombre de dés à lancer pour déterminer les dégâts donnés ou subis. Chaque arme a sa propre puissance.
 Les dégâts à mains nues sont le jet de vigueur -1DD. En clair, un personnage qui a 5D de Vig et qui frappe à mains nues lancera 4DD s'il touche l'ennemi.
 Les dégâts peuvent être réduits en fonction des circonstances. La plupart du temps, il s'agira de prendre en compte le jet de précision précédent : ainsi, un personnage joueur ou ennemi qui a été touché de peu, ou qui a gagné de peu un jet opposé, verra ses dégâts réduits de -1DD.
@@ -785,7 +796,8 @@ Les dégâts ne sont pas tout de suite subis sous forme de PV. Ils se voient opp
 Si la Res Corp est supérieure aux dégâts, alors le personnage perd tout de même 1PV, par souci de cohérence de jeu et de dynamisme.
 Cependant, si la Res Corp est plus de 2 fois supérieure aux dégâts, alors le personnage ne prend aucun dégât.
 
-#### 4. Dégâts de zone et Dégâts en cône
+### 4. Dégâts de zone et Dégâts en cône
+
 Les dégâts d'une arme peuvent aussi provoquer des dégâts de zone, comme les explosifs ou les diffuseurs aérosol, mais aussi des dégâts en cône, comme les armes lourdes (canons, blasters mitrailleurs, armes de véhicules...).
 Les dégâts de zone provoquent des dégâts sur un certain périmètre autour du point d'impact, en général 10x10m. Pour les esquiver, il ne faut pas seulement faire un chiffre en esquive plus grand que le chiffre de lancer de la grenade. Chaque seuil de 5 supplémentaire permet d'esquiver 1D de dégâts en plus de la grenade.
 Exemple : Le lanceur fait 16 en jet de lancer et le défenseur fait 17 en esquive. Le jet de dégâts de la grenade est de 5DD. Il réussira à s'éloigner suffisamment pour ne recevoir que 4DD.
@@ -793,7 +805,8 @@ Pour esquiver plus que cela, il faudrait qu'il dépasser le jet de lancer d'au m
 Le dégât de zone est donc beaucoup plus dur à éviter complètement que le dégât direct.
 Le dégât de cône fonctionne presque de la même façon, tout ceux qui sont dans le cône de l'attaque sont touchés, faire plus en esquive que le jet de tir permet d'éviter seulement 1DD de dégâts, mais il suffit cette fois de faire un seuil de 5 supplémentaire en esquive par rapport au jet de lancer pour sortir complètement du cône d'attaque et éviter l'intégralité des dégâts.
 
-#### 5. La parade
+### 5. La parade
+
 La parade est toujours possible que l'on soit à mains nues ou avec une arme à la main.
 Cependant les règles diffèrent un peu selon la situation.
 La parade à mains nues opposée à une attaque à mains nues, permet d'annuler la moitié des dégâts bruts lorsque le jet de combat à mains nues du défenseur est plus élevé que celui de l'attaquant.
@@ -804,7 +817,8 @@ La parade à l'arme blanche opposée à une attaque à l'arme blanche, permet si
 La parade à l'arme blanche opposée à une attaque à distance permet d'annuler également l'intégralité des dégâts ennemis. Cependant, si les dégâts absorbés sont au moins égaux à 5DD, l'arme du défenseur a une chance de se briser de 4/12 (il faut qu'il fasse au moins 4 au jet de chance). Exception faite, bien entendu, des sabre-laser, dont la lame est composée de lumière concentrée.
 La parade à l'arme à distance (par exemple, si le défenseur a un blaster à la main), sera considérée comme une parade à l'arme blanche, à la nuance près que celle-ci ne peut pas infliger de dégâts en parant.
 
-#### 6. Les séquelles
+### 6. Les séquelles
+
 Les coups qui font passer le personnage sous 0 PV peuvent entrainer des séquelles permanentes, dont la teneur dépend d'un jet de chance (D12)  
 Jet de chance 12 : Aucune séquelle  
 Jet de chance 10-11 : Le personnage perd 1 PV max  
@@ -814,7 +828,8 @@ Jet de chance 4-5 : Le personnage est grièvement blessé, doit être hospitali
 Jet de chance 2-3 : Le personnage est grièvement blessé, doit être hospitalisé d'urgence et perd 2PV max + perd définitivement un membre (bras, jambe)
 Jet de chance 1 : Le personnage est dans le coma, doit être hospitalisé d'urgence et perd 1D dans une caractéristique et toutes les compétences afférentes.
 
-#### 7. Le malus de distance
+### 7. Le malus de distance
+
 Plus la distance est importante avec la cible, plus il est difficile de toucher à distance.
 À moins de 5 mètres, l'impact de la distance est nul et l'ennemi a beaucoup de mal à esquiver : Il faut faire 5 pour toucher, et le défenseur a un malus de -1D à son jet d'esquive, hors dons ou pouvoirs particuliers d'intuition.
 Entre 5 et 20 mètres, l'impact de la distance est ressentie, il faut faire 10 pour toucher
@@ -823,7 +838,8 @@ Au delà de 50 mètres de distance, il faut faire 20 pour toucher avec une arme 
 Si l'ennemi est à couvert, le seuil de difficulté est augmenté de 5 pour le tireur.
 Si l'ennemi est caché (à couvert pendant un tour entier sans attaquer), il est impossible à atteindre.
 
-#### 8. Utilisation des dons
+### 8. Utilisation des dons
+
 Les dons s'utilisent comme n'importe quelle compétence, en tant qu'action d'attaque, de défense, de soutien, de soin ou de mouvement.
 Un don de défense peut donc être utilisé à tout moment du combat, alors que les autres dons ne sont utilisables que pendant le tour du joueur.
 Le joueur peut utiliser plusieurs dons différents pendant son tour d'action, tant que cela respecte les règles d'utilisation des compétences classiques (une seule action de mouvement, d'action et de soutien par tour).
@@ -834,14 +850,16 @@ _Illimité_ : Dons classiques, ils peuvent être joués en combat ou en dehors 
 _1/combat_ : Ils ne peuvent être utilisés qu'une seule fois par combat, pour des raisons d'équilibrage en raison de leur trop grande puissance, ou pour des questions de logique de jeu. La phase de combat peut durer le temps de plusieurs vagues d'ennemis différents, ce qui compte pour identifier une même phase de combat c'est que celle-ci s'opère dans une continuité, avec une identité de lieu, et des ennemis de même nature. Dès lors que le jeu est marqué d'un temps d'arrêt des combats et de quelques minutes de discussion dans le cadre d'une autre phase de jeu, avec un changement d'endroit, le combat qui s'en suivrait serait un nouveau combat, et le don pourrait être réutilisé.
 _1/jour_ : Ils ne peuvent être utilisés qu'une seule fois par jour, pour des raisons d'équilibrage en raison de leur trop grande puissance, ou pour des questions de logique de jeu. Le jour de jeu dépend en fait non pas de la durée de la journée sur une planète donnée, mais du moment où les Pjs se reposent durablement après une mission ou en cours de mission.
 
-#### 9. Utilisation des pouvoirs Jedi
+### 9. Utilisation des pouvoirs Jedi
+
 Les pouvoirs suivent les mêmes règles que les dons. Il en est des offensifs, des défensifs, de soutien, de soin. Tout comme les dons, on peut utiliser plusieurs pouvoirs par tour, tant que l'on ne dépasse pas la limite d'une action d'attaque, de mouvement et de soutien.
 Il y a une limite à l'utilisation des pouvoirs Jedi, mais qui ne marche pas de la même façon que pour les dons. Elle est basée sur l'épuisement. Effectivement, un Jedi qui fait trop appel à la Force peut épuiser sa capacité à le faire, et plus le pouvoir est puissant, plus la probabilité est grande qu'il provoque l'épuisement du Jedi.
 Celui-ci lance un jet de chance (D12) après chaque pouvoir.
 Si un pouvoir a une capacité d'épuisement de 4, alors le Jedi doit faire au moins 4 à son jet pour ne pas subir l'épuisement.
 S'il est épuisé, le Jedi ne peut plus lancer aucun pouvoir jusqu'à son prochain temps de repos d'au moins 1h.
 
-#### 10. Utilisation d'un medipack
+### 10. Utilisation d'un medipack
+
 Le médipack est un objet spécial dont l'utilisation prend un tour entier.  
 Cela signifie que jusqu'au tour suivant du joueur, il est en train de soigner quelqu'un ou lui-même et il ne lance donc le jet de médecine qu'au tour suivant pour octroyer la récupération de points de vie.  
 Le tour du soigné est sauté pendant la durée du soin.  
@@ -850,7 +868,8 @@ Si le soigneur est touché par une attaque, sa tentative de soin est ratée et l
 Les effets des pouvoirs de soin Jedi sont immédiats et ne prennent pas un tour complet.
 Certains dons permettent également de réduire la durée des soins.
 
-#### 11. Les attaques d'opportunité
+### 11. Les attaques d'opportunité
+
 Il est parfois possible pour un PJ d'attaquer l'ennemi même quand ce n'est pas son tour de jouer.  
 Cette situation s'appelle l'attaque d'opportunité.
 La règle générale est que l'AO est possible lorsque l'ennemi, au cours d'une action de mouvement, se retrouve à passer à portée du PJ (qui peut alors lancer une attaque d'opportunité de corps à corps) ou à passer devant la ligne de mire du PJ qui vient d'attaquer le tour précédent (qui peut alors lancer une attaque d'opportunité à distance).
@@ -861,12 +880,14 @@ Pour toucher, l'attaquant d'opportunité lance son jet de compétence comme s'il
 L'AO n'est pas automatique car est une action hors-tour, il faut que le joueur soit réactif et déclare rapidement qu'il lance une attaque d'opportunité s'il voit que l'ennemi passe à sa portée.
 On ne peut lancer qu'une seule AO par tour.
 
-#### 12. L'attaque surprise
+### 12. L'attaque surprise
+
 Les attaques offensives lancées dans le cadre d'une embuscade, sont des attaques surprises.
 Les attaques surprises sont impossibles à esquiver ou parer à moins que les défenseurs ne réussissent un jet d'intuition ou un don équivalent pour déterminer s'ils sentent venir l'attaque surprise. La réussite de base d’un jet d’intuition est 15, ou il s’oppose au jet de discrétion ennemi.
 Les jets de précision et de dégâts sont alors lancés contre les défenseurs, qui ne lanceront toutefois leur jet de vitesse de la phase d'engagement qu'à la fin du tour de tous les attaquants surprise.
 
-#### 13. L'attaque à deux armes
+### 13. L'attaque à deux armes
+
 Il est possible d'avoir une arme dans chaque main ou une double arme (double vibro-lame, double sabre-laser), ce qui permet d'attaquer une fois pour chaque main, donc 2 fois dans le même tour.
 Cependant, le prix à payer est un malus de -2D de précision à chaque main.
 Certains dons passifs, pouvoirs ou objets réduisent ce malus.
@@ -875,7 +896,8 @@ Une attaque à deux armes ou avec une double arme est considérée comme étant 
 Si le joueur bénéficie d'un effet lui donnant 1 action supplémentaire par tour, alors il peut effectuer 2 fois 1 action par main, ce qui revient à 4 attaques.
 Si le joueur utilise un don d'attaque, celui-ci s'appliquera à l'attaque de chacune de ses mains, car l'utilisation des deux mains ne constitue qu'une seule action.
 
-#### 14. Les différents statuts en combat
+### 14. Les différents statuts en combat
+
 Le statut de base d'un joueur en combat est « en pleine forme ».
 Cependant il peut arriver que les PJ ou les PNJ obtiennent des statuts particuliers en combat, positifs ou négatifs.
 Statuts positifs :
@@ -899,12 +921,14 @@ _Agonisant_ : Le défenseur vient de passer en dessous de 0 PV suite à une att
 _Inconscient_ : Le défenseur est à 0 PV ou moins mais son état est stable, il est donc seulement inconscient. Il ne peut plus rien faire tant qu'il ne repasse pas au dessus de 0 PV. Lorsqu’il repasse au dessus de 0 PV en combat, il a besoin d’un tour entier de récupération avant de pouvoir à nouveau effectuer des actions.
 _Mort_ : Le défenseur est passé en dessous de -10 PV, il est donc mort. À moins qu'un de ses alliés ou lui-même ait un don ou pouvoir particulier pour l'éviter, cet état est définitif. Voir point 20- la mort et le wipe.
 
-#### 15. La couverture
+### 15. La couverture
+
 Il est nécessaire de tenir compte de quand le personnage se cache derrière une caisse, une barrière, un container, etc. pour se protéger. La possibilité de le touche dépend alors de s'il est actif et continue d'attaquer et d'agir derrière sa position de couverture.
 Ainsi, s'il ne fait aucune action de mouvement ou d'attaque ce tour, alors il est impossible à toucher à distance, il est en statut caché.
 S'il continue à attaquer ou bouger de place, malgré la couverture il deviendra possible de le toucher, mais cela deviendra plus difficile à cause du statut à couvert, avec une difficulté de toucher relevée d'un seuil (+5).
 
-#### 16. Mode discrétion
+### 16. Mode discrétion
+
 Pour ne pas être vu des ennemis, un joueur qui n'est pas déjà repéré ou qui s'est mis hors de vue des ennemis peut lancer un jet de discrétion. Sauf exception, un 10 suffit à se cacher des droïdes, et un 15 suffit à se cacher d'ennemis basiques. Un 20 peut être nécessaire pour des ennemis perceptifs, et jusqu'à 30 pour un boss.
 Le seuil est abaissé de 5 si le joueur est planqué dans l'obscurité.  
 Attention : Certains objets ou pouvoirs ennemis permettent de détecter la présence des joueurs.  
@@ -913,13 +937,16 @@ Une action offensive dévoilera sa présence, et il ne pourra alors plus se cach
 Une action de soutien ou une action en défense ne dévoile pas sa présence. Il est donc possible de prodiguer des soins, utiliser un objet ou préparer une attaque pour le tour suivant.
 Une action de mouvement ne dévoilera pas forcément sa présence, mais alors le seuil de difficulté du jet de discrétion est augmenté de 5.
 
-#### 17. Mode posé
+### 17. Mode posé
+
 Pour certains dons ou pouvoirs, il peut être nécessaire d'être en mode posé. Cela signifie que le joueur n'a pas fait d'action de mouvement depuis le tour d'avant.
 
-#### 18. Mode défensif
+### 18. Mode défensif
+
 Si le joueur n'effectue aucune action d’attaque pendant son tour, il peut alors décider d’utiliser une action de soutien pour se mettre en position « en défense » et gagne ainsi +1D à ses éventuelles actions en défense à venir au cours du tour. Il gagne également un bonus de +1D à ses jets d'observation, audition, intuition, car il est aux aguets.
 
-#### 19. Les différents types de dégâts
+### 19. Les différents types de dégâts
+
 _Physique_ : Ce sont des coups physiques à mains nues ou à l'arme blanche. On peut s'en protéger avec un bouclier echani.  
 _Energétique_ : Ce sont les tirs de laser et les explosions. La plupart des dégâts sont énergétiques dans star wars. On peut s'en protéger avec un bouclier d'énergie.  
 _Sonique_ : Ignore def. Ce sont des dégâts d'onde qui atteignent directement les tympans, le cerveau et les organes des êtres vivants. Les droïdes y sont insensibles. On peut s'en protéger avec un bouclier echani.
@@ -931,20 +958,23 @@ _Impact_ : Ignore def. C'est l'effet de blast d'une puissante arme. Provoque le
 _Irradiant_ : Ignore def. Ce sont les dégâts provoquées par des armes chargées d'énergie radioactive. Provoque le statut irradié (jet de chance 9 pour ne pas avoir ce statut). Pas de bouclier possible.
 _Toxique_ : Ignore def. Ce sont les dégâts provoquées par le poison ou les produits toxiques. La dangerosité dépend du poison. Peut provoquer le statut empoisonné (jet de chance 7)
 
-#### 20. Batailles, balles perdues et tirs alliés
+### 20. Batailles, balles perdues et tirs alliés
+
 Il est des combats qui mettent en jeu tellement de protagonistes qu'il serait vain de vouloir tous les jouer les uns après les autres. Mais il est pourtant nécessaire de les encadrer avec des règles. Ces combats sont appelés des batailles. Elles mettent en scène plus d'une vingtaine de protagonistes.
 Dans ce cas, seuls les ennemis les plus proches sont décrits et mis en situation, et les Pjs ne s'occupent que de ces ennemis, le temps de fuir, de gagner du temps en attendant des alliés, d'attendre une nouvelle phase du scénario ou de la bataille, etc.
 Cependant, il ne serait pas logique d'ignorer la présence de tous les autres adversaires. Aussi, il y a des règles spécifiques au cours des batailles.
 La règle des balles perdues : À la fin du round, avant que les tours d'action ne se répètent, chaque PJ lance un dé de chance. Plus le nombre d'adversaire engagés dans la bataille est important, plus le jet de chance devra être élevé pour éviter de se prendre une balle perdue. Celle-ci pourra, selon le jet de chance ou les circonstances voulues par le MJ, causer entre 3DD et 5DD de dommage aux Pjs qui n'auront pas atteint le score nécessaire pour y échapper. Il n'y a aucun moyen de les esquiver ou de les parer, sauf avec des dons ou des pouvoirs de défense prévus pour. Le don « renvoi » des Jedis ne permet pas de renvoyer une balle perdue.
 La règle des tirs alliés : S'il y a également trop d'alliés pour qu'ils soient tous représentés dans la bataille, alors la même menace imprévisible planera sur les ennemis. Chaque joueur, au cours de son tour et en plus de ses propres actions, peut décider d'invoquer un tir allié contre un ennemi spécifique. Il tire un jet de chance, et s'il le réussit, l'ennemi visé est touché par un tir allié, dont la puissance est entre 3DD et 5DD selon le résultat du jet. La difficulté du jet de chance dépend du nombre d'alliés non représentés en soutien.
 
-#### 21. La fuite
+### 21. La fuite
+
 Il est possible pour les joueurs de s'enfuir en début de combat ou en cours de combat s'ils ne sont pas en ont la possibilité matérielle : C'est à dire s'ils ne sont pas inconscients, bloqués ou encerclés, et qu'ils ont une voie de repli accessible.  
 Ils doivent alors réussir un jet d'endurance opposé aux ennemis poursuivants.
 Ceux qui ne réussissent pas leur jet d'endurance sont rattrapés par les ennemis, et ceux qui ont réussi leur jet peuvent choisir de rester pour les aider ou de continuer fuir de leur côté.
 L'action de fuite compte simplement comme étant une action de mouvement, ce qui signifie qu'il est possible de continuer à attaquer, utiliser des objets ou faire des actions en défense tout en s'enfuyant.
 
-#### 22. La mort, le baroud d'honneur et le wipe
+### 22. La mort, le baroud d'honneur et le wipe
+
 Un joueur a été imprudent, ou malchanceux aux dés, ou bien le MJ a mal dosé la difficulté du combat ; bref, peu importe les raisons, mais il peut arriver que la **mort** frappe un personnage passé en dessous de -10PV.  
 Si c'est un personnage non joueur, il faudra faire avec, c'est la dure réalité du quotidien dans l'univers Star Wars.
 Si c'est le personnage d'un joueur qui meurt, dans ce cas il pleure puis il crée un nouveau personnage avec lequel jouer. Tous ses objets sont répartis entre les autres joueurs.  
@@ -963,10 +993,10 @@ Mais le MJ peut aussi choisir de faire simplement recommencer le groupe en l'ét
 
 Les combats spatiaux se déroulent aussi par tour, mais la différence est que chaque membre d'équipage a sa propre action à lancer, et qu'il faut ajouter les bonus du vaisseau aux jets lancés.
 
-**1 – L'engagement et le jet de pilotage**
+**1 – L'engagement et le jet de pilotage**  
 Lors de la phase d'engagement, à moins qu'il ne s'agisse d'une attaque surprise, chaque pilote engagé lance le jet de vitesse du vaisseau. L'ordre d'action se fera du jet le plus fort au jet le plus faible.
 
-**2 – Déroulement du tour du pilote**
+**2 – Déroulement du tour du pilote**  
 Le pilote dispose de 2 types d'actions possibles lors de son tour : action offensive et action de mouvement.  
 Actions offensives :  
 \- Utiliser les canons du vaisseau pour tirer  
@@ -1016,10 +1046,11 @@ Jet de chance 2 : Le vaisseau est dépressurisé.
 Jet de chance 1 : Le vaisseau est détruit.
 Voir le point suivant sur les statuts du vaisseau pour les détails des différents effets évoqués ci-dessus.
 
-**7 – Les statuts du vaisseau**
+**7 – Les statuts du vaisseau**  
 Le vaisseau peut changer de statut s'il est touché par une arme spéciale ou un coup décisif.  
 Cela change certaines choses.  
-<br/>_Ecrans désactivés_ : Les écrans du vaisseau sont désactivés. Ils se rechargent automatiquement en 1 tour complet. Pendant ce temps, ils n'encaissent plus les tirs des vaisseaux, ce qui peut rapidement devenir dramatique.
+
+_Ecrans désactivés_ : Les écrans du vaisseau sont désactivés. Ils se rechargent automatiquement en 1 tour complet. Pendant ce temps, ils n'encaissent plus les tirs des vaisseaux, ce qui peut rapidement devenir dramatique.
 _Commandes ionisées_ : Les commandes ne répondent plus, aucune action n'est possible sauf des actions de mouvement tant que les commandes ne sont pas déionisées avec un répartiteur (+jet de réparation à 15)
 _Canon touché_ : Un canon a été touché. S'il n'y en a qu'un sur le vaisseau, il n'est plus possible de tirer jusqu'à réparation (kit de réparation + jet réparation 15). Tant qu'il reste au moins 1 canon intact il est possible de continuer à tirer.
 _Propulseurs touchés_ : Le vaisseau perd 1D de maniabilité à chaque fois que les propulseurs sont touchés. S'ils sont touchés 3 fois, le vaisseau part à la dérive en inertie, il n'y a plus de mouvement possible. Les propulseurs peuvent cependant être réparés (kit de réparation + convecteur thermique)
@@ -1027,13 +1058,13 @@ _Hyperdrive touché_ : Le vaisseau perd son hyperdrive et donc sa capacité à 
 _Dépressurisation_ : Il y a un trou dans la coque. Le vaisseau se vide dangereusement de son air. Les PJ à l'intérieur peuvent colmater la brèche avec des plaques de Quadrillum. Au bout de 3 tours, les PJ à l'intérieur n'ont plus d'air et meurent s'ils n'ont pas de combinaison spatiale.  
 _Vaisseau détruit_ : Le vaisseau est passé en dessous de 0 PB. Il est alors gravement touché et s'arrête complètement de fonctionner, à moitié en cendres... Il peut alors être recueilli par un autre vaisseau allié, ou un vaisseau ennemi, ou se poser en urgence (s'écraser?) sur la planète la plus proche. Le vaisseau est irréparable et irrécupérable, et on ne peut récupérer dessus que des pièces détachées.
 
-**8 – La fuite et le passage en hyperespace**
+**8 – La fuite et le passage en hyperespace**  
 Il est possible de fuir en vaisseau mais la course-poursuite peut ensuite s'avérer risquée. Le mieux est donc de fuir en passant en hyperespace.
 La fuite : Pour pouvoir fuir, le vaisseau doit se situer hors de portée de tous les vaisseaux ennemis, puis tenter une manœuvre de fuite en réussissant un jet de pilotage opposé aux vaisseaux ennemis. Ensuite, pour que la fuite soit durable, il faut que la vitesse du vaisseau soit supérieure à celle des ennemis, en réussissant un jet de vitesse opposé des vaisseaux.
 Le passage en hyperespace : Le passage en hyperespace nécessite un calcul d'astrogation préalable qui prend un tour complet. Toute attaque reçue interrompt le passage en hyperespace. Le vaisseau doit donc soit être en situation de fuite, soit esquiver tous les tirs ennemis au cours du round pour pouvoir passer en hyperespace. De plus, si le jet d'astrogation est de moins de 15, alors le passage en hyperespace prend un 2e tour complet de préparation.
 Le traçage : un vaisseau qui prépare son passage en hyperespace peut être tracé par ses adversaires afin de déterminer quelle est sa destination. Un droïde astromec peut empêcher ce traçage s'il en a reçu l'ordre expressément par le PJ au moment du calcul de l'astrogation, mais dans ce cas l'astromec ne peut pas calculer en même temps l'astrogation. En l'absence d'un droïde astromec, chaque seuil atteint au jet d'astrogation (20-25-30) diminue la possibilité d'un traçage. Un jet de 30 en astrogation rend impossible tout traçage.
 
-**9- Le commandement de vaisseau-mère**
+**9- Le commandement de vaisseau-mère**  
 Il peut arriver la situation où les Pjs contrôlent un vaisseau soit trop gros pour être piloté par un seul pilote et nécessite des règles différentes de commandement.
 Ceci concerne notamment les frégates et les croiseurs.
 Sans le nombre minimum de personnels d’équipage, le vaisseau ne peut pas être contrôlé.
