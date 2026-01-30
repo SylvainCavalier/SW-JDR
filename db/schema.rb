@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_11_30_150000) do
+ActiveRecord::Schema[7.1].define(version: 2026_01_30_000006) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -237,6 +237,43 @@ ActiveRecord::Schema[7.1].define(version: 2025_11_30_150000) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "vitesse"
+  end
+
+  create_table "enemy_ship_weapons", force: :cascade do |t|
+    t.bigint "enemy_ship_id", null: false
+    t.string "weapon_type", null: false
+    t.string "name", null: false
+    t.integer "damage_mastery", default: 0
+    t.integer "damage_bonus", default: 0
+    t.integer "aim_mastery", default: 0
+    t.integer "aim_bonus", default: 0
+    t.integer "quantity_current"
+    t.integer "quantity_max"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["enemy_ship_id"], name: "index_enemy_ship_weapons_on_enemy_ship_id"
+  end
+
+  create_table "enemy_ships", force: :cascade do |t|
+    t.string "name", null: false
+    t.integer "hp_current", default: 0
+    t.integer "hp_max", default: 0
+    t.integer "shield_current", default: 0
+    t.integer "shield_max", default: 0
+    t.integer "speed_mastery", default: 0
+    t.integer "speed_bonus", default: 0
+    t.integer "piloting_mastery", default: 0
+    t.integer "piloting_bonus", default: 0
+    t.integer "scale", default: 0
+    t.boolean "shields_disabled", default: false
+    t.boolean "controls_ionized", default: false
+    t.boolean "weapon_damaged", default: false
+    t.boolean "thrusters_damaged", default: false
+    t.boolean "hyperdrive_broken", default: false
+    t.boolean "depressurized", default: false
+    t.boolean "ship_destroyed", default: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "enemy_skills", force: :cascade do |t|
@@ -525,6 +562,19 @@ ActiveRecord::Schema[7.1].define(version: 2025_11_30_150000) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "ship_combat_positions", force: :cascade do |t|
+    t.bigint "space_combat_state_id", null: false
+    t.bigint "participant_a_id", null: false
+    t.bigint "participant_b_id", null: false
+    t.integer "position", default: 0
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["participant_a_id"], name: "index_ship_combat_positions_on_participant_a_id"
+    t.index ["participant_b_id"], name: "index_ship_combat_positions_on_participant_b_id"
+    t.index ["space_combat_state_id", "participant_a_id", "participant_b_id"], name: "index_ship_combat_pos_unique_pair", unique: true
+    t.index ["space_combat_state_id"], name: "index_ship_combat_positions_on_space_combat_state_id"
+  end
+
   create_table "ship_objects", force: :cascade do |t|
     t.bigint "ship_id", null: false
     t.string "name"
@@ -616,6 +666,46 @@ ActiveRecord::Schema[7.1].define(version: 2025_11_30_150000) do
     t.datetime "updated_at", null: false
     t.bigint "carac_id"
     t.index ["carac_id"], name: "index_skills_on_carac_id"
+  end
+
+  create_table "space_combat_actions", force: :cascade do |t|
+    t.bigint "space_combat_state_id", null: false
+    t.bigint "actor_participant_id", null: false
+    t.bigint "actor_crew_user_id"
+    t.bigint "target_participant_id"
+    t.string "action_type", null: false
+    t.text "value"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["actor_crew_user_id"], name: "index_space_combat_actions_on_actor_crew_user_id"
+    t.index ["actor_participant_id"], name: "index_space_combat_actions_on_actor_participant_id"
+    t.index ["space_combat_state_id"], name: "index_space_combat_actions_on_space_combat_state_id"
+    t.index ["target_participant_id"], name: "index_space_combat_actions_on_target_participant_id"
+  end
+
+  create_table "space_combat_participants", force: :cascade do |t|
+    t.bigint "space_combat_state_id", null: false
+    t.string "participant_type", null: false
+    t.bigint "participant_id", null: false
+    t.integer "side", default: 0
+    t.integer "initiative_roll"
+    t.integer "action_order"
+    t.boolean "offensive_action_used", default: false
+    t.boolean "movement_action_used", default: false
+    t.integer "defense_malus", default: 0
+    t.boolean "has_played", default: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["participant_type", "participant_id"], name: "index_scp_on_participant"
+    t.index ["space_combat_state_id", "action_order"], name: "index_scp_on_state_and_order"
+    t.index ["space_combat_state_id"], name: "index_space_combat_participants_on_space_combat_state_id"
+  end
+
+  create_table "space_combat_states", force: :cascade do |t|
+    t.integer "turn", default: 1
+    t.boolean "active", default: true
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "sphero_skills", force: :cascade do |t|
@@ -795,6 +885,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_11_30_150000) do
   add_foreign_key "embryo_skills", "embryos"
   add_foreign_key "embryo_skills", "skills"
   add_foreign_key "embryos", "users"
+  add_foreign_key "enemy_ship_weapons", "enemy_ships"
   add_foreign_key "enemy_skills", "enemies"
   add_foreign_key "enemy_skills", "skills"
   add_foreign_key "equipments", "users"
@@ -821,6 +912,9 @@ ActiveRecord::Schema[7.1].define(version: 2025_11_30_150000) do
   add_foreign_key "pet_statuses", "pets"
   add_foreign_key "pet_statuses", "statuses"
   add_foreign_key "pets", "statuses"
+  add_foreign_key "ship_combat_positions", "space_combat_participants", column: "participant_a_id"
+  add_foreign_key "ship_combat_positions", "space_combat_participants", column: "participant_b_id"
+  add_foreign_key "ship_combat_positions", "space_combat_states"
   add_foreign_key "ship_objects", "ships"
   add_foreign_key "ship_weapons", "ships"
   add_foreign_key "ships", "groups"
@@ -828,6 +922,11 @@ ActiveRecord::Schema[7.1].define(version: 2025_11_30_150000) do
   add_foreign_key "ships_skills", "ships"
   add_foreign_key "ships_skills", "skills"
   add_foreign_key "skills", "caracs"
+  add_foreign_key "space_combat_actions", "space_combat_participants", column: "actor_participant_id"
+  add_foreign_key "space_combat_actions", "space_combat_participants", column: "target_participant_id"
+  add_foreign_key "space_combat_actions", "space_combat_states"
+  add_foreign_key "space_combat_actions", "users", column: "actor_crew_user_id"
+  add_foreign_key "space_combat_participants", "space_combat_states"
   add_foreign_key "sphero_skills", "skills"
   add_foreign_key "sphero_skills", "spheros"
   add_foreign_key "spheros", "users"

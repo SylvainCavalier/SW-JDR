@@ -1,0 +1,37 @@
+<%# Affichage des valeurs de PV ou bouclier pour un vaisseau %>
+<div class="d-flex align-items-center justify-content-center"
+     data-controller="space-combat-permissions"
+     data-participant-id="<%= participant.id %>"
+     data-participant-side="<%= participant.side %>">
+
+  <span class="combat-controls">
+    <button type="button" class="btn btn-outline-info btn-sm me-1"
+            data-action="click->space-combat#decrementStat"
+            data-participant-id="<%= participant.id %>"
+            data-field="<%= field %>">-</button>
+  </span>
+
+  <% value_classes = ["fw-bold", "mx-1"] %>
+  <% if field == 'hp_current' && max.to_i.positive? %>
+    <% if current.to_i <= 0 %>
+      <% value_classes << 'text-danger' %>
+    <% elsif current.to_f < (max.to_f * 0.25) %>
+      <% value_classes << 'text-warning' %>
+    <% elsif current.to_f < (max.to_f * 0.5) %>
+      <% value_classes << 'text-info' %>
+    <% end %>
+  <% elsif field == 'shield_current' %>
+    <% value_classes << 'text-primary' %>
+  <% end %>
+
+  <span class="<%= value_classes.join(' ') %>">
+    <%= current %>/<%= max %>
+  </span>
+
+  <span class="combat-controls">
+    <button type="button" class="btn btn-outline-info btn-sm ms-1"
+            data-action="click->space-combat#incrementStat"
+            data-participant-id="<%= participant.id %>"
+            data-field="<%= field %>">+</button>
+  </span>
+</div>

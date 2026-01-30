@@ -245,6 +245,23 @@ Rails.application.routes.draw do
   post "combat/add_pj", to: "combat#add_pj_to_combat", as: :add_pj_to_combat
   post "combat/add_pet", to: "combat#add_pet_to_combat", as: :add_pet_to_combat
 
+  # Combat Spatial
+  get 'space_combat', to: 'space_combat#index', as: 'space_combat'
+  get 'mj/space_combat', to: 'space_combat#index', as: 'mj_space_combat'
+  post   'space_combat/add_ship',          to: 'space_combat#add_ship'
+  post   'space_combat/add_enemy_ship',    to: 'space_combat#add_enemy_ship'
+  delete 'space_combat/remove_participant/:id', to: 'space_combat#remove_participant', as: 'space_combat_remove_participant'
+  post   'space_combat/roll_initiative',   to: 'space_combat#roll_initiative'
+  patch  'space_combat/change_position',   to: 'space_combat#change_position'
+  patch  'space_combat/update_stat',       to: 'space_combat#update_stat', as: 'space_combat_update_stat'
+  patch  'space_combat/update_damage_flag', to: 'space_combat#update_damage_flag'
+  post   'space_combat/fire_weapon',       to: 'space_combat#fire_weapon'
+  patch  'space_combat/defend',            to: 'space_combat#defend'
+  patch  'space_combat/end_turn',          to: 'space_combat#end_turn'
+  patch  'space_combat/next_turn',         to: 'space_combat#next_turn'
+  patch  'space_combat/end_combat',        to: 'space_combat#end_combat'
+  patch  'space_combat/override_position', to: 'space_combat#override_position'
+
   post 'reset_health', to: 'mj#reset_health', as: :reset_health
 
   get 'rules', to: 'pages#rules', as: 'rules'

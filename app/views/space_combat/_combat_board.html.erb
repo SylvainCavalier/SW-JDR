@@ -1,0 +1,63 @@
+<%# Board principal du combat spatial - cible de broadcast Turbo %>
+<div data-controller="space-combat space-combat-permissions">
+
+  <%= render "space_combat/turn_counter", combat: combat, current_user: current_user %>
+
+  <% if current_user&.group&.name == "MJ" %>
+    <div class="d-flex justify-content-center gap-3 mb-4">
+      <button class="btn btn-outline-info btn-sm"
+              data-action="click->space-combat#rollInitiative">
+        Lancer l'initiative
+      </button>
+      <button class="btn btn-outline-warning btn-sm"
+              data-action="click->space-combat#nextTurn">
+        Tour suivant
+      </button>
+      <button class="btn btn-outline-danger btn-sm"
+              data-action="click->space-combat#endCombat"
+              data-confirm="Terminer le combat spatial ?">
+        Fin du combat
+      </button>
+    </div>
+  <% end %>
+
+  <% current_participant = combat.current_participant %>
+  <% if current_participant %>
+    <div class="text-center mb-3">
+      <span class="badge bg-info" style="font-size: 1rem;">
+        Au tour de : <strong><%= current_participant.ship_name %></strong>
+      </span>
+      <% if current_participant.movement_action_used %>
+        <span class="badge bg-secondary ms-1">Mouvement utilisé</span>
+      <% end %>
+      <% if current_participant.offensive_action_used %>
+        <span class="badge bg-secondary ms-1">Action offensive utilisée</span>
+      <% end %>
+    </div>
+  <% end %>
+
+  <% if participants.any? %>
+    <div class="row">
+      <% participants.each do |participant| %>
+        <div class="col-md-6 col-lg-4 mb-3">
+          <%= render "space_combat/ship_card",
+                     participant: participant,
+                     combat: combat,
+                     positions: positions,
+                     participants: participants,
+                     current_user: current_user,
+                     current_participant: current_participant %>
+        </div>
+      <% end %>
+    </div>
+
+    <%= render "space_combat/position_matrix",
+               positions: positions,
+               combat: combat,
+               current_user: current_user %>
+  <% else %>
+    <div class="text-center text-muted py-5">
+      <p>Aucun vaisseau dans le combat. Le MJ doit ajouter des participants.</p>
+    </div>
+  <% end %>
+</div>

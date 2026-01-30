@@ -1,0 +1,184 @@
+<%
+  ship = participant.participant
+  is_mj = current_user&.group&.name == "MJ"
+  is_current = current_participant == participant
+  is_played = participant.has_played
+  side_class = participant.side.zero? ? "border-info" : "border-danger"
+  enemies_list = participants.select { |p| !participant.allied_with?(p) }
+%>
+
+<div class="card <%= side_class %> <%= 'opacity-50' if is_played %>"
+     id="ship_card_<%= participant.id %>"
+     style="background: rgba(33, 37, 41, 0.95); border-width: 2px;">
+
+  <div class="card-header d-flex justify-content-between align-items-center"
+       style="background: rgba(23, 162, 184, 0.1); border-bottom: 1px solid rgba(23, 162, 184, 0.3);">
+    <div>
+      <strong style="color: <%= participant.side.zero? ? '#17a2b8' : '#dc3545' %>;">
+        <%= ship.name %>
+      </strong>
+      <% if participant.action_order %>
+        <span class="badge bg-dark ms-1">#<%= participant.action_order %></span>
+      <% end %>
+      <% if is_current %>
+        <span class="badge bg-info ms-1">Actif</span>
+      <% end %>
+      <% if is_played %>
+        <span class="badge bg-secondary ms-1">Joué</span>
+      <% end %>
+    </div>
+    <% if is_mj %>
+      <button class="btn btn-outline-danger btn-sm"
+              data-action="click->space-combat#removeParticipant"
+              data-participant-id="<%= participant.id %>"
+              data-confirm="Retirer <%= ship.name %> du combat ?">
+        &times;
+      </button>
+    <% end %>
+  </div>
+
+  <div class="card-body p-2">
+    <%# PV %>
+    <div class="d-flex align-items-center justify-content-between mb-2">
+      <small class="text-muted me-2">PV</small>
+      <%= render "space_combat/ship_stat_value",
+                 participant: participant,
+                 ship: ship,
+                 field: "hp_current",
+                 current: ship.hp_current,
+                 max: ship.hp_max %>
+    </div>
+
+    <%# Boucliers %>
+    <% if ship.respond_to?(:shield_max) && ship.shield_max.to_i.positive? %>
+      <div class="d-flex align-items-center justify-content-between mb-2">
+        <small class="text-muted me-2">Bouclier</small>
+        <%= render "space_combat/ship_stat_value",
+                   participant: participant,
+                   ship: ship,
+                   field: "shield_current",
+                   current: ship.shield_current,
+                   max: ship.shield_max %>
+      </div>
+    <% end %>
+
+    <%# Damage flags %>
+    <div class="mb-2">
+      <% ship.status_labels.each do |label| %>
+        <% flag_class = label == "Intact" ? "bg-success" : "bg-danger" %>
+        <span class="badge <%= flag_class %> me-1" style="font-size: 0.7rem;"><%= label %></span>
+      <% end %>
+    </div>
+
+    <% if is_mj %>
+      <div class="mb-2">
+        <small class="text-muted d-block mb-1">Flags dégâts :</small>
+        <div class="d-flex flex-wrap gap-1">
+          <% %w[shields_disabled controls_ionized weapon_damaged thrusters_damaged hyperdrive_broken depressurized ship_destroyed].each do |flag| %>
+            <button class="btn btn-sm <%= ship.send(flag) ? 'btn-danger' : 'btn-outline-secondary' %>"
+                    style="font-size: 0.65rem; padding: 2px 6px;"
+                    data-action="click->space-combat#toggleDamageFlag"
+                    data-participant-id="<%= participant.id %>"
+                    data-flag="<%= flag %>">
+              <%= flag.humanize %>
+            </button>
+          <% end %>
+        </div>
+      </div>
+    <% end %>
+
+    <%# Armes %>
+    <% weapons = ship.is_a?(EnemyShip) ? ship.enemy_ship_weapons : ship.ship_weapons.where(weapon_type: %w[main secondary tourelle missile torpille special]) %>
+    <% if weapons.any? %>
+      <div class="mb-2">
+        <small class="text-muted d-block mb-1">Armes :</small>
+        <% weapons.each do |weapon| %>
+          <div class="d-flex align-items-center justify-content-between" style="font-size: 0.8rem;">
+            <span><%= weapon.name %> <small class="text-muted">(<%= weapon.weapon_type %>)</small></span>
+            <% if weapon.respond_to?(:quantity_current) && weapon.quantity_current %>
+              <span class="badge bg-dark"><%= weapon.quantity_current %>/<%= weapon.quantity_max %></span>
+            <% end %>
+          </div>
+        <% end %>
+      </div>
+    <% end %>
+
+    <%# Actions de combat (mouvement, tir, esquive, fin de tour) %>
+    <% if is_mj || (participant.side.zero? && ship.is_a?(Ship) && ship.group_id == current_user&.group_id) %>
+      <div class="mt-2 border-top pt-2" style="border-color: rgba(23, 162, 184, 0.3) !important;">
+
+        <%# Mouvement %>
+        <% unless participant.movement_action_used %>
+          <div class="mb-2">
+            <small class="text-muted d-block">Mouvement vers :</small>
+            <% enemies_list.each do |enemy_p| %>
+              <div class="dropdown d-inline-block me-1 mb-1">
+                <button class="btn btn-outline-info btn-sm dropdown-toggle" style="font-size: 0.7rem;"
+                        data-bs-toggle="dropdown">
+                  <%= enemy_p.ship_name %>
+                </button>
+                <ul class="dropdown-menu dropdown-menu-dark">
+                  <% %w[poursuivant face_a_face vol_parallele hors_de_portee].each do |pos| %>
+                    <li>
+                      <button class="dropdown-item" style="font-size: 0.8rem;"
+                              data-action="click->space-combat#changePosition"
+                              data-mover-id="<%= participant.id %>"
+                              data-target-id="<%= enemy_p.id %>"
+                              data-desired-position="<%= pos %>">
+                        <%= { "poursuivant" => "Poursuivre", "face_a_face" => "Face à face",
+                              "vol_parallele" => "Vol parallèle", "hors_de_portee" => "Hors de portée" }[pos] %>
+                      </button>
+                    </li>
+                  <% end %>
+                </ul>
+              </div>
+            <% end %>
+          </div>
+        <% end %>
+
+        <%# Tir %>
+        <% unless participant.offensive_action_used %>
+          <div class="mb-2">
+            <small class="text-muted d-block">Tir sur :</small>
+            <% enemies_list.each do |enemy_p| %>
+              <% pos_record = ShipCombatPosition.find_pair(combat.id, participant.id, enemy_p.id) %>
+              <% rel_pos = pos_record&.relative_position_for(participant) %>
+              <% weapons.each do |weapon| %>
+                <% wtype = weapon.is_a?(EnemyShipWeapon) ? weapon.weapon_type : weapon.weapon_type %>
+                <% can_fire = rel_pos && SpaceCombatRules.can_fire?(rel_pos, wtype) %>
+                <button class="btn btn-sm me-1 mb-1 <%= can_fire ? 'btn-outline-warning' : 'btn-outline-secondary disabled' %>"
+                        style="font-size: 0.7rem;"
+                        <%= 'disabled' unless can_fire %>
+                        data-action="click->space-combat#fireWeapon"
+                        data-attacker-id="<%= participant.id %>"
+                        data-target-id="<%= enemy_p.id %>"
+                        data-weapon-name="<%= weapon.name %>"
+                        data-weapon-type="<%= wtype %>">
+                  <%= weapon.name %> &rarr; <%= enemy_p.ship_name %>
+                </button>
+              <% end %>
+            <% end %>
+          </div>
+        <% end %>
+
+        <%# Esquive %>
+        <button class="btn btn-outline-info btn-sm me-1"
+                style="font-size: 0.75rem;"
+                data-action="click->space-combat#defend"
+                data-participant-id="<%= participant.id %>">
+          Esquive (<%= participant.defense_malus %>)
+        </button>
+
+        <%# Fin de tour %>
+        <% unless participant.has_played %>
+          <button class="btn btn-outline-secondary btn-sm"
+                  style="font-size: 0.75rem;"
+                  data-action="click->space-combat#endParticipantTurn"
+                  data-participant-id="<%= participant.id %>">
+            Fin du tour
+          </button>
+        <% end %>
+      </div>
+    <% end %>
+  </div>
+</div>

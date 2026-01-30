@@ -1,0 +1,152 @@
+<%# Formulaire de création d'un vaisseau ennemi %>
+<div class="enemy-form-box p-3" style="border-color: rgba(23, 162, 184, 0.3); box-shadow: 0 0 20px rgba(23, 162, 184, 0.2);">
+  <h5 style="color: #17a2b8;">Ajouter un vaisseau ennemi</h5>
+
+  <%= form_with url: "/space_combat/add_enemy_ship", method: :post, local: true,
+                data: { controller: "nested-form" } do |f| %>
+
+    <div class="row g-2 mb-2">
+      <div class="col-md-4">
+        <%= f.label :name, "Nom", class: "form-label text-white" %>
+        <%= f.text_field :name, class: "form-control form-control-sm", required: true,
+                         placeholder: "TIE Fighter" %>
+      </div>
+      <div class="col-md-2">
+        <%= f.label :hp_max, "PV max", class: "form-label text-white" %>
+        <%= f.number_field :hp_max, class: "form-control form-control-sm", value: 10, min: 1 %>
+      </div>
+      <div class="col-md-2">
+        <%= f.label :shield_max, "Bouclier max", class: "form-label text-white" %>
+        <%= f.number_field :shield_max, class: "form-control form-control-sm", value: 0, min: 0 %>
+      </div>
+      <div class="col-md-2">
+        <%= f.label :scale, "Échelle", class: "form-label text-white" %>
+        <%= f.select :scale, (0..5).map { |i| [EnemyShip::SCALE_NAMES[i], i] },
+                     {}, class: "form-select form-select-sm" %>
+      </div>
+    </div>
+
+    <div class="row g-2 mb-2">
+      <div class="col-md-3">
+        <%= f.label :speed_mastery, "Vitesse (dés)", class: "form-label text-white" %>
+        <%= f.number_field :speed_mastery, class: "form-control form-control-sm", value: 3, min: 0 %>
+      </div>
+      <div class="col-md-3">
+        <%= f.label :speed_bonus, "Vitesse (bonus)", class: "form-label text-white" %>
+        <%= f.number_field :speed_bonus, class: "form-control form-control-sm", value: 0, min: 0 %>
+      </div>
+      <div class="col-md-3">
+        <%= f.label :piloting_mastery, "Pilotage (dés)", class: "form-label text-white" %>
+        <%= f.number_field :piloting_mastery, class: "form-control form-control-sm", value: 3, min: 0 %>
+      </div>
+      <div class="col-md-3">
+        <%= f.label :piloting_bonus, "Pilotage (bonus)", class: "form-label text-white" %>
+        <%= f.number_field :piloting_bonus, class: "form-control form-control-sm", value: 0, min: 0 %>
+      </div>
+    </div>
+
+    <hr style="border-color: rgba(23, 162, 184, 0.3);">
+    <h6 style="color: #17a2b8;">Armes</h6>
+
+    <div id="enemy_weapons_container">
+      <%= f.fields_for :enemy_ship_weapons, EnemyShipWeapon.new do |wf| %>
+        <div class="row g-2 mb-2 weapon-fields">
+          <div class="col-md-3">
+            <%= wf.text_field :name, class: "form-control form-control-sm",
+                              placeholder: "Nom de l'arme" %>
+          </div>
+          <div class="col-md-2">
+            <%= wf.select :weapon_type,
+                          EnemyShipWeapon::WEAPON_TYPES.map { |t| [t.capitalize, t] },
+                          {}, class: "form-select form-select-sm" %>
+          </div>
+          <div class="col-md-1">
+            <%= wf.number_field :damage_mastery, class: "form-control form-control-sm",
+                                placeholder: "Dég D", value: 5, min: 0, title: "Dégâts (dés)" %>
+          </div>
+          <div class="col-md-1">
+            <%= wf.number_field :damage_bonus, class: "form-control form-control-sm",
+                                placeholder: "Dég B", value: 0, min: 0, title: "Dégâts (bonus)" %>
+          </div>
+          <div class="col-md-1">
+            <%= wf.number_field :aim_mastery, class: "form-control form-control-sm",
+                                placeholder: "Vis D", value: 0, min: 0, title: "Visée (dés)" %>
+          </div>
+          <div class="col-md-1">
+            <%= wf.number_field :aim_bonus, class: "form-control form-control-sm",
+                                placeholder: "Vis B", value: 0, min: 0, title: "Visée (bonus)" %>
+          </div>
+          <div class="col-md-1">
+            <%= wf.number_field :quantity_max, class: "form-control form-control-sm",
+                                placeholder: "Mun", min: 0, title: "Munitions max (vide = illimité)" %>
+          </div>
+          <div class="col-md-1">
+            <button type="button" class="btn btn-outline-danger btn-sm"
+                    onclick="this.closest('.weapon-fields').remove()">
+              &times;
+            </button>
+          </div>
+        </div>
+      <% end %>
+    </div>
+
+    <button type="button" class="btn btn-outline-info btn-sm mb-3"
+            onclick="addWeaponFields()">
+      + Arme
+    </button>
+
+    <div>
+      <%= f.submit "Ajouter le vaisseau ennemi", class: "btn btn-info btn-sm" %>
+    </div>
+  <% end %>
+</div>
+
+<script>
+  function addWeaponFields() {
+    const container = document.getElementById('enemy_weapons_container');
+    const index = container.querySelectorAll('.weapon-fields').length;
+    const html = `
+      <div class="row g-2 mb-2 weapon-fields">
+        <div class="col-md-3">
+          <input type="text" name="enemy_ship[enemy_ship_weapons_attributes][${index}][name]"
+                 class="form-control form-control-sm" placeholder="Nom de l'arme">
+        </div>
+        <div class="col-md-2">
+          <select name="enemy_ship[enemy_ship_weapons_attributes][${index}][weapon_type]"
+                  class="form-select form-select-sm">
+            <option value="canon">Canon</option>
+            <option value="tourelle">Tourelle</option>
+            <option value="missile">Missile</option>
+            <option value="torpille">Torpille</option>
+            <option value="special">Special</option>
+          </select>
+        </div>
+        <div class="col-md-1">
+          <input type="number" name="enemy_ship[enemy_ship_weapons_attributes][${index}][damage_mastery]"
+                 class="form-control form-control-sm" value="5" min="0" title="Dégâts (dés)">
+        </div>
+        <div class="col-md-1">
+          <input type="number" name="enemy_ship[enemy_ship_weapons_attributes][${index}][damage_bonus]"
+                 class="form-control form-control-sm" value="0" min="0" title="Dégâts (bonus)">
+        </div>
+        <div class="col-md-1">
+          <input type="number" name="enemy_ship[enemy_ship_weapons_attributes][${index}][aim_mastery]"
+                 class="form-control form-control-sm" value="0" min="0" title="Visée (dés)">
+        </div>
+        <div class="col-md-1">
+          <input type="number" name="enemy_ship[enemy_ship_weapons_attributes][${index}][aim_bonus]"
+                 class="form-control form-control-sm" value="0" min="0" title="Visée (bonus)">
+        </div>
+        <div class="col-md-1">
+          <input type="number" name="enemy_ship[enemy_ship_weapons_attributes][${index}][quantity_max]"
+                 class="form-control form-control-sm" min="0" title="Munitions max">
+        </div>
+        <div class="col-md-1">
+          <button type="button" class="btn btn-outline-danger btn-sm"
+                  onclick="this.closest('.weapon-fields').remove()">&times;</button>
+        </div>
+      </div>
+    `;
+    container.insertAdjacentHTML('beforeend', html);
+  }
+</script>

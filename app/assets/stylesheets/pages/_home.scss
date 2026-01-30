@@ -98,6 +98,17 @@
   height: auto;
 }
 
+.ship-fight-btn {
+  display: flex;
+  align-items: center;
+}
+
+.ship-fight-icon {
+  width: clamp(50px, 10vw, 130px);
+  margin-top: 5px;
+  height: auto;
+}
+
 .holonews-btn {
   position: relative;
   display: flex;

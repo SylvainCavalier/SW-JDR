@@ -1,0 +1,43 @@
+<% content_for :title, "Combat Spatial" %>
+
+<div class="space-combat-container"
+     data-user-role="<%= current_user&.group&.name %>"
+     data-user-id="<%= current_user&.id %>"
+     data-user-group-id="<%= current_user&.group_id %>">
+
+  <%= turbo_stream_from "space_combat_updates" %>
+
+  <h1 class="text-center mb-4" style="color: #17a2b8; text-shadow: 0 0 20px rgba(23, 162, 184, 0.5);">
+    Combat Spatial
+  </h1>
+
+  <% if current_user&.group&.name == "MJ" %>
+    <div class="row mb-4">
+      <div class="col-md-6">
+        <%= render "space_combat/add_enemy_ship_form" %>
+      </div>
+      <div class="col-md-6">
+        <%= render "space_combat/add_player_ship_form", ships: @ships %>
+      </div>
+    </div>
+  <% end %>
+
+  <div id="space_combat_main">
+    <%= render "space_combat/combat_board",
+               combat: @combat,
+               participants: @participants,
+               positions: @positions,
+               current_user: current_user %>
+  </div>
+
+  <div class="combat-log-container mt-4">
+    <h4 style="color: #17a2b8;">Journal de bord</h4>
+    <div id="space_combat_log" class="combat-log" style="max-height: 400px; overflow-y: auto;">
+      <% @actions.reverse_each do |action| %>
+        <%= render "space_combat/combat_action", action: action %>
+      <% end %>
+    </div>
+  </div>
+
+  <%= link_to "Retour", current_user.group.name == "MJ" ? mj_dashboard_path : root_path, class: "btn btn-outline-secondary go-back" %>
+</div>

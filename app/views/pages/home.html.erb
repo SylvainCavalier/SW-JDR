@@ -57,13 +57,6 @@
           <img src="<%= asset_path('function.svg') %>" alt="Function UI" class="ui-function">
         <% end %>
 
-        <!-- Gestion de combat -->
-        <div class="fight-btn">
-          <%= link_to combat_path do %>
-            <img src="<%= asset_path('fighticon2t.png') %>" alt="Combat" class="fight-icon">
-          <% end %>
-        </div>
-
         <!-- Bouton Holonews avec compteur dynamique -->
         <div class="holonews-btn">
           <%= link_to holonews_path, class: "position-relative" do %>
@@ -71,6 +64,20 @@
             <turbo-frame id="user_<%= current_user.id %>_holonews_counter">
               <%= render "holonews/count", unread_count: { user_id: current_user.id, count: @unread_holonews_count } %>
             </turbo-frame>
+          <% end %>
+        </div>
+
+        <!-- Gestion de combat -->
+        <div class="fight-btn">
+          <%= link_to combat_path do %>
+            <img src="<%= asset_path('fighticon2t.png') %>" alt="Combat" class="fight-icon">
+          <% end %>
+        </div>
+
+        <!-- Combat spatial -->
+        <div class="ship-fight-btn">
+          <%= link_to space_combat_path do %>
+            <img src="<%= asset_path('ship-fight.png') %>" alt="Combat Spatial" class="ship-fight-icon">
           <% end %>
         </div>
       </div>

@@ -1,0 +1,6 @@
+<%# Ligne de log d'action de combat spatial %>
+<div class="combat-action mb-2" style="color: <%= space_action_color(action) %>;">
+  <small class="text-muted"><%= action.created_at.strftime("%H:%M:%S") %></small>
+  <strong><%= action.actor_participant&.ship_name %></strong>
+  <span><%= action.value %></span>
+</div>
