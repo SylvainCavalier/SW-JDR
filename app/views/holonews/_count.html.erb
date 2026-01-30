@@ -1,7 +1,7 @@
 <turbo-frame id="user_<%= unread_count[:user_id] %>_holonews_counter">
   <% if unread_count[:count].to_i > 0 %>
     <span class="holonews-count">
-      <span class="badge rounded-pill bg-danger position-absolute top-0 start-100 translate-middle">
+      <span class="badge rounded-pill bg-danger position-absolute">
         <%= unread_count[:count].to_i %>
       </span>
     </span>

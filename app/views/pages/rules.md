@@ -575,7 +575,7 @@ Exemples d’actions possibles en fonction du jet de dés :
 
 **Substances** : Détermine les connaissances du personnage en terme de substances diverses et variées, et sa capacité à en deviner les effets, voire à les utiliser. Cela peut permettre au personnage de déterminer si quelque chose est empoisonné ou non, par exemple. Compétence utile, des jets de dés sont parfois demandés dans cette compétence et il n’est donc pas inutile de l’améliorer.
 
-**Médecine** : Détermine la capacité du personnage à porter les premiers secours et à soigner. Pour stabiliser une personne en statut agonisant sans aucun médipack, le personnage doit faire au moins 15 à son jet de médecine. Lors de l’utilisation d’un médipack, c’est la moitié du jet de médecine qui sera rendu en équivalent PV à la personne soignée. Cette compétence servira aussi aux pouvoirs de soin des Jedis. Compétence essentielle, des jets sont demandés très souvent dans cette compétence et il est fortement recommandé que des personnages de l’équipe l’améliorent.
+**Medecine** : Détermine la capacité du personnage à porter les premiers secours et à soigner. Pour stabiliser une personne en statut agonisant sans aucun médipack, le personnage doit faire au moins 15 à son jet de médecine. Lors de l’utilisation d’un médipack, c’est la moitié du jet de médecine qui sera rendu en équivalent PV à la personne soignée. Cette compétence servira aussi aux pouvoirs de soin des Jedis. Compétence essentielle, des jets sont demandés très souvent dans cette compétence et il est fortement recommandé que des personnages de l’équipe l’améliorent.
 
 **Langage** : Détermine la capacité du personnage à comprendre d’autres langues que la langue commune galactique (le français, évidemment). Votre personnage connaît de base la langue commune + les langues connues sur sa planète d’origine, en fonction de sa race donc. Ensuite, plus la langue est compliquée, plus il faudra un bon score de langage. Il suffit qu’un seul membre du groupe comprenne le langage pour que tous les autres le comprennent aussi, sans besoin de tout traduire, par souci de simplicité dans la mécanique de jeu, bien que parfois pour le Role Play, une conversation laborieuse avec des hommes des sables puisse aussi être intéressante. Compétence secondaire.
 
@@ -592,7 +592,7 @@ Exemples :
 
 **Astrophysique** : Détermine les connaissances du personnage en matière de sciences physiques et astronomie. La position des étoiles, les caractéristiques d’une nébuleuse, les secrets d’un pulsar ou d’une supernova… Des savoirs tout à fait abstraits et secondaires lorsque vous vous dorez la pilule au soleil sur votre chaise longue sur Tatooïne, mais beaucoup plus utiles lorsque votre vaisseau commence à être aspiré par un trou noir après une sortie d’hyperespace mouvementée…
 
-**Planètes** : Détermine les connaissances du personnage dans les différents systèmes planétaires de la galaxie Star Wars. Avant chaque sortie d’hyperespace à l’approche d’une nouvelle planète, les meilleurs connaisseurs de cette compétence lancent un jet, et en fonction du résultat de celui-ci, le MJ révèle un certain nombre d’informations sur la planète en question, ses habitants, sa capitale, son climat, sa faune et sa flore, ses principaux points d’intérêt et ses dangers… Compétence utile.
+**Planetes** : Détermine les connaissances du personnage dans les différents systèmes planétaires de la galaxie Star Wars. Avant chaque sortie d’hyperespace à l’approche d’une nouvelle planète, les meilleurs connaisseurs de cette compétence lancent un jet, et en fonction du résultat de celui-ci, le MJ révèle un certain nombre d’informations sur la planète en question, ses habitants, sa capitale, son climat, sa faune et sa flore, ses principaux points d’intérêt et ses dangers… Compétence utile.
 
 **Savoir** **Jedi** : Détermine les connaissances du personnage dans la technologie Jedi, les techniques Jedi, les artefacts Jedi, l’histoire des Jedi à travers les âges… Peut revêtir une certaine utilité lors de la découverte d’un étrange holocron sith, ou de mystérieuses ruines Jedi abandonnées… Compétence secondaire.
 
@@ -618,7 +618,7 @@ Pour parler clairement : si l’adversaire lance une grenade et fait 15 en lanc
 Oui, c’est chiant les dégâts de zone. Mais rassurez-vous, avec une bonne res corp et une bonne armure, rien qu’une réduction de -1DD ou -2DD sur les dégâts de l’adversaire suffira largement à vous préserver du danger !
 Compétence essentielle, comme vous l’aurez compris.
 
-**Discrétion** (Discr) : Détermine la capacité à se mouvoir sans faire de bruit, à se cacher, ou à escamoter des objets sur soi. C’est aussi une compétence déterminante pour une mission de surveillance, pour voir sans être vu, pour un assassinat discret, une mission de surveillance, ou encore pour réussir une embuscade. La discrétion est très importante pour un voleur ou un assassin, mais pas seulement. Compétence très utile.
+**Discretion** (Discr) : Détermine la capacité à se mouvoir sans faire de bruit, à se cacher, ou à escamoter des objets sur soi. C’est aussi une compétence déterminante pour une mission de surveillance, pour voir sans être vu, pour un assassinat discret, une mission de surveillance, ou encore pour réussir une embuscade. La discrétion est très importante pour un voleur ou un assassin, mais pas seulement. Compétence très utile.
 
 **Habileté** (Hab) : Détermine la capacité à garder l’équilibre, à ne pas faire tomber un objet, ou à soi-même rester accroché à une chose en mouvement. Mine de rien, tout cela arrive plus souvent qu’on ne le croit... Compétence utile.
 
@@ -670,15 +670,15 @@ Tableau de marchandage :
 
 ##### **TECHNIQUE**
 
-**Réparation** : Détermine la faculté à réparer toutes sortes de choses : des vaisseaux, des droïdes, ou des navordinateurs cassés. Peut être utile, surtout pour le vaisseau de l’équipe, ou si l’équipe est accompagnée d’un droïde. Il est donc conseillé d’avoir au moins un réparateur dans l’équipe.
+**Reparation** : Détermine la faculté à réparer toutes sortes de choses : des vaisseaux, des droïdes, ou des navordinateurs cassés. Peut être utile, surtout pour le vaisseau de l’équipe, ou si l’équipe est accompagnée d’un droïde. Il est donc conseillé d’avoir au moins un réparateur dans l’équipe.
 
-**Ingénierie** : Détermine la faculté du personnage à fabriquer des choses. Cette compétence est très utile pour les classes de personnage qui ont des dons d’artisanat, mais totalement inutile pour les autres classes. Le MJ demandera très rarement un jet d’ingénierie pour autre chose.
+**Ingenierie** : Détermine la faculté du personnage à fabriquer des choses. Cette compétence est très utile pour les classes de personnage qui ont des dons d’artisanat, mais totalement inutile pour les autres classes. Le MJ demandera très rarement un jet d’ingénierie pour autre chose.
 
 **Sécurité** : Détermine la capacité du personnage à pirater les systèmes de verrouillage électroniques, ou désactiver des caméras de surveillance ou des systèmes de sécurité quelconques. Compétence utile pour au moins un personnage dans l’équipe, même si ce sera surtout utile pour des missions d’infiltration ou d’évasion, et qu’il y a souvent d’autres alternatives.
 
 **Démolition** : Détermine la capacité du personnage à comprendre comment détruire ou saboter un bâtiment ou une machine quelconque. Des explosifs posés par un bon démolisseur seront beaucoup plus efficaces pour atteindre les objectifs que vous visez, par exemple. Compétence assez secondaire tout de même, car les cas d’utilisation sont assez rares.
 
-**Systèmes** : Détermine les compétences du personnage dans les systèmes informatisés, tels que les navordinateurs. Pour trouver une information, ou carrément hacker un système, ou reprogrammer un droïde ou une tourelle, c’est ce jet de compétence qui sera utilisé. Compétence secondaire.
+**Systemes** : Détermine les compétences du personnage dans les systèmes informatisés, tels que les navordinateurs. Pour trouver une information, ou carrément hacker un système, ou reprogrammer un droïde ou une tourelle, c’est ce jet de compétence qui sera utilisé. Compétence secondaire.
 
 ##### **VIGUEUR**
 
@@ -767,7 +767,7 @@ La phase d'engagement survient quand les ennemis attaquent les PJs, ou les Pjs a
 Le MJ tire les dés ou décide du score des ennemis.  
 Le combat se déroulera dans l'ordre du plus fort au plus faible jet de dés, chacun son tour.  
 
-### 2. Le déroulement du tour d'un joueur
+### 2. Le deroulement du tour d'un joueur
 
 Lorsque vient le tour d'un joueur, celui-ci peut effectuer des actions.  
 Il y a 4 différents types d'actions : Les actions offensives, les actions de soutien, les actions en défense et les actions de mouvement.
@@ -787,7 +787,7 @@ Les actions en défense sont à part, elles peuvent être utilisées à n'import
 A noter qu'il est possible de retarder son tour d'action pendant le tour de jeu, afin d'agir après un autre personnage au lieu d'agir avant. Cela retarde d'autant la durée des effets positifs et négatifs qui s'appliquent au joueur pour un certain nombre de rounds, mais aussi la remise à zéro des actions en défense, alors attention.
 Les actions combinées : Il est possible de prévoir d'interagir avec un autre personnage pour faire des actions plus complexes à plusieurs en cours de combat. Les joueurs les plus rapides devront alors retarder leur action au moment du tour du joueur le plus lent de ceux qui participent à l'action combinée.
 
-### 3. Les dégâts et DD
+### 3. Les degats et DD
 
 DD signifie « Dés de Dégâts », ils représentent le nombre de dés à lancer pour déterminer les dégâts donnés ou subis. Chaque arme a sa propre puissance.
 Les dégâts à mains nues sont le jet de vigueur -1DD. En clair, un personnage qui a 5D de Vig et qui frappe à mains nues lancera 4DD s'il touche l'ennemi.
@@ -796,7 +796,7 @@ Les dégâts ne sont pas tout de suite subis sous forme de PV. Ils se voient opp
 Si la Res Corp est supérieure aux dégâts, alors le personnage perd tout de même 1PV, par souci de cohérence de jeu et de dynamisme.
 Cependant, si la Res Corp est plus de 2 fois supérieure aux dégâts, alors le personnage ne prend aucun dégât.
 
-### 4. Dégâts de zone et Dégâts en cône
+### 4. Degats de zone et Degats en cône
 
 Les dégâts d'une arme peuvent aussi provoquer des dégâts de zone, comme les explosifs ou les diffuseurs aérosol, mais aussi des dégâts en cône, comme les armes lourdes (canons, blasters mitrailleurs, armes de véhicules...).
 Les dégâts de zone provoquent des dégâts sur un certain périmètre autour du point d'impact, en général 10x10m. Pour les esquiver, il ne faut pas seulement faire un chiffre en esquive plus grand que le chiffre de lancer de la grenade. Chaque seuil de 5 supplémentaire permet d'esquiver 1D de dégâts en plus de la grenade.

@@ -35,18 +35,14 @@
 }
 
 // ----- CONTAINER PRINCIPAL DU CONTENU -----
-// Définit les limites intérieures du cadre SVG
 .home-content {
   position: absolute !important;
   top: 12%;
   left: 10%;
   right: 10%;
-  bottom: 15%; // Utiliser bottom au lieu de height
-  display: block !important; // Pas de flexbox, on utilise position absolute pour les enfants
+  bottom: 15%;
+  display: block !important;
   z-index: 2;
-  
-  // DEBUG - à supprimer une fois que ça marche
-  // border: 2px solid red;
 }
 
 // ----- USERNAME EN HAUT -----
@@ -116,15 +112,15 @@
 .holonews-icon {
   width: clamp(45px, 8vw, 100px);
   height: auto;
-  margin-top: 1vh;
 }
 
 // Le span holonews-count est juste un wrapper, le vrai badge est le span.badge à l'intérieur
 .holonews-count {
   .badge {
-    font-size: 0.65em !important;
     padding: 4px 6px !important;
     z-index: 5;
+    top: 5%;
+    left: 75%;
   }
 }
 
@@ -260,18 +256,18 @@
   left: 55%;
   transform: translateX(-50%);
   z-index: 2;
-  font-size: clamp(0.7rem, 1.2vw, 1rem);
+  font-size: 1em;
   color: $success;
   width: 80%;
 }
 
 .xp-container {
   position: absolute;
-  top: 60%;
+  top: 55%;
   left: 50%;
   transform: translateX(-50%);
   z-index: 2;
-  font-size: clamp(0.6rem, 1.1vw, 0.9rem);
+  font-size: 1em;
 }
 
 .xp-text {
@@ -400,10 +396,6 @@
   aspect-ratio: 1001.46 / 140.26;
 }
 
-.hp-status-container .hp-text {
-  font-size: clamp(0.6em, 1vw, 0.8em);
-}
-
 // Bloc centre : Dé
 .dice-container-home {
   display: flex !important;
@@ -484,13 +476,12 @@
 // ===========================================
 // RESPONSIVE ADJUSTMENTS
 // ===========================================
-// Pour les écrans plus larges (tablettes, iPad)
 @media screen and (min-width: 1024px) {
   .home-content {
-    top: 12%;
+    top: 15%;
     left: 12%;
     right: 12%;
-    height: 76%; // 100% - 12% top - 12% bottom
+    bottom: 15%;
   }
 
   .home-row-middle {
