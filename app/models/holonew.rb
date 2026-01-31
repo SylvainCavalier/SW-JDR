@@ -5,8 +5,8 @@ class Holonew < ApplicationRecord
   has_many :holonew_reads, dependent: :destroy
   has_one_attached :image
 
-  validates :title, presence: true
-  validates :content, presence: true
+  validates :title, presence: true, length: { maximum: 200 }
+  validates :content, presence: true, length: { maximum: 5000 }
   validate :image_size_validation
 
   scope :unread, -> { where(read: false) }

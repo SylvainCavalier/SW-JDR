@@ -52,6 +52,8 @@ class HolonewsController < ApplicationController
         format.html { redirect_to new_holonew_path, notice: "Holonew envoyée" }
       end
     else
+      @users = User.all
+      @groups = Group.all
       respond_to do |format|
         format.html { render :new, status: :unprocessable_entity }
       end

@@ -7,7 +7,7 @@
   <img src="<%= asset_path('cadre2.svg') %>" alt="Cadre" class="ui-frame">
   <!-- Formulaire -->
   <div class="custom-form">
-    <%= simple_form_for @holonew, local: true do |f| %>
+    <%= simple_form_for @holonew, local: true, html: { data: { controller: "character-counter", character_counter_max_value: 5000 } } do |f| %>
       <% if @reply_to_username.present? %>
         <div class="alert alert-info">
           Réponse à <%= @reply_to_username %>
@@ -15,20 +15,21 @@
       <% end %>
 
       <div class="form-group">
-        <%= f.input :title, label: "Titre", input_html: { class: 'form-control' } %>
+        <%= f.input :title, label: "Titre", input_html: { class: 'form-control', maxlength: 200 } %>
       </div>
 
       <% if current_user.group.name == "MJ" %>
         <div class="form-group">
-          <%= f.input :sender_alias, 
-              label: "Nom de l'expéditeur (optionnel)", 
+          <%= f.input :sender_alias,
+              label: "Nom de l'expéditeur (optionnel)",
               placeholder: "Laissez vide pour utiliser votre nom",
               input_html: { class: 'form-control' } %>
         </div>
       <% end %>
 
       <div class="form-group">
-        <%= f.input :content, label: "Contenu", input_html: { class: 'form-control' } %>
+        <%= f.input :content, label: "Contenu", input_html: { class: 'form-control', rows: 6, maxlength: 5000, data: { character_counter_target: "input", action: "input->character-counter#update" } } %>
+        <small data-character-counter-target="counter" class="text-muted"></small>
       </div>
 
       <div class="form-group">
@@ -37,9 +38,9 @@
 
       <div class="form-group">
         <label>Envoyer à des utilisateurs :</label>
-        <%= select_tag 'target_user', 
-            options_from_collection_for_select(@users, 'id', 'username', @holonew.target_user), 
-            prompt: "Sélectionner un utilisateur", 
+        <%= select_tag 'target_user',
+            options_from_collection_for_select(@users, 'id', 'username', @holonew.target_user),
+            prompt: "Sélectionner un utilisateur",
             class: "form-control" %>
       </div>
 
@@ -50,7 +51,7 @@
 
       <div class="form-group mt-4">
         <%= link_to "Annuler", holonews_path, class: "btn btn-outline-success" %>
-        <%= f.submit "Envoyer", class: "btn btn-outline-success" %>
+        <%= f.submit "Envoyer", class: "btn btn-outline-success", data: { character_counter_target: "submit" } %>
       </div>
     <% end %>
   </div>
