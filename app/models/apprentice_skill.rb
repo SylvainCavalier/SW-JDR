@@ -59,12 +59,13 @@ class ApprenticeSkill < ApplicationRecord
       # Le MJ avait pré-défini le talent, on le révèle maintenant
       update!(talent_revealed: true)
     else
-      # Génération aléatoire du talent
+      # Génération aléatoire du talent (pondérée par le potentiel midi-chlorien)
+      weights = apprentice.midi_chlorian_modifiers[:talent_weights]
       roll = rand(1..100)
       cumulative = 0
 
-      discovered = TALENTS.find do |key, data|
-        cumulative += data[:chance]
+      discovered = weights.find do |key, chance|
+        cumulative += chance
         roll <= cumulative
       end&.first || "ordinaire"
 

@@ -180,8 +180,11 @@ export default class extends Controller {
     }
 
     const btn = event.currentTarget;
+    const card = btn.closest('.col-md-4');
+    const cardBody = btn.closest('.card-body');
+
     btn.disabled = true;
-    btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Naissance...';
+    btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Naissance en cours...';
 
     try {
       const response = await fetch("/science/birth_creature", {
@@ -196,8 +199,49 @@ export default class extends Controller {
       const data = await response.json();
 
       if (data.success) {
-        alert(data.message);
-        window.location.reload();
+        // Animation de naissance sur la carte
+        const innerCard = card.querySelector('.card');
+        innerCard.classList.add('birth-animation');
+
+        // Remplacer le contenu par le message de succès
+        cardBody.innerHTML = `
+          <div class="birth-success-content">
+            <div class="birth-emoji">🐣</div>
+            <h5 class="text-success mt-2">${data.pet.name} est né !</h5>
+            <p class="small text-light mb-2">${data.pet.race}</p>
+            <a href="/pets/${data.pet.id}" class="btn btn-outline-success btn-sm">
+              <i class="fa-solid fa-eye me-1"></i>Voir dans le bestiaire
+            </a>
+          </div>
+        `;
+
+        // Après un délai, faire disparaître la carte
+        setTimeout(() => {
+          card.style.transition = 'all 0.6s ease';
+          card.style.opacity = '0';
+          card.style.transform = 'scale(0.8)';
+
+          setTimeout(() => {
+            card.remove();
+
+            // Si plus aucun embryon prêt, masquer la section entière
+            const readySection = document.querySelector('.border-success');
+            if (readySection) {
+              const remainingCards = readySection.querySelectorAll('.col-md-4');
+              if (remainingCards.length === 0) {
+                readySection.closest('.row').style.transition = 'all 0.4s ease';
+                readySection.closest('.row').style.opacity = '0';
+                setTimeout(() => readySection.closest('.row')?.remove(), 400);
+              } else {
+                // Mettre à jour le compteur
+                const header = readySection.querySelector('.card-header h5');
+                if (header) {
+                  header.innerHTML = `<i class="fa-solid fa-baby me-2"></i>Créatures prêtes à naître (${remainingCards.length})`;
+                }
+              }
+            }
+          }, 600);
+        }, 3000);
       } else {
         alert(data.error);
         btn.disabled = false;

@@ -51,10 +51,17 @@
       <% end %>
     </div>
 
-    <%= render "space_combat/position_matrix",
+    <%= render "space_combat/position_diagram",
                positions: positions,
-               combat: combat,
-               current_user: current_user %>
+               participants: participants,
+               combat: combat %>
+
+    <% if current_user&.group&.name == "MJ" %>
+      <%= render "space_combat/position_matrix",
+                 positions: positions,
+                 combat: combat,
+                 current_user: current_user %>
+    <% end %>
   <% else %>
     <div class="text-center text-muted py-5">
       <p>Aucun vaisseau dans le combat. Le MJ doit ajouter des participants.</p>

@@ -172,4 +172,83 @@
   .opacity-50 {
     opacity: 0.5;
   }
+
+  // Position diagram
+  .position-diagram {
+    background: rgba(0, 0, 0, 0.5);
+    border: 1px solid rgba(23, 162, 184, 0.3);
+    border-radius: 8px;
+    padding: 1rem;
+
+    .diagram-svg {
+      display: block;
+    }
+
+    .diagram-node {
+      cursor: pointer;
+
+      rect {
+        stroke-width: 1.5;
+        transition: filter 0.2s ease;
+      }
+
+      text {
+        fill: #fff;
+        font-size: 11px;
+        font-family: inherit;
+        pointer-events: none;
+      }
+    }
+
+    .diagram-node-pj rect {
+      fill: rgba(23, 162, 184, 0.25);
+      stroke: #17a2b8;
+    }
+
+    .diagram-node-enemy rect {
+      fill: rgba(220, 53, 69, 0.25);
+      stroke: #dc3545;
+    }
+
+    .diagram-node:hover rect {
+      filter: brightness(1.4);
+    }
+
+    .diagram-line {
+      transition: opacity 0.2s ease, stroke-width 0.2s ease;
+    }
+
+    // Highlighting state: when a ship is hovered
+    &.highlighting .diagram-line {
+      opacity: 0.08 !important;
+    }
+
+    &.highlighting .diagram-line.highlighted {
+      opacity: 1 !important;
+      stroke-width: 2.5;
+    }
+
+    &.highlighting .diagram-node:not(.highlighted) {
+      opacity: 0.3;
+    }
+
+    &.highlighting .diagram-node.highlighted {
+      opacity: 1;
+    }
+  }
+
+  .position-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    justify-content: center;
+    font-size: 0.8rem;
+    color: #adb5bd;
+
+    .legend-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+    }
+  }
 }

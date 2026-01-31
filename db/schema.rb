@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2026_01_30_000006) do
+ActiveRecord::Schema[7.1].define(version: 2026_01_31_132013) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -242,7 +242,6 @@ ActiveRecord::Schema[7.1].define(version: 2026_01_30_000006) do
   create_table "enemy_ship_weapons", force: :cascade do |t|
     t.bigint "enemy_ship_id", null: false
     t.string "weapon_type", null: false
-    t.string "name", null: false
     t.integer "damage_mastery", default: 0
     t.integer "damage_bonus", default: 0
     t.integer "aim_mastery", default: 0
@@ -258,8 +257,6 @@ ActiveRecord::Schema[7.1].define(version: 2026_01_30_000006) do
     t.string "name", null: false
     t.integer "hp_current", default: 0
     t.integer "hp_max", default: 0
-    t.integer "shield_current", default: 0
-    t.integer "shield_max", default: 0
     t.integer "speed_mastery", default: 0
     t.integer "speed_bonus", default: 0
     t.integer "piloting_mastery", default: 0
@@ -274,6 +271,10 @@ ActiveRecord::Schema[7.1].define(version: 2026_01_30_000006) do
     t.boolean "ship_destroyed", default: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "hull_mastery", default: 1, null: false
+    t.integer "hull_bonus", default: 0, null: false
+    t.integer "shield_mastery", default: 0, null: false
+    t.integer "shield_bonus", default: 0, null: false
   end
 
   create_table "enemy_skills", force: :cascade do |t|

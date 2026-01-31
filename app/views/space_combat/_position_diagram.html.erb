@@ -1,0 +1,165 @@
+<%# Diagramme SVG des positions relatives entre vaisseaux PJ et ennemis %>
+<%
+  pj_ships = participants.select { |p| p.side.zero? }
+  enemy_ships = participants.select { |p| p.side == 1 }
+%>
+
+<% if pj_ships.any? && enemy_ships.any? %>
+<%
+  node_height = 30
+  node_spacing = 40
+  padding = 20
+
+  pj_count = pj_ships.size
+  enemy_count = enemy_ships.size
+  max_count = [pj_count, enemy_count].max
+  svg_height = max_count * node_spacing + padding * 2
+
+  # Vertical centering offsets
+  pj_offset = (svg_height - pj_count * node_spacing) / 2.0
+  enemy_offset = (svg_height - enemy_count * node_spacing) / 2.0
+
+  # X coordinates
+  pj_x = 0
+  pj_width = 140
+  pj_connect_x = pj_x + pj_width + 5
+
+  enemy_x = 660
+  enemy_width = 140
+  enemy_connect_x = enemy_x - 5
+%>
+
+<div class="position-diagram mt-4" data-space-combat-target="diagram">
+  <h5 style="color: #17a2b8;">Positions relatives</h5>
+
+  <svg viewBox="0 0 800 <%= svg_height %>"
+       width="100%"
+       preserveAspectRatio="xMidYMid meet"
+       class="diagram-svg"
+       xmlns="http://www.w3.org/2000/svg">
+
+    <defs>
+      <%# Arrow markers for each color %>
+      <marker id="arrow-cyan" viewBox="0 0 10 7" refX="10" refY="3.5"
+              markerWidth="8" markerHeight="6" orient="auto-start-reverse">
+        <polygon points="0 0, 10 3.5, 0 7" fill="#17a2b8" />
+      </marker>
+      <marker id="arrow-orange" viewBox="0 0 10 7" refX="10" refY="3.5"
+              markerWidth="8" markerHeight="6" orient="auto-start-reverse">
+        <polygon points="0 0, 10 3.5, 0 7" fill="#ff8800" />
+      </marker>
+      <marker id="arrow-red" viewBox="0 0 10 7" refX="10" refY="3.5"
+              markerWidth="8" markerHeight="6" orient="auto-start-reverse">
+        <polygon points="0 0, 10 3.5, 0 7" fill="#dc3545" />
+      </marker>
+    </defs>
+
+    <%# Draw lines first (behind nodes) %>
+    <% positions.each do |pos| %>
+      <%
+        # Determine which is PJ and which is enemy
+        if pos.participant_a.side.zero?
+          pj_participant = pos.participant_a
+          enemy_participant = pos.participant_b
+          relative_pos = pos.relative_position_for(pj_participant)
+        else
+          pj_participant = pos.participant_b
+          enemy_participant = pos.participant_a
+          relative_pos = pos.relative_position_for(pj_participant)
+        end
+
+        pj_index = pj_ships.index(pj_participant)
+        enemy_index = enemy_ships.index(enemy_participant)
+        next unless pj_index && enemy_index
+
+        pj_y = pj_offset + pj_index * node_spacing + node_height / 2.0
+        enemy_y = enemy_offset + enemy_index * node_spacing + node_height / 2.0
+
+        color = position_line_color(relative_pos)
+        dash = position_line_dash(relative_pos)
+        opacity = position_line_opacity(relative_pos)
+        markers = position_arrow_markers(relative_pos)
+      %>
+      <line class="diagram-line"
+            x1="<%= pj_connect_x %>" y1="<%= pj_y %>"
+            x2="<%= enemy_connect_x %>" y2="<%= enemy_y %>"
+            stroke="<%= color %>"
+            stroke-width="1.5"
+            <% if dash != "none" %>stroke-dasharray="<%= dash %>"<% end %>
+            opacity="<%= opacity %>"
+            <% if markers[:marker_end] %>marker-end="<%= markers[:marker_end] %>"<% end %>
+            <% if markers[:marker_start] %>marker-start="<%= markers[:marker_start] %>"<% end %>
+            data-ship-ids="<%= pj_participant.id %>,<%= enemy_participant.id %>"
+            data-action="mouseenter->space-combat#highlightLine mouseleave->space-combat#unhighlightLine" />
+    <% end %>
+
+    <%# PJ ship nodes %>
+    <% pj_ships.each_with_index do |pj, i| %>
+      <% y = pj_offset + i * node_spacing %>
+      <g class="diagram-node diagram-node-pj"
+         data-ship-id="<%= pj.id %>"
+         data-action="mouseenter->space-combat#highlightShip mouseleave->space-combat#unhighlightShip">
+        <rect x="<%= pj_x %>" y="<%= y %>" width="<%= pj_width %>" height="<%= node_height %>"
+              rx="6" ry="6" />
+        <text x="<%= pj_x + pj_width / 2 %>" y="<%= y + node_height / 2 + 1 %>"
+              text-anchor="middle" dominant-baseline="middle">
+          <%= truncate(pj.ship_name, length: 18) %>
+        </text>
+      </g>
+    <% end %>
+
+    <%# Enemy ship nodes %>
+    <% enemy_ships.each_with_index do |enemy, i| %>
+      <% y = enemy_offset + i * node_spacing %>
+      <g class="diagram-node diagram-node-enemy"
+         data-ship-id="<%= enemy.id %>"
+         data-action="mouseenter->space-combat#highlightShip mouseleave->space-combat#unhighlightShip">
+        <rect x="<%= enemy_x %>" y="<%= y %>" width="<%= enemy_width %>" height="<%= node_height %>"
+              rx="6" ry="6" />
+        <text x="<%= enemy_x + enemy_width / 2 %>" y="<%= y + node_height / 2 + 1 %>"
+              text-anchor="middle" dominant-baseline="middle">
+          <%= truncate(enemy.ship_name, length: 18) %>
+        </text>
+      </g>
+    <% end %>
+  </svg>
+
+  <%# Legend %>
+  <div class="position-legend mt-2">
+    <span class="legend-item">
+      <svg width="30" height="10" xmlns="http://www.w3.org/2000/svg">
+        <line x1="0" y1="5" x2="22" y2="5" stroke="#17a2b8" stroke-width="2" />
+        <polygon points="22,1.5 30,5 22,8.5" fill="#17a2b8" />
+      </svg>
+      Poursuivant
+    </span>
+    <span class="legend-item">
+      <svg width="30" height="10" xmlns="http://www.w3.org/2000/svg">
+        <polygon points="8,1.5 0,5 8,8.5" fill="#ff8800" />
+        <line x1="8" y1="5" x2="30" y2="5" stroke="#ff8800" stroke-width="2" />
+      </svg>
+      Poursuivi
+    </span>
+    <span class="legend-item">
+      <svg width="30" height="10" xmlns="http://www.w3.org/2000/svg">
+        <polygon points="8,1.5 0,5 8,8.5" fill="#dc3545" />
+        <line x1="8" y1="5" x2="22" y2="5" stroke="#dc3545" stroke-width="2" />
+        <polygon points="22,1.5 30,5 22,8.5" fill="#dc3545" />
+      </svg>
+      Face à face
+    </span>
+    <span class="legend-item">
+      <svg width="30" height="10" xmlns="http://www.w3.org/2000/svg">
+        <line x1="0" y1="5" x2="30" y2="5" stroke="#ffc107" stroke-width="2" stroke-dasharray="8,4" />
+      </svg>
+      Vol parallèle
+    </span>
+    <span class="legend-item">
+      <svg width="30" height="10" xmlns="http://www.w3.org/2000/svg">
+        <line x1="0" y1="5" x2="30" y2="5" stroke="#6c757d" stroke-width="2" stroke-dasharray="4,4" opacity="0.5" />
+      </svg>
+      Hors de portée
+    </span>
+  </div>
+</div>
+<% end %>

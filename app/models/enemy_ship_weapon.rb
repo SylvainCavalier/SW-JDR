@@ -3,7 +3,6 @@ class EnemyShipWeapon < ApplicationRecord
 
   WEAPON_TYPES = %w[canon tourelle missile torpille special].freeze
 
-  validates :name, presence: true
   validates :weapon_type, presence: true, inclusion: { in: WEAPON_TYPES }
   validates :damage_mastery, :damage_bonus, :aim_mastery, :aim_bonus,
             numericality: { greater_than_or_equal_to: 0 }

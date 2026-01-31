@@ -4,8 +4,8 @@ class EnemyShip < ApplicationRecord
 
   validates :name, presence: true
   validates :hp_max, numericality: { greater_than_or_equal_to: 0 }
-  validates :shield_max, numericality: { greater_than_or_equal_to: 0 }
   validates :speed_mastery, :speed_bonus, :piloting_mastery, :piloting_bonus,
+            :hull_mastery, :hull_bonus, :shield_mastery, :shield_bonus,
             numericality: { greater_than_or_equal_to: 0 }
   validates :scale, inclusion: { in: 0..5 }
 
@@ -37,10 +37,25 @@ class EnemyShip < ApplicationRecord
     labels
   end
 
+  def hull_dice_label
+    format_dice(hull_mastery, hull_bonus)
+  end
+
+  def shield_dice_label
+    format_dice(shield_mastery, shield_bonus)
+  end
+
+  def has_shields?
+    shield_mastery.to_i.positive? || shield_bonus.to_i.positive?
+  end
+
   private
 
   def set_defaults
     self.hp_current = hp_max if hp_current.zero? && hp_max.positive?
-    self.shield_current = shield_max if shield_current.zero? && shield_max.positive?
+  end
+
+  def format_dice(mastery, bonus)
+    bonus.to_i.positive? ? "#{mastery}D+#{bonus}" : "#{mastery}D"
   end
 end

@@ -5,11 +5,11 @@ class Embryo < ApplicationRecord
 
   validates :name, presence: true, length: { maximum: 30 }
   validates :creature_type, presence: true
-  validates :status, inclusion: { in: %w[stocké en_culture en_gestation éclos], message: "%{value} n'est pas un statut valide." }
+  validates :status, inclusion: { in: %w[stocké en_culture en_gestation éclos né], message: "%{value} n'est pas un statut valide." }
   validates :gestation_tube, inclusion: { in: [nil, 1, 2, 3] }
 
   CREATURE_TYPES = YAML.load_file(Rails.root.join('config', 'catalogs', 'creature_types.yml'))
-  STATUSES = %w[stocké en_culture en_gestation éclos].freeze
+  STATUSES = %w[stocké en_culture en_gestation éclos né].freeze
   MAX_GESTATION_TUBES = 3
 
   # Limites des skills
@@ -222,39 +222,51 @@ class Embryo < ApplicationRecord
   def convert_to_pet!
     return nil unless status == 'éclos'
 
-    stats = final_stats.presence || {}
-    
-    pet = Pet.create!(
-      name: name,
-      race: race || creature_type.humanize,
-      category: 'animal',
-      hp_max: stats['hp_max'] || hp_max,
-      hp_current: stats['hp_max'] || hp_max,
-      damage_1: stats['damage_1'] || damage_1,
-      damage_1_bonus: stats['damage_bonus_1'] || damage_bonus_1,
-      damage_2: 0,
-      damage_2_bonus: 0,
-      weapon_1: weapon,
-      weapon_2: nil,
-      size: size,
-      weight: weight,
-      creature: true,
-      force: force || false,
-      special_traits: special_traits,
-      origin_embryo_id: id,
-      vitesse: stats.dig('skills', 'Vitesse', 'mastery') || skill_value('Vitesse')[:mastery]
-    )
+    pet = nil
 
-    # Créer les pet_skills
-    embryo_skills.each do |es|
-      pet.pet_skills.create!(
-        skill: es.skill,
-        mastery: es.mastery,
-        bonus: es.bonus
+    transaction do
+      # Verrouiller l'embryon pour éviter les doubles créations
+      lock!
+      return nil unless status == 'éclos'
+
+      stats = final_stats.presence || {}
+
+      pet = Pet.create!(
+        name: name,
+        race: race || creature_type.humanize,
+        category: 'animal',
+        hp_max: stats['hp_max'] || hp_max,
+        hp_current: stats['hp_max'] || hp_max,
+        damage_1: stats['damage_1'] || damage_1,
+        damage_1_bonus: stats['damage_bonus_1'] || damage_bonus_1,
+        damage_2: 0,
+        damage_2_bonus: 0,
+        weapon_1: weapon,
+        weapon_2: nil,
+        size: size,
+        weight: weight,
+        creature: true,
+        force: force || false,
+        special_traits: special_traits,
+        origin_embryo_id: id,
+        vitesse: stats.dig('skills', 'Vitesse', 'mastery') || skill_value('Vitesse')[:mastery]
       )
+
+      # Créer les pet_skills
+      embryo_skills.each do |es|
+        pet.pet_skills.create!(
+          skill: es.skill,
+          mastery: es.mastery,
+          bonus: es.bonus
+        )
+      end
+
+      # Marquer l'embryon comme né pour empêcher une nouvelle conversion
+      update!(status: 'né')
+
+      GeneticStatistic.for_user(user).increment_stat!(:gestations_completed)
     end
 
-    GeneticStatistic.for_user(user).increment_stat!(:gestations_completed)
     pet
   end
 

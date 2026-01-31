@@ -154,4 +154,67 @@ export default class extends Controller {
       flag: flag
     })
   }
+
+  // Position diagram hover interactions
+  highlightShip(event) {
+    const shipId = event.currentTarget.dataset.shipId
+    const diagram = event.currentTarget.closest(".position-diagram")
+    if (!diagram) return
+
+    diagram.classList.add("highlighting")
+
+    // Highlight connected lines
+    diagram.querySelectorAll(".diagram-line").forEach(line => {
+      const ids = (line.dataset.shipIds || "").split(",")
+      if (ids.includes(shipId)) {
+        line.classList.add("highlighted")
+      }
+    })
+
+    // Highlight connected nodes
+    const connectedIds = new Set([shipId])
+    diagram.querySelectorAll(".diagram-line.highlighted").forEach(line => {
+      (line.dataset.shipIds || "").split(",").forEach(id => connectedIds.add(id))
+    })
+
+    diagram.querySelectorAll(".diagram-node").forEach(node => {
+      if (connectedIds.has(node.dataset.shipId)) {
+        node.classList.add("highlighted")
+      }
+    })
+  }
+
+  unhighlightShip() {
+    const diagram = this.element.querySelector(".position-diagram")
+    if (!diagram) return
+
+    diagram.classList.remove("highlighting")
+    diagram.querySelectorAll(".highlighted").forEach(el => el.classList.remove("highlighted"))
+  }
+
+  highlightLine(event) {
+    const ids = (event.currentTarget.dataset.shipIds || "").split(",")
+    const diagram = event.currentTarget.closest(".position-diagram")
+    if (!diagram) return
+
+    diagram.classList.add("highlighting")
+
+    // Highlight this line
+    event.currentTarget.classList.add("highlighted")
+
+    // Highlight connected nodes
+    diagram.querySelectorAll(".diagram-node").forEach(node => {
+      if (ids.includes(node.dataset.shipId)) {
+        node.classList.add("highlighted")
+      }
+    })
+  }
+
+  unhighlightLine() {
+    const diagram = this.element.querySelector(".position-diagram")
+    if (!diagram) return
+
+    diagram.classList.remove("highlighting")
+    diagram.querySelectorAll(".highlighted").forEach(el => el.classList.remove("highlighted"))
+  }
 }

@@ -416,7 +416,10 @@ class Pet < ApplicationRecord
 
   def dissociate_from_user
     # Dissocier le pet de l'utilisateur avant suppression
-    user&.update(pet_id: nil)
+    # user_as_active_pet trouve l'utilisateur via users.pet_id (pas pets.user_id)
+    user_as_active_pet&.update(pet_id: nil)
+    # Nettoyer aussi les bâtiments qui ont ce pet comme chef
+    Building.where(chief_pet_id: id).update_all(chief_pet_id: nil)
   end
 end
   

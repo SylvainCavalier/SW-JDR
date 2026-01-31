@@ -44,7 +44,6 @@ class SpaceCombatController < ApplicationController
 
     enemy_ship = EnemyShip.new(enemy_ship_params)
     enemy_ship.hp_current = enemy_ship.hp_max
-    enemy_ship.shield_current = enemy_ship.shield_max
 
     if enemy_ship.save
       participant = @combat.space_combat_participants.create!(
@@ -176,7 +175,7 @@ class SpaceCombatController < ApplicationController
     end
 
     field = params[:field]
-    unless %w[hp_current shield_current].include?(field)
+    unless %w[hp_current].include?(field)
       render json: { success: false, error: "Champ invalide" }, status: :bad_request
       return
     end
@@ -185,15 +184,10 @@ class SpaceCombatController < ApplicationController
     new_value = params[:value].to_i
 
     if ship.update(field => new_value)
-      action_type = case field
-                    when "hp_current"
-                      new_value > old_value ? "bouclier" : "degats"
-                    when "shield_current"
-                      "bouclier"
-                    end
+      action_type = new_value > old_value ? "bouclier" : "degats"
 
       log_action(participant, action_type,
-                 "#{ship.name} : #{field == 'hp_current' ? 'PV' : 'Bouclier'} #{old_value} -> #{new_value}")
+                 "#{ship.name} : PV #{old_value} -> #{new_value}")
 
       broadcast_full_update
       render json: { success: true }
@@ -329,10 +323,11 @@ class SpaceCombatController < ApplicationController
 
   def enemy_ship_params
     params.require(:enemy_ship).permit(
-      :name, :hp_max, :shield_max, :speed_mastery, :speed_bonus,
+      :name, :hp_max, :speed_mastery, :speed_bonus,
       :piloting_mastery, :piloting_bonus, :scale,
+      :hull_mastery, :hull_bonus, :shield_mastery, :shield_bonus,
       enemy_ship_weapons_attributes: [
-        :id, :name, :weapon_type, :damage_mastery, :damage_bonus,
+        :id, :weapon_type, :damage_mastery, :damage_bonus,
         :aim_mastery, :aim_bonus, :quantity_current, :quantity_max, :_destroy
       ]
     )
@@ -361,6 +356,24 @@ class SpaceCombatController < ApplicationController
       skill ? [skill.mastery, skill.bonus] : [1, 0]
     else
       [ship.piloting_mastery, ship.piloting_bonus]
+    end
+  end
+
+  def hull_stats_for(ship)
+    if ship.is_a?(Ship)
+      skill = ship.ships_skills.joins(:skill).find_by(skills: { name: "Coque" })
+      skill ? [skill.mastery.to_i, skill.bonus.to_i] : [1, 0]
+    else
+      [ship.hull_mastery, ship.hull_bonus]
+    end
+  end
+
+  def shield_stats_for(ship)
+    if ship.is_a?(Ship)
+      skill = ship.ships_skills.joins(:skill).find_by(skills: { name: "Ecrans" })
+      skill ? [skill.mastery.to_i, skill.bonus.to_i] : [0, 0]
+    else
+      [ship.shield_mastery, ship.shield_bonus]
     end
   end
 

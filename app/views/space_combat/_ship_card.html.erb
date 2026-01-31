@@ -40,7 +40,7 @@
   <div class="card-body p-2">
     <%# PV %>
     <div class="d-flex align-items-center justify-content-between mb-2">
-      <small class="text-muted me-2">PV</small>
+      <small class="text-light me-2">PV</small>
       <%= render "space_combat/ship_stat_value",
                  participant: participant,
                  ship: ship,
@@ -49,16 +49,40 @@
                  max: ship.hp_max %>
     </div>
 
-    <%# Boucliers %>
-    <% if ship.respond_to?(:shield_max) && ship.shield_max.to_i.positive? %>
-      <div class="d-flex align-items-center justify-content-between mb-2">
-        <small class="text-muted me-2">Bouclier</small>
-        <%= render "space_combat/ship_stat_value",
-                   participant: participant,
-                   ship: ship,
-                   field: "shield_current",
-                   current: ship.shield_current,
-                   max: ship.shield_max %>
+    <%# Coque (Hull) %>
+    <%
+      if ship.is_a?(EnemyShip)
+        hull_m, hull_b = ship.hull_mastery, ship.hull_bonus
+      else
+        hull_skill = ship.ships_skills.joins(:skill).find_by(skills: { name: "Coque" })
+        hull_m = hull_skill&.mastery.to_i
+        hull_b = hull_skill&.bonus.to_i
+      end
+    %>
+    <div class="d-flex align-items-center justify-content-between mb-1">
+      <small class="text-light me-2">Coque</small>
+      <span class="fw-bold text-light"><%= format_dice(hull_m, hull_b) %></span>
+    </div>
+
+    <%# Écrans (Shields) %>
+    <%
+      if ship.is_a?(EnemyShip)
+        shield_m, shield_b = ship.shield_mastery, ship.shield_bonus
+      else
+        shield_skill = ship.ships_skills.joins(:skill).find_by(skills: { name: "Ecrans" })
+        shield_m = shield_skill&.mastery.to_i
+        shield_b = shield_skill&.bonus.to_i
+      end
+      has_shields = shield_m.to_i.positive? || shield_b.to_i.positive?
+    %>
+    <% if has_shields %>
+      <div class="d-flex align-items-center justify-content-between mb-1">
+        <small class="text-light me-2">Écrans</small>
+        <% if ship.shields_disabled %>
+          <span class="fw-bold text-muted" style="text-decoration: line-through;"><%= format_dice(shield_m, shield_b) %></span>
+        <% else %>
+          <span class="fw-bold text-primary"><%= format_dice(shield_m, shield_b) %></span>
+        <% end %>
       </div>
     <% end %>
 
@@ -72,7 +96,7 @@
 
     <% if is_mj %>
       <div class="mb-2">
-        <small class="text-muted d-block mb-1">Flags dégâts :</small>
+        <small class="text-light d-block mb-1">Flags dégâts :</small>
         <div class="d-flex flex-wrap gap-1">
           <% %w[shields_disabled controls_ionized weapon_damaged thrusters_damaged hyperdrive_broken depressurized ship_destroyed].each do |flag| %>
             <button class="btn btn-sm <%= ship.send(flag) ? 'btn-danger' : 'btn-outline-secondary' %>"
@@ -91,10 +115,11 @@
     <% weapons = ship.is_a?(EnemyShip) ? ship.enemy_ship_weapons : ship.ship_weapons.where(weapon_type: %w[main secondary tourelle missile torpille special]) %>
     <% if weapons.any? %>
       <div class="mb-2">
-        <small class="text-muted d-block mb-1">Armes :</small>
+        <small class="text-light d-block mb-1">Armes :</small>
         <% weapons.each do |weapon| %>
+          <% weapon_label = weapon.respond_to?(:name) && weapon.name.present? ? weapon.name : weapon.weapon_type.capitalize %>
           <div class="d-flex align-items-center justify-content-between" style="font-size: 0.8rem;">
-            <span><%= weapon.name %> <small class="text-muted">(<%= weapon.weapon_type %>)</small></span>
+            <span><%= weapon_label %> <small class="text-light">(<%= weapon.weapon_type %>)</small></span>
             <% if weapon.respond_to?(:quantity_current) && weapon.quantity_current %>
               <span class="badge bg-dark"><%= weapon.quantity_current %>/<%= weapon.quantity_max %></span>
             <% end %>
@@ -110,7 +135,7 @@
         <%# Mouvement %>
         <% unless participant.movement_action_used %>
           <div class="mb-2">
-            <small class="text-muted d-block">Mouvement vers :</small>
+            <small class="text-light d-block">Mouvement vers :</small>
             <% enemies_list.each do |enemy_p| %>
               <div class="dropdown d-inline-block me-1 mb-1">
                 <button class="btn btn-outline-info btn-sm dropdown-toggle" style="font-size: 0.7rem;"
@@ -139,12 +164,13 @@
         <%# Tir %>
         <% unless participant.offensive_action_used %>
           <div class="mb-2">
-            <small class="text-muted d-block">Tir sur :</small>
+            <small class="text-light d-block">Tir sur :</small>
             <% enemies_list.each do |enemy_p| %>
               <% pos_record = ShipCombatPosition.find_pair(combat.id, participant.id, enemy_p.id) %>
               <% rel_pos = pos_record&.relative_position_for(participant) %>
               <% weapons.each do |weapon| %>
-                <% wtype = weapon.is_a?(EnemyShipWeapon) ? weapon.weapon_type : weapon.weapon_type %>
+                <% wtype = weapon.weapon_type %>
+                <% w_label = weapon.respond_to?(:name) && weapon.name.present? ? weapon.name : wtype.capitalize %>
                 <% can_fire = rel_pos && SpaceCombatRules.can_fire?(rel_pos, wtype) %>
                 <button class="btn btn-sm me-1 mb-1 <%= can_fire ? 'btn-outline-warning' : 'btn-outline-secondary disabled' %>"
                         style="font-size: 0.7rem;"
@@ -152,9 +178,9 @@
                         data-action="click->space-combat#fireWeapon"
                         data-attacker-id="<%= participant.id %>"
                         data-target-id="<%= enemy_p.id %>"
-                        data-weapon-name="<%= weapon.name %>"
+                        data-weapon-name="<%= w_label %>"
                         data-weapon-type="<%= wtype %>">
-                  <%= weapon.name %> &rarr; <%= enemy_p.ship_name %>
+                  <%= w_label %> &rarr; <%= enemy_p.ship_name %>
                 </button>
               <% end %>
             <% end %>

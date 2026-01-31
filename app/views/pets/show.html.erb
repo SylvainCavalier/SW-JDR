@@ -188,6 +188,18 @@
         </div>
       </div>
 
+      <!-- Section spécial (traits génétiques) -->
+      <% if @pet.special_traits.present? %>
+        <div class="description-box mt-4">
+          <strong>Spécial :</strong>
+          <div class="mt-1">
+            <% @pet.special_traits.each do |trait| %>
+              <span class="badge bg-info text-dark me-1 mb-1"><%= trait %></span>
+            <% end %>
+          </div>
+        </div>
+      <% end %>
+
       <!-- Section description / épitaphe -->
       <div class="description-box mt-4">
         <strong><%= is_dead ? 'Épitaphe' : 'Description' %> :</strong>

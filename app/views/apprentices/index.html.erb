@@ -379,7 +379,10 @@
                             <% elsif @apprentice.can_train? %>
                               <% 
                                 talent_info = as.talent_discovered? ? " | #{as.talent_label}" : " | Talent: ?"
-                                fatigue_info = is_force_skill ? "20-80 énergie (x2 Force)" : "10-40 énergie"
+                                midi_mult = @apprentice.midi_chlorian_modifiers[:fatigue_multiplier]
+                                min_fatigue = [(10 * midi_mult).round, 5].max
+                                max_fatigue = [(40 * midi_mult).round, 5].max
+                                fatigue_info = is_force_skill ? "#{min_fatigue * 2}-#{max_fatigue * 2} énergie (x2 Force)" : "#{min_fatigue}-#{max_fatigue} énergie"
                                 force_info = is_force_skill ? "\n⚠️ Compétence de Force (coût x2)" : ""
                               %>
                               <%= button_to train_apprentice_path(@apprentice, skill_id: as.skill_id), 

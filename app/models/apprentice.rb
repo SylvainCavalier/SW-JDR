@@ -27,6 +27,30 @@ class Apprentice < ApplicationRecord
   # Compétences non entraînables
   NON_TRAINABLE_SKILLS = ["Résistance Corporelle"].freeze
 
+  # Modificateurs mécaniques basés sur le potentiel midi-chlorien
+  MIDI_CHLORIAN_MODIFIERS = {
+    "Exceptionnel" => {
+      talent_weights: { "ordinaire" => 40, "sous_doue" => 15, "talentueux" => 35, "genial" => 10 },
+      success_modifier: 10,
+      fatigue_multiplier: 0.80
+    },
+    "Élevé" => {
+      talent_weights: { "ordinaire" => 45, "sous_doue" => 17, "talentueux" => 30, "genial" => 8 },
+      success_modifier: 5,
+      fatigue_multiplier: 0.90
+    },
+    "Bon" => {
+      talent_weights: { "ordinaire" => 50, "sous_doue" => 20, "talentueux" => 25, "genial" => 5 },
+      success_modifier: 0,
+      fatigue_multiplier: 1.0
+    },
+    "Modeste" => {
+      talent_weights: { "ordinaire" => 55, "sous_doue" => 25, "talentueux" => 17, "genial" => 3 },
+      success_modifier: -5,
+      fatigue_multiplier: 1.15
+    }
+  }.freeze
+
   SPECIALITIES = %w[Commun Gardien Consulaire Sentinelle].freeze
   SABER_STYLES = [
     "Forme I - Shii-Cho",
@@ -65,6 +89,11 @@ class Apprentice < ApplicationRecord
     when 7500..9999 then "Bon"
     else "Modeste"
     end
+  end
+
+  # Retourne les modificateurs mécaniques liés au potentiel midi-chlorien
+  def midi_chlorian_modifiers
+    MIDI_CHLORIAN_MODIFIERS[midi_chlorian_potential]
   end
 
   # Initialise les caractéristiques de l'apprenti avec les valeurs de base
@@ -169,12 +198,13 @@ class Apprentice < ApplicationRecord
     [rate, 10].max # Minimum 10%
   end
 
-  # Calcule le taux de réussite avec le modificateur de talent
+  # Calcule le taux de réussite avec les modificateurs de talent et de midi-chloriens
   def training_success_rate(apprentice_skill)
     base_rate = base_training_success_rate(apprentice_skill.mastery)
-    modifier = apprentice_skill.success_modifier
-    # Applique le modificateur et garde entre 5% et 95%
-    [[base_rate + modifier, 95].min, 5].max
+    talent_mod = apprentice_skill.success_modifier
+    midi_mod = midi_chlorian_modifiers[:success_modifier]
+    # Applique les modificateurs et garde entre 5% et 95%
+    [[base_rate + talent_mod + midi_mod, 95].min, 5].max
   end
 
   # Entraîne une compétence spécifique
@@ -221,9 +251,10 @@ class Apprentice < ApplicationRecord
       talent_discovered = apprentice_skill.discover_talent!
     end
 
-    # Calculer le coût en fatigue (10-40 aléatoire)
+    # Calculer le coût en fatigue (10-40 aléatoire, modifié par le potentiel midi-chlorien)
     # Les compétences de Force coûtent 2x plus de fatigue
     base_fatigue_cost = rand(MIN_FATIGUE_COST..MAX_FATIGUE_COST)
+    base_fatigue_cost = [(base_fatigue_cost * midi_chlorian_modifiers[:fatigue_multiplier]).round, 5].max
     fatigue_cost = is_force_skill ? base_fatigue_cost * FORCE_SKILL_FATIGUE_MULTIPLIER : base_fatigue_cost
     
     # Calculer le taux de réussite avec modificateur de talent
