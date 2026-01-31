@@ -184,6 +184,7 @@ Rails.application.routes.draw do
 
   get 'mj/fixer_pv_max', to: 'mj#fixer_pv_max', as: 'fixer_pv_max'
   post 'mj/fixer_pv_max', to: 'mj#update_pv_max'
+  post 'mj/update_pet_pv_max', to: 'mj#update_pet_pv_max', as: 'update_pet_pv_max'
   post 'mj/apply_hp_bonus', to: 'mj#apply_hp_bonus'
   patch "/mj/users/:id/update_caracs", to: "mj#update_user_caracs", as: :mj_update_user_caracs
 

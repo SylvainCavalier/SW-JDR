@@ -338,6 +338,7 @@ class MjController < ApplicationController
   def fixer_pv_max
     @users = User.where(group_id: Group.find_by(name: "PJ").id).includes(:user_caracs => :carac)
     @carac_names = Carac.pluck(:name)
+    @pets = Pet.where(user_id: @users.select(:id)).includes(:user)
   end
 
   def update_pv_max
@@ -374,6 +375,34 @@ class MjController < ApplicationController
     end
   
     redirect_to fixer_pv_max_path, notice: "PV Max et Boucliers mis à jour dynamiquement"
+  end
+
+  def update_pet_pv_max
+    pet_pv_max = params[:pet_pv_max] || {}
+    pet_shield_max = params[:pet_shield_max] || {}
+
+    pet_ids = (pet_pv_max.keys + pet_shield_max.keys).uniq
+    pets = Pet.where(id: pet_ids)
+    pets_by_id = pets.index_by(&:id)
+
+    pet_pv_max.each do |pet_id, hp_max_value|
+      pet = pets_by_id[pet_id.to_i]
+      if pet
+        pet.update(hp_max: hp_max_value.to_i)
+        Rails.logger.debug "Updated HP Max for pet ##{pet.id} to #{pet.hp_max}"
+      end
+    end
+
+    pet_shield_max.each do |pet_id, shield_max_value|
+      pet = pets_by_id[pet_id.to_i]
+      if pet
+        pet.update(shield_max: shield_max_value.to_i)
+        pet.update(shield_current: shield_max_value.to_i) if pet.shield_current.nil? || pet.shield_current < shield_max_value.to_i
+        Rails.logger.debug "Updated Shield Max for pet ##{pet.id} to #{pet.shield_max}"
+      end
+    end
+
+    redirect_to fixer_pv_max_path(tab: "pets"), notice: "PV Max et Boucliers des familiers mis à jour"
   end
 
   def update_user_caracs

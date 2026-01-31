@@ -1,55 +1,93 @@
 <div class="frame-container mt-3" style="position: relative; width: 100%; height: 100vh; overflow-y: auto;">
   <div class="container mt-5">
-    <h2 class="text-center" style="color: white;">Fixer PV/Boucliers des Joueurs</h2>
+    <h2 class="text-center" style="color: white;">Fixer PV/Boucliers</h2>
 
-    <% @users.each do |user| %>
-      <div class="d-flex align-items-center justify-content-center mb-2" style="line-height: 1;">
-        <p class="mb-0" style="font-size: 0.9rem;">
-          <%= user.username %> - PV Max actuels : <%= user.hp_max %>, 
-          Bouclier Énergie : <%= user.shield_max %>, 
-          Bouclier Échani : <%= user.echani_shield_max %>
-        </p>
+    <ul class="nav nav-tabs mb-4" role="tablist">
+      <li class="nav-item" role="presentation">
+        <button class="nav-link <%= params[:tab] != 'pets' ? 'active' : '' %>" id="joueurs-tab" data-bs-toggle="tab" data-bs-target="#joueurs" type="button" role="tab">Joueurs</button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button class="nav-link <%= params[:tab] == 'pets' ? 'active' : '' %>" id="pets-tab" data-bs-toggle="tab" data-bs-target="#pets" type="button" role="tab">Familiers</button>
+      </li>
+    </ul>
 
-        <%= form_with url: fixer_pv_max_path, method: :post, local: true do %>
-          <div class="d-flex align-items-center">
-            <%= number_field_tag "pv_max[#{user.id}]", user.hp_max, class: "form-control form-control-sm me-2", min: 1, style: "width: 70px;" %>
-            <%= number_field_tag "shield_max[#{user.id}]", user.shield_max, class: "form-control form-control-sm me-2", min: 0, style: "width: 70px;" %>
-            <%= number_field_tag "echani_shield_max[#{user.id}]", user.echani_shield_max, class: "form-control form-control-sm me-2", min: 0, style: "width: 70px;" %>
-            <%= submit_tag "Go", class: "btn btn-outline-success btn-sm ms-1 p-0" %>
+    <div class="tab-content">
+      <!-- Onglet Joueurs -->
+      <div class="tab-pane fade <%= params[:tab] != 'pets' ? 'show active' : '' %>" id="joueurs" role="tabpanel">
+        <% @users.each do |user| %>
+          <div class="d-flex align-items-center justify-content-center mb-2" style="line-height: 1;">
+            <p class="mb-0" style="font-size: 0.9rem;">
+              <%= user.username %> - PV Max actuels : <%= user.hp_max %>,
+              Bouclier Énergie : <%= user.shield_max %>,
+              Bouclier Échani : <%= user.echani_shield_max %>
+            </p>
+
+            <%= form_with url: fixer_pv_max_path, method: :post, local: true do %>
+              <div class="d-flex align-items-center">
+                <%= number_field_tag "pv_max[#{user.id}]", user.hp_max, class: "form-control form-control-sm me-2", min: 1, style: "width: 70px;" %>
+                <%= number_field_tag "shield_max[#{user.id}]", user.shield_max, class: "form-control form-control-sm me-2", min: 0, style: "width: 70px;" %>
+                <%= number_field_tag "echani_shield_max[#{user.id}]", user.echani_shield_max, class: "form-control form-control-sm me-2", min: 0, style: "width: 70px;" %>
+                <%= submit_tag "Go", class: "btn btn-outline-success btn-sm ms-1 p-0" %>
+              </div>
+            <% end %>
+          </div>
+          <div class="bg-dark p-2 rounded mb-3">
+            <h5 class="text-success mb-2">Caractéristiques de <%= user.username %></h5>
+
+            <%= form_with url: mj_update_user_caracs_path(user), method: :patch, local: true do %>
+              <% user.user_caracs.includes(:carac).each do |uc| %>
+                <div class="d-flex align-items-center mb-2">
+                  <strong class="text-light me-2" style="width: 100px;"><%= uc.carac.name %></strong>
+
+                  <!-- Maîtrise -->
+                  <div class="input-group input-group-sm me-2" data-controller="increment">
+                    <%= button_tag "-", type: "button", class: "btn btn-outline-secondary btn-sm", data: { action: "click->increment#decrement" } %>
+                    <%= number_field_tag "user_caracs[#{uc.carac.id}][mastery]", uc.mastery, min: 0,
+                          class: "form-control form-control-sm text-center",
+                          style: "width: 70px;", data: { "increment-target" => "input" } %>
+                    <%= button_tag "+", type: "button", class: "btn btn-outline-secondary btn-sm", data: { action: "click->increment#increment" } %>
+                  </div>
+
+                  <span class="text-light mx-1">D +</span>
+                </div>
+              <% end %>
+
+              <div class="text-end mt-2">
+                <%= submit_tag "Enregistrer", class: "btn btn-outline-success btn-sm" %>
+              </div>
+            <% end %>
           </div>
         <% end %>
+
+        <!-- Suppression du champ manuel de bonus temporaire: utilisation des bâtiments -->
+        <div class="text-center mt-3">
+          <%= button_to "Appliquer bonus temporaires (bâtiments)", mj_apply_hp_bonus_path, method: :post, class: "btn btn-outline-success" %>
+        </div>
       </div>
-      <div class="bg-dark p-2 rounded mb-3">
-        <h5 class="text-success mb-2">Caractéristiques de <%= user.username %></h5>
 
-        <%= form_with url: mj_update_user_caracs_path(user), method: :patch, local: true do %>
-          <% user.user_caracs.includes(:carac).each do |uc| %>
-            <div class="d-flex align-items-center mb-2">
-              <strong class="text-light me-2" style="width: 100px;"><%= uc.carac.name %></strong>
+      <!-- Onglet Familiers -->
+      <div class="tab-pane fade <%= params[:tab] == 'pets' ? 'show active' : '' %>" id="pets" role="tabpanel">
+        <% if @pets.any? %>
+          <% @pets.each do |pet| %>
+            <div class="d-flex align-items-center justify-content-center mb-2" style="line-height: 1;">
+              <p class="mb-0" style="font-size: 0.9rem;">
+                <%= pet.name %> (<%= pet.user&.username || "Sans maître" %>) - PV Max : <%= pet.hp_max %>,
+                Bouclier : <%= pet.shield_max %>
+              </p>
 
-              <!-- Maîtrise -->
-              <div class="input-group input-group-sm me-2" data-controller="increment">
-                <%= button_tag "-", type: "button", class: "btn btn-outline-secondary btn-sm", data: { action: "click->increment#decrement" } %>
-                <%= number_field_tag "user_caracs[#{uc.carac.id}][mastery]", uc.mastery, min: 0,
-                      class: "form-control form-control-sm text-center",
-                      style: "width: 70px;", data: { "increment-target" => "input" } %>
-                <%= button_tag "+", type: "button", class: "btn btn-outline-secondary btn-sm", data: { action: "click->increment#increment" } %>
-              </div>
-
-              <span class="text-light mx-1">D +</span>
+              <%= form_with url: update_pet_pv_max_path, method: :post, local: true do %>
+                <div class="d-flex align-items-center">
+                  <%= number_field_tag "pet_pv_max[#{pet.id}]", pet.hp_max, class: "form-control form-control-sm me-2", min: 1, style: "width: 70px;" %>
+                  <%= number_field_tag "pet_shield_max[#{pet.id}]", pet.shield_max, class: "form-control form-control-sm me-2", min: 0, style: "width: 70px;" %>
+                  <%= submit_tag "Go", class: "btn btn-outline-success btn-sm ms-1 p-0" %>
+                </div>
+              <% end %>
             </div>
           <% end %>
-
-          <div class="text-end mt-2">
-            <%= submit_tag "Enregistrer", class: "btn btn-outline-success btn-sm" %>
-          </div>
+        <% else %>
+          <p class="text-center text-muted">Aucun familier associé aux joueurs.</p>
         <% end %>
       </div>
-    <% end %>
-
-    <!-- Suppression du champ manuel de bonus temporaire: utilisation des bâtiments -->
-    <div class="text-center mt-3">
-      <%= button_to "Appliquer bonus temporaires (bâtiments)", mj_apply_hp_bonus_path, method: :post, class: "btn btn-outline-success" %>
     </div>
 
     <div class="text-center mt-4">

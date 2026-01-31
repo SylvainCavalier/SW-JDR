@@ -12,10 +12,10 @@
           <div class="d-flex align-items-center mb-3">
             <%= link_to user_path(player) do %>
               <% if player.avatar.attached? %>
-                <%= image_tag player.avatar, class: "rounded-circle me-3", style: "width: 60px; height: 60px; object-fit: cover; border: 2px solid #28a745;" %>
+                <%= image_tag player.avatar, class: "rounded-circle me-3", style: "width: 100px; height: 100px; object-fit: cover; border: 2px solid #28a745;" %>
               <% else %>
-                <div class="rounded-circle me-3 d-flex align-items-center justify-content-center" 
-                     style="width: 60px; height: 60px; background: #28a745; color: white;">
+                <div class="rounded-circle me-3 d-flex align-items-center justify-content-center"
+                     style="width: 100px; height: 100px; background: #28a745; color: white; font-size: 2rem;">
                   <i class="fa-solid fa-user"></i>
                 </div>
               <% end %>
