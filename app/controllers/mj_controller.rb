@@ -338,7 +338,7 @@ class MjController < ApplicationController
   def fixer_pv_max
     @users = User.where(group_id: Group.find_by(name: "PJ").id).includes(:user_caracs => :carac)
     @carac_names = Carac.pluck(:name)
-    @pets = Pet.where(user_id: @users.select(:id)).includes(:user)
+    @pets = Pet.where(id: @users.where.not(pet_id: nil).select(:pet_id))
   end
 
   def update_pv_max

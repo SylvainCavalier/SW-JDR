@@ -71,7 +71,7 @@
           <% @pets.each do |pet| %>
             <div class="d-flex align-items-center justify-content-center mb-2" style="line-height: 1;">
               <p class="mb-0" style="font-size: 0.9rem;">
-                <%= pet.name %> (<%= pet.user&.username || "Sans maître" %>) - PV Max : <%= pet.hp_max %>,
+                <%= pet.name %> (<%= pet.user_as_active_pet&.username || "Sans maître" %>) - PV Max : <%= pet.hp_max %>,
                 Bouclier : <%= pet.shield_max %>
               </p>
 
