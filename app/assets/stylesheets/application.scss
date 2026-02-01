@@ -259,6 +259,10 @@ span {
   border: 2px solid $success;
   border-radius: 8px;
   z-index: 3;
+  user-select: text;
+  -webkit-user-select: text;
+  -ms-user-select: text;
+  -moz-user-select: text;
 }
 
 .select-destinataire {

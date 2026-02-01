@@ -4,7 +4,8 @@ class Enemy < ApplicationRecord
 
   validates :enemy_type, presence: true
   validates :number, numericality: { only_integer: true, greater_than_or_equal_to: 1 }
-  validates :hp_current, :hp_max, :shield_current, :shield_max, numericality: { only_integer: true, greater_than_or_equal_to: 0 }
+  validates :hp_current, numericality: { only_integer: true, greater_than_or_equal_to: -10 }
+  validates :hp_max, :shield_current, :shield_max, numericality: { only_integer: true, greater_than_or_equal_to: 0 }
   validates :status, inclusion: { in: ->(enemy) { Status.pluck(:name) }, message: "problème de validation" }
 
   accepts_nested_attributes_for :enemy_skills, allow_destroy: true
