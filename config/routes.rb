@@ -78,7 +78,7 @@ Rails.application.routes.draw do
     delete :remove_pet, on: :member
   end
 
-  resources :holonews, only: [:index, :new, :create]
+  resources :holonews, only: [:index, :new, :create, :destroy]
   get 'holonews/count', to: 'holonews#count'
 
   resources :enemies, only: [:create, :update, :destroy]
@@ -245,6 +245,7 @@ Rails.application.routes.draw do
   patch "combat/decrement_turn", to: "combat#decrement_turn", as: :decrement_turn
   post "combat/add_pj", to: "combat#add_pj_to_combat", as: :add_pj_to_combat
   post "combat/add_pet", to: "combat#add_pet_to_combat", as: :add_pet_to_combat
+  post "combat/heal_enemy", to: "combat#heal_enemy", as: :heal_enemy
 
   # Combat Spatial
   get 'space_combat', to: 'space_combat#index', as: 'space_combat'

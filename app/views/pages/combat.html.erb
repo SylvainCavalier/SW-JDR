@@ -32,6 +32,13 @@
                         input_html: { class: "form-control", placeholder: "Ex: Mandalorien, Garde, Sith, ..." } %>
           </div>
           <div class="col-12 col-sm-2">
+            <%= f.input :ally, as: :select,
+                        collection: [["Ennemi", false], ["Allié", true]],
+                        label: "Type",
+                        selected: false,
+                        include_blank: false %>
+          </div>
+          <div class="col-12 col-sm-2">
             <%= f.input :hp_max, label: "PV Max", input_html: { min: 1, value: 20 } %>
           </div>
           <div class="col-12 col-sm-2">
@@ -112,9 +119,7 @@
               <th>Bouclier</th>
               <th>Vit</th>
               <th>Statut</th>
-              <% if current_user.group.name == "MJ" %>
-                <th>Actions</th>
-              <% end %>
+              <th>Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -174,6 +179,11 @@
       <%#= render partial: "pages/combat_action", collection: @combat_actions %>-->
 <!--    </div>
   </div>-->
+
+  <% unless current_user.group.name == "MJ" %>
+    <%= render partial: "shared/combat_attack_modal", locals: { current_user: current_user } %>
+    <%= render partial: "shared/combat_ally_heal_modal", locals: { current_user: current_user } %>
+  <% end %>
 
   <%= link_to "Retour", current_user.group.name == "MJ" ? mj_dashboard_path : root_path, class: "btn btn-outline-secondary go-back" %>
 </div>

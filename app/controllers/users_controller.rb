@@ -70,6 +70,8 @@ class UsersController < ApplicationController
       slot: params[:slot],
       name: params[:name],
       effect: params[:effect],
+      mastery: params[:mastery].to_i,
+      bonus: params[:bonus].to_i,
       equipped: true
     )
     # déséquipe les autres dans le même slot

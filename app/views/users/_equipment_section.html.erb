@@ -19,6 +19,9 @@
           <% end %>
         </div>
         <p style="font-size: 0.8em;"><%= equipped_item.effect %></p>
+        <% if ["Arme Principale", "Arme Secondaire", "Explosifs"].include?(slot) && equipped_item.mastery.to_i > 0 %>
+          <p class="text-info mb-0" style="font-size: 0.85em;">Dégâts : <%= equipped_item.mastery %>D+<%= equipped_item.bonus %></p>
+        <% end %>
       <% else %>
         <p class="text-warning">Aucun objet équipé</p>
       <% end %>
@@ -35,7 +38,7 @@
                         data-equipment-toggle-slot-value="<%= slot %>">
                   Eq.
                 </button>
-                <span><small><%= item.name %></small></span>
+                <span><small><%= item.name %><% if ["Arme Principale", "Arme Secondaire", "Explosifs"].include?(slot) && item.mastery.to_i > 0 %> (<%= item.mastery %>D+<%= item.bonus %>)<% end %></small></span>
               </div>
               <button type="button"
                       class="btn btn-sm btn-outline-danger p-0 px-2"
@@ -63,6 +66,23 @@
                  name="effect"
                  placeholder="Effet"
                  class="form-control form-control-sm mb-1">
+          <% if ["Arme Principale", "Arme Secondaire", "Explosifs"].include?(slot) %>
+            <div class="align-items-center justify-content-center mb-1">
+              <div class="d-flex align-items-center mb-1">
+                <div data-controller="increment" class="d-flex align-items-center">
+                  <button type="button" class="btn btn-outline-secondary btn-sm" data-action="click->increment#decrement">-</button>
+                  <input type="number" name="mastery" value="0" min="0" class="form-control form-control-sm text-center mx-1" style="width: 45px;" data-increment-target="input">
+                  <button type="button" class="btn btn-outline-secondary btn-sm" data-action="click->increment#increment">+</button>
+                </div>
+                <span class="mx-1">D +</span>
+              </div>
+              <div data-controller="increment" class="d-flex align-items-center">
+                <button type="button" class="btn btn-outline-secondary btn-sm" data-action="click->increment#decrement">-</button>
+                <input type="number" name="bonus" value="0" min="0" class="form-control form-control-sm text-center mx-1" style="width: 45px;" data-increment-target="input">
+                <button type="button" class="btn btn-outline-secondary btn-sm" data-action="click->increment#increment">+</button>
+              </div>
+            </div>
+          <% end %>
           <button type="submit" class="btn btn-outline-primary btn-sm">Ajouter</button>
         </form>
       <% end %>

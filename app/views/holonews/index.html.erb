@@ -6,7 +6,12 @@
   <div class="holonews-container">
     <div class="holonews-list-container mx-2" data-controller="toggle-content">
       <% @holonews.each do |holonew| %>
-        <div class="holonew-item p-1 mb-1 <%= current_user.has_read?(holonew) ? 'bg-light' : 'bg-warning' %> rounded">
+        <div class="holonew-item p-1 mb-1 <%= current_user.has_read?(holonew) ? 'bg-light' : 'bg-warning' %> rounded position-relative">
+          <% if current_user == holonew.sender || current_user.group.name == "MJ" %>
+            <%= button_to holonew_path(holonew), method: :delete, data: { turbo: false, confirm: "Supprimer ce message ?" }, class: "btn btn-link text-danger p-0 position-absolute", style: "top: 5px; right: 8px;", title: "Supprimer" do %>
+              <i class="fas fa-trash-alt"></i>
+            <% end %>
+          <% end %>
           <h3><%= holonew.title %></h3>
           <p>
             <strong>Expéditeur :</strong> <%= holonew.sender_alias.presence || holonew.sender.username %>

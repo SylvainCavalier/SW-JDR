@@ -1,5 +1,6 @@
 <div class="headquarter-container m-2">
   <!-- Haut : Image de la base -->
+  <%= link_to "Retour", current_user.group.name == "MJ" ? mj_dashboard_path : root_path, class: "btn btn-outline-secondary mb-2" %>
   <div class="image-upload-container position-relative">
     <% if @headquarter.image.attached? %>
       <%= image_tag @headquarter.image, class: "headquarter-image" %>
@@ -50,5 +51,4 @@
       </div>
     </div>
   </div>
-  <%= link_to "Retour", current_user.group.name == "MJ" ? mj_dashboard_path : root_path, class: "btn btn-outline-secondary mt-3" %>
 </div>

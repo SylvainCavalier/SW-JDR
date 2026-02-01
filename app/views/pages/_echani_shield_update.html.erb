@@ -9,22 +9,20 @@
       data-shield-state="<%= user.echani_shield_state %>">
     
     <i class="fa-solid fa-shield" data-shield-target="icon"></i>
-    
-    <p class="mt-1 mb-0" style="font-size: 0.8em;" 
-      data-shield-target="shieldCurrent"
+
+    <p data-shield-target="shieldCurrent"
       data-shield-current="<%= user.echani_shield_current %>"
       data-shield-state="<%= user.echani_shield_state %>">
-      Energie <%= user.echani_shield_current %>/<%= user.echani_shield_max %>
+      Echani <%= user.echani_shield_current %>/<%= user.echani_shield_max %>
     </p>
   </div>
-    
+
   <!-- Bouton de recharge -->
-  <button class="btn btn-outline-primary btn-sm" 
-          data-action="click->shield-recharge#openRechargePopup" 
+  <button class="btn btn-outline-primary btn-sm"
+          data-action="click->shield-recharge#openRechargePopup"
           data-shield-type="echani"
           data-shield-max="<%= user.echani_shield_max || 0 %>"
-          data-shield-current="<%= user.echani_shield_current || 0 %>"
-          style="width: 80%;">
+          data-shield-current="<%= user.echani_shield_current || 0 %>">
     ++
   </button>
 </turbo-frame>

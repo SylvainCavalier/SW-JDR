@@ -1,0 +1,49 @@
+<!-- Modal de soin d'allié pour les PJ -->
+<div class="modal fade" id="combatAllyHealModal" tabindex="-1" aria-labelledby="combatAllyHealModalLabel" aria-hidden="true"
+     data-controller="combat-ally-heal">
+  <div class="modal-dialog">
+    <div class="modal-content bg-dark text-white">
+      <div class="modal-header">
+        <h5 class="modal-title" id="combatAllyHealModalLabel">
+          Soigner <span data-combat-ally-heal-target="targetName">—</span>
+        </h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" data-combat-ally-heal-target="enemyId" value="">
+
+        <p>
+          <strong>PV : </strong>
+          <span data-combat-ally-heal-target="hpDisplay">— / —</span>
+        </p>
+
+        <div class="mb-3">
+          <label class="form-label">Objet de soin</label>
+          <select class="form-select" data-combat-ally-heal-target="healItem">
+            <% current_user.user_inventory_objects.includes(:inventory_object).each do |uio| %>
+              <% if current_user.homeopathie && uio.inventory_object.name == "Homéopathie" %>
+                <option value="<%= uio.inventory_object.id %>">
+                  <%= uio.inventory_object.name %>
+                </option>
+              <% elsif uio.quantity > 0 && uio.inventory_object.category == "soins" %>
+                <option value="<%= uio.inventory_object.id %>" data-quantity="<%= uio.quantity %>">
+                  <%= uio.inventory_object.name %> (x<%= uio.quantity %>)
+                </option>
+              <% end %>
+            <% end %>
+          </select>
+        </div>
+
+        <div data-combat-ally-heal-target="resultMessage"></div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Fermer</button>
+        <button type="button" class="btn btn-outline-success"
+                data-combat-ally-heal-target="healButton"
+                data-action="click->combat-ally-heal#heal">
+          <i class="fa-solid fa-kit-medical"></i> Soigner
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

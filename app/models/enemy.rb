@@ -12,7 +12,19 @@ class Enemy < ApplicationRecord
   after_initialize :set_defaults, if: :new_record?
 
   def name
-    "#{enemy_type} #{number}"
+    if Enemy.where(enemy_type: enemy_type).count > 1
+      "#{enemy_type} #{number}"
+    else
+      enemy_type
+    end
+  end
+
+  def current_status
+    Status.find_by(name: status)
+  end
+
+  def set_status(new_status_name)
+    update(status: new_status_name)
   end
 
   private

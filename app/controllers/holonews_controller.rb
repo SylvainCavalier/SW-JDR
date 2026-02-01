@@ -60,6 +60,17 @@ class HolonewsController < ApplicationController
     end
   end
 
+  def destroy
+    @holonew = Holonew.find(params[:id])
+
+    if current_user == @holonew.sender || current_user.group.name == "MJ"
+      @holonew.destroy
+      redirect_to holonews_path, notice: "Holonew supprimée"
+    else
+      redirect_to holonews_path, alert: "Vous ne pouvez pas supprimer ce message"
+    end
+  end
+
   private
 
   def holonew_params

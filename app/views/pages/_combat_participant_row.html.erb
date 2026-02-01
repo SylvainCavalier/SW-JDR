@@ -3,7 +3,7 @@
     data-user-role="<%= current_user&.group&.name %>"
     id="<%= dom_id(participant) %>_row">
   <!-- Colonne Participant -->
-  <td class="<%= participant.is_a?(Enemy) ? 'text-danger' : 'text-info' %>">
+  <td class="<%= participant.is_a?(Enemy) ? (participant.ally? ? 'text-success' : 'text-danger') : 'text-info' %>">
     <div class="d-flex align-items-start">
       <% if participant.is_a?(User) && participant.avatar.attached? %>
         <%= image_tag url_for(participant.avatar.variant(resize_to_fill: [30, 30])), class: "rounded-circle me-2", alt: "Avatar de #{participant.username}" %>
@@ -23,7 +23,7 @@
             <%= participant.name %>
           <% end %>
         <% else %>
-          <%= "#{participant.enemy_type} #{participant.number}" %>
+          <%= participant.name %>
         <% end %>
       </div>
     </div>
@@ -148,18 +148,41 @@
     <% end %>
   </td>
 
-  <!-- Actions (MJ uniquement) -->
-  <% if current_user&.group&.name == "MJ" %>
-    <td>
+  <!-- Actions -->
+  <td>
+    <% if current_user&.group&.name == "MJ" %>
       <% if participant.is_a?(Enemy) %>
-        <%= button_to "Supprimer", remove_enemy_path(participant), method: :delete, 
-              class: "btn btn-outline-danger btn-sm", 
-              data: { confirm: "Supprimer cet ennemi ?" } %>
+        <%= button_to remove_enemy_path(participant), method: :delete,
+              class: "btn btn-outline-danger btn-sm",
+              data: { confirm: "Supprimer cet ennemi ?" } do %>
+          <i class="fa-solid fa-trash"></i>
+        <% end %>
       <% elsif participant.is_a?(User) || participant.is_a?(Pet) %>
-        <%= button_to "Enlever", remove_participant_path(type: participant.class.name, id: participant.id), 
-              method: :patch, class: "btn btn-outline-warning btn-sm", 
-              data: { confirm: "Retirer ce participant du combat ?" } %>
+        <%= button_to remove_participant_path(type: participant.class.name, id: participant.id),
+              method: :patch, class: "btn btn-outline-warning btn-sm",
+              data: { confirm: "Retirer ce participant du combat ?" } do %>
+          <i class="fa-solid fa-trash"></i>
+        <% end %>
       <% end %>
-    </td>
-  <% end %>
+    <% else %>
+      <% if participant.is_a?(Enemy) && !participant.ally? %>
+        <button class="btn btn-outline-danger btn-sm"
+                data-bs-toggle="modal"
+                data-bs-target="#combatAttackModal"
+                data-enemy-name="<%= participant.name %>">
+          <i class="fa-solid fa-crosshairs"></i>
+        </button>
+      <% elsif participant.is_a?(Enemy) && participant.ally? %>
+        <button class="btn btn-outline-success btn-sm"
+                data-bs-toggle="modal"
+                data-bs-target="#combatAllyHealModal"
+                data-enemy-id="<%= participant.id %>"
+                data-enemy-name="<%= participant.name %>"
+                data-enemy-hp="<%= participant.hp_current %>"
+                data-enemy-hp-max="<%= participant.hp_max %>">
+          <i class="fa-solid fa-kit-medical"></i>
+        </button>
+      <% end %>
+    <% end %>
+  </td>
 </tr> 

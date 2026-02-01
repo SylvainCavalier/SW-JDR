@@ -221,6 +221,71 @@ class CombatController < ApplicationController
     end
   end
 
+  def heal_enemy
+    begin
+      enemy = Enemy.find(params[:enemy_id])
+
+      unless enemy.ally?
+        render json: { error: "Cet ennemi n'est pas un allié." }, status: :unprocessable_entity
+        return
+      end
+
+      heal_item = current_user.user_inventory_objects.find_by(inventory_object_id: params[:item_id])
+      inventory_object = heal_item&.inventory_object
+
+      if inventory_object.nil?
+        render json: { error: "Objet de soin introuvable." }, status: :unprocessable_entity
+        return
+      end
+
+      if heal_item.nil? || heal_item.quantity <= 0
+        render json: { error: "Objet de soin invalide ou quantité insuffisante." }, status: :unprocessable_entity
+        return
+      end
+
+      if enemy.hp_current >= enemy.hp_max
+        render json: { error_message: "#{enemy.name} a déjà tous ses PV !" }, status: :unprocessable_entity
+        return
+      end
+
+      healed_points, new_status = inventory_object.apply_effects(enemy, current_user)
+
+      if healed_points <= 0 && new_status.nil?
+        render json: { error_message: "Cet objet ne peut pas être utilisé dans ce contexte." }, status: :unprocessable_entity
+        return
+      end
+
+      new_hp = [enemy.hp_current + healed_points, enemy.hp_max].min
+
+      ActiveRecord::Base.transaction do
+        if inventory_object.name != "Homéopathie" && healed_points > 0
+          heal_item.quantity -= 1
+          heal_item.save!
+        end
+
+        enemy.update!(hp_current: new_hp)
+
+        if new_status
+          enemy.set_status(new_status)
+        end
+      end
+
+      render json: {
+        target_name: enemy.name,
+        new_hp: new_hp,
+        hp_max: enemy.hp_max,
+        item_quantity: heal_item&.quantity || "illimité",
+        healed_points: healed_points,
+        new_status: new_status
+      }
+    rescue ActiveRecord::RecordNotFound
+      render json: { error: "Ennemi introuvable." }, status: :not_found
+    rescue => e
+      Rails.logger.error "Erreur heal_enemy: #{e.message}"
+      render json: { error: "Une erreur inattendue s'est produite." }, status: :internal_server_error
+    end
+  end
+
   def update_status
     participant_type = params[:participant_type]
     participant = participant_type.constantize.find(params[:participant_id])
@@ -261,7 +326,7 @@ class CombatController < ApplicationController
 
   def enemy_params
     params.require(:enemy).permit(
-      :enemy_type, :hp_max, :shield_max, :vitesse,
+      :enemy_type, :hp_max, :shield_max, :vitesse, :ally,
       enemy_skills_attributes: [:id, :mastery, :bonus, :skill_id, :_destroy]
     )
   end
