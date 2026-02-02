@@ -1,5 +1,5 @@
 class ScienceController < ApplicationController
-  before_action :verify_bio_savant
+  before_action :verify_bio_savant, except: [:players]
 
   def index
   end
