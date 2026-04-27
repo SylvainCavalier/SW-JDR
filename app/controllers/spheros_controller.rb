@@ -1,4 +1,6 @@
 class SpherosController < ApplicationController
+  include CombatBroadcaster
+
   before_action :authenticate_user!
   before_action :set_sphero, only: [:activate, :deactivate, :destroy, :transfer]
 
@@ -37,8 +39,14 @@ class SpherosController < ApplicationController
       flash[:alert] = "Vous avez besoin d'au moins 3D en Réparation pour réparer ce sphéro-droïde."
       return head :unprocessable_entity
     end
-  
+
     @sphero = current_user.spheros.find(params[:id])
+
+    if @sphero.broken
+      flash[:alert] = "Ce sphéro-droïde est endommagé, il doit d'abord être remis en état."
+      return head :unprocessable_entity
+    end
+
     missing_hp = @sphero.hp_max - @sphero.hp_current
     required_components = (missing_hp / 5.0).ceil
   
@@ -56,6 +64,33 @@ class SpherosController < ApplicationController
     head :no_content
   end
   
+  def repair_broken
+    @sphero = current_user.spheros.find(params[:id])
+
+    unless @sphero.broken
+      flash[:alert] = "Ce sphéro-droïde n'est pas endommagé."
+      return head :unprocessable_entity
+    end
+
+    reparation_skill = current_user.user_skills.find_by(skill: Skill.find_by(name: "Réparation"))
+    if reparation_skill.nil? || reparation_skill.mastery.to_i < 3
+      flash[:alert] = "Vous avez besoin d'au moins 3D en Réparation pour remettre en état ce sphéro-droïde."
+      return head :unprocessable_entity
+    end
+
+    components = current_user.user_inventory_objects.find_by(inventory_object: InventoryObject.find_by(name: "Composant"))
+    if components.nil? || components.quantity < 10
+      flash[:alert] = "Vous avez besoin de 10 composants pour remettre en état ce sphéro-droïde."
+      return head :unprocessable_entity
+    end
+
+    components.update(quantity: components.quantity - 10)
+    @sphero.update(broken: false)
+
+    flash[:notice] = "Votre sphéro-droïde a été remis en état !"
+    head :no_content
+  end
+
   def repair_kit
     @sphero = current_user.spheros.find(params[:id])
     kit = current_user.user_inventory_objects.find_by(inventory_object: InventoryObject.find_by(name: "Kit de réparation"))
@@ -134,9 +169,19 @@ class SpherosController < ApplicationController
 
   # ✅ Diffusion Turbo Stream pour mise à jour dynamique des HP
   target_user.broadcast_hp_update
-  
+  broadcast_combat_assistant_update(target_user, "hp_current")
+
     flash[:notice] = "#{target_user.username} a été soigné de #{healing_amount} PV par le sphéro-droïde."
-    head :no_content
+    render json: {
+      success: true,
+      target_id: target_user.id,
+      target_name: target_user.username,
+      new_hp: target_user.hp_current,
+      hp_max: target_user.hp_max,
+      healing_amount: healing_amount,
+      new_medipack_count: sphero.medipacks,
+      message: "#{target_user.username} a été soigné de #{healing_amount} PV par le sphéro-droïde."
+    }
   end
 
   def protect

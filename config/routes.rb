@@ -4,6 +4,7 @@ Rails.application.routes.draw do
   get "/service-worker.js", to: "pwa#service_worker", as: :pwa_service_worker, format: :js
   get "manifest" => "pwa#manifest", as: :pwa_manifest
   get "team" => "pages#team", as: :team
+  patch "team/image" => "pages#update_team_image", as: :update_team_image
 
   resources :users, only: [:show] do
     resources :inventory_objects, only: [:index, :create, :destroy]
@@ -153,6 +154,7 @@ Rails.application.routes.draw do
       post :deactivate
       post :transfer
       post :repair
+      post :repair_broken
       post :repair_kit
       post :recharge
       post :protect
@@ -207,6 +209,8 @@ Rails.application.routes.draw do
 
   get "mj/sphero", to: "mj#sphero", as: "mj_sphero"
   post "mj/sphero/create", to: "mj#create_sphero", as: "mj_create_sphero"
+  patch "mj/sphero/:id", to: "mj#update_sphero", as: "mj_update_sphero"
+  delete "mj/sphero/:id", to: "mj#destroy_sphero", as: "mj_destroy_sphero"
   
   # MJ Science - Gestion des gestations
   get "mj/science", to: "mj#science", as: "mj_science"
@@ -240,6 +244,7 @@ Rails.application.routes.draw do
   delete "combat/remove_enemy/:id", to: "combat#remove_enemy", as: :remove_enemy
   patch "combat/update_stat", to: "combat#update_stat", as: :update_stat
   patch "combat/update_status", to: "combat#update_status", as: :update_combat_status
+  patch "combat/highlight_participant", to: "combat#highlight_participant", as: :highlight_participant
   patch "combat/remove_participant/:type/:id", to: "combat#remove_participant", as: :remove_participant
   patch "combat/increment_turn", to: "combat#increment_turn", as: :increment_turn
   patch "combat/decrement_turn", to: "combat#decrement_turn", as: :decrement_turn

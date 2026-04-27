@@ -56,3 +56,11 @@
   description: "Ne se contrôle plus et attaque le plus proche"
   color: "#FF69B4"
 
+- name: "Brûlé"
+  description: "Souffre de brûlures - -1D PV par tour jusqu'à ce qu'il s'éteigne, +1DD à ses dégâts au CaC"
+  color: "#FF8C00"
+
+- name: "Désorienté"
+  description: "Perd ses repères - -1D à tous ses jets jusqu'au prochain tour"
+  color: "#9370DB"
+

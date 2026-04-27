@@ -1,19 +1,19 @@
-<div class="frame-container d-flex flex-column align-items-center mt-3" style="position: relative; width: 100%; height: 100vh;">
+<div class="frame-container d-flex flex-column align-items-center mt-3" style="position: relative; width: 100%; height: 100vh; overflow-y: auto;">
   <h2>Créer un Sphéro-Droïde</h2>
 
   <%= simple_form_for @sphero, url: mj_create_sphero_path, method: :post do |f| %>
     <div class="mb-3">
-      <%= f.input :user_id, 
-        collection: @players, 
+      <%= f.input :user_id,
+        collection: @players,
         label: "Joueur",
         prompt: "Sélectionnez un joueur",
-        value_method: :id, 
+        value_method: :id,
         label_method: :username
       %>
     </div>
 
     <div class="mb-3">
-      <%= f.input :category, 
+      <%= f.input :category,
         collection: [["Attaque", "attaque"], ["Protection", "protection"], ["Survie", "survie"]],
         label: "Catégorie",
         prompt: "Sélectionnez une catégorie"
@@ -21,7 +21,7 @@
     </div>
 
     <div class="mb-3">
-      <%= f.input :quality, 
+      <%= f.input :quality,
         collection: [[1, 1], [2, 2], [3, 3]],
         label: "Qualité",
         prompt: "Sélectionnez une qualité"
@@ -32,5 +32,79 @@
       <%= f.submit "Créer Sphéro-Droïde", class: "btn btn-primary" %>
     </div>
   <% end %>
-  <%= link_to "Retour", current_user.group.name == "MJ" ? mj_dashboard_path : root_path, class: "btn btn-outline-secondary go-back" %>
+
+  <hr class="w-100 my-4">
+
+  <h2>Sphéro-Droïdes existants</h2>
+
+  <% if @spheros.blank? %>
+    <p>Aucun sphéro-droïde pour l'instant.</p>
+  <% else %>
+    <div class="w-100" style="max-width: 900px;">
+      <% @spheros.each do |sphero| %>
+        <div class="card mb-3 p-3">
+          <h4>
+            <%= sphero.user&.username || "Sans propriétaire" %> — <%= sphero.name %>
+            <% if sphero.broken %>
+              <span class="badge bg-danger ms-2">Endommagé</span>
+            <% end %>
+            <% if sphero.active %>
+              <span class="badge bg-success ms-2">Actif</span>
+            <% end %>
+          </h4>
+
+          <%= simple_form_for sphero, url: mj_update_sphero_path(sphero), method: :patch do |f| %>
+            <div class="row">
+              <div class="col-md-6 mb-2">
+                <%= f.input :user_id, collection: @players, label: "Joueur",
+                      value_method: :id, label_method: :username, include_blank: false %>
+              </div>
+              <div class="col-md-6 mb-2">
+                <%= f.input :name, label: "Nom" %>
+              </div>
+              <div class="col-md-6 mb-2">
+                <%= f.input :category,
+                      collection: [["Attaque", "attaque"], ["Protection", "protection"], ["Survie", "survie"]],
+                      label: "Catégorie", include_blank: false %>
+              </div>
+              <div class="col-md-6 mb-2">
+                <%= f.input :quality, collection: [[1, 1], [2, 2], [3, 3]], label: "Qualité", include_blank: false %>
+              </div>
+              <div class="col-md-3 mb-2">
+                <%= f.input :hp_current, label: "PV actuels", as: :integer %>
+              </div>
+              <div class="col-md-3 mb-2">
+                <%= f.input :hp_max, label: "PV max", as: :integer %>
+              </div>
+              <div class="col-md-3 mb-2">
+                <%= f.input :shield_current, label: "Bouclier actuel", as: :integer %>
+              </div>
+              <div class="col-md-3 mb-2">
+                <%= f.input :shield_max, label: "Bouclier max", as: :integer %>
+              </div>
+              <div class="col-md-3 mb-2">
+                <%= f.input :medipacks, label: "Medipacks", as: :integer %>
+              </div>
+              <div class="col-md-3 mb-2 d-flex align-items-center">
+                <%= f.input :broken, label: "Endommagé", as: :boolean %>
+              </div>
+              <div class="col-md-3 mb-2 d-flex align-items-center">
+                <%= f.input :active, label: "Actif", as: :boolean %>
+              </div>
+            </div>
+
+            <div class="d-flex gap-2">
+              <%= f.submit "Enregistrer", class: "btn btn-primary btn-sm" %>
+              <%= button_to "Supprimer", mj_destroy_sphero_path(sphero),
+                    method: :delete,
+                    class: "btn btn-outline-danger btn-sm",
+                    form: { data: { turbo_confirm: "Supprimer définitivement ce sphéro-droïde ?" } } %>
+            </div>
+          <% end %>
+        </div>
+      <% end %>
+    </div>
+  <% end %>
+
+  <%= link_to "Retour", current_user.group.name == "MJ" ? mj_dashboard_path : root_path, class: "btn btn-outline-secondary go-back mt-3" %>
 </div>

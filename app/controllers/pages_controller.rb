@@ -9,9 +9,23 @@ class PagesController < ApplicationController
   end
 
   def team
+    @team_group = Group.find_by(name: "PJ")
     @players = User.includes(:race, :classe_perso, :pet, :statuses, :avatar_attachment)
                    .joins(:group).where(groups: { name: "PJ" })
                    .order(:username)
+  end
+
+  def update_team_image
+    unless current_user.group&.name == "MJ"
+      redirect_to team_path, alert: "Action réservée au MJ." and return
+    end
+
+    team_group = Group.find_by(name: "PJ")
+    if team_group&.update(image: params[:image])
+      redirect_to team_path, notice: "Image d'équipe mise à jour."
+    else
+      redirect_to team_path, alert: "Erreur lors de l'upload."
+    end
   end
 
   def mj

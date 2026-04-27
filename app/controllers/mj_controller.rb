@@ -1,4 +1,6 @@
 class MjController < ApplicationController
+  include CombatBroadcaster
+
   before_action :authenticate_user!
   before_action :authorize_mj
 
@@ -49,8 +51,9 @@ class MjController < ApplicationController
           shield_state: new_shield_value > 0
         )
         user.broadcast_energy_shield_update
+        broadcast_combat_assistant_update(user, "shield_current")
         message = "Bouclier d'énergie a pris #{damage} dégâts."
-    
+
         # turbo_stream_action seulement si le bouclier tombe à zéro
         turbo_stream_action(user, "energy") if new_shield_value == 0
       else
@@ -60,6 +63,7 @@ class MjController < ApplicationController
         new_hp_value = [new_hp_value, -10].max
         user.update(hp_current: new_hp_value)
         user.broadcast_hp_update
+        broadcast_combat_assistant_update(user, "hp_current")
 
         message = "Le joueur a pris #{actual_damage} dégâts après résistance corporelle."
       end
@@ -77,11 +81,12 @@ class MjController < ApplicationController
           echani_shield_state: new_shield_value > 0
         )
         user.broadcast_echani_shield_update
+        broadcast_combat_assistant_update(user, "echani_shield_current")
 
         if new_shield_value == 0
           turbo_stream_action(user, "echani")
         end
-        
+
         message = "Bouclier Échani a pris #{damage} dégâts."
       else
         # Calcul des dégâts résiduels pour les PV
@@ -90,6 +95,7 @@ class MjController < ApplicationController
         new_hp_value = [new_hp_value, -10].max
         user.update(hp_current: new_hp_value)
         user.broadcast_hp_update
+        broadcast_combat_assistant_update(user, "hp_current")
         message = "Le joueur a pris #{actual_damage} dégâts après résistance corporelle."
       end
   
@@ -103,6 +109,7 @@ class MjController < ApplicationController
       new_hp_value = [new_hp_value, -10].max
       user.update(hp_current: new_hp_value)
       user.broadcast_hp_update
+      broadcast_combat_assistant_update(user, "hp_current")
       message = "Le joueur a pris #{damage} dégâts directs, ignorants boucliers et résistance."
     
       # Appel à la gestion des patchs après application des dégâts
@@ -139,10 +146,11 @@ class MjController < ApplicationController
         # Attaque sur le bouclier énergétique
         new_shield_value = [pet.shield_current - damage, 0].max
         pet.update(shield_current: new_shield_value)
-  
+        broadcast_combat_assistant_update(pet, "shield_current")
+
         Rails.logger.debug "🛡️ Bouclier énergétique a absorbé #{damage} dégâts."
         message = "Le pet #{pet.name} a perdu #{damage} points de bouclier."
-  
+
         if new_shield_value == 0
           Rails.logger.debug "❗ Bouclier énergétique détruit."
         end
@@ -150,25 +158,28 @@ class MjController < ApplicationController
         actual_damage = [damage - resistance_bonus, 1].max
         new_hp_value = [pet.hp_current - actual_damage, -10].max
         pet.update(hp_current: new_hp_value)
-        
+        broadcast_combat_assistant_update(pet, "hp_current")
+
         Rails.logger.debug "💥 Le pet #{pet.name} a pris #{actual_damage} dégâts énergétiques."
         message = "Le pet #{pet.name} a subi #{actual_damage} dégâts énergétiques."
       end
-  
+
     when "physical"
       # Les dégâts physiques contournent le bouclier et vont directement aux PV
       actual_damage = [damage - resistance_bonus, 1].max
       new_hp_value = [pet.hp_current - actual_damage, -10].max
       pet.update(hp_current: new_hp_value)
-  
+      broadcast_combat_assistant_update(pet, "hp_current")
+
       Rails.logger.debug "🩸 Le pet #{pet.name} a pris #{actual_damage} dégâts physiques après résistance."
       message = "Le pet #{pet.name} a subi #{actual_damage} dégâts physiques après résistance."
-  
+
     when "ignore_defense"
       # Dégâts ignorants la défense et les boucliers, allant directement aux PV
       new_hp_value = [pet.hp_current - damage, -10].max
       pet.update(hp_current: new_hp_value)
-  
+      broadcast_combat_assistant_update(pet, "hp_current")
+
       Rails.logger.debug "💀 Le pet #{pet.name} a pris #{damage} dégâts directs, ignorants toute défense."
       message = "Le pet #{pet.name} a subi #{damage} dégâts directs, ignorants la résistance et les boucliers."
   
@@ -301,6 +312,7 @@ class MjController < ApplicationController
         end
   
         user.broadcast_hp_update
+        broadcast_combat_assistant_update(user, "hp_current")
         user.broadcast_replace_to(
           "notifications_#{user.id}",
           target: "notification_frame",
@@ -322,6 +334,7 @@ class MjController < ApplicationController
         end
   
         user.broadcast_hp_update
+        broadcast_combat_assistant_update(user, "hp_current")
         user.broadcast_replace_to(
           "notifications_#{user.id}",
           target: "notification_frame",
@@ -661,22 +674,40 @@ class MjController < ApplicationController
   def sphero
     @sphero = Sphero.new
     @players = User.where(group: Group.find_by(name: "PJ"))
-  
+    @spheros = Sphero.includes(:user).where(user: @players).order("users.username", :name)
+
     if @players.empty?
       flash[:alert] = "Aucun joueur trouvé dans le groupe PJ."
       redirect_to mj_sphero_path and return
     end
   end
-  
+
   def create_sphero
     @sphero = Sphero.new(sphero_params)
     @players = User.where(group: Group.find_by(name: "PJ"))
-  
+
     if @sphero.save
       redirect_to mj_sphero_path, notice: "Sphéro-Droïde créé avec succès."
     else
-      render :new_sphero
+      @spheros = Sphero.includes(:user).where(user: @players).order("users.username", :name)
+      render :sphero, status: :unprocessable_entity
     end
+  end
+
+  def update_sphero
+    @sphero = Sphero.find(params[:id])
+
+    if @sphero.update(mj_sphero_update_params)
+      redirect_to mj_sphero_path, notice: "Sphéro-Droïde mis à jour."
+    else
+      redirect_to mj_sphero_path, alert: "Erreur : #{@sphero.errors.full_messages.join(', ')}"
+    end
+  end
+
+  def destroy_sphero
+    @sphero = Sphero.find(params[:id])
+    @sphero.destroy
+    redirect_to mj_sphero_path, notice: "Sphéro-Droïde supprimé."
   end
   
   def fixer_points
@@ -1077,9 +1108,17 @@ class MjController < ApplicationController
   end
   
   private
-  
+
   def sphero_params
     params.require(:sphero).permit(:name, :category, :quality, :user_id)
+  end
+
+  def mj_sphero_update_params
+    params.require(:sphero).permit(
+      :name, :category, :quality,
+      :hp_current, :hp_max, :shield_current, :shield_max,
+      :medipacks, :broken, :active, :user_id
+    )
   end
   
   def calculate_damage(damage, resistance_bonus)

@@ -1,0 +1,13 @@
+<%# Marqueur invisible portant l'identité du participant actuellement en surbrillance.
+    Diffusé via combat_updates ; un controller Stimulus applique/retire la classe sur la ligne. %>
+<% active_row_id = if combat_state&.active_participant_type.present? && combat_state.active_participant_id.present?
+                     "#{combat_state.active_participant_type.downcase}_#{combat_state.active_participant_id}_row"
+                   else
+                     ""
+                   end %>
+<div id="combat_highlight_marker"
+     data-controller="combat-highlight"
+     data-combat-highlight-active-row-id-value="<%= active_row_id %>"
+     data-combat-highlight-active-type-value="<%= combat_state&.active_participant_type.to_s %>"
+     data-combat-highlight-active-id-value="<%= combat_state&.active_participant_id.to_i %>">
+</div>

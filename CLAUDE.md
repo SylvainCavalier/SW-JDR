@@ -58,6 +58,39 @@ Large controllers handle feature domains:
 - **ActionCable channels** for real-time features (Pazaak lobby, game sync)
 - **SCSS** with Bootstrap 5 in `app/assets/stylesheets/`
 
+### Page Map
+
+Main pages, with their route → controller#action → primary view. Use this to locate where a feature lives when adding/modifying functionality.
+
+**Player-facing pages**
+- `/` — home → `pages#home` → `views/pages/home.html.erb`
+- `/team` — team roster → `pages#team` → `views/pages/team.html.erb`
+- `/rules` — rules reference → `pages#rules`
+- `/combat` — ground combat assistant → `combat#index` → `views/pages/combat.html.erb`
+- `/space_combat` — space combat assistant → `space_combat#index` → `views/space_combat/index.html.erb`
+- `/users/:id` — player character profile → `users#show` (sub-pages: `health_management`, `medipack`, `healobjects`, `sphero`, `dice`, `edit_notes`, `settings`)
+- `/headquarter` — base / HQ → `headquarter#show` (sub-pages: `inventory`, `observation`, `credits`, `buildings`, `personnel`, `defenses`)
+- `/headquarter/credits` + `transfer_credits` — credits transfer page
+- `/transactions/new` — shop / purchases → `transactions#new`
+- `/ships`, `/ships/:id`, `/ships/:id/{inventory,improve,crew,repair}` — spaceships → `ships_controller`
+- `/pets`, `/pets/graveyard` — companions → `pets_controller`
+- `/apprentices` — Jedi apprentices → `apprentices_controller`
+- `/holonews` — **internal messaging system** (not a news feed) → `holonews_controller`
+- `/science` + sub-pages (`crafts`, `bestiaire`, `genetique`, `labo`, `cultiver`, `traits`, `gestation`, `stats`, `players`) → `science_controller`
+- `/wine_cellar` — wine cellar → `wine_cellar_controller`
+- `/pazaak` — Pazaak mini-game (menus, lobbies, deck, stats, games) → `pazaak/*` namespace
+
+**MJ (Game Master) pages**
+- `/mj` — MJ dashboard → `pages#mj`
+- `/mj/{fixer-points, donner_xp, fixer_pv_max, fixer_statut, infliger_degats, balles_perdues, unlock_drink, fix_pets, sphero, science, apprentices, vaisseaux}` → `mj_controller`
+- `donner_objet` (give item) → `mj_controller`
+- `/mj/combat` and `/mj/space_combat` — shared combat assistants with MJ controls
+
+### Controller Concerns
+
+Shared controller helpers live in `app/controllers/concerns/`:
+- `combat_broadcaster.rb` — exposes `broadcast_combat_assistant_update(participant, field)`. Diffuse une mise à jour de PV / bouclier / bouclier Échani d'un participant (User, Pet, Enemy) vers le canal Turbo `combat_updates`, lu par l'assistant de combat (`views/pages/combat.html.erb`). À utiliser **après tout changement de `hp_current`, `shield_current` ou `echani_shield_current`** opéré en dehors de l'action `combat#update_player_stat` (qui le fait déjà), pour que les autres clients voient le changement en temps réel. Inclus dans `UsersController`, `MjController`, `CombatController`. `field` accepte `"hp_current"`, `"shield_current"`, `"echani_shield_current"`.
+
 ### Configuration Initializers
 
 Game-specific configs in `config/initializers/`:

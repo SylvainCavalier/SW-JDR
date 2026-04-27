@@ -101,6 +101,9 @@
        ]
      } %>
 
+  <%# Marqueur de surbrillance partagé (invisible). Mis à jour via Turbo Streams. %>
+  <%= render "pages/combat_highlight_marker", combat_state: CombatState.first %>
+
   <% if participants.empty? %>
     <div class="alert alert-warning text-center">⚠️ Aucun combat en cours.</div>
   <% else %>
@@ -135,8 +138,18 @@
   <!-- Modale de soins réutilisable -->
   <%= render partial: "shared/heal_modal", locals: { users: @heal_users, pets: @heal_pets, user_inventory_objects: @heal_items } %>
 
-  <!-- Bouton global Soins -->
+  <!-- Modale d'accès au Sphéro-Droïde (uniquement si actif) -->
+  <% if @active_sphero %>
+    <%= render partial: "shared/combat_sphero_modal", locals: { sphero: @active_sphero, heal_users: @heal_users } %>
+  <% end %>
+
+  <!-- Boutons globaux -->
   <div class="mt-3 text-end">
+    <% if @active_sphero %>
+      <button class="btn btn-outline-primary me-2" data-bs-toggle="modal" data-bs-target="#combatSpheroModal">
+        Sphéro
+      </button>
+    <% end %>
     <button class="btn btn-outline-success" data-bs-toggle="modal" data-bs-target="#healModal">
       Soins
     </button>

@@ -106,4 +106,28 @@ export default class extends Controller {
       console.error('Erreur réseau:', error)
     }
   }
+
+  async highlightParticipant(event) {
+    const { participantId, participantType } = event.currentTarget.dataset
+
+    try {
+      const response = await fetch('/combat/highlight_participant', {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRF-Token': document.querySelector("meta[name='csrf-token']").content
+        },
+        body: JSON.stringify({
+          participant_id: participantId,
+          participant_type: participantType
+        })
+      })
+
+      if (!response.ok) {
+        console.error("Erreur lors de la mise en surbrillance")
+      }
+    } catch (error) {
+      console.error('Erreur réseau:', error)
+    }
+  }
 }

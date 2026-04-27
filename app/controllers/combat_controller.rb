@@ -1,5 +1,7 @@
 class CombatController < ApplicationController
   include ActionView::RecordIdentifier
+  include CombatBroadcaster
+
   before_action :authenticate_user!
   before_action :set_current_user
 
@@ -17,6 +19,11 @@ class CombatController < ApplicationController
 
     @heal_pets = @heal_users.map(&:pet).compact
     @heal_items = current_user.user_inventory_objects.includes(:inventory_object)
+
+    unless current_user.group.name == "MJ"
+      @active_sphero = current_user.spheros.includes(sphero_skills: :skill).find_by(active: true)
+    end
+
     render "pages/combat"
   end
 
@@ -110,7 +117,7 @@ class CombatController < ApplicationController
       )
       
       # Broadcast unifié pour les mises à jour
-      broadcast_value_update(@participant, field)
+      broadcast_combat_assistant_update(@participant, field)
       
       render json: { success: true }
     else
@@ -270,6 +277,8 @@ class CombatController < ApplicationController
         end
       end
 
+      broadcast_combat_assistant_update(enemy, "hp_current")
+
       render json: {
         target_name: enemy.name,
         new_hp: new_hp,
@@ -284,6 +293,39 @@ class CombatController < ApplicationController
       Rails.logger.error "Erreur heal_enemy: #{e.message}"
       render json: { error: "Une erreur inattendue s'est produite." }, status: :internal_server_error
     end
+  end
+
+  def highlight_participant
+    unless current_user.group.name == "MJ"
+      render json: { success: false, error: "Action réservée au MJ." }, status: :forbidden
+      return
+    end
+
+    participant_type = params[:participant_type]
+    participant_id = params[:participant_id].to_i
+    unless ["User", "Pet", "Enemy"].include?(participant_type)
+      render json: { success: false, error: "Type de participant invalide." }, status: :bad_request
+      return
+    end
+
+    participant = participant_type.constantize.find(participant_id)
+    combat_state = CombatState.first_or_create(turn: 1)
+
+    if combat_state.active_participant_type == participant_type && combat_state.active_participant_id == participant_id
+      # Toggle off
+      combat_state.update!(active_participant_type: nil, active_participant_id: nil)
+    else
+      combat_state.update!(active_participant_type: participant_type, active_participant_id: participant_id)
+    end
+
+    Turbo::StreamsChannel.broadcast_replace_to(
+      "combat_updates",
+      target: "combat_highlight_marker",
+      partial: "pages/combat_highlight_marker",
+      locals: { combat_state: combat_state }
+    )
+
+    render json: { success: true }
   end
 
   def update_status
@@ -351,6 +393,7 @@ class CombatController < ApplicationController
     )
   end
 
+
   def can_modify_participant?(participant)
     return true if current_user.group.name == "MJ"
     
@@ -366,17 +409,4 @@ class CombatController < ApplicationController
     end
   end
 
-  def broadcast_value_update(participant, field)
-    Turbo::StreamsChannel.broadcast_replace_to(
-      "combat_updates",
-      target: "#{dom_id(participant)}_#{field == 'hp_current' ? 'hp' : 'shield'}_value",
-      partial: "pages/combat_value",
-      locals: { 
-        participant: participant, 
-        field: field,
-        current: participant.send(field),
-        max: field == 'hp_current' ? participant.hp_max : participant.shield_max
-      }
-    )
-  end
 end

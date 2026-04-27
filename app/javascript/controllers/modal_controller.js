@@ -33,7 +33,7 @@ export default class extends Controller {
       } else if (["sell#confirm", "delete#confirm", "dissociate#confirm"].includes(action) && deletePath) {
         this.confirmButtonTarget.textContent = confirmButtonText;
         this.confirmButtonTarget.onclick = () => this.submitForm(deletePath, action);
-      } else if (["sphero#activate", "sphero#deactivate", "sphero#delete", "sphero#repair", "sphero#repair_kit", "sphero#recharge"].includes(action) && spheroId) {
+      } else if (["sphero#activate", "sphero#deactivate", "sphero#delete", "sphero#repair", "sphero#repair_broken", "sphero#repair_kit", "sphero#recharge"].includes(action) && spheroId) {
         this.confirmButtonTarget.textContent = confirmButtonText;
       
         if (action === "sphero#repair") {
@@ -67,6 +67,7 @@ export default class extends Controller {
     else if (action === "sphero#deactivate") url += "/deactivate";
     else if (action === "sphero#delete") method = "DELETE";
     else if (action === "sphero#repair") url += "/repair";
+    else if (action === "sphero#repair_broken") url += "/repair_broken";
     else if (action === "sphero#repair_kit") url += "/repair_kit";
     else if (action === "sphero#recharge") {
       url += "/recharge";

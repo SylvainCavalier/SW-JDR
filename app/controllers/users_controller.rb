@@ -1,4 +1,6 @@
 class UsersController < ApplicationController
+  include CombatBroadcaster
+
   before_action :authenticate_user!
   before_action :set_user, only: [:medipack, :healobjects, :buy_inventory_object, :inventory, :sell_item, :give_item, :show]
   
@@ -416,12 +418,15 @@ class UsersController < ApplicationController
   
         # Mise à jour des PV
         target.update!(hp_current: new_hp)
-  
+
         # Diffuser la mise à jour des PV
         if target.is_a?(User)
           target.broadcast_hp_update
         end
-  
+
+        # Diffuser la mise à jour des PV vers l'assistant de combat
+        broadcast_combat_assistant_update(target, "hp_current")
+
         Rails.logger.debug "👤 PV mis à jour"
   
         # Mise à jour du statut si nécessaire
@@ -494,12 +499,18 @@ class UsersController < ApplicationController
           return render json: { error: "Le Poisipatch ne peut être utilisé que si vous êtes empoisonné." }, status: :unprocessable_entity
         end
         current_user.set_status("En forme")
-  
+
       when "Traumapatch"
         healed_points = rand(1..6)
         new_hp = [current_user.hp_current + healed_points, current_user.hp_max].min
         current_user.update!(hp_current: new_hp)
-  
+
+      when "Vitapatch"
+        unless current_user.hp_current < 0
+          return render json: { error: "Le Vitapatch ne peut être utilisé que si vos PV sont négatifs." }, status: :unprocessable_entity
+        end
+        current_user.update!(hp_current: 0)
+
       when "Stimpatch"
         unless current_user.statuses.exists?(name: "Sonné")
           return render json: { error: "Le Stimpatch ne peut être utilisé que si vous êtes sonné." }, status: :unprocessable_entity
@@ -510,7 +521,12 @@ class UsersController < ApplicationController
       inventory_object&.decrement!(:quantity)
       current_user.update!(patch: nil)
     end
-  
+
+    if ["Vitapatch", "Traumapatch"].include?(equipped_patch.name)
+      current_user.broadcast_hp_update
+      broadcast_combat_assistant_update(current_user, "hp_current")
+    end
+
     render json: { success: "Patch « #{equipped_patch.name} » utilisé avec succès." }
   
   rescue => e

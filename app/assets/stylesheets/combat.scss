@@ -4,6 +4,12 @@
   margin: 0 auto;
   padding: 2rem;
 
+  // Surbrillance de la ligne du participant qui joue
+  tr.active-turn > td {
+    background-color: rgba(255, 193, 7, 0.18) !important;
+    box-shadow: inset 4px 0 0 #ffc107;
+  }
+
   // Styles pour les contrôles de combat
   .combat-controls {
     display: none;

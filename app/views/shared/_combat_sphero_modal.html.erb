@@ -1,0 +1,131 @@
+<%# Modale d'accès rapide au Sphéro-Droïde depuis l'assistant de combat %>
+<div class="modal fade" id="combatSpheroModal" tabindex="-1" aria-labelledby="combatSpheroModalLabel" aria-hidden="true"
+     data-controller="combat-sphero" data-combat-sphero-sphero-id-value="<%= sphero.id %>">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content bg-dark text-white">
+      <div class="modal-header">
+        <h5 class="modal-title" id="combatSpheroModalLabel">
+          Sphéro-Droïde — <%= sphero.name %>
+          <% if sphero.broken %>
+            <span class="badge bg-danger ms-2">Endommagé</span>
+          <% end %>
+        </h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-md-6">
+            <p><strong>Catégorie :</strong> <%= sphero.category.capitalize %></p>
+            <p><strong>Qualité :</strong> <%= sphero.quality %></p>
+            <p>
+              <strong>Blindage :</strong>
+              <span data-combat-sphero-target="hp"><%= sphero.hp_current %></span> / <%= sphero.hp_max %>
+            </p>
+            <p>
+              <strong>Bouclier :</strong>
+              <span data-combat-sphero-target="shield"><%= sphero.shield_current %></span> / <%= sphero.shield_max %>
+            </p>
+            <% if sphero.category == "survie" %>
+              <p>
+                <strong>Medipacks :</strong>
+                <span data-combat-sphero-target="medipacks"><%= sphero.medipacks %></span>
+                <% unless sphero.broken %>
+                  <button type="button" class="btn btn-outline-primary btn-sm ms-2"
+                          data-action="click->combat-sphero#addMedipack">+</button>
+                <% end %>
+              </p>
+            <% end %>
+          </div>
+
+          <div class="col-md-6">
+            <h6>Compétences</h6>
+            <ul class="list-group list-group-flush bg-dark">
+              <li class="list-group-item bg-dark text-white">
+                <strong>Esquive :</strong>
+                <%= sphero.sphero_skills.find_by(skill: Skill.find_by(name: "Esquive"))&.mastery || 0 %>D
+              </li>
+              <li class="list-group-item bg-dark text-white">
+                <strong>Résistance Corporelle :</strong>
+                <%= sphero.sphero_skills.find_by(skill: Skill.find_by(name: "Résistance Corporelle"))&.mastery || 0 %>D
+              </li>
+              <% if sphero.category == "protection" %>
+                <li class="list-group-item bg-dark text-white d-flex justify-content-between align-items-center">
+                  <span>
+                    <strong>Habileté :</strong>
+                    <%= sphero.sphero_skills.find_by(skill: Skill.find_by(name: "Habileté"))&.mastery || 0 %>D
+                  </span>
+                  <% unless sphero.broken %>
+                    <button type="button" class="btn btn-outline-warning btn-sm"
+                            data-action="click->combat-sphero#protect">Protéger</button>
+                  <% end %>
+                </li>
+              <% end %>
+              <% if sphero.category == "attaque" %>
+                <li class="list-group-item bg-dark text-white d-flex justify-content-between align-items-center">
+                  <span>
+                    <strong>Tir :</strong>
+                    <%= sphero.sphero_skills.find_by(skill: Skill.find_by(name: "Tir"))&.mastery || 0 %>D
+                  </span>
+                  <% unless sphero.broken %>
+                    <button type="button" class="btn btn-outline-danger btn-sm"
+                            data-action="click->combat-sphero#attack">Attaquer</button>
+                  <% end %>
+                </li>
+              <% end %>
+              <% if sphero.category == "survie" %>
+                <li class="list-group-item bg-dark text-white">
+                  <strong>Médecine :</strong>
+                  <%= sphero.sphero_skills.find_by(skill: Skill.find_by(name: "Médecine"))&.mastery || 0 %>D
+                </li>
+              <% end %>
+            </ul>
+          </div>
+        </div>
+
+        <% unless sphero.broken %>
+          <hr class="my-3 border-secondary">
+          <div class="d-flex flex-wrap gap-2">
+            <button type="button" class="btn btn-outline-warning btn-sm"
+                    data-combat-sphero-target="repairButton"
+                    data-action="click->combat-sphero#repair"
+                    <%= "disabled" if sphero.hp_current >= sphero.hp_max %>>
+              Réparer
+            </button>
+            <button type="button" class="btn btn-outline-info btn-sm"
+                    data-combat-sphero-target="rechargeButton"
+                    data-action="click->combat-sphero#recharge"
+                    <%= "disabled" if sphero.shield_current >= sphero.shield_max %>>
+              Recharger bouclier
+            </button>
+          </div>
+
+          <% if sphero.category == "survie" %>
+            <hr class="my-3 border-secondary">
+            <div>
+              <label for="combat-sphero-target-player" class="form-label">Soigner un équipier avec un medipack</label>
+              <div class="d-flex gap-2">
+                <select id="combat-sphero-target-player" class="form-select"
+                        data-combat-sphero-target="playerSelect">
+                  <% heal_users.each do |player| %>
+                    <option value="<%= player.id %>"><%= player.username.capitalize %></option>
+                  <% end %>
+                </select>
+                <button type="button" class="btn btn-outline-success"
+                        data-combat-sphero-target="useMedipackButton"
+                        data-action="click->combat-sphero#useMedipack"
+                        <%= "disabled" if sphero.medipacks <= 0 %>>
+                  Utiliser
+                </button>
+              </div>
+            </div>
+          <% end %>
+        <% end %>
+
+        <div class="mt-3" data-combat-sphero-target="resultMessage"></div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Fermer</button>
+      </div>
+    </div>
+  </div>
+</div>
