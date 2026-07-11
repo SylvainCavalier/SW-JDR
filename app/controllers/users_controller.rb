@@ -283,13 +283,15 @@ class UsersController < ApplicationController
         user_inventory_object = @user.user_inventory_objects.find_or_initialize_by(inventory_object: homeopathie_item)
         user_inventory_object.quantity = 1
         user_inventory_object.save!
+        @user.update(homeopathie: true)
         Rails.logger.debug "✅ 'Homéopathie' ajoutée à l'utilisateur #{@user.username}."
       else
         user_inventory_object = @user.user_inventory_objects.find_by(inventory_object: homeopathie_item)
         if user_inventory_object
           user_inventory_object.update(quantity: 0)
-          Rails.logger.debug "❌ 'Homéopathie' retirée de l'utilisateur #{@user.username}."
         end
+        @user.update(homeopathie: false)
+        Rails.logger.debug "❌ 'Homéopathie' retirée de l'utilisateur #{@user.username}."
       end
     end
 
