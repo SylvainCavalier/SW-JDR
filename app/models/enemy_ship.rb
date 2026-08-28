@@ -8,6 +8,7 @@ class EnemyShip < ApplicationRecord
             :hull_mastery, :hull_bonus, :shield_mastery, :shield_bonus,
             numericality: { greater_than_or_equal_to: 0 }
   validates :scale, inclusion: { in: 0..5 }
+  validates :interception_level, numericality: { greater_than_or_equal_to: 0, less_than_or_equal_to: 12 }
 
   after_initialize :set_defaults, if: :new_record?
 
@@ -25,16 +26,8 @@ class EnemyShip < ApplicationRecord
   end
 
   def status_labels
-    labels = []
-    labels << "Écrans désactivés" if shields_disabled
-    labels << "Commandes ionisées" if controls_ionized
-    labels << "Arme endommagée" if weapon_damaged
-    labels << "Propulseurs touchés" if thrusters_damaged
-    labels << "Hyperdrive HS" if hyperdrive_broken
-    labels << "Dépressurisation" if depressurized
-    labels << "Vaisseau détruit" if ship_destroyed
-    labels = ["Intact"] if labels.empty?
-    labels
+    labels = Ship::COMBAT_DAMAGE_FLAGS.select { |flag| send(flag) }.map { |flag| Ship::DAMAGE_FLAG_LABELS[flag] }
+    labels.empty? ? ["Intact"] : labels
   end
 
   def hull_dice_label

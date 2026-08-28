@@ -1,25 +1,22 @@
 <% content_for :title, "Combat Spatial" %>
 
 <div class="space-combat-container"
+     data-controller="space-combat"
      data-user-role="<%= current_user&.group&.name %>"
-     data-user-id="<%= current_user&.id %>"
-     data-user-group-id="<%= current_user&.group_id %>">
+     data-user-id="<%= current_user&.id %>">
 
-  <%= turbo_stream_from "space_combat_updates" %>
+  <%# Le plateau dépend des droits de chacun : chaque joueur a son propre canal %>
+  <%= turbo_stream_from SpaceCombatState.stream_for_user(current_user) %>
+  <%= turbo_stream_from SpaceCombatState::LOG_STREAM %>
 
   <h1 class="text-center mb-4" style="color: #17a2b8; text-shadow: 0 0 20px rgba(23, 162, 184, 0.5);">
     Combat Spatial
   </h1>
 
+  <div id="space_combat_toast" class="space-combat-toast"></div>
+
   <% if current_user&.group&.name == "MJ" %>
-    <div class="row mb-4">
-      <div class="col-md-6">
-        <%= render "space_combat/add_enemy_ship_form" %>
-      </div>
-      <div class="col-md-6">
-        <%= render "space_combat/add_player_ship_form", ships: @ships %>
-      </div>
-    </div>
+    <%= render "space_combat/mj_panel", combat: @combat, participants: @participants, ships: @ships %>
   <% end %>
 
   <div id="space_combat_main">
@@ -39,5 +36,6 @@
     </div>
   </div>
 
-  <%= link_to "Retour", current_user.group.name == "MJ" ? mj_dashboard_path : root_path, class: "btn btn-outline-secondary go-back" %>
+  <%= link_to "Retour", current_user&.group&.name == "MJ" ? mj_dashboard_path : root_path,
+              class: "btn btn-outline-secondary go-back" %>
 </div>

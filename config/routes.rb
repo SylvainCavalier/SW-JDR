@@ -255,19 +255,34 @@ Rails.application.routes.draw do
   # Combat Spatial
   get 'space_combat', to: 'space_combat#index', as: 'space_combat'
   get 'mj/space_combat', to: 'space_combat#index', as: 'mj_space_combat'
-  post   'space_combat/add_ship',          to: 'space_combat#add_ship'
-  post   'space_combat/add_enemy_ship',    to: 'space_combat#add_enemy_ship'
+  post   'space_combat/add_ship',           to: 'space_combat#add_ship'
+  post   'space_combat/add_enemy_ship',     to: 'space_combat#add_enemy_ship'
   delete 'space_combat/remove_participant/:id', to: 'space_combat#remove_participant', as: 'space_combat_remove_participant'
-  post   'space_combat/roll_initiative',   to: 'space_combat#roll_initiative'
-  patch  'space_combat/change_position',   to: 'space_combat#change_position'
-  patch  'space_combat/update_stat',       to: 'space_combat#update_stat', as: 'space_combat_update_stat'
+  post   'space_combat/roll_initiative',    to: 'space_combat#roll_initiative'
+  # Mouvement
+  patch  'space_combat/change_position',    to: 'space_combat#change_position'
+  patch  'space_combat/boost_thrusters',    to: 'space_combat#boost_thrusters'
+  patch  'space_combat/attempt_blind_spot', to: 'space_combat#attempt_blind_spot'
+  patch  'space_combat/override_position',  to: 'space_combat#override_position'
+  # Actions offensives et défensives
+  post   'space_combat/fire_weapon',        to: 'space_combat#fire_weapon'
+  post   'space_combat/tractor_beam',       to: 'space_combat#tractor_beam'
+  patch  'space_combat/countermeasure',     to: 'space_combat#countermeasure'
+  # Actions d'équipage
+  patch  'space_combat/repair',             to: 'space_combat#repair'
+  patch  'space_combat/command',            to: 'space_combat#command'
+  patch  'space_combat/detect',             to: 'space_combat#detect'
+  patch  'space_combat/toggle_stealth',     to: 'space_combat#toggle_stealth'
+  # Fuite et hyperespace
+  patch  'space_combat/flee',               to: 'space_combat#flee'
+  patch  'space_combat/start_astrogation',  to: 'space_combat#start_astrogation'
+  patch  'space_combat/hyperspace_jump',    to: 'space_combat#hyperspace_jump'
+  # Statuts et tours
+  patch  'space_combat/update_stat',        to: 'space_combat#update_stat', as: 'space_combat_update_stat'
   patch  'space_combat/update_damage_flag', to: 'space_combat#update_damage_flag'
-  post   'space_combat/fire_weapon',       to: 'space_combat#fire_weapon'
-  patch  'space_combat/defend',            to: 'space_combat#defend'
-  patch  'space_combat/end_turn',          to: 'space_combat#end_turn'
-  patch  'space_combat/next_turn',         to: 'space_combat#next_turn'
-  patch  'space_combat/end_combat',        to: 'space_combat#end_combat'
-  patch  'space_combat/override_position', to: 'space_combat#override_position'
+  patch  'space_combat/end_turn',           to: 'space_combat#end_turn'
+  patch  'space_combat/next_turn',          to: 'space_combat#next_turn'
+  patch  'space_combat/end_combat',         to: 'space_combat#end_combat'
 
   post 'reset_health', to: 'mj#reset_health', as: :reset_health
 

@@ -1,209 +1,171 @@
 <%
   ship = participant.participant
   is_mj = current_user&.group&.name == "MJ"
+  can_act = participant.controlled_by?(current_user)
   is_current = current_participant == participant
-  is_played = participant.has_played
-  side_class = participant.side.zero? ? "border-info" : "border-danger"
-  enemies_list = participants.select { |p| !participant.allied_with?(p) }
+  enemies = participants.reject { |other| participant.allied_with?(other) }
+  live_enemies = enemies.reject(&:out_of_combat?)
+  side_class = participant.player? ? "border-info" : "border-danger"
+  weapons = SpaceCombatStats.weapons_for(ship)
+  crew_position = participant.crew_position_for(current_user)
 %>
 
-<div class="card <%= side_class %> <%= 'opacity-50' if is_played %>"
-     id="ship_card_<%= participant.id %>"
-     style="background: rgba(33, 37, 41, 0.95); border-width: 2px;">
+<div class="card space-ship-card <%= side_class %> <%= 'opacity-50' if participant.has_played? || participant.out_of_combat? %>"
+     id="ship_card_<%= participant.id %>">
 
-  <div class="card-header d-flex justify-content-between align-items-center"
-       style="background: rgba(23, 162, 184, 0.1); border-bottom: 1px solid rgba(23, 162, 184, 0.3);">
+  <div class="card-header d-flex justify-content-between align-items-center">
     <div>
-      <strong style="color: <%= participant.side.zero? ? '#17a2b8' : '#dc3545' %>;">
-        <%= ship.name %>
-      </strong>
+      <strong style="color: <%= participant.player? ? '#17a2b8' : '#dc3545' %>;"><%= ship.name %></strong>
       <% if participant.action_order %>
         <span class="badge bg-dark ms-1">#<%= participant.action_order %></span>
       <% end %>
-      <% if is_current %>
-        <span class="badge bg-info ms-1">Actif</span>
+      <% if is_current %><span class="badge bg-info ms-1">Actif</span><% end %>
+      <% if participant.has_played? %><span class="badge bg-secondary ms-1">Joué</span><% end %>
+      <% if participant.stealth? %>
+        <span class="badge <%= participant.detected? ? 'bg-warning text-dark' : 'bg-dark' %> ms-1">
+          <%= participant.detected? ? "Furtif (détecté)" : "Furtif" %>
+        </span>
       <% end %>
-      <% if is_played %>
-        <span class="badge bg-secondary ms-1">Joué</span>
-      <% end %>
+      <% if participant.has_fled? %><span class="badge bg-dark ms-1">A quitté le combat</span><% end %>
+      <div>
+        <small class="text-muted">
+          <%= EnemyShip::SCALE_NAMES[participant.scale_value] %>
+          <% if crew_position.present? %> · votre poste : <%= crew_position %><% end %>
+        </small>
+      </div>
     </div>
     <% if is_mj %>
       <button class="btn btn-outline-danger btn-sm"
               data-action="click->space-combat#removeParticipant"
               data-participant-id="<%= participant.id %>"
-              data-confirm="Retirer <%= ship.name %> du combat ?">
-        &times;
-      </button>
+              data-ship-name="<%= ship.name %>">&times;</button>
     <% end %>
   </div>
 
   <div class="card-body p-2">
-    <%# PV %>
+    <%# Points de blindage %>
     <div class="d-flex align-items-center justify-content-between mb-2">
-      <small class="text-light me-2">PV</small>
+      <small class="text-light me-2">PB</small>
       <%= render "space_combat/ship_stat_value",
-                 participant: participant,
-                 ship: ship,
-                 field: "hp_current",
-                 current: ship.hp_current,
-                 max: ship.hp_max %>
+                 participant: participant, ship: ship, field: "hp_current",
+                 current: ship.hp_current, max: ship.hp_max, editable: can_act %>
     </div>
 
-    <%# Coque (Hull) %>
-    <%
-      if ship.is_a?(EnemyShip)
-        hull_m, hull_b = ship.hull_mastery, ship.hull_bonus
-      else
-        hull_skill = ship.ships_skills.joins(:skill).find_by(skills: { name: "Coque" })
-        hull_m = hull_skill&.mastery.to_i
-        hull_b = hull_skill&.bonus.to_i
-      end
-    %>
-    <div class="d-flex align-items-center justify-content-between mb-1">
-      <small class="text-light me-2">Coque</small>
-      <span class="fw-bold text-light"><%= format_dice(hull_m, hull_b) %></span>
-    </div>
-
-    <%# Écrans (Shields) %>
-    <%
-      if ship.is_a?(EnemyShip)
-        shield_m, shield_b = ship.shield_mastery, ship.shield_bonus
-      else
-        shield_skill = ship.ships_skills.joins(:skill).find_by(skills: { name: "Ecrans" })
-        shield_m = shield_skill&.mastery.to_i
-        shield_b = shield_skill&.bonus.to_i
-      end
-      has_shields = shield_m.to_i.positive? || shield_b.to_i.positive?
-    %>
-    <% if has_shields %>
-      <div class="d-flex align-items-center justify-content-between mb-1">
-        <small class="text-light me-2">Écrans</small>
-        <% if ship.shields_disabled %>
-          <span class="fw-bold text-muted" style="text-decoration: line-through;"><%= format_dice(shield_m, shield_b) %></span>
+    <%# Caractéristiques de vol %>
+    <div class="ship-dice-grid mb-2">
+      <div><small class="text-light">Coque</small>
+        <span class="fw-bold"><%= dice_label(participant.hull_dice) %></span></div>
+      <div><small class="text-light">Écrans</small>
+        <% if participant.has_shields? %>
+          <% if participant.shields_active? %>
+            <span class="fw-bold text-primary"><%= dice_label(SpaceCombatStats.ship_dice(ship, :shields)) %></span>
+          <% else %>
+            <span class="fw-bold text-muted" style="text-decoration: line-through;"
+                  title="Rechargés au tour <%= participant.shields_down_until_turn || combat.turn + 1 %>">
+              <%= dice_label(SpaceCombatStats.ship_dice(ship, :shields)) %>
+            </span>
+          <% end %>
         <% else %>
-          <span class="fw-bold text-primary"><%= format_dice(shield_m, shield_b) %></span>
+          <span class="text-muted">—</span>
+        <% end %>
+      </div>
+      <div><small class="text-light">Maniabilité</small>
+        <span class="fw-bold <%= 'text-danger' if participant.thruster_hits.positive? %>">
+          <%= dice_label(participant.handling_dice) %>
+        </span></div>
+      <div><small class="text-light">Vitesse</small>
+        <span class="fw-bold"><%= dice_label(participant.speed_dice) %></span></div>
+    </div>
+
+    <%# Statuts %>
+    <div class="mb-2">
+      <% participant.status_summary.each do |label| %>
+        <span class="badge <%= label == 'Intact' ? 'bg-success' : 'bg-danger' %> me-1"
+              style="font-size: 0.7rem;"><%= label %></span>
+      <% end %>
+      <% if participant.defense_malus.positive? %>
+        <span class="badge bg-warning text-dark me-1" style="font-size: 0.7rem;">
+          Défense -<%= participant.defense_malus %>D
+        </span>
+      <% end %>
+      <% if participant.pending_repair.positive? %>
+        <span class="badge bg-info me-1" style="font-size: 0.7rem;">
+          +<%= participant.pending_repair %> PB au prochain tour
+        </span>
+      <% end %>
+      <% if participant.astrogation_started? %>
+        <span class="badge bg-primary me-1" style="font-size: 0.7rem;">
+          Astrogation : <%= participant.hyperspace_ready? ? "prête" : "#{participant.astrogation_turns} tour(s)" %>
+        </span>
+      <% end %>
+    </div>
+
+    <%# Positions relatives %>
+    <% if enemies.any? %>
+      <div class="mb-2">
+        <small class="text-light d-block mb-1">Positions :</small>
+        <% enemies.each do |enemy| %>
+          <% pos = positions.find { |p| [p.participant_a_id, p.participant_b_id].sort == [participant.id, enemy.id].sort } %>
+          <% next unless pos %>
+          <% relative = pos.relative_position_for(participant) %>
+          <span class="badge bg-<%= relative_position_badge_color(relative) %> me-1 mb-1" style="font-size: 0.7rem;">
+            <%= enemy.ship_name %> : <%= relative_position_label(relative) %>
+            <% if pos.blind_spot_for?(participant) %> · angle mort<% end %>
+          </span>
         <% end %>
       </div>
     <% end %>
 
-    <%# Damage flags %>
-    <div class="mb-2">
-      <% ship.status_labels.each do |label| %>
-        <% flag_class = label == "Intact" ? "bg-success" : "bg-danger" %>
-        <span class="badge <%= flag_class %> me-1" style="font-size: 0.7rem;"><%= label %></span>
-      <% end %>
-    </div>
+    <%# Armement %>
+    <% if weapons.any? %>
+      <div class="mb-2">
+        <small class="text-light d-block mb-1">Armes :</small>
+        <% weapons.each do |weapon| %>
+          <div class="d-flex align-items-center justify-content-between" style="font-size: 0.8rem;">
+            <span>
+              <%= SpaceCombatStats.weapon_label(weapon) %>
+              <small class="text-muted">(<%= SpaceCombatRules.normalize_weapon_type(weapon.weapon_type) %>)</small>
+            </span>
+            <span>
+              <small class="text-muted me-1">
+                dég. <%= format_dice(weapon.damage_mastery, weapon.damage_bonus) %> ·
+                visée <%= format_dice(weapon.aim_mastery, weapon.aim_bonus) %>
+              </small>
+              <% if ammo_label(weapon) %>
+                <span class="badge bg-dark"><%= ammo_label(weapon) %></span>
+              <% end %>
+            </span>
+          </div>
+        <% end %>
+      </div>
+    <% end %>
 
+    <%# Flags de dommage (MJ) %>
     <% if is_mj %>
       <div class="mb-2">
-        <small class="text-light d-block mb-1">Flags dégâts :</small>
+        <small class="text-light d-block mb-1">Statuts (MJ) :</small>
         <div class="d-flex flex-wrap gap-1">
-          <% %w[shields_disabled controls_ionized weapon_damaged thrusters_damaged hyperdrive_broken depressurized ship_destroyed].each do |flag| %>
+          <% Ship::COMBAT_DAMAGE_FLAGS.each do |flag| %>
             <button class="btn btn-sm <%= ship.send(flag) ? 'btn-danger' : 'btn-outline-secondary' %>"
                     style="font-size: 0.65rem; padding: 2px 6px;"
                     data-action="click->space-combat#toggleDamageFlag"
                     data-participant-id="<%= participant.id %>"
                     data-flag="<%= flag %>">
-              <%= flag.humanize %>
+              <%= Ship::DAMAGE_FLAG_LABELS[flag] %>
             </button>
           <% end %>
         </div>
       </div>
     <% end %>
 
-    <%# Armes %>
-    <% weapons = ship.is_a?(EnemyShip) ? ship.enemy_ship_weapons : ship.ship_weapons.where(weapon_type: %w[main secondary tourelle missile torpille special]) %>
-    <% if weapons.any? %>
-      <div class="mb-2">
-        <small class="text-light d-block mb-1">Armes :</small>
-        <% weapons.each do |weapon| %>
-          <% weapon_label = weapon.respond_to?(:name) && weapon.name.present? ? weapon.name : weapon.weapon_type.capitalize %>
-          <div class="d-flex align-items-center justify-content-between" style="font-size: 0.8rem;">
-            <span><%= weapon_label %> <small class="text-light">(<%= weapon.weapon_type %>)</small></span>
-            <% if weapon.respond_to?(:quantity_current) && weapon.quantity_current %>
-              <span class="badge bg-dark"><%= weapon.quantity_current %>/<%= weapon.quantity_max %></span>
-            <% end %>
-          </div>
-        <% end %>
-      </div>
-    <% end %>
-
-    <%# Actions de combat (mouvement, tir, esquive, fin de tour) %>
-    <% if is_mj || (participant.side.zero? && ship.is_a?(Ship) && ship.group_id == current_user&.group_id) %>
-      <div class="mt-2 border-top pt-2" style="border-color: rgba(23, 162, 184, 0.3) !important;">
-
-        <%# Mouvement %>
-        <% unless participant.movement_action_used %>
-          <div class="mb-2">
-            <small class="text-light d-block">Mouvement vers :</small>
-            <% enemies_list.each do |enemy_p| %>
-              <div class="dropdown d-inline-block me-1 mb-1">
-                <button class="btn btn-outline-info btn-sm dropdown-toggle" style="font-size: 0.7rem;"
-                        data-bs-toggle="dropdown">
-                  <%= enemy_p.ship_name %>
-                </button>
-                <ul class="dropdown-menu dropdown-menu-dark">
-                  <% %w[poursuivant face_a_face vol_parallele hors_de_portee].each do |pos| %>
-                    <li>
-                      <button class="dropdown-item" style="font-size: 0.8rem;"
-                              data-action="click->space-combat#changePosition"
-                              data-mover-id="<%= participant.id %>"
-                              data-target-id="<%= enemy_p.id %>"
-                              data-desired-position="<%= pos %>">
-                        <%= { "poursuivant" => "Poursuivre", "face_a_face" => "Face à face",
-                              "vol_parallele" => "Vol parallèle", "hors_de_portee" => "Hors de portée" }[pos] %>
-                      </button>
-                    </li>
-                  <% end %>
-                </ul>
-              </div>
-            <% end %>
-          </div>
-        <% end %>
-
-        <%# Tir %>
-        <% unless participant.offensive_action_used %>
-          <div class="mb-2">
-            <small class="text-light d-block">Tir sur :</small>
-            <% enemies_list.each do |enemy_p| %>
-              <% pos_record = ShipCombatPosition.find_pair(combat.id, participant.id, enemy_p.id) %>
-              <% rel_pos = pos_record&.relative_position_for(participant) %>
-              <% weapons.each do |weapon| %>
-                <% wtype = weapon.weapon_type %>
-                <% w_label = weapon.respond_to?(:name) && weapon.name.present? ? weapon.name : wtype.capitalize %>
-                <% can_fire = rel_pos && SpaceCombatRules.can_fire?(rel_pos, wtype) %>
-                <button class="btn btn-sm me-1 mb-1 <%= can_fire ? 'btn-outline-warning' : 'btn-outline-secondary disabled' %>"
-                        style="font-size: 0.7rem;"
-                        <%= 'disabled' unless can_fire %>
-                        data-action="click->space-combat#fireWeapon"
-                        data-attacker-id="<%= participant.id %>"
-                        data-target-id="<%= enemy_p.id %>"
-                        data-weapon-name="<%= w_label %>"
-                        data-weapon-type="<%= wtype %>">
-                  <%= w_label %> &rarr; <%= enemy_p.ship_name %>
-                </button>
-              <% end %>
-            <% end %>
-          </div>
-        <% end %>
-
-        <%# Esquive %>
-        <button class="btn btn-outline-info btn-sm me-1"
-                style="font-size: 0.75rem;"
-                data-action="click->space-combat#defend"
-                data-participant-id="<%= participant.id %>">
-          Esquive (<%= participant.defense_malus %>)
-        </button>
-
-        <%# Fin de tour %>
-        <% unless participant.has_played %>
-          <button class="btn btn-outline-secondary btn-sm"
-                  style="font-size: 0.75rem;"
-                  data-action="click->space-combat#endParticipantTurn"
-                  data-participant-id="<%= participant.id %>">
-            Fin du tour
-          </button>
-        <% end %>
+    <% if can_act && !participant.out_of_combat? %>
+      <%= render "space_combat/ship_actions",
+                 participant: participant, combat: combat, positions: positions,
+                 enemies: live_enemies, weapons: weapons, current_user: current_user,
+                 crew_position: crew_position %>
+    <% elsif participant.out_of_combat? %>
+      <div class="mt-2 border-top pt-2 text-center text-muted">
+        <small><%= participant.has_fled? ? "Ce vaisseau a quitté le combat." : "Ce vaisseau est détruit." %></small>
       </div>
     <% end %>
   </div>

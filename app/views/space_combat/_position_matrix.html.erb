@@ -26,6 +26,11 @@
                 <span class="badge bg-<%= position_badge_color(pos.position) %>">
                   <%= pos.position_label %>
                 </span>
+                <% if pos.blind_spot_participant %>
+                  <span class="badge bg-dark ms-1" title="Seuls missiles et torpilles peuvent l'atteindre">
+                    <%= pos.blind_spot_participant.ship_name %> en angle mort
+                  </span>
+                <% end %>
               </td>
               <td>
                 <span style="color: <%= pos.participant_b.side.zero? ? '#17a2b8' : '#dc3545' %>;">

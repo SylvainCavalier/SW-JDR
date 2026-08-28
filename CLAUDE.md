@@ -29,6 +29,79 @@ bundle exec rubocop           # Lint (120 char max line length)
 bin/setup                     # Full setup (bundle, db:prepare, clear logs)
 ```
 
+## Features
+
+Functional inventory of what the app does, grouped by domain. Routes are in `config/routes.rb`; the Page Map below maps route → controller → view.
+
+### Character sheet (PJ)
+- **Progression** — caracs (`user_caracs`), skills (`user_skills`), race, class (`classe_perso`); XP granted by the MJ then spent to raise skills (`spend_xp`, `update_skills`); avatar upload; free-text notes.
+- **Health** — HP down to -20; status auto-derived from HP ("En forme" / "Inconscient" / "Agonisant" / "Mort") without overwriting special statuses; permanent HP purchase (`purchase_hp`); MJ-granted `hp_bonus`; temporary max-HP bonus from HQ dormitories.
+- **Shields** — standard shield + Echani shield: toggle, recharge.
+- **Medipack & care** — heal self or another player, heal objects, patches (equip/use), injections (equip/deactivate), implants (equip/unequip).
+- **Inventory & equipment** — 7 slots (`config/initializers/equipment_slots.rb`); buy, sell, give items to another player; catalog in `config/catalogs/inventory_objects.yml`.
+- **Credits** — transfer between players and to the HQ (`transactions#create`), broadcast live.
+- **Dice** — dice roller and group luck roll (`users#dice`, `group_luck_roll`).
+- **Settings** — account, password, per-player display settings.
+
+### Spheros (combat drones)
+Per-player drones in three categories (`attaque` / `protection` / `survie`) × 3 quality levels; HP, shield, medipacks and default skills auto-assigned on creation. Actions: activate/deactivate, transfer to another player, attack, protect, three repair paths (`repair`, `repair_broken`, `repair_kit`), recharge, use/refill medipacks (max 5). Created and edited by the MJ (`/mj/sphero`).
+
+### Pets (companions)
+Creatures in four categories (animal / droïde / bio-armure / humanoïde) with stats, skills, statuses, shield, hunger, age and two damage profiles. Associate/dissociate with a player (one active pet per player), heal, recharge shield, perform actions costing `pet_action_points` (granted by the MJ), assign to HQ buildings or ship crews, graveyard for dead pets, MJ edit page.
+
+### Apprentices (Jedi training)
+One apprentice per player, backed by a force-sensitive humanoid Pet. Tracks side (-100 dark ↔ +100 light), speciality (Commun / Gardien / Consulaire / Sentinelle), midi-chlorians (5000–20000, hidden until the MJ reveals them), dark side points and fatigue (0–100). Training (`train`) spends fatigue — doubled for Force skills (Contrôle / Sens / Altération), never available for "Résistance Corporelle" — with success and fatigue cost modified by the midi-chlorian tier and a random talent draw. Lightsaber with the seven saber forms. Abandon an apprentice; MJ page for fatigue restore, full rest, caracs/skills/stats/saber edits and midi-chlorian reveal.
+
+### Ships
+Fleet shared by the group, one active ship at a time. Per ship: inventory (`ship_objects`), docking/undocking of smaller ships (capacity-checked), hull/HP-max and sensor upgrades plus generic upgrades (`config/initializers/ship_upgrades.rb`), weapons (buy / install / uninstall / sell, damage and aim upgrades), launchers and ammunition, turrets, special equipment, crew assignment (users and pets via `crew_members`), and repair (repair kits, astromech droid deployment; damage causes in `config/initializers/ship_damage_causes.rb`). MJ ship editor at `/mj/vaisseaux`.
+
+### Ground combat
+Real-time combat assistant shared by players and MJ. Add PJs, pets and ad-hoc enemies to the tracker; edit HP / shield / Echani shield; apply statuses; highlight the acting participant; increment/decrement the turn counter; heal enemies; remove participants. Live sync over Turbo Streams via `CombatBroadcaster`.
+
+### Space combat
+Turn-based ship combat implementing chapter 4 of the rules, shared live by players and MJ (one Turbo stream per user, since the board is rendered according to each viewer's rights). Same page for both at `/space_combat` and `/mj/space_combat`.
+- **Setup** — add player ships, create enemy ships on the fly (stats, weapons, scale, missile-interception level, stealth), initiative from the ship's Speed + pilot's Piloting.
+- **Positions** — the five relative positions (`ship_combat_positions`) via opposed Piloting rolls, thruster boost (opposed Speed) to break off when pursued, blind spot for a small ship against a big one, MJ override, SVG diagram + matrix.
+- **Shooting** — `SpaceCombatAttack` resolves the whole shot: aim roll (weapon + gunner's skill, +1D when pursuing) vs the target's space-evasion, damage minus hull and shields, ammunition, face-to-face duel, ion and piercing weapon effects, decisive hits (D12 table), small-vs-big thresholds with automatic turrets, missiles that cannot miss a capital ship.
+- **Crew** — reuses `crew_members`: only the crew (or the MJ) can act on a ship; emergency repair (kit or components, applied at the start of the next turn), captain's Command bonus, radar operator's detection of stealth ships.
+- **Turn upkeep** — cumulative -1D defensive malus, shield recharge, repairs, astrogation countdown, depressurization countdown, automatic turn advance once every ship has played.
+- **Escape** — flee manoeuvre (opposed Piloting then Speed against every enemy) and hyperspace jump after astrogation.
+- Rules live in `app/services/space_combat_rules.rb` (pure functions), dice lookups in `app/services/space_combat_stats.rb`. State in `space_combat_states`, `space_combat_participants`, `space_combat_actions`.
+
+### Headquarter (base)
+Shared base with its own credits and inventory. Buildings from `config/catalogs/buildings.yml` with levels, per-level properties, assigned pets and a chief pet; some levels grant temporary max-HP bonuses (dormitories → players, animal refuge → pets). Defenses purchased from `config/catalogs/defenses.yml`. Personnel management, observation page, credits transfer.
+
+### Science
+- **Crafting** — recipes in `config/catalogs/craft_recipes.yml` (+ `config/initializers/craft_recipes.rb`); dice-based success roll that consumes ingredients from inventory (`attempt_craft`, `attempt_transfer`).
+- **Bestiary** — creature catalog with detail pages.
+- **Genetics / cloning** — gene research (`recherche_gene`) feeding a personal gene pool (`user_genes`); embryo creation from `config/catalogs/creature_types.yml`; trait application with probability preview (`calculate_probabilities`, `apply_traits`), capped per skill and per damage value; gestation in up to 3 tubes, with acceleration and cloning; birth converts the embryo into a Pet (`origin_embryo`); embryo recycling; per-player `genetic_statistics`.
+- Player-facing pages are gated to the **Bio-savant** class; the MJ advances or completes gestations from `/mj/science`.
+
+### Holonews (internal messaging)
+Not a news feed: in-app messages addressed to one player or the whole team, with an optional image, per-user read tracking (`holonew_reads`), an unread counter on the home page, and a Web Push notification on creation.
+
+### Wine cellar
+Drink catalog (`config/catalogs/drinks.yml`) with per-player discovered drinks; add/remove bottles from inventory. Gated to the **Mercenaire** class; the MJ unlocks drinks from `/mj/unlock_drink`.
+
+### Goods crates
+Per-player trade goods: content, quantity, origin planet, price per crate.
+
+### Pazaak (mini-game)
+Real-time multiplayer card game: menu, custom side-deck editor, lobby with presence pings and invitations, live games over ActionCable with per-player Turbo streams, abandon, and per-player stats.
+
+### MJ tools
+Dashboard at `/mj`: set and reset skill points, grant study points and XP, set max HP and apply HP bonuses, edit caracs, set statuses (players and pets), inflict damage (players, pets, spheros), stray bullets, global health reset, give and create inventory objects, unlock drinks, fix pets and grant pet action points, sphero CRUD, gestation management, apprentice management, ship editor, plus the MJ side of both combat assistants.
+
+### Cross-cutting
+- **Auth & roles** — Devise with `username` as the authentication key; `Group` separates PJ from MJ and gates every MJ action. Some features are additionally gated by `classe_perso` (Bio-savant, Mercenaire).
+- **Real-time** — ActionCable + Turbo Streams for combat, XP, credits and Pazaak.
+- **PWA & push** — manifest and service worker (`pwa_controller`), Web Push subscriptions (`subscriptions`, `config/initializers/webpush.rb`).
+- **Images** — Cloudinary + ActiveStorage for avatars, pets, ships, HQ and holonews.
+- **Game data** — YAML catalogs in `config/catalogs/` (races, classes, skills, statuses, inventory objects, buildings, defenses, drinks, ship upgrades, craft recipes, creature types, apprentice).
+
+### Present but not wired up
+`chatouille_controller.rb`, `app/views/chatouille/` and `config/catalogs/chatouille.yml` implement a religion-management mini-game (resources, Kessar events, doctrine, buildings, marketing, politics, accounting), but **no route points to it** — it is unreachable unless routes are added.
+
 ## Architecture
 
 ### Domain Model Structure
@@ -71,7 +144,7 @@ Main pages, with their route → controller#action → primary view. Use this to
 - `/users/:id` — player character profile → `users#show` (sub-pages: `health_management`, `medipack`, `healobjects`, `sphero`, `dice`, `edit_notes`, `settings`)
 - `/headquarter` — base / HQ → `headquarter#show` (sub-pages: `inventory`, `observation`, `credits`, `buildings`, `personnel`, `defenses`)
 - `/headquarter/credits` + `transfer_credits` — credits transfer page
-- `/transactions/new` — shop / purchases → `transactions#new`
+- `/transactions/new` — credits transfer to another player or to the HQ → `transactions#new`
 - `/ships`, `/ships/:id`, `/ships/:id/{inventory,improve,crew,repair}` — spaceships → `ships_controller`
 - `/pets`, `/pets/graveyard` — companions → `pets_controller`
 - `/apprentices` — Jedi apprentices → `apprentices_controller`

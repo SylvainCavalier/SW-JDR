@@ -1,15 +1,11 @@
-<%# Affichage des valeurs de PV ou bouclier pour un vaisseau %>
-<div class="d-flex align-items-center justify-content-center"
-     data-controller="space-combat-permissions"
-     data-participant-id="<%= participant.id %>"
-     data-participant-side="<%= participant.side %>">
-
-  <span class="combat-controls">
+<%# Valeur de PB d'un vaisseau, avec les boutons +/- si le joueur peut agir dessus %>
+<div class="d-flex align-items-center justify-content-center">
+  <% if editable %>
     <button type="button" class="btn btn-outline-info btn-sm me-1"
             data-action="click->space-combat#decrementStat"
             data-participant-id="<%= participant.id %>"
             data-field="<%= field %>">-</button>
-  </span>
+  <% end %>
 
   <% value_classes = ["fw-bold", "mx-1"] %>
   <% if field == 'hp_current' && max.to_i.positive? %>
@@ -22,14 +18,14 @@
     <% end %>
   <% end %>
 
-  <span class="<%= value_classes.join(' ') %>">
+  <span class="<%= value_classes.join(' ') %>" data-stat-value="<%= field %>">
     <%= current %>/<%= max %>
   </span>
 
-  <span class="combat-controls">
+  <% if editable %>
     <button type="button" class="btn btn-outline-info btn-sm ms-1"
             data-action="click->space-combat#incrementStat"
             data-participant-id="<%= participant.id %>"
             data-field="<%= field %>">+</button>
-  </span>
+  <% end %>
 </div>

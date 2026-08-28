@@ -5,15 +5,25 @@ class SpaceCombatState < ApplicationRecord
 
   scope :active_combat, -> { where(active: true) }
 
+  # Le plateau est rendu différemment selon les droits : un canal Turbo par joueur.
+  def self.stream_for_user(user)
+    "space_combat_user_#{user&.id}"
+  end
+
+  LOG_STREAM = "space_combat_updates".freeze
+
+  def active_participants
+    space_combat_participants.reject(&:out_of_combat?)
+  end
+
   def current_participant
-    space_combat_participants
-      .where(has_played: false)
-      .where.not(action_order: nil)
-      .order(:action_order)
-      .first
+    active_participants
+      .select { |participant| !participant.has_played? && participant.action_order.present? }
+      .min_by(&:action_order)
   end
 
   def all_played?
-    space_combat_participants.where.not(action_order: nil).all?(&:has_played?)
+    engaged = active_participants.select { |participant| participant.action_order.present? }
+    engaged.any? && engaged.all?(&:has_played?)
   end
 end

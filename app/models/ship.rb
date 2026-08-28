@@ -464,17 +464,22 @@ class Ship < ApplicationRecord
     weapon.price / 2
   end
 
+  # Statuts de dommage communs aux vaisseaux joueurs et ennemis (règle 4-7)
+  DAMAGE_FLAG_LABELS = {
+    "shields_disabled" => "Écrans désactivés",
+    "controls_ionized" => "Commandes ionisées",
+    "weapon_damaged" => "Canon touché",
+    "thrusters_damaged" => "Propulseurs touchés",
+    "hyperdrive_broken" => "Hyperdrive HS",
+    "depressurized" => "Dépressurisation",
+    "ship_destroyed" => "Vaisseau détruit"
+  }.freeze
+
+  COMBAT_DAMAGE_FLAGS = DAMAGE_FLAG_LABELS.keys.freeze
+
   def status_labels
-    labels = []
-    labels << "Écrans désactivés" if shields_disabled
-    labels << "Commandes ionisées" if controls_ionized
-    labels << "Arme endommagée" if weapon_damaged
-    labels << "Propulseurs touchés" if thrusters_damaged
-    labels << "Hyperdrive HS" if hyperdrive_broken
-    labels << "Dépressurisation" if depressurized
-    labels << "Vaisseau détruit" if ship_destroyed
-    labels = ["Intact"] if labels.empty?
-    labels
+    labels = COMBAT_DAMAGE_FLAGS.select { |flag| send(flag) }.map { |flag| DAMAGE_FLAG_LABELS[flag] }
+    labels.empty? ? ["Intact"] : labels
   end
 
   # Retourne la capacité occupée si ce vaisseau est embarqué

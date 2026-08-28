@@ -1,0 +1,44 @@
+<%# Panneau MJ : composition du combat et outils de maîtrise %>
+<div class="mj-panel mb-4">
+  <div class="d-flex flex-wrap gap-2 align-items-center mb-3">
+    <h5 class="me-auto mb-0" style="color: #ffbb33;">Console du MJ</h5>
+    <button class="btn btn-outline-info btn-sm" data-action="click->space-combat#rollInitiative">
+      Lancer l'initiative
+    </button>
+    <button class="btn btn-outline-warning btn-sm" data-action="click->space-combat#nextTurn">
+      Tour suivant
+    </button>
+    <button class="btn btn-outline-danger btn-sm" data-action="click->space-combat#endCombat">
+      Fin du combat
+    </button>
+  </div>
+
+  <div class="row">
+    <div class="col-lg-7 mb-3">
+      <%= render "space_combat/add_enemy_ship_form" %>
+    </div>
+    <div class="col-lg-5">
+      <%= render "space_combat/add_player_ship_form", ships: ships %>
+
+      <% if participants.any? %>
+        <div class="enemy-form-box p-3 mt-3">
+          <h6 style="color: #17a2b8;">Furtivité</h6>
+          <div class="d-flex flex-wrap gap-1">
+            <% participants.each do |participant| %>
+              <button class="btn btn-sm <%= participant.stealth? ? 'btn-secondary' : 'btn-outline-secondary' %>"
+                      style="font-size: 0.7rem;"
+                      data-action="click->space-combat#toggleStealth"
+                      data-participant-id="<%= participant.id %>">
+                <%= participant.ship_name %><%= " (furtif#{participant.detected? ? ', détecté' : ''})" if participant.stealth? %>
+              </button>
+            <% end %>
+          </div>
+          <small class="text-muted d-block mt-1">
+            Un vaisseau furtif ne peut pas être pris pour cible tant qu'il n'a pas été détecté (jet de Systèmes à
+            <%= SpaceCombatController::DETECTION_DIFFICULTY %>).
+          </small>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>

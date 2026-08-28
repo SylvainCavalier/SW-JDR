@@ -1,9 +1,10 @@
 <%# Compteur de tour pour le combat spatial %>
 <div class="mb-4">
   <div class="d-flex align-items-center justify-content-center">
-    <h2 class="me-3" style="color: #17a2b8;">Tour actuel :</h2>
-    <span class="fw-bold mx-2" style="font-size: 1.5rem; color: #17a2b8;">
-      <%= combat.turn %>
-    </span>
+    <h2 class="me-3 mb-0" style="color: #17a2b8;">Tour</h2>
+    <span class="fw-bold mx-2" style="font-size: 1.5rem; color: #17a2b8;"><%= combat.turn %></span>
+    <% if combat.all_played? %>
+      <span class="badge bg-warning text-dark ms-3">Tous les vaisseaux ont joué</span>
+    <% end %>
   </div>
 </div>

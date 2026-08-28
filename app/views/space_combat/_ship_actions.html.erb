@@ -1,0 +1,192 @@
+<%
+  ship = participant.participant
+  is_mj = current_user&.group&.name == "MJ"
+  can_move = !participant.movement_action_used? && !participant.adrift?
+  can_attack = !participant.offensive_action_used? && !participant.ionized?
+  captain_post = is_mj || ["Capitaine", "Second du capitaine"].include?(crew_position)
+  radar_post = is_mj || crew_position == "Ingénieur radar" || participant.crew_users.none?
+  hidden_enemies = enemies.select { |enemy| enemy.stealth? && !enemy.detected? }
+  position_labels = { "poursuivant" => "Poursuivre", "face_a_face" => "Face à face",
+                      "vol_parallele" => "Vol parallèle", "hors_de_portee" => "Rompre le contact" }
+%>
+
+<div class="mt-2 border-top pt-2 ship-actions">
+  <% if participant.ionized? %>
+    <div class="alert alert-warning py-1 px-2 mb-2" style="font-size: 0.75rem;">
+      Commandes ionisées : seules les actions de mouvement sont possibles
+      (répartiteur + jet de Réparation à 15 pour désioniser).
+    </div>
+  <% end %>
+
+  <%# --- Mouvement --- %>
+  <div class="mb-2">
+    <small class="text-light d-block">
+      Mouvement <% unless can_move %><span class="text-muted">(<%= participant.adrift? ? "à la dérive" : "déjà utilisé" %>)</span><% end %>
+    </small>
+    <% if can_move %>
+      <% enemies.each do |enemy| %>
+        <% pos = participant.position_with(enemy) %>
+        <% next unless pos %>
+        <% relative = pos.relative_position_for(participant) %>
+        <div class="dropdown d-inline-block me-1 mb-1">
+          <button class="btn btn-outline-info btn-sm dropdown-toggle" style="font-size: 0.7rem;"
+                  data-bs-toggle="dropdown">
+            <%= enemy.ship_name %>
+          </button>
+          <ul class="dropdown-menu dropdown-menu-dark">
+            <% position_labels.each do |key, label| %>
+              <% next if pos.position == pos.absolute_position_for(participant, key).to_s %>
+              <li>
+                <button class="dropdown-item" style="font-size: 0.8rem;"
+                        data-action="click->space-combat#changePosition"
+                        data-mover-id="<%= participant.id %>"
+                        data-target-id="<%= enemy.id %>"
+                        data-desired-position="<%= key %>">
+                  <%= label %> <small class="text-muted">(pilotage opposé)</small>
+                </button>
+              </li>
+            <% end %>
+            <% if relative == :poursuivi %>
+              <li><hr class="dropdown-divider"></li>
+              <li>
+                <button class="dropdown-item" style="font-size: 0.8rem;"
+                        data-action="click->space-combat#boostThrusters"
+                        data-mover-id="<%= participant.id %>"
+                        data-target-id="<%= enemy.id %>">
+                  Propulseurs à fond <small class="text-muted">(vitesse opposée)</small>
+                </button>
+              </li>
+            <% end %>
+            <% if participant.small_ship? && enemy.big_ship? && pos.engaged? && !pos.blind_spot_for?(participant) %>
+              <li>
+                <button class="dropdown-item" style="font-size: 0.8rem;"
+                        data-action="click->space-combat#attemptBlindSpot"
+                        data-mover-id="<%= participant.id %>"
+                        data-target-id="<%= enemy.id %>">
+                  Se placer dans l'angle mort
+                </button>
+              </li>
+            <% end %>
+          </ul>
+        </div>
+      <% end %>
+    <% end %>
+  </div>
+
+  <%# --- Tir --- %>
+  <% if can_attack && enemies.any? %>
+    <div class="mb-2">
+      <small class="text-light d-block">Action offensive</small>
+      <% enemies.each do |enemy| %>
+        <% weapons.each do |weapon| %>
+          <% allowed, reason = weapon_shot_state(combat, participant, enemy, weapon) %>
+          <button class="btn btn-sm me-1 mb-1 <%= allowed ? 'btn-outline-warning' : 'btn-outline-secondary' %>"
+                  style="font-size: 0.7rem;"
+                  <%= 'disabled' unless allowed %>
+                  title="<%= reason %>"
+                  data-action="click->space-combat#fireWeapon"
+                  data-attacker-id="<%= participant.id %>"
+                  data-target-id="<%= enemy.id %>"
+                  data-weapon-id="<%= weapon.id %>">
+            <%= SpaceCombatStats.weapon_label(weapon) %> &rarr; <%= enemy.ship_name %>
+          </button>
+        <% end %>
+        <button class="btn btn-outline-light btn-sm me-1 mb-1" style="font-size: 0.7rem;"
+                data-action="click->space-combat#tractorBeam"
+                data-attacker-id="<%= participant.id %>"
+                data-target-id="<%= enemy.id %>">
+          Rayon tracteur &rarr; <%= enemy.ship_name %>
+        </button>
+      <% end %>
+    </div>
+  <% elsif participant.offensive_action_used? %>
+    <div class="mb-2"><small class="text-muted">Action offensive déjà utilisée</small></div>
+  <% end %>
+
+  <%# --- Défense et équipage --- %>
+  <div class="mb-2">
+    <small class="text-light d-block">Défense & équipage</small>
+
+    <button class="btn btn-outline-info btn-sm me-1 mb-1" style="font-size: 0.7rem;"
+            title="Contre-mesures, objet défensif… chaque action défensive supplémentaire coûte -1D"
+            data-action="click->space-combat#countermeasure"
+            data-participant-id="<%= participant.id %>">
+      Contre-mesure (-1D)
+    </button>
+
+    <% unless participant.ionized? %>
+      <button class="btn btn-outline-success btn-sm me-1 mb-1" style="font-size: 0.7rem;"
+              <%= 'disabled' if participant.repair_used? %>
+              title="Kit de réparation + jet de Réparation / 2"
+              data-action="click->space-combat#repairWithKit"
+              data-participant-id="<%= participant.id %>">
+        Réparer (kit)
+      </button>
+      <button class="btn btn-outline-success btn-sm me-1 mb-1" style="font-size: 0.7rem;"
+              <%= 'disabled' if participant.repair_used? %>
+              title="1 composant = 1 PB rendu"
+              data-action="click->space-combat#repairWithComponents"
+              data-participant-id="<%= participant.id %>">
+        Réparer (composants)
+      </button>
+
+      <% if captain_post %>
+        <button class="btn btn-outline-warning btn-sm me-1 mb-1" style="font-size: 0.7rem;"
+                <%= 'disabled' if participant.command_used? %>
+                title="Jet de Commandement : +1 à tous les postes par seuil de 5"
+                data-action="click->space-combat#command"
+                data-participant-id="<%= participant.id %>">
+          Commandement
+        </button>
+      <% end %>
+
+      <% if radar_post && hidden_enemies.any? %>
+        <% hidden_enemies.each do |enemy| %>
+          <button class="btn btn-outline-primary btn-sm me-1 mb-1" style="font-size: 0.7rem;"
+                  title="Jet de Systèmes + senseurs"
+                  data-action="click->space-combat#detect"
+                  data-participant-id="<%= participant.id %>"
+                  data-target-id="<%= enemy.id %>">
+            Détecter <%= enemy.ship_name %>
+          </button>
+        <% end %>
+      <% end %>
+    <% end %>
+  </div>
+
+  <%# --- Fuite / hyperespace --- %>
+  <div class="mb-2">
+    <small class="text-light d-block">Fuite</small>
+    <button class="btn btn-outline-secondary btn-sm me-1 mb-1" style="font-size: 0.7rem;"
+            title="Nécessite d'être hors de portée de tous les ennemis"
+            data-action="click->space-combat#flee"
+            data-participant-id="<%= participant.id %>">
+      Manœuvre de fuite
+    </button>
+
+    <% if participant.hyperspace_ready? %>
+      <button class="btn btn-primary btn-sm me-1 mb-1" style="font-size: 0.7rem;"
+              data-action="click->space-combat#hyperspaceJump"
+              data-participant-id="<%= participant.id %>">
+        Passer en hyperespace
+      </button>
+    <% else %>
+      <button class="btn btn-outline-primary btn-sm me-1 mb-1" style="font-size: 0.7rem;"
+              <%= 'disabled' if participant.astrogation_started? || ship.hyperdrive_broken? %>
+              title="<%= ship.hyperdrive_broken? ? 'Hyperdrive hors service' : 'Jet d\'Astrogation : 15+ pour un calcul en un tour' %>"
+              data-action="click->space-combat#startAstrogation"
+              data-participant-id="<%= participant.id %>">
+        Calculer l'astrogation
+      </button>
+    <% end %>
+  </div>
+
+  <%# --- Fin de tour --- %>
+  <% unless participant.has_played? %>
+    <button class="btn btn-outline-secondary btn-sm" style="font-size: 0.75rem;"
+            data-action="click->space-combat#endParticipantTurn"
+            data-participant-id="<%= participant.id %>">
+      Fin du tour
+    </button>
+  <% end %>
+</div>

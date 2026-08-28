@@ -20,6 +20,17 @@
         <%= f.select :scale, (0..5).map { |i| [EnemyShip::SCALE_NAMES[i], i] },
                      {}, class: "form-select form-select-sm" %>
       </div>
+      <div class="col-md-2">
+        <%= f.label :interception_level, "Interception", class: "form-label text-white" %>
+        <%= f.number_field :interception_level, class: "form-control form-control-sm", value: 0, min: 0, max: 12,
+                           title: "Seuil du jet de chance (D12) à atteindre pour qu'un missile ou une torpille passe. 0 = aucune interception" %>
+      </div>
+      <div class="col-md-2 d-flex align-items-end">
+        <div class="form-check">
+          <%= check_box_tag :stealth, "1", false, class: "form-check-input" %>
+          <%= label_tag :stealth, "Furtif", class: "form-check-label text-white" %>
+        </div>
+      </div>
     </div>
 
     <div class="row g-2 mb-2">

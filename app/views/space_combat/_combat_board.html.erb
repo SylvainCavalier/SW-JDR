@@ -1,27 +1,11 @@
-<%# Board principal du combat spatial - cible de broadcast Turbo %>
-<div data-controller="space-combat space-combat-permissions">
+<%# Plateau principal du combat spatial — cible du broadcast Turbo (rendu par utilisateur) %>
+<div class="space-combat-board">
+  <% is_mj = current_user&.group&.name == "MJ" %>
+  <% in_play = participants.reject(&:out_of_combat?) %>
+  <% current_participant = combat.current_participant %>
 
   <%= render "space_combat/turn_counter", combat: combat, current_user: current_user %>
 
-  <% if current_user&.group&.name == "MJ" %>
-    <div class="d-flex justify-content-center gap-3 mb-4">
-      <button class="btn btn-outline-info btn-sm"
-              data-action="click->space-combat#rollInitiative">
-        Lancer l'initiative
-      </button>
-      <button class="btn btn-outline-warning btn-sm"
-              data-action="click->space-combat#nextTurn">
-        Tour suivant
-      </button>
-      <button class="btn btn-outline-danger btn-sm"
-              data-action="click->space-combat#endCombat"
-              data-confirm="Terminer le combat spatial ?">
-        Fin du combat
-      </button>
-    </div>
-  <% end %>
-
-  <% current_participant = combat.current_participant %>
   <% if current_participant %>
     <div class="text-center mb-3">
       <span class="badge bg-info" style="font-size: 1rem;">
@@ -33,13 +17,18 @@
       <% if current_participant.offensive_action_used %>
         <span class="badge bg-secondary ms-1">Action offensive utilisée</span>
       <% end %>
+      <% if current_participant.captain_bonus.positive? %>
+        <span class="badge bg-warning text-dark ms-1">Commandement +<%= current_participant.captain_bonus %></span>
+      <% end %>
     </div>
+  <% elsif in_play.any? && in_play.none? { |p| p.action_order.present? } %>
+    <p class="text-center text-muted">L'initiative n'a pas encore été lancée.</p>
   <% end %>
 
   <% if participants.any? %>
     <div class="row">
       <% participants.each do |participant| %>
-        <div class="col-md-6 col-lg-4 mb-3">
+        <div class="col-md-6 col-xl-4 mb-3">
           <%= render "space_combat/ship_card",
                      participant: participant,
                      combat: combat,
@@ -56,7 +45,7 @@
                participants: participants,
                combat: combat %>
 
-    <% if current_user&.group&.name == "MJ" %>
+    <% if is_mj %>
       <%= render "space_combat/position_matrix",
                  positions: positions,
                  combat: combat,

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2026_04_27_144725) do
+ActiveRecord::Schema[7.1].define(version: 2026_08_29_120000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -278,6 +278,7 @@ ActiveRecord::Schema[7.1].define(version: 2026_04_27_144725) do
     t.integer "hull_bonus", default: 0, null: false
     t.integer "shield_mastery", default: 0, null: false
     t.integer "shield_bonus", default: 0, null: false
+    t.integer "interception_level", default: 0, null: false
   end
 
   create_table "enemy_skills", force: :cascade do |t|
@@ -575,6 +576,8 @@ ActiveRecord::Schema[7.1].define(version: 2026_04_27_144725) do
     t.integer "position", default: 0
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "blind_spot_for_id"
+    t.boolean "engaged", default: false, null: false
     t.index ["participant_a_id"], name: "index_ship_combat_positions_on_participant_a_id"
     t.index ["participant_b_id"], name: "index_ship_combat_positions_on_participant_b_id"
     t.index ["space_combat_state_id", "participant_a_id", "participant_b_id"], name: "index_ship_combat_pos_unique_pair", unique: true
@@ -702,6 +705,19 @@ ActiveRecord::Schema[7.1].define(version: 2026_04_27_144725) do
     t.boolean "has_played", default: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "shields_down_until_turn"
+    t.integer "pending_repair", default: 0, null: false
+    t.boolean "repair_used", default: false, null: false
+    t.integer "thruster_hits", default: 0, null: false
+    t.integer "depressurized_since_turn"
+    t.integer "astrogation_turns", default: 0, null: false
+    t.boolean "astrogation_started", default: false, null: false
+    t.boolean "hyperspace_ready", default: false, null: false
+    t.boolean "has_fled", default: false, null: false
+    t.boolean "stealth", default: false, null: false
+    t.boolean "detected", default: false, null: false
+    t.integer "captain_bonus", default: 0, null: false
+    t.boolean "command_used", default: false, null: false
     t.index ["participant_type", "participant_id"], name: "index_scp_on_participant"
     t.index ["space_combat_state_id", "action_order"], name: "index_scp_on_state_and_order"
     t.index ["space_combat_state_id"], name: "index_space_combat_participants_on_space_combat_state_id"

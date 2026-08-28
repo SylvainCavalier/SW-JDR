@@ -6,18 +6,20 @@ class SpaceCombatAction < ApplicationRecord
 
   ACTION_TYPES = %w[
     initiative mouvement tir esquive degats bouclier
-    flag_damage position_override fin_tour
+    flag_damage position_override fin_tour ajout retrait
+    reparation commandement fuite hyperespace furtif detection
+    angle_mort rayon_tracteur coup_decisif tour systeme
   ].freeze
 
   validates :action_type, presence: true, inclusion: { in: ACTION_TYPES }
 
-  after_create :broadcast_action
+  after_create_commit :broadcast_action
 
   private
 
   def broadcast_action
     Turbo::StreamsChannel.broadcast_append_to(
-      "space_combat_updates",
+      SpaceCombatState::LOG_STREAM,
       target: "space_combat_log",
       partial: "space_combat/combat_action",
       locals: { action: self }
