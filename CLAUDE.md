@@ -190,3 +190,7 @@ French-influenced naming throughout:
 - "mj" = maître du jeu (game master)
 - "carac" = caractéristique (characteristic/stat)
 - "chatouille" = tickle (mini-game name)
+
+## Life Dashboard
+
+Projet du life-dashboard : `sw-jdr` (`/historyupdate` envoie chaque session au journal de bord de ce projet).
